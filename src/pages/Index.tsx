@@ -35,6 +35,7 @@ const Index = () => {
           date="04.04"
           time="19:00"
           glowColor="120 85% 55%"
+          href="/create-team"
         />
 
         <SportCard
