@@ -1,5 +1,6 @@
 import { ChevronRight, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 interface SportCardProps {
   title: string;
@@ -10,6 +11,7 @@ interface SportCardProps {
   comingSoon?: boolean;
   comingSoonYear?: string;
   glowColor?: string;
+  href?: string;
 }
 
 const SportCard = ({
@@ -21,7 +23,16 @@ const SportCard = ({
   comingSoon,
   comingSoonYear,
   glowColor = "88 85% 55%",
+  href,
 }: SportCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (href && !comingSoon) {
+      navigate(href);
+    }
+  };
+
   return (
     <div className="px-4 mb-4">
       <div className="flex items-center gap-2 mb-3">
@@ -34,6 +45,7 @@ const SportCard = ({
         style={{
           boxShadow: `0 8px 32px hsl(${glowColor} / 0.15)`,
         }}
+        onClick={handleClick}
       >
         <div
           className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity"
