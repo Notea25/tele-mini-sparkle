@@ -38,6 +38,7 @@ const CreateTeam = () => {
       {/* Create Team Button */}
       <div className="px-4 mt-6">
         <Button 
+          onClick={() => navigate("/team-builder")}
           className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
           style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
         >
@@ -52,6 +53,7 @@ const CreateTeam = () => {
             Создай свою команду и поборись за ценные призы
           </h3>
           <Button 
+            onClick={() => navigate("/team-builder")}
             className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
           >
             Создать команду
