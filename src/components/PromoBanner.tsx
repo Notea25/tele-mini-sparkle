@@ -6,7 +6,11 @@ const PromoBanner = () => {
       <img src={bannerBg} alt="Beterra Cup Background" className="absolute inset-0 w-full h-full object-cover" />
       <div className="relative p-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="text-primary text-6xl font-bold"></div>
+          <div className="text-primary text-6xl font-bold">
+            <div className="w-16 h-16 border-4 border-primary rounded-lg flex items-center justify-center">
+              <span className="text-3xl">ф</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
