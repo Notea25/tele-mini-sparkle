@@ -17,8 +17,8 @@ const SportHeader = () => {
         </div>
       </div>
       
-      <div className="flex justify-center pb-3">
-        <img src={logo} alt="Fantasy Sports" className="h-8" />
+      <div className="flex justify-start px-4 pb-3">
+        <img src={logo} alt="Fantasy Sports" className="h-12" />
       </div>
     </header>
   );
