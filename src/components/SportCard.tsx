@@ -1,0 +1,88 @@
+import { ChevronRight, Star } from "lucide-react";
+import { Card } from "@/components/ui/card";
+
+interface SportCardProps {
+  title: string;
+  icon: string;
+  league?: string;
+  date?: string;
+  time?: string;
+  comingSoon?: boolean;
+  comingSoonYear?: string;
+  glowColor?: string;
+}
+
+const SportCard = ({
+  title,
+  icon,
+  league,
+  date,
+  time,
+  comingSoon,
+  comingSoonYear,
+  glowColor = "88 85% 55%",
+}: SportCardProps) => {
+  return (
+    <div className="px-4 mb-4">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-2xl">{icon}</span>
+        <h3 className="text-foreground text-lg font-bold">{title}</h3>
+      </div>
+
+      <Card
+        className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 shadow-card hover:shadow-neon transition-all duration-300 cursor-pointer group"
+        style={{
+          boxShadow: `0 8px 32px hsl(${glowColor} / 0.15)`,
+        }}
+      >
+        <div
+          className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity"
+          style={{
+            background: `radial-gradient(circle at 50% 120%, hsl(${glowColor} / 0.4), transparent 70%)`,
+          }}
+        />
+
+        {comingSoon ? (
+          <div className="relative p-6 flex flex-col items-center justify-center min-h-[180px]">
+            <div
+              className="absolute inset-0 opacity-10"
+              style={{
+                background: `radial-gradient(circle at center, hsl(${glowColor} / 0.3), transparent)`,
+              }}
+            />
+            <div className="relative text-center">
+              <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
+              <p className="text-primary text-2xl font-black">{comingSoonYear}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="relative p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
+                style={{
+                  background: `radial-gradient(circle, hsl(${glowColor} / 0.3), hsl(${glowColor} / 0.1))`,
+                  boxShadow: `0 0 20px hsl(${glowColor} / 0.4)`,
+                }}
+              >
+                {icon}
+              </div>
+              <div>
+                <h4 className="text-foreground font-bold text-lg">{league}</h4>
+                <p className="text-muted-foreground text-sm">
+                  Розыгрыш • {date} в {time}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Star className="w-5 h-5 text-muted-foreground" />
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </div>
+        )}
+      </Card>
+    </div>
+  );
+};
+
+export default SportCard;

@@ -57,6 +57,14 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        neon: "hsl(var(--neon-glow))",
+      },
+      boxShadow: {
+        neon: "var(--shadow-neon)",
+        card: "var(--shadow-card)",
+      },
+      backgroundImage: {
+        "gradient-primary": "var(--gradient-primary)",
       },
       borderRadius: {
         lg: "var(--radius)",
