@@ -74,7 +74,7 @@ const CreateTeam = () => {
 
 
       {/* Collect Team Section */}
-      <div className="px-4 mt-8">
+      <div className="px-4 mt-8 text-center">
         <h3 className="text-foreground text-3xl font-bold mb-4">Собирай команду</h3>
         <p className="text-muted-foreground text-base leading-relaxed">
           Воспользуйся бюджетом в <span className="text-primary font-semibold">100 миллионов</span>
