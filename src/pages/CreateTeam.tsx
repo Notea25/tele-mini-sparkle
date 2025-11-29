@@ -88,11 +88,7 @@ const CreateTeam = () => {
           <img 
             src={playersExample} 
             alt="Players" 
-            className="w-full rounded-xl border-l-4 border-primary" 
-            style={{ 
-              boxShadow: "-10px 0 30px hsl(var(--primary) / 0.5), -5px 0 15px hsl(var(--primary) / 0.3)",
-              clipPath: "inset(0 2% 0 0)"
-            }} 
+            className="w-full rounded-xl" 
           />
         </div>
       </div>
