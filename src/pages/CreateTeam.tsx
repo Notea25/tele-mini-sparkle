@@ -41,20 +41,6 @@ const CreateTeam = () => {
         </Button>
       </div>
 
-      {/* Promo Section */}
-      <Card className="mx-4 mt-6 bg-gradient-to-br from-primary/20 to-primary/5 border-primary/30">
-        <div className="p-6 text-center">
-          <h3 className="text-foreground text-xl font-bold mb-2">
-            Создай свою команду и поборись за ценные призы
-          </h3>
-          <Button 
-            onClick={() => navigate("/team-builder")}
-            className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
-          >
-            Создать команду
-          </Button>
-        </div>
-      </Card>
 
       {/* Collect Team Section */}
       <div className="px-4 mt-8">
