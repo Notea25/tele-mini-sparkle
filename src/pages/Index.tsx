@@ -5,6 +5,7 @@ import CategoryFilter from "@/components/CategoryFilter";
 import SportCard from "@/components/SportCard";
 import FooterNav from "@/components/FooterNav";
 import { ChevronDown } from "lucide-react";
+import leagueLogo from "@/assets/league-logo.png";
 
 const Index = () => {
   return (
@@ -31,6 +32,7 @@ const Index = () => {
         <SportCard
           title="Футбол"
           icon="⚽"
+          iconImage={leagueLogo}
           league="Беларусь"
           date="04.04"
           time="19:00"
