@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Trophy, User, TrendingUp, Award, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import bannerBg from "@/assets/beterra-banner-bg.png";
 
 const CreateTeam = () => {
   const navigate = useNavigate();
+  const [teamName, setTeamName] = useState("");
+  const [favoriteTeam, setFavoriteTeam] = useState("");
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -30,8 +35,34 @@ const CreateTeam = () => {
         <img src={bannerBg} alt="Banner" className="w-full h-full object-cover rounded-xl" />
       </div>
 
-      {/* Create Team Button */}
-      <div className="px-4 mt-6">
+      {/* Team Creation Form */}
+      <div className="px-4 mt-6 space-y-3">
+        {/* Team Name Input */}
+        <Input
+          placeholder="Название команды"
+          value={teamName}
+          onChange={(e) => setTeamName(e.target.value)}
+          className="w-full h-14 bg-card/80 border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+        />
+
+        {/* Favorite Team Select */}
+        <Select value={favoriteTeam} onValueChange={setFavoriteTeam}>
+          <SelectTrigger className="w-full h-14 bg-card/80 border-border text-foreground rounded-xl">
+            <SelectValue placeholder="За какую команду болеешь" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="dinamo-minsk">Динамо Минск</SelectItem>
+            <SelectItem value="bate">БАТЭ</SelectItem>
+            <SelectItem value="shakhtyor">Шахтер</SelectItem>
+            <SelectItem value="neman">Неман</SelectItem>
+            <SelectItem value="energetik">Энергетик-БГУ</SelectItem>
+            <SelectItem value="torpedo">Торпедо-БелАЗ</SelectItem>
+            <SelectItem value="slavia">Славия</SelectItem>
+            <SelectItem value="isloch">Ислочь</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Create Team Button */}
         <Button 
           onClick={() => navigate("/team-builder")}
           className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
