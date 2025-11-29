@@ -75,24 +75,9 @@ const CreateTeam = () => {
 
       {/* Collect Team Section */}
       <div className="px-4 mt-8">
-        <h3 className="text-foreground text-2xl font-bold mb-3">Собирай команду</h3>
-        <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-          <div className="p-6">
-            <p className="text-muted-foreground text-sm mb-4">
-              Получи бюджет в размере $100 млн и составь свой состав. Выбери лучших игроков из всех клубов турнира.
-            </p>
-            <div className="flex gap-3">
-              <div className="flex-1">
-                <div className="text-muted-foreground text-xs mb-1">Бюджет</div>
-                <div className="text-foreground text-lg font-bold">$100M</div>
-              </div>
-              <div className="flex-1">
-                <div className="text-muted-foreground text-xs mb-1">Игроки</div>
-                <div className="text-foreground text-lg font-bold">15</div>
-              </div>
-            </div>
-          </div>
-        </Card>
+        <p className="text-muted-foreground text-base leading-relaxed">
+          Воспользуйся бюджетом в <span className="text-primary font-semibold">100 миллионов</span> и собери команду лучших игроков чемпионата
+        </p>
 
         {/* Player Cards */}
         <div className="grid grid-cols-2 gap-3 mt-4">
