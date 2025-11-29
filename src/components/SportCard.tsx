@@ -74,31 +74,31 @@ const SportCard = ({
             </div>
           </div>
         ) : (
-          <div className="relative p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="relative p-6 flex items-center justify-between min-h-[180px]">
+            <div className="flex items-center gap-4">
               <div
-                className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
+                className="w-20 h-20 rounded-full flex items-center justify-center text-3xl"
                 style={{
                   background: `radial-gradient(circle, hsl(${glowColor} / 0.3), hsl(${glowColor} / 0.1))`,
                   boxShadow: `0 0 20px hsl(${glowColor} / 0.4)`,
                 }}
               >
                 {iconImage ? (
-                  <img src={iconImage} alt={league} className="w-8 h-8 object-contain" />
+                  <img src={iconImage} alt={league} className="w-14 h-14 object-contain" />
                 ) : (
                   icon
                 )}
               </div>
               <div>
-                <h4 className="text-foreground font-bold text-lg">{league}</h4>
-                <p className="text-muted-foreground text-sm">
+                <h4 className="text-foreground font-bold text-xl">{league}</h4>
+                <p className="text-muted-foreground text-base">
                   Розыгрыш • {date} в {time}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-muted-foreground" />
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              <Star className="w-6 h-6 text-muted-foreground" />
+              <ChevronRight className="w-6 h-6 text-muted-foreground" />
             </div>
           </div>
         )}
