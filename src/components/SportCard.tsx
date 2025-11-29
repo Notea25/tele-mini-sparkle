@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 interface SportCardProps {
   title: string;
-  icon: string;
+  icon?: string;
   iconImage?: string;
+  leagueIcon?: string;
   league?: string;
   date?: string;
   time?: string;
@@ -19,6 +20,7 @@ const SportCard = ({
   title,
   icon,
   iconImage,
+  leagueIcon,
   league,
   date,
   time,
@@ -83,8 +85,8 @@ const SportCard = ({
                   boxShadow: `0 0 20px hsl(${glowColor} / 0.4)`,
                 }}
               >
-                {iconImage ? (
-                  <img src={iconImage} alt={league} className="w-14 h-14 object-contain" />
+                {leagueIcon ? (
+                  <img src={leagueIcon} alt={league} className="w-14 h-14 object-contain" />
                 ) : (
                   icon
                 )}
