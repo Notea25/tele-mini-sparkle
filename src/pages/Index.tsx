@@ -31,7 +31,6 @@ const Index = () => {
       <div className="mt-6">
         <SportCard
           title="Футбол"
-          iconImage={leagueLogo}
           league="Беларусь"
           date="04.04"
           time="19:00"
