@@ -31,7 +31,6 @@ const Index = () => {
       <div className="mt-6">
         <SportCard
           title="Футбол"
-          icon="⚽"
           iconImage={leagueLogo}
           league="Беларусь"
           date="04.04"
@@ -40,29 +39,11 @@ const Index = () => {
           href="/create-team"
         />
 
-        <SportCard
-          title="Баскетбол"
-          icon="🏀"
-          comingSoon
-          comingSoonYear="2026"
-          glowColor="35 85% 55%"
-        />
+        <SportCard title="Баскетбол" comingSoon comingSoonYear="2026" glowColor="35 85% 55%" />
 
-        <SportCard
-          title="Хоккей"
-          icon="🏒"
-          comingSoon
-          comingSoonYear="2028"
-          glowColor="200 85% 55%"
-        />
+        <SportCard title="Хоккей" comingSoon comingSoonYear="2028" glowColor="200 85% 55%" />
 
-        <SportCard
-          title="Counter-Strike 2"
-          icon="🎮"
-          comingSoon
-          comingSoonYear="2029"
-          glowColor="0 85% 55%"
-        />
+        <SportCard title="Counter-Strike 2" comingSoon comingSoonYear="2029" glowColor="0 85% 55%" />
       </div>
 
       <FooterNav />
