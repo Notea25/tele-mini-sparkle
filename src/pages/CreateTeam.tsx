@@ -26,13 +26,8 @@ const CreateTeam = () => {
       </div>
 
       {/* Hero Banner */}
-      <div className="mx-4 mt-6 rounded-xl overflow-hidden relative bg-black min-h-[200px] border border-border">
-        <img src={bannerBg} alt="Background" className="absolute inset-0 w-full h-full object-cover opacity-30 rounded-xl" />
-        <div className="relative p-6 flex flex-col items-center justify-center text-center min-h-[200px]">
-          <div className="text-6xl mb-4">🏆</div>
-          <h2 className="text-white text-2xl font-bold mb-2">Создай свою команду</h2>
-          <p className="text-white/80 text-sm">в Высшей лиге Беларуси</p>
-        </div>
+      <div className="mx-4 mt-6 rounded-xl overflow-hidden border border-border">
+        <img src={bannerBg} alt="Banner" className="w-full h-full object-cover rounded-xl" />
       </div>
 
       {/* Create Team Button */}
