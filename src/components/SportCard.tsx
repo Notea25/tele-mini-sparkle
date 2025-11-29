@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 interface SportCardProps {
   title: string;
   icon: string;
+  iconImage?: string;
   league?: string;
   date?: string;
   time?: string;
@@ -17,6 +18,7 @@ interface SportCardProps {
 const SportCard = ({
   title,
   icon,
+  iconImage,
   league,
   date,
   time,
@@ -36,7 +38,11 @@ const SportCard = ({
   return (
     <div className="px-4 mb-4">
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-2xl">{icon}</span>
+        {iconImage ? (
+          <img src={iconImage} alt={title} className="w-7 h-7 object-contain" />
+        ) : (
+          <span className="text-2xl">{icon}</span>
+        )}
         <h3 className="text-foreground text-lg font-bold">{title}</h3>
       </div>
 
@@ -77,7 +83,11 @@ const SportCard = ({
                   boxShadow: `0 0 20px hsl(${glowColor} / 0.4)`,
                 }}
               >
-                {icon}
+                {iconImage ? (
+                  <img src={iconImage} alt={league} className="w-8 h-8 object-contain" />
+                ) : (
+                  icon
+                )}
               </div>
               <div>
                 <h4 className="text-foreground font-bold text-lg">{league}</h4>
