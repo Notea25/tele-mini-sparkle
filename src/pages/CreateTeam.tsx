@@ -6,6 +6,7 @@ import { ArrowLeft, Trophy, User, TrendingUp, Award, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import bannerBg from "@/assets/beterra-banner-bg.png";
+import playersExample from "@/assets/players-example.png";
 
 const CreateTeam = () => {
   const navigate = useNavigate();
@@ -82,26 +83,9 @@ const CreateTeam = () => {
           и собери команду лучших игроков чемпионата
         </p>
 
-        {/* Player Cards */}
-        <div className="grid grid-cols-2 gap-3 mt-4">
-          <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-            <div className="p-4 text-center">
-              <div className="w-16 h-16 bg-muted/30 rounded-full mx-auto mb-3 flex items-center justify-center">
-                <User className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <div className="text-foreground font-semibold mb-1">Полузащита</div>
-              <div className="text-muted-foreground text-xs">Выберите игрока</div>
-            </div>
-          </Card>
-          <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-            <div className="p-4 text-center">
-              <div className="w-16 h-16 bg-muted/30 rounded-full mx-auto mb-3 flex items-center justify-center">
-                <User className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <div className="text-foreground font-semibold mb-1">Гибер</div>
-              <div className="text-muted-foreground text-xs">Выберите игрока</div>
-            </div>
-          </Card>
+        {/* Player Cards Image */}
+        <div className="mt-6">
+          <img src={playersExample} alt="Players" className="w-full rounded-xl" />
         </div>
       </div>
 
