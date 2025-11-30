@@ -8,6 +8,7 @@ import { useState } from "react";
 import bannerBg from "@/assets/beterra-banner-bg.png";
 import playersExample from "@/assets/players-example.png";
 import scoringExample from "@/assets/scoring-example.png";
+import transfersExample from "@/assets/transfers-example.png";
 
 const CreateTeam = () => {
   const navigate = useNavigate();
@@ -122,35 +123,28 @@ const CreateTeam = () => {
       </div>
 
       {/* Transfer Details Section */}
-      <div className="px-4 mt-8">
-        <h3 className="text-foreground text-2xl font-bold mb-3">Детали трансферов</h3>
-        <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-          <div className="p-6">
-            <p className="text-muted-foreground text-sm mb-4">
-              Есть два трансферных окна - до старта и посередине сезона. Меняй состав перед каждым туром, но помни: у тебя только 3 трансфера за тур без штрафов.
-            </p>
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-muted/30 rounded-full flex items-center justify-center">
-                  <User className="w-6 h-6 text-muted-foreground" />
-                </div>
-                <div>
-                  <div className="text-foreground font-semibold text-sm">Игрок 1</div>
-                  <div className="text-muted-foreground text-xs">7.5</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-muted/30 rounded-full flex items-center justify-center">
-                  <User className="w-6 h-6 text-muted-foreground" />
-                </div>
-                <div>
-                  <div className="text-foreground font-semibold text-sm">Игрок 2</div>
-                  <div className="text-muted-foreground text-xs">8.0</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Card>
+      <div className="px-4 mt-8 text-center">
+        <h3 className="text-foreground text-3xl font-bold mb-4">Делай трансферы</h3>
+        <p className="text-muted-foreground text-base leading-relaxed">
+          Если кто-то из футболистов твоей команды
+          <br />
+          получил травму или просто плохо играет, не
+          <br />
+          набирая очки — каждый тур ты сможешь сделать
+          <br />
+          <span className="text-primary font-semibold">до 3-х трансферов</span>, чтобы изменить состав на
+          <br />
+          более оптимальный
+        </p>
+
+        {/* Transfers Example Image */}
+        <div className="mt-6">
+          <img 
+            src={transfersExample} 
+            alt="Transfers Example" 
+            className="w-full rounded-xl" 
+          />
+        </div>
       </div>
 
       {/* Compete Section */}
