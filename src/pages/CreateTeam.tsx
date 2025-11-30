@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Trophy, User, TrendingUp, Award, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import FooterNav from "@/components/FooterNav";
 import { useState } from "react";
 import bannerBg from "@/assets/beterra-banner-bg.png";
 import playersExample from "@/assets/players-example.png";
@@ -20,7 +21,7 @@ const CreateTeam = () => {
   const [favoriteTeam, setFavoriteTeam] = useState("");
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center gap-3 p-4">
@@ -202,6 +203,8 @@ const CreateTeam = () => {
           />
         </div>
       </div>
+
+      <FooterNav />
     </div>
   );
 };
