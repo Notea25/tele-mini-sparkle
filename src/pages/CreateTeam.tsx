@@ -10,6 +10,9 @@ import playersExample from "@/assets/players-example.png";
 import scoringExample from "@/assets/scoring-example.png";
 import transfersExample from "@/assets/transfers-example.png";
 import leaderboardExample from "@/assets/leaderboard-example.png";
+import prize3rdPlace from "@/assets/prize-3rd-place.png";
+import prize2ndPlace from "@/assets/prize-2nd-place.png";
+import prize1stPlace from "@/assets/prize-1st-place.png";
 
 const CreateTeam = () => {
   const navigate = useNavigate();
@@ -172,52 +175,31 @@ const CreateTeam = () => {
       </div>
 
       {/* Prizes Section */}
-      <div className="px-4 mt-8">
-        <h3 className="text-foreground text-2xl font-bold mb-3">Получай призы</h3>
-        <p className="text-muted-foreground text-sm mb-4">
-          Борись за топ позиции и получай ценные призы по итогам сезона.
+      <div className="px-4 mt-8 text-center">
+        <h3 className="text-foreground text-3xl font-bold mb-4">Получай призы</h3>
+        <p className="text-muted-foreground text-base leading-relaxed mb-6">
+          Пользователи, набравшие наибольшее количество
+          <br />
+          очков, получат призы от <span className="text-primary font-semibold">Fantasy.sports.by</span>
         </p>
 
         {/* Prize Cards */}
         <div className="space-y-4">
-          <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-            <div className="p-6 flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Trophy className="w-5 h-5 text-yellow-500" />
-                  <span className="text-foreground font-bold">Спорт Мастерить</span>
-                </div>
-                <div className="text-muted-foreground text-sm">Главный приз сезона</div>
-              </div>
-              <div className="text-primary text-2xl font-bold">3 место</div>
-            </div>
-          </Card>
-
-          <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-            <div className="p-6 flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Award className="w-5 h-5 text-blue-500" />
-                  <span className="text-foreground font-bold">Абонементы</span>
-                </div>
-                <div className="text-muted-foreground text-sm">На все матчи сезона</div>
-              </div>
-              <div className="text-primary text-2xl font-bold">2 место</div>
-            </div>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-primary/30 to-primary/10 border-primary/50">
-            <div className="p-6 flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Gift className="w-5 h-5 text-primary" />
-                  <span className="text-foreground font-bold">Apple iPhone</span>
-                </div>
-                <div className="text-muted-foreground text-sm">Последняя модель</div>
-              </div>
-              <div className="text-primary text-3xl font-bold">1 место</div>
-            </div>
-          </Card>
+          <img 
+            src={prize3rdPlace} 
+            alt="3rd Place Prize" 
+            className="w-full rounded-xl" 
+          />
+          <img 
+            src={prize2ndPlace} 
+            alt="2nd Place Prize" 
+            className="w-full rounded-xl" 
+          />
+          <img 
+            src={prize1stPlace} 
+            alt="1st Place Prize" 
+            className="w-full rounded-xl" 
+          />
         </div>
       </div>
     </div>
