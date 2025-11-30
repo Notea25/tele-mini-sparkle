@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import bannerBg from "@/assets/beterra-banner-bg.png";
 import playersExample from "@/assets/players-example.png";
+import scoringExample from "@/assets/scoring-example.png";
 
 const CreateTeam = () => {
   const navigate = useNavigate();
@@ -94,22 +95,30 @@ const CreateTeam = () => {
       </div>
 
       {/* Score Points Section */}
-      <div className="px-4 mt-8">
-        <h3 className="text-foreground text-2xl font-bold mb-3">Набирай очки</h3>
-        <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-          <div className="p-6">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1">
-                <p className="text-muted-foreground text-sm">
-                  Твои игроки получают очки за действия в реальных матчах: голы, передачи, сейвы и другие ключевые моменты.
-                </p>
-              </div>
-            </div>
-          </div>
-        </Card>
+      <div className="px-4 mt-8 text-center">
+        <h3 className="text-foreground text-3xl font-bold mb-4">Набирай очки</h3>
+        <p className="text-muted-foreground text-base leading-relaxed">
+          Каждый игрок будет получать или терять
+          <br />
+          очки за свои действия в реальных матчах.
+          <br />
+          Количество очков может отличаться, в
+          <br />
+          зависимости от амплуа футболиста.
+          <br />
+          Например, защитник получит за гол — 6
+          <br />
+          очков, а нападающий — 4 очка
+        </p>
+
+        {/* Scoring Example Image */}
+        <div className="mt-6">
+          <img 
+            src={scoringExample} 
+            alt="Scoring Example" 
+            className="w-full rounded-xl" 
+          />
+        </div>
       </div>
 
       {/* Transfer Details Section */}
