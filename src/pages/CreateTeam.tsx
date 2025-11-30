@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Trophy, User, TrendingUp, Award, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
+import SportHeader from "@/components/SportHeader";
 import { useState } from "react";
 import bannerBg from "@/assets/beterra-banner-bg.png";
 import playersExample from "@/assets/players-example.png";
@@ -23,20 +24,7 @@ const CreateTeam = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="flex items-center gap-3 p-4">
-          <button onClick={() => navigate("/")} className="text-foreground hover:text-primary transition-colors">
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="text-primary text-2xl">⚽</div>
-            <div>
-              <h1 className="text-foreground text-lg font-bold">ВЫСШАЯ ЛИГА</h1>
-              <p className="text-muted-foreground text-xs">БЕЛАРУСЬ</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <SportHeader />
 
       {/* Hero Banner */}
       <div className="mx-4 mt-6 rounded-xl overflow-hidden border border-border">
