@@ -9,6 +9,7 @@ import bannerBg from "@/assets/beterra-banner-bg.png";
 import playersExample from "@/assets/players-example.png";
 import scoringExample from "@/assets/scoring-example.png";
 import transfersExample from "@/assets/transfers-example.png";
+import leaderboardExample from "@/assets/leaderboard-example.png";
 
 const CreateTeam = () => {
   const navigate = useNavigate();
@@ -148,32 +149,26 @@ const CreateTeam = () => {
       </div>
 
       {/* Compete Section */}
-      <div className="px-4 mt-8">
-        <h3 className="text-foreground text-2xl font-bold mb-3">Соревнуйся</h3>
-        <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-          <div className="p-6">
-            <p className="text-muted-foreground text-sm mb-4">
-              Соревнуйся с другими игроками в общей лиге, создавай или вступай в мини-лиги с друзьями.
-            </p>
-            <div className="space-y-3">
-              {[
-                { name: "Команда 1", points: 202 },
-                { name: "Команда 2", points: 197 },
-                { name: "Ваша команда", points: 192, highlight: true },
-              ].map((team, idx) => (
-                <div key={idx} className={`flex items-center justify-between p-3 rounded-lg ${team.highlight ? 'bg-primary/10 border border-primary/30' : 'bg-muted/20'}`}>
-                  <div className="flex items-center gap-3">
-                    <div className="text-muted-foreground font-semibold">{idx + 1}</div>
-                    <div className="text-foreground font-semibold">{team.name}</div>
-                  </div>
-                  <div className={`font-bold ${team.highlight ? 'text-primary' : 'text-foreground'}`}>
-                    {team.points}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
+      <div className="px-4 mt-8 text-center">
+        <h3 className="text-foreground text-3xl font-bold mb-4">Соревнуйся</h3>
+        <p className="text-muted-foreground text-base leading-relaxed">
+          Соревнуйся с другими пользователями в общей
+          <br />
+          лиге или создай свою собственную лигу для
+          <br />
+          друзей, где вы сможете бороться за первое место
+          <br />
+          только между собой
+        </p>
+
+        {/* Leaderboard Example Image */}
+        <div className="mt-6">
+          <img 
+            src={leaderboardExample} 
+            alt="Leaderboard Example" 
+            className="w-full rounded-xl" 
+          />
+        </div>
       </div>
 
       {/* Prizes Section */}
