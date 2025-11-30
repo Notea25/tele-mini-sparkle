@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { X, ChevronDown, Search, Plus, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import SportHeader from "@/components/SportHeader";
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
@@ -30,16 +31,7 @@ const TeamBuilder = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="flex items-center justify-between p-4">
-          <button onClick={() => navigate("/create-team")} className="text-foreground hover:text-primary transition-colors">
-            <X className="w-6 h-6" />
-          </button>
-          <button className="text-foreground hover:text-primary transition-colors">
-            <ChevronDown className="w-6 h-6" />
-          </button>
-        </div>
-      </div>
+      <SportHeader />
 
       {/* Team Header */}
       <div className="px-4 mt-6">
