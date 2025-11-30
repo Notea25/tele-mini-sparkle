@@ -81,14 +81,29 @@ const TeamBuilder = () => {
         <>
           {/* Football Field */}
           <div className="px-4 mt-6">
-            <div className="relative bg-gradient-to-b from-[#5a9c3f] to-[#4a8030] rounded-3xl overflow-hidden border-[5px] border-white/60 shadow-2xl" style={{ minHeight: '700px', paddingBottom: '40px' }}>
+            <div 
+              className="relative rounded-3xl overflow-hidden border-[5px] border-white/60 shadow-2xl" 
+              style={{ 
+                minHeight: '700px',
+                paddingBottom: '40px',
+                background: '#488D10',
+                clipPath: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)'
+              }}
+            >
               {/* Field Lines */}
               <div className="absolute inset-0">
                 {/* Outer border */}
-                <div className="absolute inset-5 border-2 border-white/80 rounded-2xl"></div>
+                <div className="absolute" style={{ 
+                  top: '20px', 
+                  left: '20px', 
+                  right: '20px', 
+                  bottom: '20px',
+                  border: '2px solid rgba(255,255,255,0.8)',
+                  borderRadius: '16px'
+                }}></div>
                 
                 {/* Top penalty area (small) */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-5 w-36 h-14 border-2 border-white/80 border-t-0 rounded-b-xl"></div>
+                <div className="absolute left-1/2 -translate-x-1/2 top-5 w-32 h-12 border-2 border-white/80 border-t-0 rounded-b-xl"></div>
                 
                 {/* Center line (horizontal) */}
                 <div className="absolute left-5 right-5 top-1/2 -translate-y-1/2 h-0.5 bg-white/80"></div>
@@ -98,7 +113,7 @@ const TeamBuilder = () => {
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/90 rounded-full"></div>
                 
                 {/* Bottom penalty area (visible) */}
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-5 w-36 h-14 border-2 border-white/80 border-b-0 rounded-t-xl"></div>
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-5 w-40 h-16 border-2 border-white/80 border-b-0 rounded-t-xl"></div>
               </div>
 
               {/* Formation 2-5-5-3 */}
@@ -107,9 +122,8 @@ const TeamBuilder = () => {
                 <div className="flex justify-center gap-8 mb-16">
                   {[1, 2].map((i) => (
                     <div key={`vp-${i}`} className="flex flex-col items-center">
-                      <div className="relative w-14 h-16">
-                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain drop-shadow-md" />
-                        <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-gray-600 mt-1">ВР</span>
+                      <div className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-gray-600">ВР</span>
                       </div>
                     </div>
                   ))}
@@ -119,9 +133,8 @@ const TeamBuilder = () => {
                 <div className="flex justify-between mb-16 px-2">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={`zsh-${i}`} className="flex flex-col items-center">
-                      <div className="relative w-14 h-16">
-                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain drop-shadow-md" />
-                        <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-gray-600 mt-1">ЗЩ</span>
+                      <div className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-gray-600">ЗЩ</span>
                       </div>
                     </div>
                   ))}
@@ -131,9 +144,8 @@ const TeamBuilder = () => {
                 <div className="flex justify-between mb-16 px-2">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={`pz-${i}`} className="flex flex-col items-center">
-                      <div className="relative w-14 h-16">
-                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain drop-shadow-md" />
-                        <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-gray-600 mt-1">ПЗ</span>
+                      <div className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-gray-600">ПЗ</span>
                       </div>
                     </div>
                   ))}
@@ -143,9 +155,8 @@ const TeamBuilder = () => {
                 <div className="flex justify-center gap-16 mb-8">
                   {[1, 2, 3].map((i) => (
                     <div key={`np-${i}`} className="flex flex-col items-center">
-                      <div className="relative w-14 h-16">
-                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain drop-shadow-md" />
-                        <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-gray-600 mt-1">НП</span>
+                      <div className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-gray-600">НП</span>
                       </div>
                     </div>
                   ))}
