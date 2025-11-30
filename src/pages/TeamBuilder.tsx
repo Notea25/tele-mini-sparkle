@@ -81,54 +81,55 @@ const TeamBuilder = () => {
         <>
           {/* Football Field */}
           <div className="px-4 mt-6">
-            <div className="relative bg-gradient-to-b from-[#4a7c2f] to-[#3d6826] rounded-2xl overflow-hidden border-4 border-white/40 shadow-2xl">
+            <div className="relative bg-gradient-to-b from-[#4a7c2f] to-[#3d6826] rounded-3xl overflow-hidden border-4 border-white/50 shadow-2xl" style={{ minHeight: '600px' }}>
               {/* Field Lines */}
               <div className="absolute inset-0">
-                {/* Outer border */}
-                <div className="absolute inset-3 border-2 border-white/60 rounded-xl"></div>
+                {/* Outer border with perspective */}
+                <div className="absolute inset-4 border-2 border-white/70 rounded-2xl"></div>
                 {/* Center line */}
-                <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white/60"></div>
+                <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white/70"></div>
                 {/* Center circle */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border-2 border-white/60 rounded-full"></div>
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-2 border-white/70 rounded-full"></div>
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/80 rounded-full"></div>
-                {/* Penalty areas */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-3 w-32 h-12 border-2 border-white/60 border-t-0 rounded-b-lg"></div>
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-3 w-32 h-12 border-2 border-white/60 border-b-0 rounded-t-lg"></div>
+                {/* Top penalty area (goal area) */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-4 w-40 h-16 border-2 border-white/70 border-t-0 rounded-b-xl"></div>
+                <div className="absolute left-1/2 -translate-x-1/2 top-4 w-24 h-10 border-2 border-white/70 border-t-0 rounded-b-lg"></div>
+                {/* Bottom penalty area (goal area) */}
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-4 w-40 h-16 border-2 border-white/70 border-b-0 rounded-t-xl"></div>
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-4 w-24 h-10 border-2 border-white/70 border-b-0 rounded-t-lg"></div>
               </div>
 
-              {/* Formation 3-5-2 */}
-              <div className="relative space-y-8 py-8">
-                {/* Forwards (ВР - 2 players) */}
+              {/* Formation 1-3-4-3-1 */}
+              <div className="relative space-y-12 py-10">
+                {/* Top Goalkeeper (ВР - 1 player) */}
+                <div className="flex justify-center pt-4">
+                  <div className="flex flex-col items-center">
+                    <div className="relative w-14 h-16 flex items-center justify-center">
+                      <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain" />
+                      <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-gray-600 mt-1">ВР</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Forwards (ЗЩ - 3 players) */}
+                <div className="flex justify-center gap-16">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex flex-col items-center">
+                      <div className="relative w-14 h-16 flex items-center justify-center">
+                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain" />
+                        <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-gray-600 mt-1">ЗЩ</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Midfielders (ПЗ - 4 players) */}
                 <div className="flex justify-center gap-12">
-                  {[1, 2].map((i) => (
+                  {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="flex flex-col items-center">
-                      <div className="relative w-16 h-16 flex items-center justify-center">
-                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain filter drop-shadow-lg" />
-                        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-700">ВР</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Midfielders (ЗЩ - 5 players) */}
-                <div className="flex justify-center gap-8">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <div className="relative w-16 h-16 flex items-center justify-center">
-                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain filter drop-shadow-lg" />
-                        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-700">ЗЩ</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Defenders (ПЗ - 5 players) */}
-                <div className="flex justify-center gap-8">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <div className="relative w-16 h-16 flex items-center justify-center">
-                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain filter drop-shadow-lg" />
-                        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-700">ПЗ</span>
+                      <div className="relative w-14 h-16 flex items-center justify-center">
+                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain" />
+                        <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-gray-600 mt-1">ПЗ</span>
                       </div>
                     </div>
                   ))}
@@ -138,22 +139,12 @@ const TeamBuilder = () => {
                 <div className="flex justify-center gap-16">
                   {[1, 2, 3].map((i) => (
                     <div key={i} className="flex flex-col items-center">
-                      <div className="relative w-16 h-16 flex items-center justify-center">
-                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain filter drop-shadow-lg" />
-                        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-700">НП</span>
+                      <div className="relative w-14 h-16 flex items-center justify-center">
+                        <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain" />
+                        <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-gray-600 mt-1">НП</span>
                       </div>
                     </div>
                   ))}
-                </div>
-
-                {/* Goalkeeper (ВР - 1 player) */}
-                <div className="flex justify-center">
-                  <div className="flex flex-col items-center">
-                    <div className="relative w-16 h-16 flex items-center justify-center">
-                      <img src={jerseyIcon} alt="Jersey" className="w-full h-full object-contain filter drop-shadow-lg" />
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-700">ВР</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
