@@ -25,6 +25,19 @@ const CreateTeam = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <SportHeader />
+      
+      {/* Back Button */}
+      <div className="px-4 mt-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-foreground hover:text-primary"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Назад</span>
+        </Button>
+      </div>
 
       {/* Hero Banner */}
       <div className="mx-4 mt-6 rounded-xl overflow-hidden border border-border">
