@@ -7,6 +7,7 @@ import { useState } from "react";
 import SportHeader from "@/components/SportHeader";
 import jerseyIcon from "@/assets/jersey-icon.png";
 import playerJersey from "@/assets/player-jersey.png";
+import footballFieldBg from "@/assets/football-field-bg.png";
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
@@ -86,66 +87,12 @@ const TeamBuilder = () => {
               className="relative rounded-3xl overflow-hidden shadow-2xl" 
               style={{ 
                 minHeight: '650px',
-                background: '#488D10',
-                clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
-                border: '3px solid rgba(255,255,255,0.4)'
+                backgroundImage: `url(${footballFieldBg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
               }}
             >
-              {/* Field Lines with perspective */}
-              <div className="absolute inset-0">
-                {/* Outer border with perspective */}
-                <div 
-                  className="absolute border-2 border-white/60 rounded-2xl" 
-                  style={{ 
-                    top: '15px', 
-                    left: '18%', 
-                    right: '18%', 
-                    bottom: '15px',
-                    clipPath: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)'
-                  }}
-                ></div>
-                
-                {/* Top penalty area */}
-                <div 
-                  className="absolute left-1/2 -translate-x-1/2 border-2 border-white/60 border-t-0 rounded-b-2xl" 
-                  style={{ 
-                    top: '15px',
-                    width: '100px',
-                    height: '50px'
-                  }}
-                ></div>
-                
-                {/* Center line */}
-                <div 
-                  className="absolute h-0.5 bg-white/60" 
-                  style={{ 
-                    top: '50%',
-                    left: '18%',
-                    right: '18%'
-                  }}
-                ></div>
-                
-                {/* Center circle */}
-                <div 
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-white/60 rounded-full" 
-                  style={{ 
-                    width: '140px',
-                    height: '140px'
-                  }}
-                ></div>
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/80 rounded-full"></div>
-                
-                {/* Bottom penalty area */}
-                <div 
-                  className="absolute left-1/2 -translate-x-1/2 border-2 border-white/60 border-b-0 rounded-t-2xl" 
-                  style={{ 
-                    bottom: '15px',
-                    width: '180px',
-                    height: '70px'
-                  }}
-                ></div>
-              </div>
-
               {/* Formation 2-5-5-3 with perspective */}
               <div className="relative h-full py-12 px-6">
                 {/* Row 1: ВР - 2 players (top, narrow) */}
