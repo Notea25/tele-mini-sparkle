@@ -83,75 +83,103 @@ const TeamBuilder = () => {
           {/* Football Field */}
           <div className="px-4 mt-6">
             <div 
-              className="relative rounded-3xl overflow-hidden border-[5px] border-white/60 shadow-2xl" 
+              className="relative rounded-3xl overflow-hidden shadow-2xl" 
               style={{ 
-                minHeight: '700px',
-                paddingBottom: '40px',
+                minHeight: '650px',
                 background: '#488D10',
-                clipPath: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)'
+                clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
+                border: '3px solid rgba(255,255,255,0.4)'
               }}
             >
-              {/* Field Lines */}
+              {/* Field Lines with perspective */}
               <div className="absolute inset-0">
                 {/* Outer border with perspective */}
-                <div className="absolute" style={{ 
-                  top: '30px', 
-                  left: '15%', 
-                  right: '15%', 
-                  bottom: '20px',
-                  border: '2px solid rgba(255,255,255,0.8)',
-                  borderRadius: '16px',
-                  clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)'
-                }}></div>
+                <div 
+                  className="absolute border-2 border-white/60 rounded-2xl" 
+                  style={{ 
+                    top: '15px', 
+                    left: '18%', 
+                    right: '18%', 
+                    bottom: '15px',
+                    clipPath: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)'
+                  }}
+                ></div>
                 
-                {/* Top penalty area (small, with perspective) */}
-                <div className="absolute left-1/2 -translate-x-1/2 w-20 h-16 border-2 border-white/80 border-t-0 rounded-b-xl" style={{ top: '30px' }}></div>
+                {/* Top penalty area */}
+                <div 
+                  className="absolute left-1/2 -translate-x-1/2 border-2 border-white/60 border-t-0 rounded-b-2xl" 
+                  style={{ 
+                    top: '15px',
+                    width: '100px',
+                    height: '50px'
+                  }}
+                ></div>
                 
-                {/* Center line (horizontal) */}
-                <div className="absolute left-[15%] right-[15%] h-0.5 bg-white/80" style={{ top: '50%' }}></div>
+                {/* Center line */}
+                <div 
+                  className="absolute h-0.5 bg-white/60" 
+                  style={{ 
+                    top: '50%',
+                    left: '18%',
+                    right: '18%'
+                  }}
+                ></div>
                 
                 {/* Center circle */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-2 border-white/80 rounded-full"></div>
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/90 rounded-full"></div>
+                <div 
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-white/60 rounded-full" 
+                  style={{ 
+                    width: '140px',
+                    height: '140px'
+                  }}
+                ></div>
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/80 rounded-full"></div>
                 
-                {/* Bottom penalty area (visible) */}
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-5 w-48 h-20 border-2 border-white/80 border-b-0 rounded-t-xl"></div>
+                {/* Bottom penalty area */}
+                <div 
+                  className="absolute left-1/2 -translate-x-1/2 border-2 border-white/60 border-b-0 rounded-t-2xl" 
+                  style={{ 
+                    bottom: '15px',
+                    width: '180px',
+                    height: '70px'
+                  }}
+                ></div>
               </div>
 
-              {/* Formation 2-5-5-3 */}
-              <div className="relative py-8 px-6">
-                {/* Top - Forwards (ВР - 2 players) */}
-                <div className="flex justify-center gap-6 mb-20" style={{ marginTop: '40px' }}>
+              {/* Formation 2-5-5-3 with perspective */}
+              <div className="relative h-full py-12 px-6">
+                {/* Row 1: ВР - 2 players (top, narrow) */}
+                <div className="absolute top-16 left-1/2 -translate-x-1/2 flex justify-center gap-8">
                   {[1, 2].map((i) => (
                     <div key={`vp-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="Player" className="w-10 h-10" />
+                      <img src={playerJersey} alt="ВР" className="w-10 h-10" />
                     </div>
                   ))}
                 </div>
 
-                {/* Second row - Midfielders (ЗЩ - 5 players) */}
-                <div className="flex justify-between mb-20 px-4">
+                {/* Row 2: ЗЩ - 5 players */}
+                <div className="absolute top-[180px] left-1/2 -translate-x-1/2 flex justify-between" style={{ width: '85%' }}>
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={`zsh-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="Player" className="w-11 h-11" />
+                      <img src={playerJersey} alt="ЗЩ" className="w-11 h-11" />
                     </div>
                   ))}
                 </div>
 
-                {/* Third row - Defenders (ПЗ - 5 players) */}
-                <div className="flex justify-between mb-20 px-0">
+                {/* Row 3: ПЗ - 5 players */}
+                <div className="absolute top-[340px] left-1/2 -translate-x-1/2 flex justify-between" style={{ width: '95%' }}>
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={`pz-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="Player" className="w-12 h-12" />
+                      <img src={playerJersey} alt="ПЗ" className="w-12 h-12" />
                     </div>
                   ))}
                 </div>
 
-                {/* Fourth row - Defenders (НП - 3 players) */}
-                <div className="flex justify-center gap-20 mb-8">
+                {/* Row 4: НП - 3 players (bottom, wide) */}
+                <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex justify-center gap-24">
                   {[1, 2, 3].map((i) => (
                     <div key={`np-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="Player" className="w-12 h-12" />
+                      <img src={playerJersey} alt="НП" className="w-12 h-12" />
                     </div>
                   ))}
                 </div>
