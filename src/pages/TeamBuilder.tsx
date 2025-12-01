@@ -8,6 +8,7 @@ import SportHeader from "@/components/SportHeader";
 import jerseyIcon from "@/assets/jersey-icon.png";
 import playerJersey from "@/assets/player-jersey.png";
 import footballFieldBg from "@/assets/football-field-bg.png";
+import fieldWithPlayers from "@/assets/field-with-players.png";
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
@@ -83,55 +84,11 @@ const TeamBuilder = () => {
         <>
           {/* Football Field */}
           <div className="px-4 mt-6">
-            <div 
-              className="relative rounded-3xl overflow-hidden shadow-2xl" 
-              style={{ 
-                minHeight: '650px',
-                backgroundImage: `url(${footballFieldBg})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-              }}
-            >
-              {/* Formation 2-5-5-3 with perspective */}
-              <div className="relative h-full py-12 px-6">
-                {/* Row 1: ВР - 2 players (top, narrow) */}
-                <div className="absolute top-16 left-1/2 -translate-x-1/2 flex justify-center gap-8">
-                  {[1, 2].map((i) => (
-                    <div key={`vp-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="ВР" className="w-10 h-10" />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Row 2: ЗЩ - 5 players */}
-                <div className="absolute top-[180px] left-1/2 -translate-x-1/2 flex justify-between" style={{ width: '85%' }}>
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={`zsh-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="ЗЩ" className="w-11 h-11" />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Row 3: ПЗ - 5 players */}
-                <div className="absolute top-[340px] left-1/2 -translate-x-1/2 flex justify-between" style={{ width: '95%' }}>
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={`pz-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="ПЗ" className="w-12 h-12" />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Row 4: НП - 3 players (bottom, wide) */}
-                <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex justify-center gap-24">
-                  {[1, 2, 3].map((i) => (
-                    <div key={`np-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="НП" className="w-12 h-12" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <img 
+              src={fieldWithPlayers} 
+              alt="Football field with players" 
+              className="w-full rounded-3xl shadow-2xl"
+            />
           </div>
 
           {/* Team Filters */}
