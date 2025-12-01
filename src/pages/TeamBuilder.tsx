@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SportHeader from "@/components/SportHeader";
 import jerseyIcon from "@/assets/jersey-icon.png";
+import playerJersey from "@/assets/player-jersey.png";
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
@@ -122,9 +123,7 @@ const TeamBuilder = () => {
                 <div className="flex justify-center gap-8 mb-16">
                   {[1, 2].map((i) => (
                     <div key={`vp-${i}`} className="flex flex-col items-center">
-                      <div className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-gray-600">ВР</span>
-                      </div>
+                      <img src={playerJersey} alt="Player" className="w-12 h-12" />
                     </div>
                   ))}
                 </div>
@@ -133,9 +132,7 @@ const TeamBuilder = () => {
                 <div className="flex justify-between mb-16 px-2">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={`zsh-${i}`} className="flex flex-col items-center">
-                      <div className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-gray-600">ЗЩ</span>
-                      </div>
+                      <img src={playerJersey} alt="Player" className="w-12 h-12" />
                     </div>
                   ))}
                 </div>
@@ -144,9 +141,7 @@ const TeamBuilder = () => {
                 <div className="flex justify-between mb-16 px-2">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={`pz-${i}`} className="flex flex-col items-center">
-                      <div className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-gray-600">ПЗ</span>
-                      </div>
+                      <img src={playerJersey} alt="Player" className="w-12 h-12" />
                     </div>
                   ))}
                 </div>
@@ -155,9 +150,7 @@ const TeamBuilder = () => {
                 <div className="flex justify-center gap-16 mb-8">
                   {[1, 2, 3].map((i) => (
                     <div key={`np-${i}`} className="flex flex-col items-center">
-                      <div className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-gray-600">НП</span>
-                      </div>
+                      <img src={playerJersey} alt="Player" className="w-12 h-12" />
                     </div>
                   ))}
                 </div>
