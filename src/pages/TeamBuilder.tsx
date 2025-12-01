@@ -93,52 +93,53 @@ const TeamBuilder = () => {
             >
               {/* Field Lines */}
               <div className="absolute inset-0">
-                {/* Outer border */}
+                {/* Outer border with perspective */}
                 <div className="absolute" style={{ 
-                  top: '20px', 
-                  left: '20px', 
-                  right: '20px', 
+                  top: '30px', 
+                  left: '15%', 
+                  right: '15%', 
                   bottom: '20px',
                   border: '2px solid rgba(255,255,255,0.8)',
-                  borderRadius: '16px'
+                  borderRadius: '16px',
+                  clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)'
                 }}></div>
                 
-                {/* Top penalty area (small) */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-5 w-32 h-12 border-2 border-white/80 border-t-0 rounded-b-xl"></div>
+                {/* Top penalty area (small, with perspective) */}
+                <div className="absolute left-1/2 -translate-x-1/2 w-20 h-16 border-2 border-white/80 border-t-0 rounded-b-xl" style={{ top: '30px' }}></div>
                 
                 {/* Center line (horizontal) */}
-                <div className="absolute left-5 right-5 top-1/2 -translate-y-1/2 h-0.5 bg-white/80"></div>
+                <div className="absolute left-[15%] right-[15%] h-0.5 bg-white/80" style={{ top: '50%' }}></div>
                 
                 {/* Center circle */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 border-2 border-white/80 rounded-full"></div>
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-2 border-white/80 rounded-full"></div>
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/90 rounded-full"></div>
                 
                 {/* Bottom penalty area (visible) */}
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-5 w-40 h-16 border-2 border-white/80 border-b-0 rounded-t-xl"></div>
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-5 w-48 h-20 border-2 border-white/80 border-b-0 rounded-t-xl"></div>
               </div>
 
               {/* Formation 2-5-5-3 */}
               <div className="relative py-8 px-6">
                 {/* Top - Forwards (ВР - 2 players) */}
-                <div className="flex justify-center gap-8 mb-16">
+                <div className="flex justify-center gap-6 mb-20" style={{ marginTop: '40px' }}>
                   {[1, 2].map((i) => (
                     <div key={`vp-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="Player" className="w-12 h-12" />
+                      <img src={playerJersey} alt="Player" className="w-10 h-10" />
                     </div>
                   ))}
                 </div>
 
                 {/* Second row - Midfielders (ЗЩ - 5 players) */}
-                <div className="flex justify-between mb-16 px-2">
+                <div className="flex justify-between mb-20 px-4">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={`zsh-${i}`} className="flex flex-col items-center">
-                      <img src={playerJersey} alt="Player" className="w-12 h-12" />
+                      <img src={playerJersey} alt="Player" className="w-11 h-11" />
                     </div>
                   ))}
                 </div>
 
                 {/* Third row - Defenders (ПЗ - 5 players) */}
-                <div className="flex justify-between mb-16 px-2">
+                <div className="flex justify-between mb-20 px-0">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={`pz-${i}`} className="flex flex-col items-center">
                       <img src={playerJersey} alt="Player" className="w-12 h-12" />
@@ -147,7 +148,7 @@ const TeamBuilder = () => {
                 </div>
 
                 {/* Fourth row - Defenders (НП - 3 players) */}
-                <div className="flex justify-center gap-16 mb-8">
+                <div className="flex justify-center gap-20 mb-8">
                   {[1, 2, 3].map((i) => (
                     <div key={`np-${i}`} className="flex flex-col items-center">
                       <img src={playerJersey} alt="Player" className="w-12 h-12" />
