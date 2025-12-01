@@ -42,7 +42,7 @@ const TeamBuilder = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/create-team")}
           className="flex items-center gap-2 text-foreground hover:text-primary"
         >
           <ArrowLeft className="w-4 h-4" />
