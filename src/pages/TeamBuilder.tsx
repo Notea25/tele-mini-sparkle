@@ -5,6 +5,7 @@ import { X, ChevronDown, Search, Plus, ChevronLeft, ChevronRight, TrendingUp, Tr
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SportHeader from "@/components/SportHeader";
+import FooterNav from "@/components/FooterNav";
 import jerseyIcon from "@/assets/jersey-icon.png";
 import playerJersey from "@/assets/player-jersey.png";
 import footballFieldBg from "@/assets/football-field-bg.png";
@@ -292,6 +293,8 @@ const TeamBuilder = () => {
           </div>
         </div>
       </div>
+
+      <FooterNav />
     </div>
   );
 };
