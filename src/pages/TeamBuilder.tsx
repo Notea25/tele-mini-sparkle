@@ -6,10 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
-import jerseyIcon from "@/assets/jersey-icon.png";
-import playerJersey from "@/assets/player-jersey.png";
-import footballFieldBg from "@/assets/football-field-bg.png";
-import fieldWithPlayers from "@/assets/field-with-players.png";
+import FormationField from "@/components/FormationField";
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
@@ -98,11 +95,7 @@ const TeamBuilder = () => {
         <>
           {/* Football Field */}
           <div className="px-4 mt-6">
-            <img 
-              src={fieldWithPlayers} 
-              alt="Football field with players" 
-              className="w-full rounded-3xl shadow-2xl"
-            />
+            <FormationField />
           </div>
 
           {/* Team Filters */}
