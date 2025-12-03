@@ -259,10 +259,12 @@ const TeamBuilder = () => {
 
       {/* Warning */}
       <div className="px-4 mt-4">
-        <div className="bg-muted/30 border border-border rounded-lg p-3 flex gap-3">
-          <div className="text-muted-foreground">ℹ️</div>
+        <div className="flex items-center gap-3">
+          <div className="w-6 h-6 rounded-full bg-[#6B6B8D] flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-sm font-bold">!</span>
+          </div>
           <p className="text-muted-foreground text-sm">
-            Вы не можете добавить больше 2-х игроков из одного клуба в свою команду
+            Вы не можете добавить больше 2-ух игроков из одного клуба в свою команду
           </p>
         </div>
       </div>
