@@ -20,9 +20,12 @@ const TeamBuilder = () => {
     id: i,
     name: "Вакулич",
     team: "Динамо Минск",
-    position: "НП",
+    position: i < 2 ? "ВР" : i < 4 ? "ПЗ" : "НП",
     points: 79,
+    price: 9,
   }));
+
+  const selectedPlayersData = players.filter(p => selectedPlayers.includes(p.id));
 
   const togglePlayer = (playerId: number) => {
     setSelectedPlayers((prev) =>
@@ -105,7 +108,10 @@ const TeamBuilder = () => {
         <>
           {/* Football Field */}
           <div className="px-4 mt-6">
-            <FormationField />
+            <FormationField 
+              selectedPlayers={selectedPlayersData}
+              onRemovePlayer={(id) => togglePlayer(id)}
+            />
           </div>
 
           {/* Team Filters */}
