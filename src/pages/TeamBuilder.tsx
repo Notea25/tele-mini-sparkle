@@ -155,32 +155,24 @@ const TeamBuilder = () => {
         </div>
       </div>
 
-      {/* Players List Header */}
-      <div className="px-4 mt-6">
-        <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-2 text-xs text-muted-foreground pb-2">
-          <span>Игрок</span>
-          <span>Клуб</span>
-          <span>Очки</span>
-          <span>Цена</span>
-          <span></span>
-        </div>
-      </div>
-
       {/* Players List */}
-      <div className="px-4 space-y-2">
+      <div className="px-4 mt-6 space-y-2">
         {players.map((player, idx) => (
-          <Card key={idx} className="bg-card/60 backdrop-blur-xl border-border/50">
-            <div className="p-3 grid grid-cols-[1fr_auto_auto_auto_auto] gap-2 items-center">
-              <div>
-                <div className="text-foreground font-semibold">{player.name}</div>
-                <div className="text-muted-foreground text-xs">{player.position}</div>
-              </div>
-              <div className="text-foreground text-sm">{player.team}</div>
+          <div
+            key={idx}
+            className="bg-card rounded-full px-4 py-2.5 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-4">
+              <span className="text-foreground font-medium">{player.name}</span>
+              <span className="text-muted-foreground text-sm">{player.position}</span>
+              <span className="text-muted-foreground text-sm">{player.team}</span>
+            </div>
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
-                <span className="text-foreground font-semibold">{player.points}</span>
-                <TrendingUp className="w-3 h-3 text-orange-500" />
+                <span className="text-orange-500">🔥</span>
+                <span className="text-foreground font-medium">{player.points}</span>
               </div>
-              <div className="text-foreground font-semibold">9</div>
+              <span className="text-foreground font-medium">9</span>
               <Button
                 size="icon"
                 className="h-8 w-8 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground"
@@ -188,7 +180,7 @@ const TeamBuilder = () => {
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
 
