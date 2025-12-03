@@ -117,7 +117,7 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer }: FormationField
                 {onRemovePlayer && (
                   <button
                     onClick={() => onRemovePlayer(assignedPlayer.id)}
-                    className="absolute -top-1 -right-3 z-10 w-6 h-6 bg-primary rounded-full flex items-center justify-center hover:bg-primary/80 transition-colors"
+                    className="absolute -top-1 -right-3 z-50 w-6 h-6 bg-primary rounded-full flex items-center justify-center hover:bg-primary/80 transition-colors"
                   >
                     <X className="w-4 h-4 text-primary-foreground" />
                   </button>
