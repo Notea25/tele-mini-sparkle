@@ -20,16 +20,40 @@ const TeamBuilder = () => {
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники"];
 
   const players = [
+    // Вратари (ВР)
     { id: 0, name: "Вакулич", team: "Динамо Минск", position: "ВР", points: 79, price: 9 },
     { id: 1, name: "Петров", team: "БАТЭ", position: "ВР", points: 65, price: 8 },
-    { id: 2, name: "Сидоров", team: "Шахтер", position: "ЗЩ", points: 72, price: 7 },
-    { id: 3, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", points: 68, price: 6 },
-    { id: 4, name: "Козлов", team: "БАТЭ", position: "ПЗ", points: 81, price: 9 },
-    { id: 5, name: "Новиков", team: "Шахтер", position: "ПЗ", points: 75, price: 8 },
-    { id: 6, name: "Морозов", team: "Динамо Минск", position: "НП", points: 88, price: 10 },
-    { id: 7, name: "Волков", team: "БАТЭ", position: "НП", points: 82, price: 9 },
-    { id: 8, name: "Соколов", team: "Шахтер", position: "ЗЩ", points: 70, price: 7 },
-    { id: 9, name: "Лебедев", team: "Динамо Минск", position: "ПЗ", points: 77, price: 8 },
+    { id: 2, name: "Климович", team: "Шахтер", position: "ВР", points: 71, price: 7 },
+    { id: 3, name: "Горбунов", team: "Неман", position: "ВР", points: 58, price: 6 },
+    // Защитники (ЗЩ)
+    { id: 4, name: "Сидоров", team: "Шахтер", position: "ЗЩ", points: 72, price: 7 },
+    { id: 5, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", points: 68, price: 6 },
+    { id: 6, name: "Соколов", team: "Шахтер", position: "ЗЩ", points: 70, price: 7 },
+    { id: 7, name: "Орлов", team: "БАТЭ", position: "ЗЩ", points: 64, price: 6 },
+    { id: 8, name: "Федоров", team: "Неман", position: "ЗЩ", points: 61, price: 5 },
+    { id: 9, name: "Михайлов", team: "Динамо Минск", position: "ЗЩ", points: 73, price: 8 },
+    { id: 10, name: "Зайцев", team: "Славия", position: "ЗЩ", points: 55, price: 5 },
+    { id: 11, name: "Белов", team: "Торпедо", position: "ЗЩ", points: 59, price: 5 },
+    // Полузащитники (ПЗ)
+    { id: 12, name: "Козлов", team: "БАТЭ", position: "ПЗ", points: 81, price: 9 },
+    { id: 13, name: "Новиков", team: "Шахтер", position: "ПЗ", points: 75, price: 8 },
+    { id: 14, name: "Лебедев", team: "Динамо Минск", position: "ПЗ", points: 77, price: 8 },
+    { id: 15, name: "Тарасов", team: "БАТЭ", position: "ПЗ", points: 69, price: 7 },
+    { id: 16, name: "Киселев", team: "Неман", position: "ПЗ", points: 62, price: 6 },
+    { id: 17, name: "Павлов", team: "Шахтер", position: "ПЗ", points: 74, price: 7 },
+    { id: 18, name: "Семенов", team: "Славия", position: "ПЗ", points: 58, price: 5 },
+    { id: 19, name: "Голубев", team: "Торпедо", position: "ПЗ", points: 63, price: 6 },
+    { id: 20, name: "Виноградов", team: "Динамо Минск", position: "ПЗ", points: 71, price: 7 },
+    { id: 21, name: "Богданов", team: "БАТЭ", position: "ПЗ", points: 67, price: 6 },
+    // Нападающие (НП)
+    { id: 22, name: "Морозов", team: "Динамо Минск", position: "НП", points: 88, price: 10 },
+    { id: 23, name: "Волков", team: "БАТЭ", position: "НП", points: 82, price: 9 },
+    { id: 24, name: "Кузнецов", team: "Шахтер", position: "НП", points: 79, price: 9 },
+    { id: 25, name: "Попов", team: "Неман", position: "НП", points: 66, price: 7 },
+    { id: 26, name: "Васильев", team: "Славия", position: "НП", points: 60, price: 6 },
+    { id: 27, name: "Смирнов", team: "Торпедо", position: "НП", points: 64, price: 6 },
+    { id: 28, name: "Ковалев", team: "Динамо Минск", position: "НП", points: 76, price: 8 },
+    { id: 29, name: "Николаев", team: "БАТЭ", position: "НП", points: 70, price: 7 },
   ];
 
   const selectedPlayersData = players.filter(p => selectedPlayers.includes(p.id));
