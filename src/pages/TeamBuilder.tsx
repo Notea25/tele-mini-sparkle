@@ -155,8 +155,21 @@ const TeamBuilder = () => {
         </div>
       </div>
 
+      {/* Players List Header */}
+      <div className="px-4 mt-6 flex items-center justify-between text-sm text-muted-foreground">
+        <div className="flex items-center gap-4">
+          <span className="w-20">Игрок</span>
+          <span className="w-8"></span>
+          <span>Клуб</span>
+        </div>
+        <div className="flex items-center gap-3 pr-10">
+          <span>Очки</span>
+          <span>Цена</span>
+        </div>
+      </div>
+
       {/* Players List */}
-      <div className="px-4 mt-6 space-y-2">
+      <div className="px-4 mt-3 space-y-2">
         {players.map((player, idx) => (
           <div
             key={idx}
