@@ -12,15 +12,25 @@ const TeamBuilder = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
+  const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники"];
 
   const players = Array(6).fill(null).map((_, i) => ({
+    id: i,
     name: "Вакулич",
     team: "Динамо Минск",
     position: "НП",
     points: 79,
   }));
+
+  const togglePlayer = (playerId: number) => {
+    setSelectedPlayers((prev) =>
+      prev.includes(playerId)
+        ? prev.filter((id) => id !== playerId)
+        : [...prev, playerId]
+    );
+  };
 
   const leaderboard = Array(10).fill(null).map((_, i) => ({
     rank: i + 1,
@@ -170,31 +180,39 @@ const TeamBuilder = () => {
 
       {/* Players List */}
       <div className="px-4 mt-3 space-y-2">
-        {players.map((player, idx) => (
-          <div
-            key={idx}
-            className="bg-card rounded-full px-4 py-2.5 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-4">
-              <span className="text-foreground font-medium">{player.name}</span>
-              <span className="text-muted-foreground text-sm">{player.position}</span>
-              <span className="text-muted-foreground text-sm">{player.team}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1">
-                <span className="text-orange-500">🔥</span>
-                <span className="text-foreground font-medium">{player.points}</span>
+        {players.map((player) => {
+          const isSelected = selectedPlayers.includes(player.id);
+          return (
+            <div
+              key={player.id}
+              className="bg-card rounded-full px-4 py-2.5 flex items-center justify-between"
+            >
+              <div className="flex items-center gap-4">
+                <span className="text-foreground font-medium">{player.name}</span>
+                <span className="text-muted-foreground text-sm">{player.position}</span>
+                <span className="text-muted-foreground text-sm">{player.team}</span>
               </div>
-              <span className="text-foreground font-medium">9</span>
-              <Button
-                size="icon"
-                className="h-8 w-8 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <span className="text-orange-500">🔥</span>
+                  <span className="text-foreground font-medium">{player.points}</span>
+                </div>
+                <span className="text-foreground font-medium">9</span>
+                <Button
+                  size="icon"
+                  onClick={() => togglePlayer(player.id)}
+                  className={`h-8 w-8 rounded-full ${
+                    isSelected
+                      ? "bg-muted hover:bg-muted/80 text-muted-foreground"
+                      : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                  }`}
+                >
+                  {isSelected ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                </Button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Pagination */}
