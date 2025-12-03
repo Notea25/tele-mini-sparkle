@@ -103,7 +103,7 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer }: FormationField
         return (
           <div
             key={idx}
-            className="absolute flex flex-col items-center"
+            className={`absolute flex flex-col items-center ${isOccupied ? 'z-20' : 'z-10'}`}
             style={{
               top: style.top,
               left: style.left,
