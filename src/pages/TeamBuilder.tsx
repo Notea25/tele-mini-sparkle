@@ -8,11 +8,14 @@ import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
 import FormationField from "@/components/FormationField";
 
+const ITEMS_PER_PAGE = 6;
+
 const TeamBuilder = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники"];
 
@@ -30,6 +33,28 @@ const TeamBuilder = () => {
   ];
 
   const selectedPlayersData = players.filter(p => selectedPlayers.includes(p.id));
+
+  // Filter players based on activeFilter
+  const filteredPlayers = players.filter(player => {
+    if (activeFilter === "Все") return true;
+    if (activeFilter === "Вратари") return player.position === "ВР";
+    if (activeFilter === "Защитники") return player.position === "ЗЩ";
+    if (activeFilter === "Полузащитники") return player.position === "ПЗ";
+    return true;
+  });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredPlayers.length / ITEMS_PER_PAGE);
+  const paginatedPlayers = filteredPlayers.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  // Reset to page 1 when filter changes
+  const handleFilterChange = (filter: string) => {
+    setActiveFilter(filter);
+    setCurrentPage(1);
+  };
 
   const togglePlayer = (playerId: number) => {
     setSelectedPlayers((prev) =>
@@ -170,7 +195,7 @@ const TeamBuilder = () => {
         {filters.map((filter) => (
           <Button
             key={filter}
-            onClick={() => setActiveFilter(filter)}
+            onClick={() => handleFilterChange(filter)}
             size="sm"
             className={`flex-shrink-0 ${
               activeFilter === filter
@@ -209,7 +234,7 @@ const TeamBuilder = () => {
 
       {/* Players List */}
       <div className="px-4 mt-3 space-y-2">
-        {players.map((player) => {
+        {paginatedPlayers.map((player) => {
           const isSelected = selectedPlayers.includes(player.id);
           return (
             <div
@@ -245,24 +270,35 @@ const TeamBuilder = () => {
       </div>
 
       {/* Pagination */}
-      <div className="px-4 mt-6 flex items-center justify-center gap-2">
-        <button className="p-2 hover:bg-accent rounded transition-colors">
-          <ChevronLeft className="w-4 h-4 text-foreground" />
-        </button>
-        {[1, 2, 3, "...", 10].map((page, idx) => (
-          <button
-            key={idx}
-            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-              page === 1 ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-accent"
-            }`}
+      {totalPages > 1 && (
+        <div className="px-4 mt-6 flex items-center justify-center gap-2">
+          <button 
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="p-2 hover:bg-accent rounded transition-colors disabled:opacity-50"
           >
-            {page}
+            <ChevronLeft className="w-4 h-4 text-foreground" />
           </button>
-        ))}
-        <button className="p-2 hover:bg-accent rounded transition-colors">
-          <ChevronRight className="w-4 h-4 text-foreground" />
-        </button>
-      </div>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                page === currentPage ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-accent"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+          <button 
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="p-2 hover:bg-accent rounded transition-colors disabled:opacity-50"
+          >
+            <ChevronRight className="w-4 h-4 text-foreground" />
+          </button>
+        </div>
+      )}
 
       {/* Captain Selection */}
       <div className="px-4 mt-6 flex gap-2">
