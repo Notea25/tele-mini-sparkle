@@ -39,6 +39,25 @@ const TeamBuilder = () => {
     );
   };
 
+  const handleReset = () => {
+    setSelectedPlayers([]);
+  };
+
+  const handleAutoFill = () => {
+    // Formation: 2 ВР, 5 ЗЩ, 5 ПЗ, 3 НП
+    const formation = { "ВР": 2, "ЗЩ": 5, "ПЗ": 5, "НП": 3 };
+    const selectedIds: number[] = [];
+    
+    Object.entries(formation).forEach(([position, count]) => {
+      const positionPlayers = players.filter(p => p.position === position && !selectedIds.includes(p.id));
+      const shuffled = [...positionPlayers].sort(() => Math.random() - 0.5);
+      const toAdd = shuffled.slice(0, count);
+      toAdd.forEach(p => selectedIds.push(p.id));
+    });
+    
+    setSelectedPlayers(selectedIds);
+  };
+
   const leaderboard = Array(10).fill(null).map((_, i) => ({
     rank: i + 1,
     name: "Lucky Team",
@@ -271,10 +290,17 @@ const TeamBuilder = () => {
 
       {/* Action Buttons */}
       <div className="px-4 mt-6 flex gap-3">
-        <Button className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+        <Button 
+          onClick={handleAutoFill}
+          className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full py-3"
+        >
           Автосбор
         </Button>
-        <Button variant="secondary" className="flex-1">
+        <Button 
+          onClick={handleReset}
+          disabled={selectedPlayers.length === 0}
+          className="flex-1 bg-[#1A1A2E] text-muted-foreground font-semibold rounded-full py-3 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#2A2A3E] hover:text-white disabled:hover:bg-[#1A1A2E] disabled:hover:text-muted-foreground"
+        >
           Сбросить
         </Button>
       </div>
