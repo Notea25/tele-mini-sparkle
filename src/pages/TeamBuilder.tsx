@@ -16,14 +16,18 @@ const TeamBuilder = () => {
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники"];
 
-  const players = Array(6).fill(null).map((_, i) => ({
-    id: i,
-    name: "Вакулич",
-    team: "Динамо Минск",
-    position: i < 2 ? "ВР" : i < 4 ? "ПЗ" : "НП",
-    points: 79,
-    price: 9,
-  }));
+  const players = [
+    { id: 0, name: "Вакулич", team: "Динамо Минск", position: "ВР", points: 79, price: 9 },
+    { id: 1, name: "Петров", team: "БАТЭ", position: "ВР", points: 65, price: 8 },
+    { id: 2, name: "Сидоров", team: "Шахтер", position: "ЗЩ", points: 72, price: 7 },
+    { id: 3, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", points: 68, price: 6 },
+    { id: 4, name: "Козлов", team: "БАТЭ", position: "ПЗ", points: 81, price: 9 },
+    { id: 5, name: "Новиков", team: "Шахтер", position: "ПЗ", points: 75, price: 8 },
+    { id: 6, name: "Морозов", team: "Динамо Минск", position: "НП", points: 88, price: 10 },
+    { id: 7, name: "Волков", team: "БАТЭ", position: "НП", points: 82, price: 9 },
+    { id: 8, name: "Соколов", team: "Шахтер", position: "ЗЩ", points: 70, price: 7 },
+    { id: 9, name: "Лебедев", team: "Динамо Минск", position: "ПЗ", points: 77, price: 8 },
+  ];
 
   const selectedPlayersData = players.filter(p => selectedPlayers.includes(p.id));
 
