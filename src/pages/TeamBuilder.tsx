@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
 import FormationField from "@/components/FormationField";
@@ -171,16 +172,27 @@ const TeamBuilder = () => {
     setCurrentPage(1);
   };
 
+  const BUDGET = 100;
+  const currentTeamCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
+  const currentBalance = BUDGET - currentTeamCost;
+
   const togglePlayer = (playerId: number) => {
-    setSelectedPlayers((prev) => {
-      if (prev.includes(playerId)) {
-        // Remove player - also clear captain/vice-captain if needed
-        if (captain === playerId) setCaptain(null);
-        if (viceCaptain === playerId) setViceCaptain(null);
-        return prev.filter((id) => id !== playerId);
+    const player = players.find(p => p.id === playerId);
+    if (!player) return;
+
+    if (selectedPlayers.includes(playerId)) {
+      // Remove player - also clear captain/vice-captain if needed
+      if (captain === playerId) setCaptain(null);
+      if (viceCaptain === playerId) setViceCaptain(null);
+      setSelectedPlayers(prev => prev.filter((id) => id !== playerId));
+    } else {
+      // Check budget before adding
+      if (player.price > currentBalance) {
+        toast.error("Недостаточно бюджета для добавления этого игрока");
+        return;
       }
-      return [...prev, playerId];
-    });
+      setSelectedPlayers(prev => [...prev, playerId]);
+    }
   };
 
   const handleReset = () => {
@@ -193,15 +205,27 @@ const TeamBuilder = () => {
     // Formation: 2 ВР, 5 ЗЩ, 5 ПЗ, 3 НП
     const formation = { ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3 };
     const selectedIds: number[] = [];
+    let totalCost = 0;
 
     Object.entries(formation).forEach(([position, count]) => {
-      const positionPlayers = players.filter((p) => p.position === position && !selectedIds.includes(p.id));
-      const shuffled = [...positionPlayers].sort(() => Math.random() - 0.5);
-      const toAdd = shuffled.slice(0, count);
-      toAdd.forEach((p) => selectedIds.push(p.id));
+      const positionPlayers = players
+        .filter((p) => p.position === position && !selectedIds.includes(p.id))
+        .sort((a, b) => a.price - b.price); // Sort by price to fit budget
+      
+      let added = 0;
+      for (const player of positionPlayers) {
+        if (added >= count) break;
+        if (totalCost + player.price <= BUDGET) {
+          selectedIds.push(player.id);
+          totalCost += player.price;
+          added++;
+        }
+      }
     });
 
     setSelectedPlayers(selectedIds);
+    setCaptain(null);
+    setViceCaptain(null);
   };
 
   const leaderboard = Array(10)
@@ -567,13 +591,13 @@ const TeamBuilder = () => {
           <div>
             <span className="text-muted-foreground text-sm">Стоимость команды</span>
             <p className="text-foreground text-3xl font-bold">
-              {selectedPlayersData.reduce((sum, p) => sum + p.price, 0)}
+              {currentTeamCost}
             </p>
           </div>
           <div className="text-right">
             <span className="text-muted-foreground text-sm">Баланс</span>
             <p className="text-foreground text-3xl font-bold">
-              {100 - selectedPlayersData.reduce((sum, p) => sum + p.price, 0)}
+              {currentBalance}
             </p>
           </div>
         </div>
