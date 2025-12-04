@@ -12,10 +12,10 @@ const SportHeader = () => {
 
         <div className="flex items-center gap-2">
           <div className="p-2.5 bg-secondary/50 hover:bg-secondary rounded-full transition-colors">
-            <button className="p-2.5 bg-secondary/50 hover:bg-secondary rounded-full transition-colors">
+            <button>
               <Check className="w-5 h-5 text-foreground" />
             </button>
-            <button className="p-2.5 bg-secondary/50 hover:bg-secondary rounded-full transition-colors">
+            <button>
               <MoreVertical className="w-5 h-5 text-foreground" />
             </button>
           </div>
