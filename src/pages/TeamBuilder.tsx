@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
 import FormationField from "@/components/FormationField";
+import PlayerCard from "@/components/PlayerCard";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -36,6 +37,7 @@ const TeamBuilder = () => {
   const [priceTo, setPriceTo] = useState(10);
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
+  const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
 
   const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
@@ -320,7 +322,11 @@ const TeamBuilder = () => {
         <>
           {/* Football Field */}
           <div className="px-4 mt-6">
-            <FormationField selectedPlayers={selectedPlayersData} onRemovePlayer={(id) => togglePlayer(id)} />
+            <FormationField 
+              selectedPlayers={selectedPlayersData} 
+              onRemovePlayer={(id) => togglePlayer(id)}
+              onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
+            />
           </div>
 
           {/* Team Filters */}
@@ -458,7 +464,10 @@ const TeamBuilder = () => {
           const isSelected = selectedPlayers.includes(player.id);
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-4">
+              <div 
+                className="flex items-center gap-4 cursor-pointer hover:opacity-80"
+                onClick={() => setSelectedPlayerForCard(player.id)}
+              >
                 <span className="text-foreground font-medium">{player.name}</span>
                 <span className="text-muted-foreground text-sm">{player.position}</span>
                 <span className="text-muted-foreground text-sm">{player.team}</span>
@@ -658,6 +667,20 @@ const TeamBuilder = () => {
           </div>
         </Card>
       </div>
+      
+      {/* Player Card Drawer */}
+      <PlayerCard
+        player={players.find(p => p.id === selectedPlayerForCard) || null}
+        isOpen={selectedPlayerForCard !== null}
+        onClose={() => setSelectedPlayerForCard(null)}
+        isSelected={selectedPlayerForCard !== null && selectedPlayers.includes(selectedPlayerForCard)}
+        onToggleSelect={togglePlayer}
+        isCaptain={selectedPlayerForCard === captain}
+        isViceCaptain={selectedPlayerForCard === viceCaptain}
+        onSetCaptain={setCaptain}
+        onSetViceCaptain={setViceCaptain}
+      />
+      
       <FooterNav />
     </div>
   );
