@@ -19,8 +19,16 @@ const TeamBuilder = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все");
+  const [selectedPoints, setSelectedPoints] = useState("Все");
 
   const teams = ["Все", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
+  const pointsOptions = [
+    { label: "Все", value: "Все" },
+    { label: "80+", value: "80+" },
+    { label: "70-79", value: "70-79" },
+    { label: "60-69", value: "60-69" },
+    { label: "< 60", value: "<60" },
+  ];
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
@@ -63,13 +71,21 @@ const TeamBuilder = () => {
 
   const selectedPlayersData = players.filter(p => selectedPlayers.includes(p.id));
 
-  // Filter players based on activeFilter, search query, and team
+  // Filter players based on activeFilter, search query, team, and points
   const filteredPlayers = players.filter(player => {
     const matchesSearch = player.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
     
     const matchesTeam = selectedTeam === "Все" || player.team === selectedTeam;
     if (!matchesTeam) return false;
+
+    // Points filter
+    let matchesPoints = true;
+    if (selectedPoints === "80+") matchesPoints = player.points >= 80;
+    else if (selectedPoints === "70-79") matchesPoints = player.points >= 70 && player.points < 80;
+    else if (selectedPoints === "60-69") matchesPoints = player.points >= 60 && player.points < 70;
+    else if (selectedPoints === "<60") matchesPoints = player.points < 60;
+    if (!matchesPoints) return false;
     
     if (activeFilter === "Все") return true;
     if (activeFilter === "Вратари") return player.position === "ВР";
@@ -101,6 +117,12 @@ const TeamBuilder = () => {
   // Reset to page 1 when team changes
   const handleTeamChange = (team: string) => {
     setSelectedTeam(team);
+    setCurrentPage(1);
+  };
+
+  // Reset to page 1 when points filter changes
+  const handlePointsChange = (points: string) => {
+    setSelectedPoints(points);
     setCurrentPage(1);
   };
 
@@ -224,10 +246,18 @@ const TeamBuilder = () => {
                 ))}
               </SelectContent>
             </Select>
-            <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center justify-between">
-              <span className="text-foreground text-sm">Очки</span>
-              <ChevronDown className="w-4 h-4 text-muted-foreground" />
-            </div>
+            <Select value={selectedPoints} onValueChange={handlePointsChange}>
+              <SelectTrigger className="flex-1 bg-card border-border text-foreground">
+                <SelectValue placeholder="Очки" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border z-50">
+                {pointsOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value} className="text-foreground hover:bg-secondary">
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Price Range */}
