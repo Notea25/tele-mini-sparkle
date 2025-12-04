@@ -501,7 +501,11 @@ const TeamBuilder = () => {
         <Button
           onClick={handleReset}
           disabled={selectedPlayers.length === 0}
-          className="flex-1 bg-[#1A1A2E] text-muted-foreground font-semibold rounded-full py-3 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#2A2A3E] hover:text-white disabled:hover:bg-[#1A1A2E] disabled:hover:text-muted-foreground"
+          className={`flex-1 font-semibold rounded-full py-3 ${
+            selectedPlayers.length === 0
+              ? "bg-[#1A1A2E] text-muted-foreground opacity-50 cursor-not-allowed"
+              : "bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white"
+          }`}
         >
           Сбросить
         </Button>
