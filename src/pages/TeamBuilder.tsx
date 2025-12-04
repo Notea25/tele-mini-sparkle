@@ -159,6 +159,16 @@ const TeamBuilder = () => {
     setCurrentPage(1);
   };
 
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setSelectedTeam("Все команды");
+    setSelectedPoints("Фильтр по очкам");
+    setPriceFrom(3);
+    setPriceTo(10);
+    setActiveFilter("Все");
+    setCurrentPage(1);
+  };
+
   const togglePlayer = (playerId: number) => {
     setSelectedPlayers((prev) =>
       prev.includes(playerId) ? prev.filter((id) => id !== playerId) : [...prev, playerId],
@@ -331,6 +341,18 @@ const TeamBuilder = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Reset Filters Button */}
+          <div className="px-4 mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleResetFilters}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Сбросить фильтры
+            </Button>
           </div>
         </>
       )}
