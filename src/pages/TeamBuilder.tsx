@@ -173,8 +173,16 @@ const TeamBuilder = () => {
   };
 
   const BUDGET = 100;
+  const MAX_PLAYERS_PER_CLUB = 2;
   const currentTeamCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
   const currentBalance = BUDGET - currentTeamCost;
+
+  const getPlayersCountByClub = (playerIds: number[], clubName: string) => {
+    return playerIds.filter(id => {
+      const p = players.find(player => player.id === id);
+      return p?.team === clubName;
+    }).length;
+  };
 
   const togglePlayer = (playerId: number) => {
     const player = players.find(p => p.id === playerId);
@@ -189,6 +197,12 @@ const TeamBuilder = () => {
       // Check budget before adding
       if (player.price > currentBalance) {
         toast.error("Недостаточно бюджета для добавления этого игрока");
+        return;
+      }
+      // Check club limit
+      const clubCount = getPlayersCountByClub(selectedPlayers, player.team);
+      if (clubCount >= MAX_PLAYERS_PER_CLUB) {
+        toast.error(`Нельзя добавить больше ${MAX_PLAYERS_PER_CLUB} игроков из одного клуба`);
         return;
       }
       setSelectedPlayers(prev => [...prev, playerId]);
@@ -206,6 +220,7 @@ const TeamBuilder = () => {
     const formation = { ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3 };
     const selectedIds: number[] = [];
     let totalCost = 0;
+    const clubCounts: Record<string, number> = {};
 
     Object.entries(formation).forEach(([position, count]) => {
       const positionPlayers = players
@@ -215,9 +230,11 @@ const TeamBuilder = () => {
       let added = 0;
       for (const player of positionPlayers) {
         if (added >= count) break;
-        if (totalCost + player.price <= BUDGET) {
+        const currentClubCount = clubCounts[player.team] || 0;
+        if (totalCost + player.price <= BUDGET && currentClubCount < MAX_PLAYERS_PER_CLUB) {
           selectedIds.push(player.id);
           totalCost += player.price;
+          clubCounts[player.team] = currentClubCount + 1;
           added++;
         }
       }
