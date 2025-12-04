@@ -73,7 +73,9 @@ const SportHeader = () => {
         <Link to="/">
           <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
         </Link>
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent" />
+        <Link to="/profile">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent" />
+        </Link>
       </div>
     </header>
   );
