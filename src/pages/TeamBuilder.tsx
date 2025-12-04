@@ -2,7 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, ChevronDown, Search, Plus, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Minus, ArrowLeft } from "lucide-react";
+import {
+  X,
+  ChevronDown,
+  Search,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  ArrowLeft,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SportHeader from "@/components/SportHeader";
@@ -21,7 +32,7 @@ const TeamBuilder = () => {
   const [selectedTeam, setSelectedTeam] = useState("Все");
   const [selectedPoints, setSelectedPoints] = useState("Все");
 
-  const teams = ["Все", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
+  const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
     { label: "Все", value: "Все" },
     { label: "80+", value: "80+" },
@@ -69,13 +80,13 @@ const TeamBuilder = () => {
     { id: 29, name: "Николаев", team: "БАТЭ", position: "НП", points: 70, price: 7 },
   ];
 
-  const selectedPlayersData = players.filter(p => selectedPlayers.includes(p.id));
+  const selectedPlayersData = players.filter((p) => selectedPlayers.includes(p.id));
 
   // Filter players based on activeFilter, search query, team, and points
-  const filteredPlayers = players.filter(player => {
+  const filteredPlayers = players.filter((player) => {
     const matchesSearch = player.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
-    
+
     const matchesTeam = selectedTeam === "Все" || player.team === selectedTeam;
     if (!matchesTeam) return false;
 
@@ -86,7 +97,7 @@ const TeamBuilder = () => {
     else if (selectedPoints === "60-69") matchesPoints = player.points >= 60 && player.points < 70;
     else if (selectedPoints === "<60") matchesPoints = player.points < 60;
     if (!matchesPoints) return false;
-    
+
     if (activeFilter === "Все") return true;
     if (activeFilter === "Вратари") return player.position === "ВР";
     if (activeFilter === "Защитники") return player.position === "ЗЩ";
@@ -97,10 +108,7 @@ const TeamBuilder = () => {
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredPlayers.length / ITEMS_PER_PAGE);
-  const paginatedPlayers = filteredPlayers.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  const paginatedPlayers = filteredPlayers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   // Reset to page 1 when filter changes
   const handleFilterChange = (filter: string) => {
@@ -128,9 +136,7 @@ const TeamBuilder = () => {
 
   const togglePlayer = (playerId: number) => {
     setSelectedPlayers((prev) =>
-      prev.includes(playerId)
-        ? prev.filter((id) => id !== playerId)
-        : [...prev, playerId]
+      prev.includes(playerId) ? prev.filter((id) => id !== playerId) : [...prev, playerId],
     );
   };
 
@@ -140,32 +146,34 @@ const TeamBuilder = () => {
 
   const handleAutoFill = () => {
     // Formation: 2 ВР, 5 ЗЩ, 5 ПЗ, 3 НП
-    const formation = { "ВР": 2, "ЗЩ": 5, "ПЗ": 5, "НП": 3 };
+    const formation = { ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3 };
     const selectedIds: number[] = [];
-    
+
     Object.entries(formation).forEach(([position, count]) => {
-      const positionPlayers = players.filter(p => p.position === position && !selectedIds.includes(p.id));
+      const positionPlayers = players.filter((p) => p.position === position && !selectedIds.includes(p.id));
       const shuffled = [...positionPlayers].sort(() => Math.random() - 0.5);
       const toAdd = shuffled.slice(0, count);
-      toAdd.forEach(p => selectedIds.push(p.id));
+      toAdd.forEach((p) => selectedIds.push(p.id));
     });
-    
+
     setSelectedPlayers(selectedIds);
   };
 
-  const leaderboard = Array(10).fill(null).map((_, i) => ({
-    rank: i + 1,
-    name: "Lucky Team",
-    games: 32,
-    points: 2125,
-    trend: i % 3 === 0 ? "up" : i % 3 === 1 ? "down" : "same",
-  }));
+  const leaderboard = Array(10)
+    .fill(null)
+    .map((_, i) => ({
+      rank: i + 1,
+      name: "Lucky Team",
+      games: 32,
+      points: 2125,
+      trend: i % 3 === 0 ? "up" : i % 3 === 1 ? "down" : "same",
+    }));
 
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <SportHeader />
-      
+
       {/* Back Button */}
       <div className="px-4 mt-4">
         <Button
@@ -226,10 +234,7 @@ const TeamBuilder = () => {
         <>
           {/* Football Field */}
           <div className="px-4 mt-6">
-            <FormationField 
-              selectedPlayers={selectedPlayersData}
-              onRemovePlayer={(id) => togglePlayer(id)}
-            />
+            <FormationField selectedPlayers={selectedPlayersData} onRemovePlayer={(id) => togglePlayer(id)} />
           </div>
 
           {/* Team Filters */}
@@ -325,10 +330,7 @@ const TeamBuilder = () => {
         {paginatedPlayers.map((player) => {
           const isSelected = selectedPlayers.includes(player.id);
           return (
-            <div
-              key={player.id}
-              className="bg-card rounded-full px-4 py-2.5 flex items-center justify-between"
-            >
+            <div key={player.id} className="bg-card rounded-full px-4 py-2.5 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <span className="text-foreground font-medium">{player.name}</span>
                 <span className="text-muted-foreground text-sm">{player.position}</span>
@@ -360,8 +362,8 @@ const TeamBuilder = () => {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="px-4 mt-6 flex items-center justify-center gap-2">
-          <button 
-            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
             className="p-2 hover:bg-accent rounded transition-colors disabled:opacity-50"
           >
@@ -378,8 +380,8 @@ const TeamBuilder = () => {
               {page}
             </button>
           ))}
-          <button 
-            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
             className="p-2 hover:bg-accent rounded transition-colors disabled:opacity-50"
           >
@@ -414,13 +416,13 @@ const TeamBuilder = () => {
 
       {/* Action Buttons */}
       <div className="px-4 mt-6 flex gap-3">
-        <Button 
+        <Button
           onClick={handleAutoFill}
           className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full py-3"
         >
           Автосбор
         </Button>
-        <Button 
+        <Button
           onClick={handleReset}
           disabled={selectedPlayers.length === 0}
           className="flex-1 bg-[#1A1A2E] text-muted-foreground font-semibold rounded-full py-3 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#2A2A3E] hover:text-white disabled:hover:bg-[#1A1A2E] disabled:hover:text-muted-foreground"
