@@ -26,9 +26,9 @@ const SportHeader = () => {
   return (
     <header className="bg-background">
       <div className="flex items-center justify-between px-4 pt-3 pb-4">
-        <button className="flex items-center gap-2 px-4 py-2 bg-secondary/50 hover:bg-secondary rounded-full transition-colors">
+        <button className="flex items-center justify-center gap-1 w-[79px] h-[28px] bg-secondary/50 hover:bg-secondary rounded-full transition-colors">
           <X className="w-5 h-5 text-foreground" />
-          <span className="text-foreground font-medium">Close</span>
+          <span className="text-foreground font-medium text-sm">Close</span>
         </button>
 
         <div className="flex items-center bg-secondary/50 rounded-full overflow-hidden w-[74px] h-[28px]">
