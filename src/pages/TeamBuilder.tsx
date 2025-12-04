@@ -582,7 +582,7 @@ const TeamBuilder = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className="px-4 mt-6 flex gap-3">
+      <div className="px-4 mt-6 mb-6 flex gap-3">
         <Button
           onClick={handleAutoFill}
           className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full py-3"
