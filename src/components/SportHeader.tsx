@@ -3,7 +3,7 @@ import logo from "@/assets/logo.png";
 
 const SportHeader = () => {
   return (
-    <header className="bg-background border-b border-border">
+    <header className="bg-background">
       <div className="flex items-center justify-between px-4 pt-3 pb-4">
         <button className="flex items-center gap-2 px-4 py-2 bg-secondary/50 hover:bg-secondary rounded-full transition-colors">
           <X className="w-5 h-5 text-foreground" />
