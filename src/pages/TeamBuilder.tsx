@@ -346,8 +346,10 @@ const TeamBuilder = () => {
           {/* Reset Filters Button */}
           <div className="px-4 mt-4">
             <Button
+              variant="outline"
+              size="sm"
               onClick={handleResetFilters}
-              className="bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full px-6 py-2"
+              className="text-muted-foreground hover:text-foreground"
             >
               Сбросить фильтры
             </Button>
