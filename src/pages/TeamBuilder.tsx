@@ -32,7 +32,7 @@ const TeamBuilder = () => {
   const [selectedTeam, setSelectedTeam] = useState("Все");
   const [selectedPoints, setSelectedPoints] = useState("Все");
 
-  const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
+  const teams = ["Все", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
     { label: "Все", value: "Все" },
     { label: "80+", value: "80+" },
