@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, ChevronDown, Search, Plus, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Minus, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -17,6 +18,9 @@ const TeamBuilder = () => {
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState("Все");
+
+  const teams = ["Все", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
@@ -59,10 +63,13 @@ const TeamBuilder = () => {
 
   const selectedPlayersData = players.filter(p => selectedPlayers.includes(p.id));
 
-  // Filter players based on activeFilter and search query
+  // Filter players based on activeFilter, search query, and team
   const filteredPlayers = players.filter(player => {
     const matchesSearch = player.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
+    
+    const matchesTeam = selectedTeam === "Все" || player.team === selectedTeam;
+    if (!matchesTeam) return false;
     
     if (activeFilter === "Все") return true;
     if (activeFilter === "Вратари") return player.position === "ВР";
@@ -88,6 +95,12 @@ const TeamBuilder = () => {
   // Reset to page 1 when search changes
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
+  // Reset to page 1 when team changes
+  const handleTeamChange = (team: string) => {
+    setSelectedTeam(team);
     setCurrentPage(1);
   };
 
@@ -199,10 +212,18 @@ const TeamBuilder = () => {
 
           {/* Team Filters */}
           <div className="px-4 mt-6 flex gap-2">
-            <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center justify-between">
-              <span className="text-foreground text-sm">Команды</span>
-              <ChevronDown className="w-4 h-4 text-muted-foreground" />
-            </div>
+            <Select value={selectedTeam} onValueChange={handleTeamChange}>
+              <SelectTrigger className="flex-1 bg-card border-border text-foreground">
+                <SelectValue placeholder="Команды" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border z-50">
+                {teams.map((team) => (
+                  <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary">
+                    {team}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center justify-between">
               <span className="text-foreground text-sm">Очки</span>
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
