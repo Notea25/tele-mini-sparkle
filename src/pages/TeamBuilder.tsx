@@ -17,7 +17,7 @@ const TeamBuilder = () => {
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filters = ["Все", "Вратари", "Защитники", "Полузащитники"];
+  const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
   const players = [
     // Вратари (ВР)
@@ -64,6 +64,7 @@ const TeamBuilder = () => {
     if (activeFilter === "Вратари") return player.position === "ВР";
     if (activeFilter === "Защитники") return player.position === "ЗЩ";
     if (activeFilter === "Полузащитники") return player.position === "ПЗ";
+    if (activeFilter === "Нападающие") return player.position === "НП";
     return true;
   });
 
