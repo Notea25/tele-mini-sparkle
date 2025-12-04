@@ -511,6 +511,34 @@ const TeamBuilder = () => {
         </Button>
       </div>
 
+      {/* Team Cost & Balance */}
+      <div className="px-4 mt-6">
+        <div className="flex justify-between mb-4">
+          <div>
+            <span className="text-muted-foreground text-sm">Стоимость команды</span>
+            <p className="text-foreground text-3xl font-bold">
+              {selectedPlayersData.reduce((sum, p) => sum + p.price, 0)}
+            </p>
+          </div>
+          <div className="text-right">
+            <span className="text-muted-foreground text-sm">Баланс</span>
+            <p className="text-foreground text-3xl font-bold">
+              {100 - selectedPlayersData.reduce((sum, p) => sum + p.price, 0)}
+            </p>
+          </div>
+        </div>
+        <Button
+          disabled={selectedPlayers.length === 0}
+          className={`w-full rounded-full py-3 font-semibold text-black ${
+            selectedPlayers.length === 0
+              ? "bg-[#4A5D23] cursor-not-allowed"
+              : "bg-[#A8FF00] hover:bg-[#98EE00]"
+          }`}
+        >
+          Сохранить
+        </Button>
+      </div>
+
       {/* Leaderboard */}
       <div className="px-4 mt-8">
         <h2 className="text-foreground text-2xl font-bold mb-4">Топ-10 общей лиги</h2>
