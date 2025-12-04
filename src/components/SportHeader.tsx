@@ -1,4 +1,5 @@
 import { X, ChevronDown, MoreHorizontal, Share, RefreshCw, Home, FileText, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
   DropdownMenu,
@@ -69,7 +70,9 @@ const SportHeader = () => {
       </div>
 
       <div className="flex justify-between items-center px-4 pb-4">
-        <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
+        <Link to="/">
+          <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
+        </Link>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent" />
       </div>
     </header>
