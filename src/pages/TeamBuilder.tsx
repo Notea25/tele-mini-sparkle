@@ -31,6 +31,8 @@ const TeamBuilder = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
   const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
+  const [priceFrom, setPriceFrom] = useState("");
+  const [priceTo, setPriceTo] = useState("");
 
   const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
@@ -99,6 +101,12 @@ const TeamBuilder = () => {
     // "Фильтр по очкам" means show all, so matchesPoints stays true
     if (!matchesPoints) return false;
 
+    // Price filter
+    const minPrice = priceFrom ? parseFloat(priceFrom) : null;
+    const maxPrice = priceTo ? parseFloat(priceTo) : null;
+    if (minPrice !== null && player.price < minPrice) return false;
+    if (maxPrice !== null && player.price > maxPrice) return false;
+
     if (activeFilter === "Все") return true;
     if (activeFilter === "Вратари") return player.position === "ВР";
     if (activeFilter === "Защитники") return player.position === "ЗЩ";
@@ -132,6 +140,17 @@ const TeamBuilder = () => {
   // Reset to page 1 when points filter changes
   const handlePointsChange = (points: string) => {
     setSelectedPoints(points);
+    setCurrentPage(1);
+  };
+
+  // Reset to page 1 when price changes
+  const handlePriceFromChange = (value: string) => {
+    setPriceFrom(value);
+    setCurrentPage(1);
+  };
+
+  const handlePriceToChange = (value: string) => {
+    setPriceTo(value);
     setCurrentPage(1);
   };
 
@@ -268,15 +287,25 @@ const TeamBuilder = () => {
 
           {/* Price Range */}
           <div className="px-4 mt-4 flex gap-2">
-            <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center justify-between">
-              <span className="text-muted-foreground text-xs">Цена</span>
-              <span className="text-foreground text-sm">от</span>
-              <span className="text-foreground text-sm font-semibold">4.5</span>
+            <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center gap-2">
+              <span className="text-muted-foreground text-xs">Цена от</span>
+              <Input
+                type="number"
+                value={priceFrom}
+                onChange={(e) => handlePriceFromChange(e.target.value)}
+                placeholder="мин"
+                className="h-6 px-2 py-0 text-sm bg-transparent border-none focus-visible:ring-0 text-foreground w-16"
+              />
             </div>
-            <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center justify-between">
-              <span className="text-muted-foreground text-xs">Цена</span>
-              <span className="text-foreground text-sm">до</span>
-              <span className="text-foreground text-sm font-semibold">9</span>
+            <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center gap-2">
+              <span className="text-muted-foreground text-xs">Цена до</span>
+              <Input
+                type="number"
+                value={priceTo}
+                onChange={(e) => handlePriceToChange(e.target.value)}
+                placeholder="макс"
+                className="h-6 px-2 py-0 text-sm bg-transparent border-none focus-visible:ring-0 text-foreground w-16"
+              />
             </div>
           </div>
         </>
