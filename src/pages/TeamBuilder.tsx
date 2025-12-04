@@ -146,19 +146,19 @@ const TeamBuilder = () => {
 
   // Price control handlers
   const handlePriceFromIncrease = () => {
-    setPriceFrom(prev => Math.min(prev + 1, priceTo));
+    setPriceFrom((prev) => Math.min(prev + 1, priceTo));
     setCurrentPage(1);
   };
   const handlePriceFromDecrease = () => {
-    setPriceFrom(prev => Math.max(prev - 1, 1));
+    setPriceFrom((prev) => Math.max(prev - 1, 1));
     setCurrentPage(1);
   };
   const handlePriceToIncrease = () => {
-    setPriceTo(prev => Math.min(prev + 1, 15));
+    setPriceTo((prev) => Math.min(prev + 1, 15));
     setCurrentPage(1);
   };
   const handlePriceToDecrease = () => {
-    setPriceTo(prev => Math.max(prev - 1, priceFrom));
+    setPriceTo((prev) => Math.max(prev - 1, priceFrom));
     setCurrentPage(1);
   };
 
@@ -178,21 +178,21 @@ const TeamBuilder = () => {
   const currentBalance = BUDGET - currentTeamCost;
 
   const getPlayersCountByClub = (playerIds: number[], clubName: string) => {
-    return playerIds.filter(id => {
-      const p = players.find(player => player.id === id);
+    return playerIds.filter((id) => {
+      const p = players.find((player) => player.id === id);
       return p?.team === clubName;
     }).length;
   };
 
   const togglePlayer = (playerId: number) => {
-    const player = players.find(p => p.id === playerId);
+    const player = players.find((p) => p.id === playerId);
     if (!player) return;
 
     if (selectedPlayers.includes(playerId)) {
       // Remove player - also clear captain/vice-captain if needed
       if (captain === playerId) setCaptain(null);
       if (viceCaptain === playerId) setViceCaptain(null);
-      setSelectedPlayers(prev => prev.filter((id) => id !== playerId));
+      setSelectedPlayers((prev) => prev.filter((id) => id !== playerId));
     } else {
       // Check budget before adding
       if (player.price > currentBalance) {
@@ -205,7 +205,7 @@ const TeamBuilder = () => {
         toast.error(`Нельзя добавить больше ${MAX_PLAYERS_PER_CLUB} игроков из одного клуба`);
         return;
       }
-      setSelectedPlayers(prev => [...prev, playerId]);
+      setSelectedPlayers((prev) => [...prev, playerId]);
     }
   };
 
@@ -226,7 +226,7 @@ const TeamBuilder = () => {
       const positionPlayers = players
         .filter((p) => p.position === position && !selectedIds.includes(p.id))
         .sort((a, b) => a.price - b.price); // Sort by price to fit budget
-      
+
       let added = 0;
       for (const player of positionPlayers) {
         if (added >= count) break;
@@ -519,8 +519,8 @@ const TeamBuilder = () => {
 
       {/* Captain Selection */}
       <div className="px-4 mt-6 flex gap-2">
-        <Select 
-          value={captain?.toString() || ""} 
+        <Select
+          value={captain?.toString() || ""}
           onValueChange={(val) => {
             const id = parseInt(val);
             setCaptain(id);
@@ -532,9 +532,9 @@ const TeamBuilder = () => {
           </SelectTrigger>
           <SelectContent className="bg-card border-border z-50">
             {selectedPlayersData.map((player) => (
-              <SelectItem 
-                key={player.id} 
-                value={player.id.toString()} 
+              <SelectItem
+                key={player.id}
+                value={player.id.toString()}
                 className="text-foreground hover:bg-secondary"
                 disabled={player.id === viceCaptain}
               >
@@ -543,8 +543,8 @@ const TeamBuilder = () => {
             ))}
           </SelectContent>
         </Select>
-        <Select 
-          value={viceCaptain?.toString() || ""} 
+        <Select
+          value={viceCaptain?.toString() || ""}
           onValueChange={(val) => {
             const id = parseInt(val);
             setViceCaptain(id);
@@ -556,9 +556,9 @@ const TeamBuilder = () => {
           </SelectTrigger>
           <SelectContent className="bg-card border-border z-50">
             {selectedPlayersData.map((player) => (
-              <SelectItem 
-                key={player.id} 
-                value={player.id.toString()} 
+              <SelectItem
+                key={player.id}
+                value={player.id.toString()}
                 className="text-foreground hover:bg-secondary"
                 disabled={player.id === captain}
               >
@@ -607,23 +607,17 @@ const TeamBuilder = () => {
         <div className="flex justify-between mb-4">
           <div>
             <span className="text-muted-foreground text-sm">Стоимость команды</span>
-            <p className="text-foreground text-3xl font-bold">
-              {currentTeamCost}
-            </p>
+            <p className="text-foreground text-3xl font-bold">{currentTeamCost}</p>
           </div>
           <div className="text-right">
             <span className="text-muted-foreground text-sm">Баланс</span>
-            <p className="text-foreground text-3xl font-bold">
-              {currentBalance}
-            </p>
+            <p className="text-foreground text-3xl font-bold">{currentBalance}</p>
           </div>
         </div>
         <Button
           disabled={selectedPlayers.length === 0}
           className={`w-full rounded-full py-3 font-semibold text-black ${
-            selectedPlayers.length === 0
-              ? "bg-[#4A5D23] cursor-not-allowed"
-              : "bg-[#A8FF00] hover:bg-[#98EE00]"
+            selectedPlayers.length === 0 ? "bg-[#4A5D23] cursor-not-allowed" : "bg-[#A8FF00] hover:bg-[#98EE00]"
           }`}
         >
           Сохранить
@@ -658,21 +652,6 @@ const TeamBuilder = () => {
           </div>
         </Card>
       </div>
-
-      {/* Team Balance */}
-      <div className="px-4 mt-8 mb-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="text-muted-foreground text-sm mb-1">Стоимость команды</div>
-            <div className="text-foreground text-3xl font-bold">0</div>
-          </div>
-          <div className="text-right">
-            <div className="text-muted-foreground text-sm mb-1">Баланс</div>
-            <div className="text-foreground text-3xl font-bold">100</div>
-          </div>
-        </div>
-      </div>
-
       <FooterNav />
     </div>
   );
