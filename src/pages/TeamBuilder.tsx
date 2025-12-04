@@ -602,8 +602,8 @@ const TeamBuilder = () => {
         </Button>
       </div>
 
-      {/* Team Cost & Balance */}
-      <div className="px-4 mt-6">
+      {/* Team Cost & Balance - Sticky */}
+      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-40">
         <div className="flex justify-between mb-4">
           <div>
             <span className="text-muted-foreground text-sm">Стоимость команды</span>
