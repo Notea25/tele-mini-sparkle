@@ -31,8 +31,8 @@ const TeamBuilder = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
   const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
-  const [priceFrom, setPriceFrom] = useState("");
-  const [priceTo, setPriceTo] = useState("");
+  const [priceFrom, setPriceFrom] = useState(3);
+  const [priceTo, setPriceTo] = useState(10);
 
   const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
@@ -102,10 +102,8 @@ const TeamBuilder = () => {
     if (!matchesPoints) return false;
 
     // Price filter
-    const minPrice = priceFrom ? parseFloat(priceFrom) : null;
-    const maxPrice = priceTo ? parseFloat(priceTo) : null;
-    if (minPrice !== null && player.price < minPrice) return false;
-    if (maxPrice !== null && player.price > maxPrice) return false;
+    if (player.price < priceFrom) return false;
+    if (player.price > priceTo) return false;
 
     if (activeFilter === "Все") return true;
     if (activeFilter === "Вратари") return player.position === "ВР";
@@ -143,14 +141,21 @@ const TeamBuilder = () => {
     setCurrentPage(1);
   };
 
-  // Reset to page 1 when price changes
-  const handlePriceFromChange = (value: string) => {
-    setPriceFrom(value);
+  // Price control handlers
+  const handlePriceFromIncrease = () => {
+    setPriceFrom(prev => Math.min(prev + 1, priceTo));
     setCurrentPage(1);
   };
-
-  const handlePriceToChange = (value: string) => {
-    setPriceTo(value);
+  const handlePriceFromDecrease = () => {
+    setPriceFrom(prev => Math.max(prev - 1, 1));
+    setCurrentPage(1);
+  };
+  const handlePriceToIncrease = () => {
+    setPriceTo(prev => Math.min(prev + 1, 15));
+    setCurrentPage(1);
+  };
+  const handlePriceToDecrease = () => {
+    setPriceTo(prev => Math.max(prev - 1, priceFrom));
     setCurrentPage(1);
   };
 
@@ -286,26 +291,45 @@ const TeamBuilder = () => {
           </div>
 
           {/* Price Range */}
-          <div className="px-4 mt-4 flex gap-2">
-            <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">Цена от</span>
-              <Input
-                type="number"
-                value={priceFrom}
-                onChange={(e) => handlePriceFromChange(e.target.value)}
-                placeholder="мин"
-                className="h-6 px-2 py-0 text-sm bg-transparent border-none focus-visible:ring-0 text-foreground w-16"
-              />
-            </div>
-            <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">Цена до</span>
-              <Input
-                type="number"
-                value={priceTo}
-                onChange={(e) => handlePriceToChange(e.target.value)}
-                placeholder="макс"
-                className="h-6 px-2 py-0 text-sm bg-transparent border-none focus-visible:ring-0 text-foreground w-16"
-              />
+          <div className="px-4 mt-4">
+            <span className="text-foreground text-sm mb-3 block">Цена</span>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground text-sm">от</span>
+                <div className="bg-card border border-border rounded-full px-2 py-1.5 flex items-center gap-2">
+                  <button
+                    onClick={handlePriceFromDecrease}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                  >
+                    <Minus className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceFrom},0</span>
+                  <button
+                    onClick={handlePriceFromIncrease}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                  >
+                    <Plus className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground text-sm">до</span>
+                <div className="bg-card border border-border rounded-full px-2 py-1.5 flex items-center gap-2">
+                  <button
+                    onClick={handlePriceToDecrease}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                  >
+                    <Minus className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceTo},0</span>
+                  <button
+                    onClick={handlePriceToIncrease}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                  >
+                    <Plus className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </>
