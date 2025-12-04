@@ -31,15 +31,15 @@ const SportHeader = () => {
           <span className="text-foreground font-medium">Close</span>
         </button>
 
-        <div className="flex items-center gap-1 bg-secondary/50 rounded-full overflow-hidden">
-          <button className="p-2.5 hover:bg-secondary transition-colors">
-            <ChevronDown className="w-5 h-5 text-foreground" />
+        <div className="flex items-center bg-secondary/50 rounded-full overflow-hidden w-[74px] h-[28px]">
+          <button className="flex-1 flex items-center justify-center hover:bg-secondary transition-colors h-full">
+            <ChevronDown className="w-6 h-6 text-foreground" />
           </button>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="p-2.5 hover:bg-secondary transition-colors">
-                <MoreHorizontal className="w-5 h-5 text-foreground" />
+              <button className="flex-1 flex items-center justify-center hover:bg-secondary transition-colors h-full">
+                <MoreHorizontal className="w-6 h-6 text-foreground" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-background border-border">
