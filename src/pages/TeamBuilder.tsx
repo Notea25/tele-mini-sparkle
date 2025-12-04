@@ -29,10 +29,10 @@ const TeamBuilder = () => {
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTeam, setSelectedTeam] = useState("Все");
+  const [selectedTeam, setSelectedTeam] = useState("Все команды");
   const [selectedPoints, setSelectedPoints] = useState("Все");
 
-  const teams = ["Все", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
+  const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
     { label: "Все", value: "Все" },
     { label: "80+", value: "80+" },
@@ -87,7 +87,7 @@ const TeamBuilder = () => {
     const matchesSearch = player.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
 
-    const matchesTeam = selectedTeam === "Все" || player.team === selectedTeam;
+    const matchesTeam = selectedTeam === "Все команды" || player.team === selectedTeam;
     if (!matchesTeam) return false;
 
     // Points filter
