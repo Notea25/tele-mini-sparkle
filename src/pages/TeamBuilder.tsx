@@ -30,11 +30,11 @@ const TeamBuilder = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
-  const [selectedPoints, setSelectedPoints] = useState("Все");
+  const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
 
   const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
-    { label: "Все", value: "Все" },
+    { label: "Фильтр по очкам", value: "Фильтр по очкам" },
     { label: "80+", value: "80+" },
     { label: "70-79", value: "70-79" },
     { label: "60-69", value: "60-69" },
@@ -96,6 +96,7 @@ const TeamBuilder = () => {
     else if (selectedPoints === "70-79") matchesPoints = player.points >= 70 && player.points < 80;
     else if (selectedPoints === "60-69") matchesPoints = player.points >= 60 && player.points < 70;
     else if (selectedPoints === "<60") matchesPoints = player.points < 60;
+    // "Фильтр по очкам" means show all, so matchesPoints stays true
     if (!matchesPoints) return false;
 
     if (activeFilter === "Все") return true;
