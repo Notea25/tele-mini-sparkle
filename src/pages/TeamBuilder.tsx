@@ -519,54 +519,60 @@ const TeamBuilder = () => {
 
       {/* Captain Selection */}
       <div className="px-4 mt-6 flex gap-2">
-        <Select
-          value={captain?.toString() || ""}
-          onValueChange={(val) => {
-            const id = parseInt(val);
-            setCaptain(id);
-            if (viceCaptain === id) setViceCaptain(null);
-          }}
-        >
-          <SelectTrigger className="flex-1 bg-card border-border text-foreground">
-            <SelectValue placeholder="Капитан" />
-          </SelectTrigger>
-          <SelectContent className="bg-card border-border z-50">
-            {selectedPlayersData.map((player) => (
-              <SelectItem
-                key={player.id}
-                value={player.id.toString()}
-                className="text-foreground hover:bg-secondary"
-                disabled={player.id === viceCaptain}
-              >
-                {player.name} ({player.position})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={viceCaptain?.toString() || ""}
-          onValueChange={(val) => {
-            const id = parseInt(val);
-            setViceCaptain(id);
-            if (captain === id) setCaptain(null);
-          }}
-        >
-          <SelectTrigger className="flex-1 bg-card border-border text-foreground">
-            <SelectValue placeholder="Вице капитан" />
-          </SelectTrigger>
-          <SelectContent className="bg-card border-border z-50">
-            {selectedPlayersData.map((player) => (
-              <SelectItem
-                key={player.id}
-                value={player.id.toString()}
-                className="text-foreground hover:bg-secondary"
-                disabled={player.id === captain}
-              >
-                {player.name} ({player.position})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex-1">
+          <span className="text-foreground text-sm mb-2 block">Капитан</span>
+          <Select
+            value={captain?.toString() || ""}
+            onValueChange={(val) => {
+              const id = parseInt(val);
+              setCaptain(id);
+              if (viceCaptain === id) setViceCaptain(null);
+            }}
+          >
+            <SelectTrigger className="w-full bg-card border-border text-foreground">
+              <SelectValue placeholder="Выбрать" />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border z-50">
+              {selectedPlayersData.map((player) => (
+                <SelectItem
+                  key={player.id}
+                  value={player.id.toString()}
+                  className="text-foreground hover:bg-secondary"
+                  disabled={player.id === viceCaptain}
+                >
+                  {player.name} ({player.position})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex-1">
+          <span className="text-foreground text-sm mb-2 block">Вице капитан</span>
+          <Select
+            value={viceCaptain?.toString() || ""}
+            onValueChange={(val) => {
+              const id = parseInt(val);
+              setViceCaptain(id);
+              if (captain === id) setCaptain(null);
+            }}
+          >
+            <SelectTrigger className="w-full bg-card border-border text-foreground">
+              <SelectValue placeholder="Выбрать" />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border z-50">
+              {selectedPlayersData.map((player) => (
+                <SelectItem
+                  key={player.id}
+                  value={player.id.toString()}
+                  className="text-foreground hover:bg-secondary"
+                  disabled={player.id === captain}
+                >
+                  {player.name} ({player.position})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Warning */}
