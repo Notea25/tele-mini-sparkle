@@ -20,20 +20,29 @@ const SportHeader = () => {
   };
 
   const handleAddToHome = () => {
-    // PWA install prompt would be handled here
     alert("Добавьте сайт на главный экран через меню браузера");
+  };
+
+  const handleClose = () => {
+    window.close();
   };
 
   return (
     <header className="bg-background">
       <div className="flex items-center justify-between px-4 pt-3 pb-4">
-        <button className="flex items-center justify-center gap-1 w-[79px] h-[28px] bg-secondary/50 hover:bg-secondary rounded-full transition-colors">
+        <button 
+          onClick={handleClose}
+          className="flex items-center justify-center gap-1 w-[79px] h-[28px] bg-secondary/50 hover:bg-secondary rounded-full transition-colors"
+        >
           <X className="w-5 h-5 text-foreground" />
           <span className="text-foreground font-medium text-sm">Close</span>
         </button>
 
         <div className="flex items-center bg-secondary/50 rounded-full overflow-hidden w-[74px] h-[28px]">
-          <button className="flex-1 flex items-center justify-center hover:bg-secondary transition-colors h-full">
+          <button 
+            onClick={handleClose}
+            className="flex-1 flex items-center justify-center hover:bg-secondary transition-colors h-full"
+          >
             <ChevronDown className="w-6 h-6 text-foreground" />
           </button>
           
@@ -70,9 +79,9 @@ const SportHeader = () => {
       </div>
 
       <div className="flex justify-between items-center px-4 pb-4">
-        <Link to="/">
+        <button onClick={handleRefresh}>
           <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
-        </Link>
+        </button>
         <Link to="/profile">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent" />
         </Link>
