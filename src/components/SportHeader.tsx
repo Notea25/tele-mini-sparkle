@@ -1,4 +1,4 @@
-import { X, ChevronDown, Menu, Share, RefreshCw, Home, FileText, Shield } from "lucide-react";
+import { X, ChevronDown, MoreHorizontal, Share, RefreshCw, Home, FileText, Shield } from "lucide-react";
 import logo from "@/assets/logo.png";
 import {
   DropdownMenu,
@@ -32,10 +32,14 @@ const SportHeader = () => {
         </button>
 
         <div className="flex items-center gap-1 bg-secondary/50 rounded-full overflow-hidden">
+          <button className="p-2.5 hover:bg-secondary transition-colors">
+            <ChevronDown className="w-5 h-5 text-foreground" />
+          </button>
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="p-2.5 hover:bg-secondary transition-colors">
-                <ChevronDown className="w-5 h-5 text-foreground" />
+                <MoreHorizontal className="w-5 h-5 text-foreground" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-background border-border">
@@ -61,10 +65,6 @@ const SportHeader = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          
-          <button className="p-2.5 hover:bg-secondary transition-colors">
-            <Menu className="w-5 h-5 text-foreground" />
-          </button>
         </div>
       </div>
 
