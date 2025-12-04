@@ -33,6 +33,8 @@ const TeamBuilder = () => {
   const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
   const [priceFrom, setPriceFrom] = useState(3);
   const [priceTo, setPriceTo] = useState(10);
+  const [captain, setCaptain] = useState<number | null>(null);
+  const [viceCaptain, setViceCaptain] = useState<number | null>(null);
 
   const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
@@ -170,13 +172,21 @@ const TeamBuilder = () => {
   };
 
   const togglePlayer = (playerId: number) => {
-    setSelectedPlayers((prev) =>
-      prev.includes(playerId) ? prev.filter((id) => id !== playerId) : [...prev, playerId],
-    );
+    setSelectedPlayers((prev) => {
+      if (prev.includes(playerId)) {
+        // Remove player - also clear captain/vice-captain if needed
+        if (captain === playerId) setCaptain(null);
+        if (viceCaptain === playerId) setViceCaptain(null);
+        return prev.filter((id) => id !== playerId);
+      }
+      return [...prev, playerId];
+    });
   };
 
   const handleReset = () => {
     setSelectedPlayers([]);
+    setCaptain(null);
+    setViceCaptain(null);
   };
 
   const handleAutoFill = () => {
@@ -468,14 +478,54 @@ const TeamBuilder = () => {
 
       {/* Captain Selection */}
       <div className="px-4 mt-6 flex gap-2">
-        <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center justify-between">
-          <span className="text-foreground text-sm">Капитан</span>
-          <ChevronDown className="w-4 h-4 text-muted-foreground" />
-        </div>
-        <div className="flex-1 bg-card border border-border rounded-md px-3 py-2 flex items-center justify-between">
-          <span className="text-foreground text-sm">Вице капитан</span>
-          <ChevronDown className="w-4 h-4 text-muted-foreground" />
-        </div>
+        <Select 
+          value={captain?.toString() || ""} 
+          onValueChange={(val) => {
+            const id = parseInt(val);
+            setCaptain(id);
+            if (viceCaptain === id) setViceCaptain(null);
+          }}
+        >
+          <SelectTrigger className="flex-1 bg-card border-border text-foreground">
+            <SelectValue placeholder="Капитан" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border z-50">
+            {selectedPlayersData.map((player) => (
+              <SelectItem 
+                key={player.id} 
+                value={player.id.toString()} 
+                className="text-foreground hover:bg-secondary"
+                disabled={player.id === viceCaptain}
+              >
+                {player.name} ({player.position})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select 
+          value={viceCaptain?.toString() || ""} 
+          onValueChange={(val) => {
+            const id = parseInt(val);
+            setViceCaptain(id);
+            if (captain === id) setCaptain(null);
+          }}
+        >
+          <SelectTrigger className="flex-1 bg-card border-border text-foreground">
+            <SelectValue placeholder="Вице капитан" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border z-50">
+            {selectedPlayersData.map((player) => (
+              <SelectItem 
+                key={player.id} 
+                value={player.id.toString()} 
+                className="text-foreground hover:bg-secondary"
+                disabled={player.id === captain}
+              >
+                {player.name} ({player.position})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Warning */}
