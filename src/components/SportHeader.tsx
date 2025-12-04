@@ -20,6 +20,10 @@ const SportHeader = () => {
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent" />
         </div>
       </div>
+
+      <div className="flex justify-start px-4 pb-4">
+        <img src={logo} alt="Fantasy Sports" className="h-12" />
+      </div>
     </header>
   );
 };
