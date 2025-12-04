@@ -21,9 +21,10 @@ interface FormationPosition {
 interface FormationFieldProps {
   selectedPlayers?: PlayerData[];
   onRemovePlayer?: (playerId: number) => void;
+  onPlayerClick?: (player: PlayerData) => void;
 }
 
-const FormationField = ({ selectedPlayers = [], onRemovePlayer }: FormationFieldProps) => {
+const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick }: FormationFieldProps) => {
   // Formation: 2 ВР (goalkeepers), 5 ЗЩ (defenders), 5 ПЗ (midfielders), 3 НП (forwards)
   const formation: FormationPosition[] = [
     // Row 1 - Goalkeepers (top)
@@ -137,7 +138,10 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer }: FormationField
                 </div>
                 
                 {/* Position and name */}
-                <div className="flex items-center gap-1 mt-2">
+                <div 
+                  className="flex items-center gap-1 mt-2 cursor-pointer hover:opacity-80"
+                  onClick={() => onPlayerClick?.(assignedPlayer)}
+                >
                   <span className="text-primary text-xs font-bold">
                     {assignedPlayer.position}
                   </span>
