@@ -16,6 +16,7 @@ const TeamBuilder = () => {
   const [activeFilter, setActiveFilter] = useState("Все");
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
@@ -58,8 +59,11 @@ const TeamBuilder = () => {
 
   const selectedPlayersData = players.filter(p => selectedPlayers.includes(p.id));
 
-  // Filter players based on activeFilter
+  // Filter players based on activeFilter and search query
   const filteredPlayers = players.filter(player => {
+    const matchesSearch = player.name.toLowerCase().includes(searchQuery.toLowerCase());
+    if (!matchesSearch) return false;
+    
     if (activeFilter === "Все") return true;
     if (activeFilter === "Вратари") return player.position === "ВР";
     if (activeFilter === "Защитники") return player.position === "ЗЩ";
@@ -78,6 +82,12 @@ const TeamBuilder = () => {
   // Reset to page 1 when filter changes
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
+    setCurrentPage(1);
+  };
+
+  // Reset to page 1 when search changes
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
     setCurrentPage(1);
   };
 
@@ -239,6 +249,8 @@ const TeamBuilder = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Поиск"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
           />
         </div>
