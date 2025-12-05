@@ -4,6 +4,8 @@ import {
   DrawerFooter,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import playerPhoto from "@/assets/player-photo.png";
+import clubLogo from "@/assets/club-logo.png";
 
 interface PlayerData {
   id: number;
@@ -61,9 +63,9 @@ const PlayerCard = ({
         <div className="px-6 pt-4 pb-2">
           {/* Header with position and player info */}
           <div className="flex items-start gap-4">
-            {/* Player photo placeholder */}
-            <div className="w-24 h-28 bg-gradient-to-br from-primary/30 to-primary/10 rounded-lg flex items-center justify-center">
-              <span className="text-4xl">⚽</span>
+            {/* Player photo */}
+            <div className="w-24 h-28 rounded-lg overflow-hidden">
+              <img src={playerPhoto} alt={player.name} className="w-full h-full object-cover" />
             </div>
             
             <div className="flex-1">
@@ -77,7 +79,7 @@ const PlayerCard = ({
               
               {/* Team */}
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-lg">🏆</span>
+                <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
                 <span className="text-primary">{player.team}</span>
               </div>
               
