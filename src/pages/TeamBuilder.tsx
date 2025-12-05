@@ -186,6 +186,21 @@ const TeamBuilder = () => {
     }).length;
   };
 
+  // Formation slots per position
+  const POSITION_SLOTS: Record<string, number> = {
+    "ВР": 2,
+    "ЗЩ": 5,
+    "ПЗ": 5,
+    "НП": 3,
+  };
+
+  const getPlayersCountByPosition = (playerIds: number[], position: string) => {
+    return playerIds.filter((id) => {
+      const p = players.find((player) => player.id === id);
+      return p?.position === position;
+    }).length;
+  };
+
   const togglePlayer = (playerId: number) => {
     const player = players.find((p) => p.id === playerId);
     if (!player) return;
@@ -196,6 +211,13 @@ const TeamBuilder = () => {
       if (viceCaptain === playerId) setViceCaptain(null);
       setSelectedPlayers((prev) => prev.filter((id) => id !== playerId));
     } else {
+      // Check available position slots
+      const positionCount = getPlayersCountByPosition(selectedPlayers, player.position);
+      const maxSlots = POSITION_SLOTS[player.position] || 0;
+      if (positionCount >= maxSlots) {
+        toast.error(`Все слоты для позиции "${player.position}" заняты`);
+        return;
+      }
       // Check budget before adding
       if (player.price > currentBalance) {
         toast.error("Недостаточно бюджета для добавления этого игрока");
