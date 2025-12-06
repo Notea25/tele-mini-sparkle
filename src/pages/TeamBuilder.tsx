@@ -264,19 +264,50 @@ const TeamBuilder = () => {
 
   const handleAutoFill = () => {
     // Formation: 2 ВР, 5 ЗЩ, 5 ПЗ, 3 НП
-    const formation = { ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3 };
-    const selectedIds: number[] = [];
-    let totalCost = 0;
+    const formation: Record<string, number> = { ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3 };
+    
+    // Start with currently selected players
+    const selectedIds = [...selectedPlayers];
+    let totalCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
+    
+    // Count existing club selections
     const clubCounts: Record<string, number> = {};
+    selectedPlayersData.forEach(p => {
+      clubCounts[p.team] = (clubCounts[p.team] || 0) + 1;
+    });
+    
+    // Count existing position selections
+    const positionCounts: Record<string, number> = {};
+    selectedPlayersData.forEach(p => {
+      positionCounts[p.position] = (positionCounts[p.position] || 0) + 1;
+    });
 
-    Object.entries(formation).forEach(([position, count]) => {
-      const positionPlayers = players
-        .filter((p) => p.position === position && !selectedIds.includes(p.id))
-        .sort((a, b) => a.price - b.price); // Sort by price to fit budget
+    // Shuffle function for randomness
+    const shuffleArray = <T,>(array: T[]): T[] => {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    };
 
+    // Fill remaining slots for each position
+    Object.entries(formation).forEach(([position, maxCount]) => {
+      const currentCount = positionCounts[position] || 0;
+      const slotsToFill = maxCount - currentCount;
+      
+      if (slotsToFill <= 0) return;
+      
+      // Get available players for this position (not already selected), shuffled randomly
+      const availablePlayers = shuffleArray(
+        players.filter((p) => p.position === position && !selectedIds.includes(p.id))
+      );
+      
       let added = 0;
-      for (const player of positionPlayers) {
-        if (added >= count) break;
+      for (const player of availablePlayers) {
+        if (added >= slotsToFill) break;
+        
         const currentClubCount = clubCounts[player.team] || 0;
         if (totalCost + player.price <= BUDGET && currentClubCount < MAX_PLAYERS_PER_CLUB) {
           selectedIds.push(player.id);
@@ -288,8 +319,6 @@ const TeamBuilder = () => {
     });
 
     setSelectedPlayers(selectedIds);
-    setCaptain(null);
-    setViceCaptain(null);
   };
 
   const leaderboard = Array(10)
