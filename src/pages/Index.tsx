@@ -18,7 +18,7 @@ const Index = () => {
       <PromoBanner />
 
       <div className="px-4 mt-6">
-        <h2 className="text-foreground text-2xl font-bold mb-4">Лиги</h2>
+        <h2 className="text-foreground text-2xl font-bold mb-4">Чемпионаты</h2>
       </div>
 
       <SearchBar />
@@ -52,13 +52,7 @@ const Index = () => {
           glowColor="35 85% 55%"
         />
 
-        <SportCard
-          title="Хоккей"
-          iconImage={hockeyIcon}
-          comingSoon
-          comingSoonYear="2028"
-          glowColor="200 85% 55%"
-        />
+        <SportCard title="Хоккей" iconImage={hockeyIcon} comingSoon comingSoonYear="2028" glowColor="200 85% 55%" />
 
         <SportCard
           title="Counter-Strike 2"
