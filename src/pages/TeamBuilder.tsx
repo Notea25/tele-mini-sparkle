@@ -229,7 +229,7 @@ const TeamBuilder = () => {
   };
 
   const BUDGET = 100;
-  const MAX_PLAYERS_PER_CLUB = 2;
+  const MAX_PLAYERS_PER_CLUB = 3;
   const currentTeamCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
   const currentBalance = BUDGET - currentTeamCost;
 
@@ -754,7 +754,7 @@ const TeamBuilder = () => {
             <span className="text-white text-sm font-bold">!</span>
           </div>
           <p className="text-muted-foreground text-sm">
-            Вы не можете добавить больше 2-ух игроков из одного клуба в свою команду
+            Вы не можете добавить больше 3-ёх игроков из одного клуба в свою команду
           </p>
         </div>
       </div>
