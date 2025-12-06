@@ -23,8 +23,21 @@ import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
 import FormationField from "@/components/FormationField";
 import PlayerCard from "@/components/PlayerCard";
+import clubBelshina from "@/assets/club-belshina.png";
+import clubLogo from "@/assets/club-logo.png";
 
 const ITEMS_PER_PAGE = 6;
+
+// Club icons mapping
+const clubIcons: Record<string, string> = {
+  "Белшина": clubBelshina,
+  "БАТЭ": clubLogo,
+  "Динамо Минск": clubLogo,
+  "Шахтер": clubLogo,
+  "Неман": clubLogo,
+  "Славия": clubLogo,
+  "Торпедо": clubLogo,
+};
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
@@ -613,7 +626,7 @@ const TeamBuilder = () => {
         <div className="flex items-center gap-4">
           <span className="w-20">Игрок</span>
           <span className="w-8"></span>
-          <span>Клуб</span>
+          <span className="w-6"></span>
         </div>
         <div className="flex items-center gap-3 pr-10">
           <span>Очки</span>
@@ -628,12 +641,17 @@ const TeamBuilder = () => {
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2.5 flex items-center justify-between">
               <div 
-                className="flex items-center gap-4 cursor-pointer hover:opacity-80"
+                className="flex items-center gap-3 cursor-pointer hover:opacity-80"
                 onClick={() => setSelectedPlayerForCard(player.id)}
               >
                 <span className="text-foreground font-medium">{player.name}</span>
                 <span className="text-muted-foreground text-sm">{player.position}</span>
-                <span className="text-muted-foreground text-sm">{player.team}</span>
+                <img 
+                  src={clubIcons[player.team] || clubLogo} 
+                  alt={player.team} 
+                  className="w-6 h-6 object-contain"
+                  title={player.team}
+                />
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1">
