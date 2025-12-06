@@ -742,11 +742,11 @@ const TeamBuilder = () => {
         <div className="flex justify-between mb-4">
           <div>
             <span className="text-muted-foreground text-sm">Стоимость команды</span>
-            <p className="text-foreground text-3xl font-bold">{currentTeamCost}</p>
+            <p className="text-foreground text-3xl font-bold">{currentTeamCost.toFixed(1)}</p>
           </div>
           <div className="text-right">
             <span className="text-muted-foreground text-sm">Баланс</span>
-            <p className="text-foreground text-3xl font-bold">{currentBalance}</p>
+            <p className="text-foreground text-3xl font-bold">{currentBalance.toFixed(1)}</p>
           </div>
         </div>
         <Button
