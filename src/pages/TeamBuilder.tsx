@@ -17,7 +17,7 @@ import {
   Check,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
@@ -44,6 +44,37 @@ const TeamBuilder = () => {
   const [teamName, setTeamName] = useState("Lucky Team");
   const [isEditingTeamName, setIsEditingTeamName] = useState(false);
   const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
+
+  // Deadline countdown
+  const deadlineDate = new Date("2025-04-04T19:00:00");
+  const tournamentStartDate = new Date("2025-03-28T19:00:00"); // Tournament start (7 days before deadline)
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = deadlineDate.getTime() - now.getTime();
+      const totalDuration = deadlineDate.getTime() - tournamentStartDate.getTime();
+      const elapsed = now.getTime() - tournamentStartDate.getTime();
+      
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((difference / (1000 * 60)) % 60);
+        const seconds = Math.floor((difference / 1000) % 60);
+        const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+        
+        setTimeLeft({ days, hours, minutes, seconds, progress });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 100 });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
 
   const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
@@ -409,7 +440,19 @@ const TeamBuilder = () => {
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Дедлайн: 04.04 в 19:00</span>
-          <span className="text-foreground">3 дня 08:36:53</span>
+          <span className="text-foreground">
+            {timeLeft.days} дн. {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
+          </span>
+        </div>
+      </div>
+
+      {/* Deadline Progress Bar */}
+      <div className="px-4 mt-4">
+        <div className="w-full h-2 bg-card rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-primary rounded-full transition-all duration-300"
+            style={{ width: `${timeLeft.progress}%` }}
+          />
         </div>
       </div>
 
@@ -439,16 +482,6 @@ const TeamBuilder = () => {
 
       {activeTab === "formation" && (
         <>
-          {/* Deadline Progress Bar */}
-          <div className="px-4 mt-6">
-            <div className="w-full h-2 bg-card rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-primary rounded-full transition-all duration-300"
-                style={{ width: `${Math.min(100, Math.max(0, ((7 - 3) / 7) * 100))}%` }}
-              />
-            </div>
-          </div>
-
           {/* Football Field */}
           <div className="px-4 mt-4">
             <FormationField 
