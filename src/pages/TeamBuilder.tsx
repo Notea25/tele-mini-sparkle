@@ -439,8 +439,18 @@ const TeamBuilder = () => {
 
       {activeTab === "formation" && (
         <>
-          {/* Football Field */}
+          {/* Deadline Progress Bar */}
           <div className="px-4 mt-6">
+            <div className="w-full h-2 bg-card rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-primary rounded-full transition-all duration-300"
+                style={{ width: `${Math.min(100, Math.max(0, ((7 - 3) / 7) * 100))}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Football Field */}
+          <div className="px-4 mt-4">
             <FormationField 
               selectedPlayers={selectedPlayersData} 
               onRemovePlayer={(id) => togglePlayer(id)}
