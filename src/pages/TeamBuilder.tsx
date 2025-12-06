@@ -622,15 +622,16 @@ const TeamBuilder = () => {
       </div>
 
       {/* Players List Header */}
-      <div className="px-4 mt-6 flex items-center justify-between text-sm text-muted-foreground">
-        <div className="flex items-center gap-4">
-          <span className="w-20">Игрок</span>
-          <span className="w-8"></span>
-          <span className="w-6"></span>
+      <div className="px-4 mt-6 grid grid-cols-[1fr_auto] items-center text-sm text-muted-foreground">
+        <div className="grid grid-cols-[100px_40px_24px] gap-3 items-center">
+          <span>Игрок</span>
+          <span></span>
+          <span></span>
         </div>
-        <div className="flex items-center gap-3 pr-10">
+        <div className="grid grid-cols-[50px_50px_32px] gap-3 items-center text-right">
           <span>Очки</span>
           <span>Цена</span>
+          <span></span>
         </div>
       </div>
 
@@ -639,12 +640,12 @@ const TeamBuilder = () => {
         {paginatedPlayers.map((player) => {
           const isSelected = selectedPlayers.includes(player.id);
           return (
-            <div key={player.id} className="bg-card rounded-full px-4 py-2.5 flex items-center justify-between">
+            <div key={player.id} className="bg-card rounded-full px-4 py-2.5 grid grid-cols-[1fr_auto] items-center">
               <div 
-                className="flex items-center gap-3 cursor-pointer hover:opacity-80"
+                className="grid grid-cols-[100px_40px_24px] gap-3 items-center cursor-pointer hover:opacity-80"
                 onClick={() => setSelectedPlayerForCard(player.id)}
               >
-                <span className="text-foreground font-medium">{player.name}</span>
+                <span className="text-foreground font-medium truncate">{player.name}</span>
                 <span className="text-muted-foreground text-sm">{player.position}</span>
                 <img 
                   src={clubIcons[player.team] || clubLogo} 
@@ -653,12 +654,12 @@ const TeamBuilder = () => {
                   title={player.team}
                 />
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
+              <div className="grid grid-cols-[50px_50px_32px] gap-3 items-center">
+                <div className="flex items-center justify-end gap-1">
                   <span className="text-orange-500">🔥</span>
                   <span className="text-foreground font-medium">{player.points}</span>
                 </div>
-                <span className="text-foreground font-medium">{player.price}</span>
+                <span className="text-foreground font-medium text-right">{player.price}</span>
                 <Button
                   size="icon"
                   onClick={() => togglePlayer(player.id)}
