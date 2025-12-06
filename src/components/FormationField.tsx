@@ -154,7 +154,7 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
             ) : (
               // Empty slot
               <div 
-                className="flex flex-col items-center cursor-pointer hover:opacity-80"
+                className="relative cursor-pointer hover:opacity-80"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
                 <img
@@ -162,7 +162,7 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
                   alt="Player"
                   className="w-10 h-10 sm:w-12 sm:h-12"
                 />
-                <span className="text-white text-xs font-bold mt-0.5 drop-shadow-md">
+                <span className="absolute inset-0 flex items-center justify-center text-[#1a1a2e] text-xs font-bold">
                   {slot.position}
                 </span>
               </div>
