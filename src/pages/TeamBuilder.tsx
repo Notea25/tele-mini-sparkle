@@ -336,7 +336,7 @@ const TeamBuilder = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-primary hover:text-primary/80"
+                className="h-8 w-8 text-primary hover:text-primary/80 hover:bg-primary/10"
                 onClick={() => {
                   setTeamName(editedTeamName || "Lucky Team");
                   setIsEditingTeamName(false);
