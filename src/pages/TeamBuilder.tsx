@@ -641,16 +641,18 @@ const TeamBuilder = () => {
           const isSelected = selectedPlayers.includes(player.id);
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2.5 grid grid-cols-[1fr_auto] items-center">
-              <div 
-                className="grid grid-cols-[100px_40px_24px] gap-1.5 items-center cursor-pointer hover:opacity-80"
-                onClick={() => setSelectedPlayerForCard(player.id)}
-              >
-                <span className="text-foreground font-medium truncate">{player.name}</span>
-                <span className="text-muted-foreground text-sm">{player.position}</span>
+              <div className="grid grid-cols-[100px_40px_24px] gap-1.5 items-center">
+                <span 
+                  className="text-foreground font-medium truncate cursor-pointer hover:opacity-80"
+                  onClick={() => setSelectedPlayerForCard(player.id)}
+                >
+                  {player.name}
+                </span>
+                <span className="text-muted-foreground text-sm pointer-events-none">{player.position}</span>
                 <img 
                   src={clubIcons[player.team] || clubLogo} 
                   alt={player.team} 
-                  className="w-6 h-6 object-contain"
+                  className="w-6 h-6 object-contain pointer-events-none"
                   title={player.team}
                 />
               </div>
