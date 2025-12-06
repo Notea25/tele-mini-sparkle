@@ -17,7 +17,7 @@ import {
   Check,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
@@ -28,6 +28,7 @@ const ITEMS_PER_PAGE = 6;
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
+  const playerListRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
@@ -177,6 +178,23 @@ const TeamBuilder = () => {
     setPriceTo(10);
     setActiveFilter("Все");
     setCurrentPage(1);
+  };
+
+  const positionToFilter: Record<string, string> = {
+    "ВР": "Вратари",
+    "ЗЩ": "Защитники",
+    "ПЗ": "Полузащитники",
+    "НП": "Нападающие",
+  };
+
+  const handleEmptySlotClick = (position: string) => {
+    const filterName = positionToFilter[position] || "Все";
+    setActiveFilter(filterName);
+    setCurrentPage(1);
+    
+    setTimeout(() => {
+      playerListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
   const BUDGET = 100;
@@ -398,6 +416,7 @@ const TeamBuilder = () => {
               selectedPlayers={selectedPlayersData} 
               onRemovePlayer={(id) => togglePlayer(id)}
               onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
+              onEmptySlotClick={handleEmptySlotClick}
             />
           </div>
 
@@ -487,7 +506,7 @@ const TeamBuilder = () => {
       )}
 
       {/* Position Filters */}
-      <div className="px-4 mt-6 flex gap-2 overflow-x-auto pb-2">
+      <div ref={playerListRef} className="px-4 mt-6 flex gap-2 overflow-x-auto pb-2">
         {filters.map((filter) => (
           <Button
             key={filter}

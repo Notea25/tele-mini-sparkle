@@ -22,9 +22,10 @@ interface FormationFieldProps {
   selectedPlayers?: PlayerData[];
   onRemovePlayer?: (playerId: number) => void;
   onPlayerClick?: (player: PlayerData) => void;
+  onEmptySlotClick?: (position: string) => void;
 }
 
-const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick }: FormationFieldProps) => {
+const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, onEmptySlotClick }: FormationFieldProps) => {
   // Formation: 2 ВР (goalkeepers), 5 ЗЩ (defenders), 5 ПЗ (midfielders), 3 НП (forwards)
   const formation: FormationPosition[] = [
     // Row 1 - Goalkeepers (top)
@@ -152,7 +153,10 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick }:
               </div>
             ) : (
               // Empty slot
-              <>
+              <div 
+                className="flex flex-col items-center cursor-pointer hover:opacity-80"
+                onClick={() => onEmptySlotClick?.(slot.position)}
+              >
                 <img
                   src={playerJerseyWhite}
                   alt="Player"
@@ -161,7 +165,7 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick }:
                 <span className="text-white text-xs font-bold mt-0.5 drop-shadow-md">
                   {slot.position}
                 </span>
-              </>
+              </div>
             )}
           </div>
         );
