@@ -320,7 +320,7 @@ const TeamBuilder = () => {
               <Input
                 value={editedTeamName}
                 onChange={(e) => setEditedTeamName(e.target.value)}
-                className="text-2xl font-bold bg-card border-border text-foreground h-10 w-auto"
+                className="text-2xl font-bold bg-card border-border text-foreground h-10 w-36"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -333,17 +333,15 @@ const TeamBuilder = () => {
                   }
                 }}
               />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-primary hover:text-primary/80 hover:bg-primary/10"
+              <button
+                className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"
                 onClick={() => {
                   setTeamName(editedTeamName || "Lucky Team");
                   setIsEditingTeamName(false);
                 }}
               >
-                <Check className="w-5 h-5" />
-              </Button>
+                <Check className="w-5 h-5 text-primary-foreground" />
+              </button>
             </div>
           ) : (
             <>
