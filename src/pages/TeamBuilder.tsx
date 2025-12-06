@@ -13,6 +13,8 @@ import {
   TrendingDown,
   Minus,
   ArrowLeft,
+  Pencil,
+  Check,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -38,6 +40,9 @@ const TeamBuilder = () => {
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
+  const [teamName, setTeamName] = useState("Lucky Team");
+  const [isEditingTeamName, setIsEditingTeamName] = useState(false);
+  const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
 
   const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
@@ -306,10 +311,57 @@ const TeamBuilder = () => {
             <span>•</span>
             <span>Беларусь</span>
             <span>•</span>
-            <span className="text-primary">Lucky Team</span>
+            <span className="text-primary">{teamName}</span>
           </div>
         </div>
-        <h1 className="text-foreground text-3xl font-bold mb-2">Lucky Team</h1>
+        <div className="flex items-center gap-3 mb-2">
+          {isEditingTeamName ? (
+            <div className="flex items-center gap-2">
+              <Input
+                value={editedTeamName}
+                onChange={(e) => setEditedTeamName(e.target.value)}
+                className="text-2xl font-bold bg-card border-border text-foreground h-10 w-auto"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setTeamName(editedTeamName || "Lucky Team");
+                    setIsEditingTeamName(false);
+                  }
+                  if (e.key === "Escape") {
+                    setEditedTeamName(teamName);
+                    setIsEditingTeamName(false);
+                  }
+                }}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-primary hover:text-primary/80"
+                onClick={() => {
+                  setTeamName(editedTeamName || "Lucky Team");
+                  setIsEditingTeamName(false);
+                }}
+              >
+                <Check className="w-5 h-5" />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                onClick={() => {
+                  setEditedTeamName(teamName);
+                  setIsEditingTeamName(true);
+                }}
+              >
+                <Pencil className="w-4 h-4" />
+              </Button>
+            </>
+          )}
+        </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Дедлайн: 04.04 в 19:00</span>
           <span className="text-foreground">3 дня 08:36:53</span>
