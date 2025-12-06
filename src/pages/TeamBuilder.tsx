@@ -47,7 +47,7 @@ const TeamBuilder = () => {
 
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");
-  const tournamentStartDate = new Date("2025-12-07T19:00:00"); // Tournament start (7 days before deadline)
+  const tournamentStartDate = new Date("2025-12-04T19:00:00"); // Tournament start (10 days before deadline)
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
 
   useEffect(() => {
