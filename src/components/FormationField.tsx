@@ -10,6 +10,7 @@ interface PlayerData {
   position: string;
   points: number;
   price?: number;
+  slotIndex?: number;
 }
 
 interface FormationPosition {
@@ -79,15 +80,17 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
   };
 
   // Get assigned player for a formation slot
-  const getAssignedPlayer = (formationPos: FormationPosition, slotIndex: number) => {
-    // Filter selected players by position
-    const positionPlayers = selectedPlayers.filter(p => p.position === formationPos.position);
-    // Get the player for this specific slot based on slot index within the position
+  const getAssignedPlayer = (formationPos: FormationPosition, globalSlotIndex: number) => {
+    // Find the slot index within the position
     const slotsForPosition = formation.filter(f => f.position === formationPos.position);
     const slotPositionIndex = slotsForPosition.findIndex(
       s => s.row === formationPos.row && s.col === formationPos.col
     );
-    return positionPlayers[slotPositionIndex];
+    
+    // Find player assigned to this specific slot
+    return selectedPlayers.find(p => 
+      p.position === formationPos.position && p.slotIndex === slotPositionIndex
+    );
   };
 
   return (
@@ -119,9 +122,9 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
                 {onRemovePlayer && (
                   <button
                     onClick={() => onRemovePlayer(assignedPlayer.id)}
-                    className="absolute -top-1 -right-3 z-50 w-6 h-6 bg-primary rounded-full flex items-center justify-center hover:bg-primary/80 transition-colors"
+                    className="absolute -top-1 -right-3 z-50 w-6 h-6 bg-muted rounded-full flex items-center justify-center hover:bg-muted/80 transition-colors"
                   >
-                    <X className="w-4 h-4 text-primary-foreground" />
+                    <X className="w-4 h-4 text-muted-foreground" />
                   </button>
                 )}
                 

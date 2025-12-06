@@ -44,7 +44,7 @@ const TeamBuilder = () => {
   const playerListRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
-  const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
+  const [selectedPlayers, setSelectedPlayers] = useState<{id: number; slotIndex: number}[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
@@ -137,7 +137,11 @@ const TeamBuilder = () => {
     { id: 29, name: "Николаев", team: "БАТЭ", position: "НП", points: 70, price: 7.2 },
   ];
 
-  const selectedPlayersData = players.filter((p) => selectedPlayers.includes(p.id));
+  const selectedPlayerIds = selectedPlayers.map(sp => sp.id);
+  const selectedPlayersData = players.filter((p) => selectedPlayerIds.includes(p.id)).map(p => {
+    const slotInfo = selectedPlayers.find(sp => sp.id === p.id);
+    return { ...p, slotIndex: slotInfo?.slotIndex };
+  });
 
   // Filter players based on activeFilter, search query, team, and points
   const filteredPlayers = players.filter((player) => {
@@ -246,9 +250,9 @@ const TeamBuilder = () => {
   const currentTeamCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
   const currentBalance = BUDGET - currentTeamCost;
 
-  const getPlayersCountByClub = (playerIds: number[], clubName: string) => {
-    return playerIds.filter((id) => {
-      const p = players.find((player) => player.id === id);
+  const getPlayersCountByClub = (playerSelections: {id: number; slotIndex: number}[], clubName: string) => {
+    return playerSelections.filter((sel) => {
+      const p = players.find((player) => player.id === sel.id);
       return p?.team === clubName;
     }).length;
   };
@@ -261,22 +265,38 @@ const TeamBuilder = () => {
     "НП": 3,
   };
 
-  const getPlayersCountByPosition = (playerIds: number[], position: string) => {
-    return playerIds.filter((id) => {
-      const p = players.find((player) => player.id === id);
+  const getPlayersCountByPosition = (playerSelections: {id: number; slotIndex: number}[], position: string) => {
+    return playerSelections.filter((sel) => {
+      const p = players.find((player) => player.id === sel.id);
       return p?.position === position;
     }).length;
+  };
+
+  const getNextAvailableSlot = (position: string): number => {
+    const maxSlots = POSITION_SLOTS[position] || 0;
+    const usedSlots = selectedPlayers
+      .filter(sp => {
+        const p = players.find(player => player.id === sp.id);
+        return p?.position === position;
+      })
+      .map(sp => sp.slotIndex);
+    
+    for (let i = 0; i < maxSlots; i++) {
+      if (!usedSlots.includes(i)) return i;
+    }
+    return -1;
   };
 
   const togglePlayer = (playerId: number) => {
     const player = players.find((p) => p.id === playerId);
     if (!player) return;
 
-    if (selectedPlayers.includes(playerId)) {
+    const existingSelection = selectedPlayers.find(sp => sp.id === playerId);
+    if (existingSelection) {
       // Remove player - also clear captain/vice-captain if needed
       if (captain === playerId) setCaptain(null);
       if (viceCaptain === playerId) setViceCaptain(null);
-      setSelectedPlayers((prev) => prev.filter((id) => id !== playerId));
+      setSelectedPlayers((prev) => prev.filter((sp) => sp.id !== playerId));
     } else {
       // Check available position slots
       const positionCount = getPlayersCountByPosition(selectedPlayers, player.position);
@@ -296,7 +316,8 @@ const TeamBuilder = () => {
         toast.error(`Нельзя добавить больше ${MAX_PLAYERS_PER_CLUB} игроков из одного клуба`);
         return;
       }
-      setSelectedPlayers((prev) => [...prev, playerId]);
+      const slotIndex = getNextAvailableSlot(player.position);
+      setSelectedPlayers((prev) => [...prev, { id: playerId, slotIndex }]);
     }
   };
 
@@ -311,7 +332,7 @@ const TeamBuilder = () => {
     const formation: Record<string, number> = { ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3 };
     
     // Start with currently selected players
-    const selectedIds = [...selectedPlayers];
+    const newSelectedPlayers = [...selectedPlayers];
     let totalCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
     
     // Count existing club selections
@@ -320,10 +341,14 @@ const TeamBuilder = () => {
       clubCounts[p.team] = (clubCounts[p.team] || 0) + 1;
     });
     
-    // Count existing position selections
+    // Count existing position selections and used slots
     const positionCounts: Record<string, number> = {};
+    const usedSlotsByPosition: Record<string, number[]> = { ВР: [], ЗЩ: [], ПЗ: [], НП: [] };
     selectedPlayersData.forEach(p => {
       positionCounts[p.position] = (positionCounts[p.position] || 0) + 1;
+      if (p.slotIndex !== undefined) {
+        usedSlotsByPosition[p.position].push(p.slotIndex);
+      }
     });
 
     // Shuffle function for randomness
@@ -336,6 +361,8 @@ const TeamBuilder = () => {
       return shuffled;
     };
 
+    const selectedIdsSet = new Set(newSelectedPlayers.map(sp => sp.id));
+
     // Fill remaining slots for each position
     Object.entries(formation).forEach(([position, maxCount]) => {
       const currentCount = positionCounts[position] || 0;
@@ -345,7 +372,7 @@ const TeamBuilder = () => {
       
       // Get available players for this position (not already selected), shuffled randomly
       const availablePlayers = shuffleArray(
-        players.filter((p) => p.position === position && !selectedIds.includes(p.id))
+        players.filter((p) => p.position === position && !selectedIdsSet.has(p.id))
       );
       
       let added = 0;
@@ -354,7 +381,14 @@ const TeamBuilder = () => {
         
         const currentClubCount = clubCounts[player.team] || 0;
         if (totalCost + player.price <= BUDGET && currentClubCount < MAX_PLAYERS_PER_CLUB) {
-          selectedIds.push(player.id);
+          // Find next available slot for this position
+          let slotIndex = 0;
+          while (usedSlotsByPosition[position].includes(slotIndex)) {
+            slotIndex++;
+          }
+          newSelectedPlayers.push({ id: player.id, slotIndex });
+          usedSlotsByPosition[position].push(slotIndex);
+          selectedIdsSet.add(player.id);
           totalCost += player.price;
           clubCounts[player.team] = currentClubCount + 1;
           added++;
@@ -362,7 +396,7 @@ const TeamBuilder = () => {
       }
     });
 
-    setSelectedPlayers(selectedIds);
+    setSelectedPlayers(newSelectedPlayers);
   };
 
   const leaderboard = Array(10)
@@ -638,7 +672,7 @@ const TeamBuilder = () => {
       {/* Players List */}
       <div className="px-4 mt-3 space-y-2">
         {paginatedPlayers.map((player) => {
-          const isSelected = selectedPlayers.includes(player.id);
+          const isSelected = selectedPlayerIds.includes(player.id);
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2.5 grid grid-cols-[1fr_auto] items-center">
               <div className="grid grid-cols-[100px_40px_24px] gap-1.5 items-center">
@@ -857,7 +891,7 @@ const TeamBuilder = () => {
         player={players.find(p => p.id === selectedPlayerForCard) || null}
         isOpen={selectedPlayerForCard !== null}
         onClose={() => setSelectedPlayerForCard(null)}
-        isSelected={selectedPlayerForCard !== null && selectedPlayers.includes(selectedPlayerForCard)}
+        isSelected={selectedPlayerForCard !== null && selectedPlayerIds.includes(selectedPlayerForCard)}
         onToggleSelect={togglePlayer}
         isCaptain={selectedPlayerForCard === captain}
         isViceCaptain={selectedPlayerForCard === viceCaptain}
