@@ -46,8 +46,8 @@ const TeamBuilder = () => {
   const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
 
   // Deadline countdown
-  const deadlineDate = new Date("2025-04-04T19:00:00");
-  const tournamentStartDate = new Date("2025-03-28T19:00:00"); // Tournament start (7 days before deadline)
+  const deadlineDate = new Date("2025-12-14T19:00:00");
+  const tournamentStartDate = new Date("2025-12-07T19:00:00"); // Tournament start (7 days before deadline)
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
 
   useEffect(() => {
@@ -439,7 +439,7 @@ const TeamBuilder = () => {
           )}
         </div>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Дедлайн: 04.04 в 19:00</span>
+          <span className="text-muted-foreground">Дедлайн: 14.12.2025 в 19:00</span>
           <span className="text-foreground">
             {timeLeft.days} дн. {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
           </span>
