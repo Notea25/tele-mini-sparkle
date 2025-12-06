@@ -320,7 +320,7 @@ const TeamBuilder = () => {
               <Input
                 value={editedTeamName}
                 onChange={(e) => setEditedTeamName(e.target.value)}
-                className="text-2xl font-bold bg-card border-border text-foreground h-10 w-52"
+                className="text-2xl font-bold bg-card border-border text-foreground h-10 w-80"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
