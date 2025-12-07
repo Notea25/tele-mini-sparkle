@@ -115,32 +115,6 @@ const PromoBannerSlider = () => {
           </div>
         </div>
       </div>
-
-      {/* <div className="flex items-center justify-center mt-4 space-x-4 md:hidden">
-        <button
-          onClick={prevSlide}
-          className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white w-10 h-10 rounded-full shadow"
-          aria-label="Предыдущий слайд"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-
-        <div className="text-sm text-gray-600 font-medium">
-          {currentSlide + 1} / {images.length}
-        </div>
-
-        <button
-          onClick={nextSlide}
-          className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white w-10 h-10 rounded-full shadow"
-          aria-label="Следующий слайд"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div> */}
     </div>
   );
 };
