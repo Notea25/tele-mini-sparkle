@@ -607,10 +607,10 @@ const TeamBuilder = () => {
             key={filter}
             onClick={() => handleFilterChange(filter)}
             size="sm"
-            className={`flex-shrink-0 ${
+            className={`flex-shrink-0 rounded-full px-5 ${
               activeFilter === filter
-                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent"
+                : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
             }`}
           >
             {filter}
