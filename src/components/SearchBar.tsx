@@ -1,14 +1,43 @@
+// import { Search } from "lucide-react";
+// import { Input } from "@/components/ui/input";
+
+// const SearchBar = () => {
+//   return (
+//     <div className="px-4 mt-4">
+//       <div className="relative">
+//         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+//         <Input
+//           placeholder="Поиск"
+//           className="pl-10 bg-secondary border-border text-foreground placeholder:text-muted-foreground"
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default SearchBar;
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 const SearchBar = () => {
+  const [isActive, setIsActive] = useState(false);
+
   return (
     <div className="px-4 mt-4">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Search
+          className={`absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors duration-200 ${
+            isActive ? "text-white" : "text-[#4B485F]"
+          }`}
+        />
         <Input
           placeholder="Поиск"
-          className="pl-10 bg-secondary border-border text-foreground placeholder:text-muted-foreground"
+          className={`pl-11 bg-secondary border-border text-[12px] h-10 transition-colors duration-200 ${
+            isActive ? "text-white placeholder:text-white/70" : "text-foreground placeholder:text-[#4B485F]"
+          }`}
+          onFocus={() => setIsActive(true)}
+          onBlur={() => setIsActive(false)}
         />
       </div>
     </div>
