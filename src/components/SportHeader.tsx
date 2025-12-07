@@ -48,15 +48,15 @@ const SportHeader = () => {
   return (
     <header className={`bg-background sticky top-0 z-50 transition-opacity duration-300 ${isScrolled ? 'opacity-30' : 'opacity-100'}`}>
       <div className="flex items-center justify-between px-4 pt-3 pb-4">
-        <button 
+        {/* <button 
           onClick={handleClose}
           className="flex items-center justify-center gap-1 w-[79px] h-[28px] bg-secondary/50 hover:bg-secondary rounded-full transition-colors"
         >
           <X className="w-5 h-5 text-foreground" />
           <span className="text-foreground font-medium text-sm">Close</span>
-        </button>
+        </button> */}
 
-        <div className="flex items-center bg-secondary/50 rounded-full overflow-hidden w-[74px] h-[28px]">
+        {/* <div className="flex items-center bg-secondary/50 rounded-full overflow-hidden w-[74px] h-[28px]">
           <button 
             onClick={handleClose}
             className="flex-1 flex items-center justify-center hover:bg-secondary transition-colors h-full"
@@ -94,7 +94,7 @@ const SportHeader = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </div>
+      </div> */}
 
       <div className="flex justify-between items-center px-4 pb-4">
         <button onClick={handleRefresh}>
