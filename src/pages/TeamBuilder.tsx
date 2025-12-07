@@ -930,15 +930,15 @@ const TeamBuilder = () => {
       </div>
 
       {/* Team Cost & Balance - Sticky */}
-      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-40">
-        <div className="flex justify-between mb-4">
+      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-2 z-40">
+        <div className="flex justify-between mb-2">
           <div>
-            <span className="text-muted-foreground text-sm">Стоимость команды</span>
-            <p className="text-foreground text-3xl font-bold">{currentTeamCost.toFixed(1)}</p>
+            <span className="text-muted-foreground text-xs">Стоимость команды</span>
+            <p className="text-foreground text-base font-bold">{currentTeamCost.toFixed(1)}</p>
           </div>
           <div className="text-right">
-            <span className="text-muted-foreground text-sm">Баланс</span>
-            <p className="text-foreground text-3xl font-bold">{currentBalance.toFixed(1)}</p>
+            <span className="text-muted-foreground text-xs">Баланс</span>
+            <p className="text-foreground text-base font-bold">{currentBalance.toFixed(1)}</p>
           </div>
         </div>
         
