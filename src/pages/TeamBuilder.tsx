@@ -583,14 +583,14 @@ const TeamBuilder = () => {
           </div>
 
           {/* Teams Filter */}
-          <div className="px-4 mt-4">
+          <div className="px-4 mt-4 relative z-20">
             <Select value={selectedTeam} onValueChange={handleTeamChange}>
-              <SelectTrigger className="w-full bg-card border-border text-foreground">
+              <SelectTrigger className="w-full bg-card border-border text-foreground cursor-pointer">
                 <SelectValue placeholder="Команды" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border z-50">
                 {teams.map((team) => (
-                  <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary">
+                  <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
                     {team === "Все команды" ? "Команды" : team}
                   </SelectItem>
                 ))}
