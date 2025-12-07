@@ -62,55 +62,30 @@ const TeamListView = ({
         return (
           <div
             key={`${slot.position}-${slot.slotIndex}`}
-            className="bg-card rounded-xl p-3 flex items-center gap-3"
+            className="bg-card rounded-xl px-3 py-2 flex items-center gap-2"
           >
-            {/* Position Badge */}
-            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-              <span className="text-muted-foreground text-xs font-medium">{slot.position}</span>
-            </div>
-
-            {/* Player Info or Empty Slot */}
-            <div className="flex-1 min-w-0">
-              {isOccupied && slot.player ? (
+            {isOccupied && slot.player ? (
+              <>
                 <div 
-                  className="cursor-pointer hover:opacity-80"
+                  className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                   onClick={() => onPlayerClick?.(slot.player!)}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="text-foreground font-medium truncate">{slot.player.name}</span>
-                    {clubIcons[slot.player.team] && (
-                      <img 
-                        src={clubIcons[slot.player.team]} 
-                        alt={slot.player.team}
-                        className="w-4 h-4 object-contain"
-                      />
-                    )}
-                  </div>
-                  {slot.player.price && (
-                    <span className="text-primary text-xs font-medium">
-                      {slot.player.price.toFixed(1).replace('.', ',')} млн
-                    </span>
+                  <span className="text-muted-foreground text-xs flex-shrink-0">{slot.position}</span>
+                  <span className="text-foreground font-medium truncate">{slot.player.name}</span>
+                  {clubIcons[slot.player.team] && (
+                    <img 
+                      src={clubIcons[slot.player.team]} 
+                      alt={slot.player.team}
+                      className="w-4 h-4 object-contain flex-shrink-0"
+                    />
                   )}
-                </div>
-              ) : (
-                <div 
-                  className="cursor-pointer hover:opacity-80"
-                  onClick={() => onEmptySlotClick?.(slot.position)}
-                >
-                  <span className="text-muted-foreground text-sm">
-                    {slot.label} {slot.slotIndex + 1}
+                  <div className="flex items-center gap-1 text-primary flex-shrink-0">
+                    <Flame className="w-3 h-3" />
+                    <span className="text-xs font-medium">{slot.player.points}</span>
+                  </div>
+                  <span className="text-muted-foreground text-xs flex-shrink-0">
+                    {slot.player.price?.toFixed(1).replace('.', ',')}
                   </span>
-                  <p className="text-muted-foreground/60 text-xs">Нажмите чтобы выбрать</p>
-                </div>
-              )}
-            </div>
-
-            {/* Points or Add Button */}
-            {isOccupied && slot.player ? (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 text-primary">
-                  <Flame className="w-4 h-4" />
-                  <span className="font-medium">{slot.player.points}</span>
                 </div>
                 {onRemovePlayer && (
                   <button
@@ -118,19 +93,28 @@ const TeamListView = ({
                       e.stopPropagation();
                       onRemovePlayer(slot.player!.id);
                     }}
-                    className="w-8 h-8 rounded-full bg-destructive/20 flex items-center justify-center hover:bg-destructive/30 transition-colors"
+                    className="w-6 h-6 rounded-full bg-destructive/20 flex items-center justify-center hover:bg-destructive/30 transition-colors flex-shrink-0"
                   >
-                    <X className="w-4 h-4 text-destructive" />
+                    <X className="w-3 h-3 text-destructive" />
                   </button>
                 )}
-              </div>
+              </>
             ) : (
-              <button
-                onClick={() => onEmptySlotClick?.(slot.position)}
-                className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-              >
-                <Plus className="w-4 h-4 text-primary-foreground" />
-              </button>
+              <>
+                <div 
+                  className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80"
+                  onClick={() => onEmptySlotClick?.(slot.position)}
+                >
+                  <span className="text-muted-foreground text-xs">{slot.position}</span>
+                  <span className="text-muted-foreground text-sm">{slot.label}</span>
+                </div>
+                <button
+                  onClick={() => onEmptySlotClick?.(slot.position)}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
+                >
+                  <Plus className="w-3 h-3 text-primary-foreground" />
+                </button>
+              </>
             )}
           </div>
         );
