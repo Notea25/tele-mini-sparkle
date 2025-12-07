@@ -1,9 +1,9 @@
-import bannerBg from "@/assets/beterra-banner.png";
+import bannerBg from "@/assets/promo-banner.jpg";
 
 const PromoBanner = () => {
   return (
-    <div className="mx-4 mt-4 rounded-xl overflow-hidden border border-border">
-      <img src={bannerBg} alt="Beterra Cup" className="w-full h-full object-cover rounded-xl" />
+    <div className="mx-4 mt-4 rounded-xl overflow-hidden">
+      <img src={bannerBg} alt="Promo Banner" className="w-full h-auto object-cover" />
     </div>
   );
 };
