@@ -116,7 +116,7 @@ const PromoBannerSlider = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-center mt-4 space-x-4 md:hidden">
+      {/* <div className="flex items-center justify-center mt-4 space-x-4 md:hidden">
         <button
           onClick={prevSlide}
           className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white w-10 h-10 rounded-full shadow"
@@ -140,7 +140,7 @@ const PromoBannerSlider = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
