@@ -539,36 +539,8 @@ const TeamBuilder = () => {
             />
           </div>
 
-          {/* Team Filters */}
-          <div className="px-4 mt-6 flex gap-2">
-            <Select value={selectedTeam} onValueChange={handleTeamChange}>
-              <SelectTrigger className="flex-1 bg-card border-border text-foreground">
-                <SelectValue placeholder="Команды" />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border z-50">
-                {teams.map((team) => (
-                  <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary">
-                    {team}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedPoints} onValueChange={handlePointsChange}>
-              <SelectTrigger className="flex-1 bg-card border-border text-foreground">
-                <SelectValue placeholder="Очки" />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border z-50">
-                {pointsOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value} className="text-foreground hover:bg-secondary">
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Price Range */}
-          <div className="px-4 mt-4">
+          <div className="px-4 mt-6">
             <span className="text-foreground text-sm mb-3 block">Цена</span>
             <div className="flex gap-4">
               <div className="flex items-center gap-2">
@@ -610,16 +582,20 @@ const TeamBuilder = () => {
             </div>
           </div>
 
-          {/* Reset Filters Button */}
+          {/* Teams Filter */}
           <div className="px-4 mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleResetFilters}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Сбросить фильтры
-            </Button>
+            <Select value={selectedTeam} onValueChange={handleTeamChange}>
+              <SelectTrigger className="w-full bg-card border-border text-foreground">
+                <SelectValue placeholder="Команды" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border z-50">
+                {teams.map((team) => (
+                  <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary">
+                    {team === "Все команды" ? "Команды" : team}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </>
       )}
