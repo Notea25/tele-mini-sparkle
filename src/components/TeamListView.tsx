@@ -107,9 +107,9 @@ const TeamListView = ({
                       e.stopPropagation();
                       onRemovePlayer(slot.player!.id);
                     }}
-                    className="w-6 h-6 ml-2 rounded-full bg-destructive/20 flex items-center justify-center hover:bg-destructive/30 transition-colors flex-shrink-0"
+                    className="w-6 h-6 ml-2 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors flex-shrink-0"
                   >
-                    <X className="w-3 h-3 text-destructive" />
+                    <X className="w-3 h-3 text-muted-foreground" />
                   </button>
                 )}
               </>
