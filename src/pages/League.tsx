@@ -189,9 +189,10 @@ const League = () => {
           {tableData.map((row, idx) => (
             <div key={idx} className="flex items-center gap-2">
               <div
-                className={`flex-1 grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
+                className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
                   row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                 }`}
+                style={{ width: 'calc(100% - 24px)' }}
               >
                 <div className="col-span-2 flex items-center gap-1">
                   {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
@@ -207,7 +208,9 @@ const League = () => {
                 <span className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
                 <span className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.totalPoints.toLocaleString()}</span>
               </div>
-              {row.isUser && <span className="text-primary font-bold text-sm">Ты</span>}
+              <span className={`font-bold text-sm w-5 ${row.isUser ? "text-primary" : "text-transparent"}`}>
+                {row.isUser ? "Ты" : ""}
+              </span>
             </div>
           ))}
         </div>
