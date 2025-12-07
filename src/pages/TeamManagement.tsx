@@ -11,6 +11,11 @@ import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
 import flameIcon from "@/assets/flame-icon.png";
+import iconBench from "@/assets/icon-bench.png";
+import icon3x from "@/assets/icon-3x.png";
+import iconStar from "@/assets/icon-star.png";
+import iconFree from "@/assets/icon-free.png";
+import icon2x from "@/assets/icon-2x.png";
 
 // Club icons mapping
 const clubIcons: Record<string, string> = {
@@ -23,13 +28,13 @@ const clubIcons: Record<string, string> = {
   "Торпедо": clubLogo,
 };
 
-// Special chips data
+// Special chips data with icons
 const specialChips = [
-  { id: "bench", icon: "⬆️⬇️", label: "Скамейка +", sublabel: "Исп. 29 тур", active: false },
-  { id: "captain3x", icon: "3x", label: "3x Капитан", sublabel: "Подробнее", active: true },
-  { id: "transfers", icon: "⭐", label: "Трансферы +", sublabel: "Подробнее", active: true },
-  { id: "golden", icon: "FREE", label: "Золотой тур", sublabel: "Подробнее", active: true },
-  { id: "double", icon: "2x", label: "Двойная сила", sublabel: "Подробнее", active: true },
+  { id: "bench", icon: iconBench, label: "Скамейка +", sublabel: "Исп. 29 тур", active: false },
+  { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", active: true },
+  { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", active: true },
+  { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", active: true },
+  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", active: true },
 ];
 
 // Formation options
@@ -349,13 +354,9 @@ const TeamManagement = () => {
           {specialChips.map((chip) => (
             <div
               key={chip.id}
-              className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-16 rounded-xl border ${
-                chip.active 
-                  ? "border-primary bg-primary/10" 
-                  : "border-border bg-card"
-              }`}
+              className="flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-card"
             >
-              <span className="text-lg mb-0.5">{chip.icon}</span>
+              <img src={chip.icon} alt={chip.label} className="w-8 h-8 object-contain mb-1" />
               <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
               <span className={`text-[8px] ${chip.active ? "text-primary" : "text-muted-foreground"}`}>
                 {chip.sublabel}
