@@ -81,7 +81,6 @@ const PromoBannerSlider = () => {
           ))}
         </div>
 
-        {/* Кнопки навигации */}
         <button
           onClick={prevSlide}
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 hover:opacity-100 focus:opacity-100 lg:opacity-70"
@@ -102,7 +101,6 @@ const PromoBannerSlider = () => {
           </svg>
         </button>
 
-        {/* Точки-индикаторы */}
         <div className="absolute bottom-4 left-0 right-0 flex justify-center">
           <div className="flex space-x-2">
             {images.map((_, index) => (
@@ -119,7 +117,6 @@ const PromoBannerSlider = () => {
         </div>
       </div>
 
-      {/* Мобильные контролы */}
       <div className="flex items-center justify-center mt-4 space-x-4 md:hidden">
         <button
           onClick={prevSlide}
