@@ -61,12 +61,6 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  html,
-  body {
-    background-color: hsl(0 0% 4%);
-    color: hsl(0 0% 98%);
-  }
-  
   body {
     @apply bg-background text-foreground;
   }
