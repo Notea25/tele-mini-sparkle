@@ -95,8 +95,10 @@ const League = () => {
         </div>
 
         {/* Current Tour Stats */}
-        <div className="text-center mb-4">
-          <span className="text-muted-foreground text-sm">29 тур</span>
+        <div className="flex items-center gap-4 mb-4">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
+          <span className="text-muted-foreground text-sm whitespace-nowrap">29 тур</span>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
         </div>
 
         <div className="grid grid-cols-3 gap-3 mb-6">
@@ -123,8 +125,10 @@ const League = () => {
         </div>
 
         {/* Next Tour */}
-        <div className="text-center mb-4">
-          <span className="text-muted-foreground text-sm">30 тур</span>
+        <div className="flex items-center gap-4 mb-4">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
+          <span className="text-muted-foreground text-sm whitespace-nowrap">30 тур</span>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
         </div>
 
         {/* Deadline */}
