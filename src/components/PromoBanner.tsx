@@ -1,17 +1,3 @@
-// import bannerBg1 from "@/assets/beterra-banner.png";
-// import bannerBg2 from "@/assets/beterra-banner.png";
-// import bannerBg3 from "@/assets/beterra-banner.png";
-
-// const PromoBanner = () => {
-//   return (
-//     <div className="mx-4 mt-4">
-//       <img src={bannerBg1} alt="Beterra Cup" className="w-full h-auto object-contain" />
-//     </div>
-//   );
-// };
-
-// export default PromoBanner;
-
 import { useState, useEffect, useCallback } from "react";
 
 import banner1 from "@/assets/beterra-banner.png";
@@ -129,6 +115,7 @@ const PromoBannerSlider = () => {
           </svg>
         </button>
 
+        {/* Исправленные точки - одинаковый размер */}
         <div className="absolute bottom-4 left-0 right-0 flex justify-center">
           <div className="flex space-x-2">
             {images.map((_, index) => (
@@ -139,10 +126,8 @@ const PromoBannerSlider = () => {
                   setIsAutoPlaying(false);
                   setTimeout(() => setIsAutoPlaying(true), 3000);
                 }}
-                className={`transition-all duration-300 ${
-                  index === currentSlide
-                    ? "w-8 h-2 bg-white rounded-full"
-                    : "w-2 h-2 bg-white/50 rounded-full hover:bg-white/70"
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === currentSlide ? "bg-white" : "bg-white/50 hover:bg-white/70"
                 }`}
                 aria-label={`Перейти к слайду ${index + 1}`}
               />
