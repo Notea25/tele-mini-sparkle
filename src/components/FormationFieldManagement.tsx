@@ -91,7 +91,7 @@ const FormationFieldManagement = ({
         <img
           src={playerJerseyTeam}
           alt={player.name}
-          className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
+          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
         />
         {/* Price and points tag */}
         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-0.5">
