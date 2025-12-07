@@ -17,8 +17,16 @@ const Index = () => {
       <SportHeader />
       <PromoBanner />
 
-      <div className="px-4 mt-6">
+      {/* <div className="px-4 mt-6">
         <h2 className="text-foreground text-2xl font-bold mb-4">Чемпионаты</h2>
+      </div> */}
+      <div className="px-4 mt-6">
+        <h2
+          className="text-foreground text-[28px] font-normal leading-[130%] tracking-normal mb-4"
+          style={{ fontFamily: "Unbounded, sans-serif" }}
+        >
+          Чемпионаты
+        </h2>
       </div>
 
       <SearchBar />
