@@ -177,38 +177,37 @@ const League = () => {
         <h2 className="text-2xl font-bold text-foreground mb-4">Турнирная таблица</h2>
 
         {/* Table header */}
-        <div className="grid grid-cols-12 gap-2 px-3 py-2 text-xs text-muted-foreground">
+        <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
           <span className="col-span-2">Позиция</span>
           <span className="col-span-4">Команда</span>
-          <span className="col-span-3 text-center">Очки / тур 29</span>
-          <span className="col-span-3 text-right">Всего очков</span>
+          <span className="col-span-3 text-center">Очки / тур<br/>29</span>
+          <span className="col-span-3 text-center">Всего очков</span>
         </div>
 
         {/* Table rows */}
         <div className="space-y-2">
           {tableData.map((row, idx) => (
-            <div
-              key={idx}
-              className={`grid grid-cols-12 gap-2 items-center px-3 py-3 rounded-full ${
-                row.isUser ? "bg-primary/20 border border-primary" : "bg-secondary/50"
-              }`}
-            >
-              <div className="col-span-2 flex items-center gap-1">
-                {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
-                {row.change === "down" && !row.isUser && <img src={arrowDownGreen} alt="down" className="w-3 h-3" />}
-                {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
-                {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                <span className="text-foreground font-medium">{row.position}</span>
-                {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
-                {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
-                {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
+            <div key={idx} className="flex items-center gap-2">
+              <div
+                className={`flex-1 grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
+                  row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
+                }`}
+              >
+                <div className="col-span-2 flex items-center gap-1">
+                  {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
+                  {row.change === "down" && !row.isUser && <img src={arrowDownGreen} alt="down" className="w-3 h-3" />}
+                  {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
+                  {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
+                  <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+                  {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
+                  {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
+                  {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
+                </div>
+                <span className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+                <span className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+                <span className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.totalPoints.toLocaleString()}</span>
               </div>
-              <span className="col-span-4 text-foreground font-medium truncate">{row.name}</span>
-              <span className="col-span-3 text-center text-foreground">{row.tourPoints}</span>
-              <div className="col-span-3 flex items-center justify-end gap-2">
-                <span className="text-foreground font-bold">{row.totalPoints.toLocaleString()}</span>
-                {row.isUser && <span className="text-primary font-bold">Ты</span>}
-              </div>
+              {row.isUser && <span className="text-primary font-bold text-sm">Ты</span>}
             </div>
           ))}
         </div>
