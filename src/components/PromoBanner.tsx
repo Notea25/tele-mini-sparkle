@@ -1,4 +1,4 @@
-import bannerBg from "@/assets/beterra-banner-bg.png";
+import bannerBg from "@/assets/beterra-banner.png";
 
 const PromoBanner = () => {
   return (
