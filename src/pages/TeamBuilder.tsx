@@ -966,34 +966,6 @@ const TeamBuilder = () => {
         </Button>
       </div>
 
-      {/* Leaderboard */}
-      <div className="px-4 mt-8">
-        <h2 className="text-foreground text-2xl font-bold mb-4">Топ-10 общей лиги</h2>
-        <Card className="bg-card/60 backdrop-blur-xl border-border/50">
-          <div className="divide-y divide-border">
-            {leaderboard.map((team) => (
-              <div key={team.rank} className="p-3 flex items-center justify-between">
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="flex items-center gap-2">
-                    {team.trend === "up" && <TrendingUp className="w-4 h-4 text-green-500" />}
-                    {team.trend === "down" && <TrendingDown className="w-4 h-4 text-red-500" />}
-                    {team.trend === "same" && <Minus className="w-4 h-4 text-muted-foreground" />}
-                    <span className={`font-bold ${team.rank <= 3 ? "text-primary" : "text-foreground"}`}>
-                      {team.rank}
-                    </span>
-                  </div>
-                  <span className="text-foreground font-semibold">🏆</span>
-                  <span className="text-foreground">{team.name}</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-muted-foreground text-sm">{team.games}</span>
-                  <span className="text-foreground font-bold">{team.points}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
       
       {/* Player Card Drawer */}
       <PlayerCard
@@ -1007,8 +979,6 @@ const TeamBuilder = () => {
         onSetCaptain={setCaptain}
         onSetViceCaptain={setViceCaptain}
       />
-      
-      <FooterNav />
     </div>
   );
 };
