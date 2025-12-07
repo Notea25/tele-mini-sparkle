@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, ChevronRight, TrendingUp, TrendingDown, Minus, Trophy } from "lucide-react";
+import { Pencil, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
 import homeIcon from "@/assets/home-icon.png";
 import btnTeam from "@/assets/btn-team.png";
 import btnTransfers from "@/assets/btn-transfers.png";
+import arrowUpRed from "@/assets/arrow-up-red.png";
+import arrowDownGreen from "@/assets/arrow-down-green.png";
+import arrowSame from "@/assets/arrow-same.png";
+import arrowDownBlack from "@/assets/arrow-down-black.png";
+import trophyGold from "@/assets/trophy-gold.png";
+import trophySilver from "@/assets/trophy-silver.png";
+import trophyBronze from "@/assets/trophy-bronze.png";
 
 const League = () => {
   const navigate = useNavigate();
@@ -187,11 +194,14 @@ const League = () => {
               }`}
             >
               <div className="col-span-2 flex items-center gap-1">
-                {row.change === "up" && <TrendingUp className="w-3 h-3 text-red-500" />}
-                {row.change === "down" && <TrendingDown className="w-3 h-3 text-primary" />}
-                {row.change === "same" && <Minus className="w-3 h-3 text-muted-foreground" />}
+                {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
+                {row.change === "down" && !row.isUser && <img src={arrowDownGreen} alt="down" className="w-3 h-3" />}
+                {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
+                {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
                 <span className="text-foreground font-medium">{row.position}</span>
-                <Trophy className="w-4 h-4 text-yellow-500" />
+                {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
+                {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
+                {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
               </div>
               <span className="col-span-4 text-foreground font-medium truncate">{row.name}</span>
               <span className="col-span-3 text-center text-foreground">{row.tourPoints}</span>
