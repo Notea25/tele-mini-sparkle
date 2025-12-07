@@ -930,15 +930,15 @@ const TeamBuilder = () => {
       </div>
 
       {/* Team Cost & Balance - Sticky */}
-      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-2 z-40">
-        <div className="flex justify-between mb-2">
+      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-3 z-40">
+        <div className="flex justify-between mb-3">
           <div>
-            <span className="text-muted-foreground text-xs">Стоимость команды</span>
-            <p className="text-foreground text-base font-bold">{currentTeamCost.toFixed(1)}</p>
+            <span className="text-muted-foreground text-sm">Стоимость команды</span>
+            <p className="text-foreground text-2xl font-bold">{currentTeamCost.toFixed(0)}</p>
           </div>
-          <div className="text-right">
-            <span className="text-muted-foreground text-xs">Баланс</span>
-            <p className="text-foreground text-base font-bold">{currentBalance.toFixed(1)}</p>
+          <div>
+            <span className="text-muted-foreground text-sm">Баланс</span>
+            <p className="text-foreground text-2xl font-bold">{currentBalance.toFixed(0)}</p>
           </div>
         </div>
         
@@ -946,17 +946,17 @@ const TeamBuilder = () => {
         <div className="flex gap-3 mb-3">
           <Button
             onClick={handleAutoFill}
-            className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full py-3"
+            className="flex-1 bg-transparent border-2 border-white text-white font-medium rounded-full py-2 h-11 hover:bg-white/10"
           >
             Автосбор
           </Button>
           <Button
             onClick={handleReset}
             disabled={selectedPlayers.length === 0}
-            className={`flex-1 font-semibold rounded-full py-3 ${
+            className={`flex-1 font-medium rounded-full py-2 h-11 border-0 ${
               selectedPlayers.length === 0
-                ? "bg-[#1A1A2E] text-muted-foreground opacity-50 cursor-not-allowed"
-                : "bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white"
+                ? "bg-[#2A2A3E] text-muted-foreground opacity-50 cursor-not-allowed"
+                : "bg-[#2A2A3E] hover:bg-[#3A3A4E] text-muted-foreground"
             }`}
           >
             Сбросить
@@ -965,8 +965,8 @@ const TeamBuilder = () => {
         
         <Button
           disabled={selectedPlayers.length === 0}
-          className={`w-full rounded-full py-3 font-semibold text-black ${
-            selectedPlayers.length === 0 ? "bg-[#4A5D23] cursor-not-allowed" : "bg-[#A8FF00] hover:bg-[#98EE00]"
+          className={`w-full rounded-full py-2 h-11 font-medium text-black ${
+            selectedPlayers.length === 0 ? "bg-[#4A5D23] cursor-not-allowed" : "bg-[#6B8E23] hover:bg-[#5A7D1A]"
           }`}
         >
           Сохранить
