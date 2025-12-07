@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import SportHeader from "@/components/SportHeader";
-import FormationField from "@/components/FormationField";
+import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
@@ -418,43 +418,14 @@ const TeamManagement = () => {
 
       {/* Main content */}
       {activeTab === "formation" ? (
-        <>
-          {/* Football Field */}
-          <div className="mt-4">
-            <FormationField 
-              selectedPlayers={selectedPlayersData} 
-              onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
-            />
-          </div>
-
-          {/* Bench section */}
-          <div className="px-4 mt-4 pb-6">
-            <div className="bg-card/50 rounded-2xl p-4">
-              <div className="flex gap-4 justify-center">
-                {benchPlayers.map((player) => (
-                  <div key={player.id} className="flex flex-col items-center">
-                    {/* Player card mini */}
-                    <div className="relative">
-                      <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-                        <span className="text-xs text-foreground">{player.position}</span>
-                      </div>
-                      {/* Swap icon */}
-                      <button
-                        onClick={() => handlePlayerSwap(player.id)}
-                        className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center"
-                      >
-                        <ArrowLeftRight className="w-3 h-3 text-primary-foreground" />
-                      </button>
-                    </div>
-                    <span className="text-foreground text-[10px] mt-1">{player.position} {player.name}</span>
-                    <span className="text-muted-foreground text-[8px]">(Д) {player.team}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-center text-muted-foreground text-sm mt-4">Замены</p>
-            </div>
-          </div>
-        </>
+        <div className="mt-4">
+          <FormationFieldManagement 
+            mainSquadPlayers={mainSquadPlayers}
+            benchPlayers={benchPlayers}
+            onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
+            onSwapPlayer={handlePlayerSwap}
+          />
+        </div>
       ) : (
         <div className="px-4 mt-6 pb-6">
           {/* Main Squad */}
