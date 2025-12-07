@@ -27,6 +27,7 @@ import FormationField from "@/components/FormationField";
 import PlayerCard from "@/components/PlayerCard";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
+import logoImage from "@/assets/logo.png";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -500,8 +501,8 @@ const TeamBuilder = () => {
       <div className="px-4 mt-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>🏠</span>
-            <span>⚽ Футбол</span>
+            <img src={logoImage} alt="Home" className="w-5 h-5 object-contain" />
+            <span>Футбол</span>
             <span>•</span>
             <span>Беларусь</span>
             <span>•</span>
