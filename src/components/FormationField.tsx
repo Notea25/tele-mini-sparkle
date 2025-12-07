@@ -52,17 +52,17 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
 
   const getPlayerStyle = (row: number, col: number) => {
     const topPositions: Record<number, string> = {
-      1: "8%",
-      2: "28%",
-      3: "52%",
-      4: "78%",
+      1: "6%",
+      2: "24%",
+      3: "48%",
+      4: "72%",
     };
 
     const leftPositions: Record<number, Record<number, string>> = {
       1: { 2: "38%", 4: "62%" },
-      2: { 1: "15%", 2: "30%", 3: "50%", 4: "70%", 5: "85%" },
-      3: { 1: "15%", 2: "30%", 3: "50%", 4: "70%", 5: "85%" },
-      4: { 2: "30%", 3: "50%", 4: "70%" },
+      2: { 1: "8%", 2: "27%", 3: "50%", 4: "73%", 5: "92%" },
+      3: { 1: "5%", 2: "25%", 3: "50%", 4: "75%", 5: "95%" },
+      4: { 2: "28%", 3: "50%", 4: "72%" },
     };
 
     return {
