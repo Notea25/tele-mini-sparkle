@@ -15,6 +15,8 @@ import {
   ArrowLeft,
   Pencil,
   Check,
+  ChevronsUpDown,
+  ChevronUp,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
@@ -57,6 +59,26 @@ const TeamBuilder = () => {
   const [teamName, setTeamName] = useState("Lucky Team");
   const [isEditingTeamName, setIsEditingTeamName] = useState(false);
   const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
+  
+  // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
+  const [sortField, setSortField] = useState<'name' | 'points' | 'price' | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
+
+  const handleSort = (field: 'name' | 'points' | 'price') => {
+    if (sortField !== field) {
+      // New field: start with asc for name, desc for points/price
+      setSortField(field);
+      setSortDirection(field === 'name' ? 'asc' : 'desc');
+    } else if (sortDirection === 'asc') {
+      // Second click: switch direction
+      setSortDirection('desc');
+    } else if (sortDirection === 'desc') {
+      // Third click: clear sort
+      setSortField(null);
+      setSortDirection(null);
+    }
+    setCurrentPage(1);
+  };
 
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");
@@ -172,9 +194,26 @@ const TeamBuilder = () => {
     return true;
   });
 
+  // Apply sorting
+  const sortedPlayers = [...filteredPlayers].sort((a, b) => {
+    if (!sortField || !sortDirection) return 0;
+    
+    if (sortField === 'name') {
+      const comparison = a.name.localeCompare(b.name, 'ru');
+      return sortDirection === 'asc' ? comparison : -comparison;
+    }
+    if (sortField === 'points') {
+      return sortDirection === 'desc' ? b.points - a.points : a.points - b.points;
+    }
+    if (sortField === 'price') {
+      return sortDirection === 'desc' ? b.price - a.price : a.price - b.price;
+    }
+    return 0;
+  });
+
   // Pagination calculations
-  const totalPages = Math.ceil(filteredPlayers.length / ITEMS_PER_PAGE);
-  const paginatedPlayers = filteredPlayers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(sortedPlayers.length / ITEMS_PER_PAGE);
+  const paginatedPlayers = sortedPlayers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   // Reset to page 1 when filter changes
   const handleFilterChange = (filter: string) => {
@@ -632,15 +671,45 @@ const TeamBuilder = () => {
       </div>
 
       {/* Players List Header */}
-      <div className="px-4 mt-6 grid grid-cols-[1fr_auto] items-center text-sm text-muted-foreground">
-        <div className="grid grid-cols-[100px_40px_24px] gap-1.5 items-center">
-          <span>Игрок</span>
+      <div className="px-4 mt-6 grid grid-cols-[1fr_auto] items-center text-xs text-muted-foreground">
+        <div className="grid grid-cols-[90px_40px_30px] gap-1.5 items-center pl-2">
+          <button 
+            onClick={() => handleSort('name')}
+            className="flex items-center gap-0.5 hover:text-foreground transition-colors"
+          >
+            <span>Игрок</span>
+            {sortField === 'name' ? (
+              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
+            ) : (
+              <ChevronsUpDown className="w-3 h-3 opacity-50" />
+            )}
+          </button>
           <span></span>
           <span>Клуб</span>
         </div>
-        <div className="grid grid-cols-[50px_50px_32px] gap-1.5 items-center text-right">
-          <span>Очки</span>
-          <span>Цена</span>
+        <div className="grid grid-cols-[50px_50px_32px] gap-1.5 items-center">
+          <button 
+            onClick={() => handleSort('points')}
+            className="flex items-center justify-end gap-0.5 hover:text-foreground transition-colors"
+          >
+            <span>Очки</span>
+            {sortField === 'points' ? (
+              sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
+            ) : (
+              <ChevronsUpDown className="w-3 h-3 opacity-50" />
+            )}
+          </button>
+          <button 
+            onClick={() => handleSort('price')}
+            className="flex items-center justify-end gap-0.5 hover:text-foreground transition-colors"
+          >
+            <span>Цена</span>
+            {sortField === 'price' ? (
+              sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
+            ) : (
+              <ChevronsUpDown className="w-3 h-3 opacity-50" />
+            )}
+          </button>
           <span></span>
         </div>
       </div>
