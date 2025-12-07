@@ -29,6 +29,7 @@ import PlayerCard from "@/components/PlayerCard";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
+import flameIcon from "@/assets/flame-icon.png";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -737,89 +738,58 @@ const TeamBuilder = () => {
         </div>
       </div>
 
-      {/* Players List Header */}
-      <div className="px-4 mt-6 grid grid-cols-[1fr_auto] items-center text-xs text-muted-foreground">
-        <div className="grid grid-cols-[90px_40px_30px] gap-1.5 items-center pl-2">
-          <button 
-            onClick={() => handleSort('name')}
-            className={`flex items-center gap-0.5 transition-colors ${sortField === 'name' ? 'text-primary' : 'hover:text-foreground'}`}
-          >
-            <span>Игрок</span>
-            {sortField === 'name' ? (
-              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-            ) : (
-              <ChevronsUpDown className="w-3 h-3 opacity-50" />
-            )}
-          </button>
-          <span></span>
-          <span>Клуб</span>
-        </div>
-        <div className="grid grid-cols-[50px_50px_32px] gap-1.5 items-center">
-          <button 
-            onClick={() => handleSort('points')}
-            className={`flex items-center justify-end gap-0.5 transition-colors ${sortField === 'points' ? 'text-primary' : 'hover:text-foreground'}`}
-          >
-            <span>Очки</span>
-            {sortField === 'points' ? (
-              sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
-            ) : (
-              <ChevronsUpDown className="w-3 h-3 opacity-50" />
-            )}
-          </button>
-          <button 
-            onClick={() => handleSort('price')}
-            className={`flex items-center justify-end gap-0.5 transition-colors ${sortField === 'price' ? 'text-primary' : 'hover:text-foreground'}`}
-          >
-            <span>Цена</span>
-            {sortField === 'price' ? (
-              sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
-            ) : (
-              <ChevronsUpDown className="w-3 h-3 opacity-50" />
-            )}
-          </button>
-          <span></span>
-        </div>
-      </div>
-
       {/* Players List */}
-      <div className="px-4 mt-3 space-y-2">
+      <div className="px-4 mt-4 space-y-2">
         {paginatedPlayers.map((player) => {
           const isSelected = selectedPlayerIds.includes(player.id);
           return (
-            <div key={player.id} className="bg-card rounded-full px-4 py-2.5 grid grid-cols-[1fr_auto] items-center">
-              <div className="grid grid-cols-[100px_40px_24px] gap-1.5 items-center">
-                <span 
-                  className="text-foreground font-medium truncate cursor-pointer hover:opacity-80"
-                  onClick={() => setSelectedPlayerForCard(player.id)}
-                >
-                  {player.name}
-                </span>
-                <span className="text-muted-foreground text-sm pointer-events-none">{player.position}</span>
+            <div key={player.id} className="bg-card rounded-xl px-3 py-2 flex items-center">
+              {/* Position - fixed width */}
+              <span className="text-muted-foreground text-xs w-6 flex-shrink-0">{player.position}</span>
+              
+              {/* Player name - flexible */}
+              <div 
+                className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
+                onClick={() => setSelectedPlayerForCard(player.id)}
+              >
+                <span className="text-foreground font-medium truncate">{player.name}</span>
+              </div>
+              
+              {/* Club icon - fixed width */}
+              <div className="w-6 flex-shrink-0 flex justify-center">
                 <img 
                   src={clubIcons[player.team] || clubLogo} 
-                  alt={player.team} 
-                  className="w-6 h-6 object-contain pointer-events-none"
-                  title={player.team}
+                  alt={player.team}
+                  className="w-4 h-4 object-contain"
                 />
               </div>
-              <div className="grid grid-cols-[50px_50px_32px] gap-1.5 items-center">
-                <div className="flex items-center justify-end gap-1">
-                  <span className="text-orange-500">🔥</span>
-                  <span className="text-foreground font-medium">{player.points}</span>
-                </div>
-                <span className="text-foreground font-medium text-right">{player.price}</span>
-                <Button
-                  size="icon"
-                  onClick={() => togglePlayer(player.id)}
-                  className={`h-8 w-8 rounded-full ${
-                    isSelected
-                      ? "bg-muted hover:bg-muted/80 text-muted-foreground"
-                      : "bg-primary hover:bg-primary/90 text-primary-foreground"
-                  }`}
-                >
-                  {isSelected ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                </Button>
+              
+              {/* Points - fixed width */}
+              <div className="w-12 flex-shrink-0 flex items-center justify-end gap-1 text-primary">
+                <img src={flameIcon} alt="points" className="w-3 h-3 object-contain" />
+                <span className="text-xs font-medium">{player.points}</span>
               </div>
+              
+              {/* Price - fixed width */}
+              <span className="w-10 flex-shrink-0 text-muted-foreground text-xs text-right">
+                {player.price.toFixed(1).replace('.', ',')}
+              </span>
+              
+              {/* Add/Remove button */}
+              <button
+                onClick={() => togglePlayer(player.id)}
+                className={`w-6 h-6 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
+                  isSelected
+                    ? "bg-muted hover:bg-muted/80"
+                    : "bg-primary hover:bg-primary/90"
+                }`}
+              >
+                {isSelected ? (
+                  <X className="w-3 h-3 text-muted-foreground" />
+                ) : (
+                  <Plus className="w-3 h-3 text-primary-foreground" />
+                )}
+              </button>
             </div>
           );
         })}
