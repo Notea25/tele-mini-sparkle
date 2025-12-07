@@ -7,6 +7,7 @@ import { TelegramProvider } from "./providers/TelegramProvider";
 import Index from "./pages/Index";
 import CreateTeam from "./pages/CreateTeam";
 import TeamBuilder from "./pages/TeamBuilder";
+import TeamManagement from "./pages/TeamManagement";
 import League from "./pages/League";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/create-team" element={<CreateTeam />} />
             <Route path="/team-builder" element={<TeamBuilder />} />
+            <Route path="/team-management" element={<TeamManagement />} />
             <Route path="/league" element={<League />} />
             <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
