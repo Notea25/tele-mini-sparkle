@@ -128,6 +128,10 @@ const TeamBuilder = () => {
     { id: 1, name: "Петров", team: "БАТЭ", position: "ВР", points: 65, price: 6.8 },
     { id: 2, name: "Климович", team: "Шахтер", position: "ВР", points: 71, price: 8.2 },
     { id: 3, name: "Горбунов", team: "Неман", position: "ВР", points: 58, price: 4.5 },
+    { id: 30, name: "Антонов", team: "Славия", position: "ВР", points: 62, price: 5.4 },
+    { id: 31, name: "Беляев", team: "Торпедо", position: "ВР", points: 55, price: 4.1 },
+    { id: 32, name: "Воронов", team: "Динамо Минск", position: "ВР", points: 68, price: 7.3 },
+    { id: 33, name: "Григорьев", team: "БАТЭ", position: "ВР", points: 74, price: 9.1 },
     // Защитники (ЗЩ)
     { id: 4, name: "Сидоров", team: "Шахтер", position: "ЗЩ", points: 72, price: 9.3 },
     { id: 5, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", points: 68, price: 7.1 },
@@ -137,6 +141,14 @@ const TeamBuilder = () => {
     { id: 9, name: "Михайлов", team: "Динамо Минск", position: "ЗЩ", points: 73, price: 11.4 },
     { id: 10, name: "Зайцев", team: "Славия", position: "ЗЩ", points: 55, price: 4.8 },
     { id: 11, name: "Белов", team: "Торпедо", position: "ЗЩ", points: 59, price: 5.3 },
+    { id: 34, name: "Денисов", team: "Динамо Минск", position: "ЗЩ", points: 66, price: 6.5 },
+    { id: 35, name: "Егоров", team: "БАТЭ", position: "ЗЩ", points: 69, price: 7.8 },
+    { id: 36, name: "Жуков", team: "Шахтер", position: "ЗЩ", points: 71, price: 8.4 },
+    { id: 37, name: "Захаров", team: "Неман", position: "ЗЩ", points: 57, price: 4.6 },
+    { id: 38, name: "Ильин", team: "Славия", position: "ЗЩ", points: 63, price: 5.7 },
+    { id: 39, name: "Калинин", team: "Торпедо", position: "ЗЩ", points: 60, price: 5.1 },
+    { id: 40, name: "Лазарев", team: "Динамо Минск", position: "ЗЩ", points: 75, price: 9.8 },
+    { id: 41, name: "Макаров", team: "БАТЭ", position: "ЗЩ", points: 67, price: 7.2 },
     // Полузащитники (ПЗ)
     { id: 12, name: "Козлов", team: "БАТЭ", position: "ПЗ", points: 81, price: 11.9 },
     { id: 13, name: "Новиков", team: "Шахтер", position: "ПЗ", points: 75, price: 9.6 },
@@ -148,6 +160,16 @@ const TeamBuilder = () => {
     { id: 19, name: "Голубев", team: "Торпедо", position: "ПЗ", points: 63, price: 6.2 },
     { id: 20, name: "Виноградов", team: "Динамо Минск", position: "ПЗ", points: 71, price: 8.1 },
     { id: 21, name: "Богданов", team: "БАТЭ", position: "ПЗ", points: 67, price: 6.7 },
+    { id: 42, name: "Назаров", team: "Шахтер", position: "ПЗ", points: 72, price: 8.5 },
+    { id: 43, name: "Осипов", team: "Неман", position: "ПЗ", points: 59, price: 4.9 },
+    { id: 44, name: "Панов", team: "Славия", position: "ПЗ", points: 64, price: 6.0 },
+    { id: 45, name: "Романов", team: "Торпедо", position: "ПЗ", points: 61, price: 5.5 },
+    { id: 46, name: "Савельев", team: "Динамо Минск", position: "ПЗ", points: 78, price: 10.5 },
+    { id: 47, name: "Титов", team: "БАТЭ", position: "ПЗ", points: 70, price: 7.9 },
+    { id: 48, name: "Ушаков", team: "Шахтер", position: "ПЗ", points: 73, price: 8.8 },
+    { id: 49, name: "Филиппов", team: "Неман", position: "ПЗ", points: 56, price: 4.3 },
+    { id: 50, name: "Харитонов", team: "Славия", position: "ПЗ", points: 65, price: 6.4 },
+    { id: 51, name: "Цветков", team: "Торпедо", position: "ПЗ", points: 68, price: 7.1 },
     // Нападающие (НП)
     { id: 22, name: "Морозов", team: "Динамо Минск", position: "НП", points: 88, price: 11.8 },
     { id: 23, name: "Волков", team: "БАТЭ", position: "НП", points: 82, price: 10.9 },
@@ -157,6 +179,14 @@ const TeamBuilder = () => {
     { id: 27, name: "Смирнов", team: "Торпедо", position: "НП", points: 64, price: 5.4 },
     { id: 28, name: "Ковалев", team: "Динамо Минск", position: "НП", points: 76, price: 8.6 },
     { id: 29, name: "Николаев", team: "БАТЭ", position: "НП", points: 70, price: 7.2 },
+    { id: 52, name: "Чернов", team: "Шахтер", position: "НП", points: 77, price: 9.2 },
+    { id: 53, name: "Шестаков", team: "Неман", position: "НП", points: 63, price: 5.6 },
+    { id: 54, name: "Щербаков", team: "Славия", position: "НП", points: 58, price: 4.7 },
+    { id: 55, name: "Яковлев", team: "Торпедо", position: "НП", points: 67, price: 6.3 },
+    { id: 56, name: "Алексеев", team: "Динамо Минск", position: "НП", points: 84, price: 11.2 },
+    { id: 57, name: "Борисов", team: "БАТЭ", position: "НП", points: 75, price: 8.9 },
+    { id: 58, name: "Власов", team: "Шахтер", position: "НП", points: 71, price: 7.8 },
+    { id: 59, name: "Гусев", team: "Неман", position: "НП", points: 62, price: 5.2 },
   ];
 
   const selectedPlayerIds = selectedPlayers.map(sp => sp.id);
@@ -760,31 +790,65 @@ const TeamBuilder = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="px-4 mt-6 flex items-center justify-center gap-2">
+        <div className="px-4 mt-6 flex items-center justify-center gap-3">
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="p-2 hover:bg-accent rounded transition-colors disabled:opacity-50"
+            className="p-1 hover:text-primary transition-colors disabled:opacity-30"
           >
-            <ChevronLeft className="w-4 h-4 text-foreground" />
+            <ChevronLeft className="w-5 h-5 text-muted-foreground" />
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                page === currentPage ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-accent"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
+          
+          {/* Page numbers */}
+          {(() => {
+            const pages: (number | string)[] = [];
+            
+            if (totalPages <= 5) {
+              // Show all pages if 5 or less
+              for (let i = 1; i <= totalPages; i++) pages.push(i);
+            } else {
+              // Always show first 3 pages
+              pages.push(1, 2, 3);
+              
+              // Add ellipsis and last page if current page is in first 3
+              if (currentPage <= 3) {
+                pages.push('...', totalPages);
+              } 
+              // Add ellipsis and last page if current page is near end
+              else if (currentPage >= totalPages - 2) {
+                pages.push('...', totalPages - 2, totalPages - 1, totalPages);
+              }
+              // Current page is in the middle
+              else {
+                pages.push('...', totalPages);
+              }
+            }
+            
+            return pages.map((page, idx) => (
+              page === '...' ? (
+                <span key={`ellipsis-${idx}`} className="text-muted-foreground text-sm px-1">...</span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page as number)}
+                  className={`min-w-[24px] text-sm font-medium transition-colors ${
+                    page === currentPage 
+                      ? "text-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            ));
+          })()}
+          
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="p-2 hover:bg-accent rounded transition-colors disabled:opacity-50"
+            className="p-1 hover:text-primary transition-colors disabled:opacity-30"
           >
-            <ChevronRight className="w-4 h-4 text-foreground" />
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
       )}
