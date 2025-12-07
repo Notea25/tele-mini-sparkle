@@ -50,7 +50,6 @@ const PromoBannerSlider = () => {
     setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   }, [images.length]);
 
-  // Автопрокрутка каждые 5 секунд
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide();
