@@ -1,7 +1,8 @@
-import { X, ChevronDown, MoreHorizontal, Share, RefreshCw, Home, FileText, Shield } from "lucide-react";
-import { Link } from "react-router-dom";
+import { X, ChevronDown, MoreHorizontal, Share, RefreshCw, FileText, Shield } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import logo from "@/assets/logo.png";
+import homeIcon from "@/assets/home-icon.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const SportHeader = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -73,8 +75,12 @@ const SportHeader = () => {
                 <RefreshCw className="w-4 h-4" />
                 Обновить страницу
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/")} className="gap-2 cursor-pointer">
+                <img src={homeIcon} alt="Home" className="w-4 h-4" />
+                На главную
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleAddToHome} className="gap-2 cursor-pointer">
-                <Home className="w-4 h-4" />
+                <img src={homeIcon} alt="Home" className="w-4 h-4" />
                 Добавить на экран "домой"
               </DropdownMenuItem>
               <DropdownMenuItem className="gap-2 cursor-pointer">
