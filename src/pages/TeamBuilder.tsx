@@ -973,6 +973,7 @@ const TeamBuilder = () => {
         
         <Button
           disabled={selectedPlayers.length === 0}
+          onClick={() => navigate("/league")}
           className={`w-full rounded-full py-3 font-semibold text-black ${
             selectedPlayers.length === 0 ? "bg-[#4A5D23] cursor-not-allowed" : "bg-[#A8FF00] hover:bg-[#98EE00]"
           }`}
