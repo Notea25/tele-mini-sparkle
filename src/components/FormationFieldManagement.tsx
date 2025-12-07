@@ -106,21 +106,21 @@ const FormationFieldManagement = ({
       
       {/* Position and name */}
       <div 
-        className="flex items-center gap-0.5 mt-1.5 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5"
+        className="flex items-center gap-0.5 mt-1.5 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5 min-w-max"
         onClick={() => onPlayerClick?.(player)}
       >
         <span className="text-black/60 text-[9px] font-medium">
           {player.position}
         </span>
-        <span className="text-black text-[9px] font-medium">
+        <span className="text-black text-[9px] font-medium whitespace-nowrap">
           {player.name}
         </span>
       </div>
       
-      {/* Club badge */}
-      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center gap-0.5 mt-0.5">
+      {/* Club badge - same width as name */}
+      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-2 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5 min-w-max">
         <span>(Д)</span>
-        <span>{player.team.length > 10 ? player.team.substring(0, 10) : player.team}</span>
+        <span className="whitespace-nowrap">{player.team.length > 10 ? player.team.substring(0, 10) : player.team}</span>
       </div>
     </div>
   );
@@ -160,9 +160,9 @@ const FormationFieldManagement = ({
       {/* Bench section */}
       <div className="mt-4 pb-6">
         <div className="bg-card/50 rounded-2xl p-4">
-          <div className="flex gap-3 justify-center flex-wrap">
+          <div className="flex gap-2 justify-between">
             {benchPlayers.map((player) => (
-              <div key={player.id} className="flex flex-col items-center">
+              <div key={player.id} className="flex flex-col items-center flex-1">
                 {renderPlayer(player)}
               </div>
             ))}
