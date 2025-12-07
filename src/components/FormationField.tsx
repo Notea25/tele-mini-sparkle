@@ -115,54 +115,43 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
               transform: "translateX(-50%)",
             }}
           >
-          {isOccupied ? (
+            {isOccupied ? (
               // Occupied slot with player
               <div className="relative flex flex-col items-center">
                 {/* Delete button */}
                 {onRemovePlayer && (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRemovePlayer(assignedPlayer.id);
-                    }}
-                    className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center"
+                    onClick={() => onRemovePlayer(assignedPlayer.id)}
+                    className="absolute -top-0.5 -right-2 z-50 w-5 h-5 bg-muted rounded-full flex items-center justify-center hover:bg-muted/80 transition-colors"
                   >
                     <X className="w-3 h-3 text-muted-foreground" />
                   </button>
                 )}
                 
-                {/* Jersey */}
+                {/* Jersey with price tag */}
                 <div className="relative">
                   <img
                     src={playerJerseyTeam}
                     alt={assignedPlayer.name}
-                    className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                    className="w-9 h-9 sm:w-11 sm:h-11 object-contain"
                   />
                   {/* Price tag */}
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">
-                    <span className="text-[6px]">•</span>
-                    <span>{(assignedPlayer.price || 9).toFixed(1).replace('.', ',')}</span>
-                    <span className="text-[6px]">•</span>
+                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-[10px] font-bold px-1.5 py-0 rounded-full">
+                    {assignedPlayer.price || 9}
                   </div>
                 </div>
                 
                 {/* Position and name */}
                 <div 
-                  className="flex items-center gap-1 mt-1.5 cursor-pointer hover:opacity-80"
+                  className="flex items-center gap-0.5 mt-1 cursor-pointer hover:opacity-80"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <span className="text-muted-foreground text-[10px] font-medium">
+                  <span className="text-primary text-[10px] font-bold">
                     {assignedPlayer.position}
                   </span>
-                  <span className="text-white text-[10px] font-medium">
+                  <span className="text-white text-[10px] font-semibold">
                     {assignedPlayer.name}
                   </span>
-                </div>
-                
-                {/* Club badge */}
-                <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center gap-0.5 mt-0.5">
-                  <span className="text-[8px]">(Д)</span>
-                  <span>{assignedPlayer.team}</span>
                 </div>
               </div>
             ) : (

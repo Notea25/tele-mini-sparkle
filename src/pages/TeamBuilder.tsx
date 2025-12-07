@@ -27,9 +27,8 @@ import FormationField from "@/components/FormationField";
 import PlayerCard from "@/components/PlayerCard";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
-import homeIcon from "@/assets/home-icon.png";
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 6;
 
 // Club icons mapping
 const clubIcons: Record<string, string> = {
@@ -133,8 +132,6 @@ const TeamBuilder = () => {
     { id: 31, name: "Беляев", team: "Торпедо", position: "ВР", points: 55, price: 4.1 },
     { id: 32, name: "Воронов", team: "Динамо Минск", position: "ВР", points: 68, price: 7.3 },
     { id: 33, name: "Григорьев", team: "БАТЭ", position: "ВР", points: 74, price: 9.1 },
-    { id: 60, name: "Давыдов", team: "Шахтер", position: "ВР", points: 60, price: 5.0 },
-    { id: 61, name: "Ермаков", team: "Неман", position: "ВР", points: 53, price: 3.9 },
     // Защитники (ЗЩ)
     { id: 4, name: "Сидоров", team: "Шахтер", position: "ЗЩ", points: 72, price: 9.3 },
     { id: 5, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", points: 68, price: 7.1 },
@@ -152,10 +149,6 @@ const TeamBuilder = () => {
     { id: 39, name: "Калинин", team: "Торпедо", position: "ЗЩ", points: 60, price: 5.1 },
     { id: 40, name: "Лазарев", team: "Динамо Минск", position: "ЗЩ", points: 75, price: 9.8 },
     { id: 41, name: "Макаров", team: "БАТЭ", position: "ЗЩ", points: 67, price: 7.2 },
-    { id: 62, name: "Медведев", team: "Славия", position: "ЗЩ", points: 58, price: 4.9 },
-    { id: 63, name: "Никитин", team: "Торпедо", position: "ЗЩ", points: 54, price: 4.0 },
-    { id: 64, name: "Овчинников", team: "Шахтер", position: "ЗЩ", points: 65, price: 6.2 },
-    { id: 65, name: "Прохоров", team: "Неман", position: "ЗЩ", points: 52, price: 3.8 },
     // Полузащитники (ПЗ)
     { id: 12, name: "Козлов", team: "БАТЭ", position: "ПЗ", points: 81, price: 11.9 },
     { id: 13, name: "Новиков", team: "Шахтер", position: "ПЗ", points: 75, price: 9.6 },
@@ -177,12 +170,6 @@ const TeamBuilder = () => {
     { id: 49, name: "Филиппов", team: "Неман", position: "ПЗ", points: 56, price: 4.3 },
     { id: 50, name: "Харитонов", team: "Славия", position: "ПЗ", points: 65, price: 6.4 },
     { id: 51, name: "Цветков", team: "Торпедо", position: "ПЗ", points: 68, price: 7.1 },
-    { id: 66, name: "Рябов", team: "Динамо Минск", position: "ПЗ", points: 76, price: 9.9 },
-    { id: 67, name: "Самойлов", team: "БАТЭ", position: "ПЗ", points: 66, price: 6.8 },
-    { id: 68, name: "Трофимов", team: "Шахтер", position: "ПЗ", points: 70, price: 7.6 },
-    { id: 69, name: "Уваров", team: "Неман", position: "ПЗ", points: 57, price: 4.5 },
-    { id: 70, name: "Фомин", team: "Славия", position: "ПЗ", points: 62, price: 5.8 },
-    { id: 71, name: "Хомяков", team: "Торпедо", position: "ПЗ", points: 60, price: 5.2 },
     // Нападающие (НП)
     { id: 22, name: "Морозов", team: "Динамо Минск", position: "НП", points: 88, price: 11.8 },
     { id: 23, name: "Волков", team: "БАТЭ", position: "НП", points: 82, price: 10.9 },
@@ -200,14 +187,6 @@ const TeamBuilder = () => {
     { id: 57, name: "Борисов", team: "БАТЭ", position: "НП", points: 75, price: 8.9 },
     { id: 58, name: "Власов", team: "Шахтер", position: "НП", points: 71, price: 7.8 },
     { id: 59, name: "Гусев", team: "Неман", position: "НП", points: 62, price: 5.2 },
-    { id: 72, name: "Широков", team: "Славия", position: "НП", points: 59, price: 4.9 },
-    { id: 73, name: "Юрин", team: "Торпедо", position: "НП", points: 65, price: 6.0 },
-    { id: 74, name: "Ясенев", team: "Динамо Минск", position: "НП", points: 80, price: 10.3 },
-    { id: 75, name: "Артемьев", team: "БАТЭ", position: "НП", points: 73, price: 8.4 },
-    { id: 76, name: "Буров", team: "Шахтер", position: "НП", points: 69, price: 7.0 },
-    { id: 77, name: "Воробьев", team: "Неман", position: "НП", points: 61, price: 5.3 },
-    { id: 78, name: "Громов", team: "Славия", position: "НП", points: 56, price: 4.4 },
-    { id: 79, name: "Дроздов", team: "Торпедо", position: "НП", points: 68, price: 6.7 },
   ];
 
   const selectedPlayerIds = selectedPlayers.map(sp => sp.id);
@@ -521,13 +500,8 @@ const TeamBuilder = () => {
       <div className="px-4 mt-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <img 
-              src={homeIcon} 
-              alt="Home" 
-              className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity" 
-              onClick={() => navigate("/")}
-            />
-            <span>Футбол</span>
+            <span>🏠</span>
+            <span>⚽ Футбол</span>
             <span>•</span>
             <span>Беларусь</span>
             <span>•</span>
@@ -816,7 +790,7 @@ const TeamBuilder = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="px-4 mt-6 flex items-center justify-center gap-4">
+        <div className="px-4 mt-6 flex items-center justify-center gap-3">
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
@@ -830,22 +804,34 @@ const TeamBuilder = () => {
             const pages: (number | string)[] = [];
             
             if (totalPages <= 5) {
+              // Show all pages if 5 or less
               for (let i = 1; i <= totalPages; i++) pages.push(i);
             } else {
-              // Always show 1, 2, 3
+              // Always show first 3 pages
               pages.push(1, 2, 3);
-              // Add ellipsis and last page
-              pages.push('...', totalPages);
+              
+              // Add ellipsis and last page if current page is in first 3
+              if (currentPage <= 3) {
+                pages.push('...', totalPages);
+              } 
+              // Add ellipsis and last page if current page is near end
+              else if (currentPage >= totalPages - 2) {
+                pages.push('...', totalPages - 2, totalPages - 1, totalPages);
+              }
+              // Current page is in the middle
+              else {
+                pages.push('...', totalPages);
+              }
             }
             
             return pages.map((page, idx) => (
               page === '...' ? (
-                <span key={`ellipsis-${idx}`} className="text-muted-foreground text-sm">...</span>
+                <span key={`ellipsis-${idx}`} className="text-muted-foreground text-sm px-1">...</span>
               ) : (
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page as number)}
-                  className={`text-sm font-medium transition-colors ${
+                  className={`min-w-[24px] text-sm font-medium transition-colors ${
                     page === currentPage 
                       ? "text-primary" 
                       : "text-muted-foreground hover:text-foreground"
@@ -938,15 +924,15 @@ const TeamBuilder = () => {
       </div>
 
       {/* Team Cost & Balance - Sticky */}
-      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-2 z-40">
-        <div className="flex justify-between mb-2">
+      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-40">
+        <div className="flex justify-between mb-4">
           <div>
-            <span className="text-muted-foreground text-xs">Стоимость команды</span>
-            <p className="text-foreground text-base font-bold">{currentTeamCost.toFixed(1)}</p>
+            <span className="text-muted-foreground text-sm">Стоимость команды</span>
+            <p className="text-foreground text-3xl font-bold">{currentTeamCost.toFixed(1)}</p>
           </div>
           <div className="text-right">
-            <span className="text-muted-foreground text-xs">Баланс</span>
-            <p className="text-foreground text-base font-bold">{currentBalance.toFixed(1)}</p>
+            <span className="text-muted-foreground text-sm">Баланс</span>
+            <p className="text-foreground text-3xl font-bold">{currentBalance.toFixed(1)}</p>
           </div>
         </div>
         

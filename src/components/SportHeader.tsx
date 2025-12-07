@@ -1,6 +1,5 @@
 import { X, ChevronDown, MoreHorizontal, Share, RefreshCw, Home, FileText, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import logo from "@/assets/logo.png";
 import {
   DropdownMenu,
@@ -10,17 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const SportHeader = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({ title: document.title, url: window.location.href });
@@ -40,7 +28,7 @@ const SportHeader = () => {
   };
 
   return (
-    <header className={`bg-background sticky top-0 z-50 transition-opacity duration-300 ${isScrolled ? 'opacity-30' : 'opacity-100'}`}>
+    <header className="bg-background">
       <div className="flex items-center justify-between px-4 pt-3 pb-4">
         <button 
           onClick={handleClose}
