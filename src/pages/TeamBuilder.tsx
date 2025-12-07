@@ -479,7 +479,7 @@ const TeamBuilder = () => {
     }));
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <SportHeader />
 
