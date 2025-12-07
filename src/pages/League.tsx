@@ -103,24 +103,24 @@ const League = () => {
 
         <div className="grid grid-cols-3 gap-3 mb-6">
           {/* Average result */}
-          <div className="bg-secondary/50 rounded-2xl p-4 flex flex-col items-center border border-border">
-            <span className="text-3xl font-bold text-foreground">40</span>
-            <span className="text-xs text-muted-foreground mt-1">Средний результат</span>
-            <ChevronRight className="w-4 h-4 text-muted-foreground mt-1" />
+          <div className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border">
+            <span className="text-2xl font-bold text-foreground">40</span>
+            <span className="text-[10px] text-muted-foreground">Средний результат</span>
+            <ChevronRight className="w-3 h-3 text-muted-foreground" />
           </div>
           
           {/* Your points - highlighted */}
-          <div className="bg-primary rounded-2xl p-4 flex flex-col items-center">
-            <span className="text-3xl font-bold text-primary-foreground">55</span>
-            <span className="text-xs text-primary-foreground/80 mt-1">Твои очки</span>
-            <ChevronRight className="w-4 h-4 text-primary-foreground mt-1" />
+          <div className="bg-primary rounded-2xl px-3 py-2 flex flex-col items-center">
+            <span className="text-2xl font-bold text-primary-foreground">55</span>
+            <span className="text-[10px] text-primary-foreground/80">Твои очки</span>
+            <ChevronRight className="w-3 h-3 text-primary-foreground" />
           </div>
           
           {/* Best result */}
-          <div className="bg-secondary/50 rounded-2xl p-4 flex flex-col items-center border border-border">
-            <span className="text-3xl font-bold text-foreground">129</span>
-            <span className="text-xs text-muted-foreground mt-1">Лучший результат</span>
-            <ChevronRight className="w-4 h-4 text-muted-foreground mt-1" />
+          <div className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border">
+            <span className="text-2xl font-bold text-foreground">129</span>
+            <span className="text-[10px] text-muted-foreground">Лучший результат</span>
+            <ChevronRight className="w-3 h-3 text-muted-foreground" />
           </div>
         </div>
 
