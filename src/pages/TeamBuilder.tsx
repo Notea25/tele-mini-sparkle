@@ -706,87 +706,45 @@ const TeamBuilder = () => {
         </div>
       </div>
 
-      {/* Players List Header */}
-      <div className="px-4 mt-6 grid grid-cols-[1fr_auto] items-center text-xs text-muted-foreground">
-        <div className="grid grid-cols-[90px_40px_30px] gap-1.5 items-center pl-2">
-          <button 
-            onClick={() => handleSort('name')}
-            className={`flex items-center gap-0.5 transition-colors ${sortField === 'name' ? 'text-primary' : 'hover:text-foreground'}`}
-          >
-            <span>Игрок</span>
-            {sortField === 'name' ? (
-              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-            ) : (
-              <ChevronsUpDown className="w-3 h-3 opacity-50" />
-            )}
-          </button>
-          <span></span>
-          <span>Клуб</span>
-        </div>
-        <div className="grid grid-cols-[50px_50px_32px] gap-1.5 items-center">
-          <button 
-            onClick={() => handleSort('points')}
-            className={`flex items-center justify-end gap-0.5 transition-colors ${sortField === 'points' ? 'text-primary' : 'hover:text-foreground'}`}
-          >
-            <span>Очки</span>
-            {sortField === 'points' ? (
-              sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
-            ) : (
-              <ChevronsUpDown className="w-3 h-3 opacity-50" />
-            )}
-          </button>
-          <button 
-            onClick={() => handleSort('price')}
-            className={`flex items-center justify-end gap-0.5 transition-colors ${sortField === 'price' ? 'text-primary' : 'hover:text-foreground'}`}
-          >
-            <span>Цена</span>
-            {sortField === 'price' ? (
-              sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
-            ) : (
-              <ChevronsUpDown className="w-3 h-3 opacity-50" />
-            )}
-          </button>
-          <span></span>
-        </div>
-      </div>
+      {/* Players List Header - hidden, data shows in rows */}
 
       {/* Players List */}
-      <div className="px-4 mt-3 space-y-2">
+      <div className="px-4 mt-4 space-y-2">
         {paginatedPlayers.map((player) => {
           const isSelected = selectedPlayerIds.includes(player.id);
           return (
-            <div key={player.id} className="bg-card rounded-full px-4 py-2.5 grid grid-cols-[1fr_auto] items-center">
-              <div className="grid grid-cols-[100px_40px_24px] gap-1.5 items-center">
+            <div key={player.id} className="bg-card border border-border rounded-full px-4 py-2 flex items-center justify-between">
+              <div className="flex items-center gap-3">
                 <span 
-                  className="text-foreground font-medium truncate cursor-pointer hover:opacity-80"
+                  className="text-foreground font-medium cursor-pointer hover:opacity-80"
                   onClick={() => setSelectedPlayerForCard(player.id)}
                 >
                   {player.name}
                 </span>
-                <span className="text-muted-foreground text-sm pointer-events-none">{player.position}</span>
+                <span className="text-muted-foreground text-sm">{player.position}</span>
                 <img 
                   src={clubIcons[player.team] || clubLogo} 
                   alt={player.team} 
-                  className="w-6 h-6 object-contain pointer-events-none"
+                  className="w-5 h-5 object-contain"
                   title={player.team}
                 />
               </div>
-              <div className="grid grid-cols-[50px_50px_32px] gap-1.5 items-center">
-                <div className="flex items-center justify-end gap-1">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
                   <span className="text-orange-500">🔥</span>
                   <span className="text-foreground font-medium">{player.points}</span>
                 </div>
-                <span className="text-foreground font-medium text-right">{player.price}</span>
+                <span className="text-foreground font-medium">{Math.floor(player.price)}</span>
                 <Button
                   size="icon"
                   onClick={() => togglePlayer(player.id)}
-                  className={`h-8 w-8 rounded-full ${
+                  className={`h-7 w-7 rounded-full ${
                     isSelected
                       ? "bg-muted hover:bg-muted/80 text-muted-foreground"
                       : "bg-primary hover:bg-primary/90 text-primary-foreground"
                   }`}
                 >
-                  {isSelected ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                  {isSelected ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                 </Button>
               </div>
             </div>
