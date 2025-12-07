@@ -636,7 +636,7 @@ const TeamBuilder = () => {
         <div className="grid grid-cols-[100px_40px_24px] gap-1.5 items-center">
           <span>Игрок</span>
           <span></span>
-          <span></span>
+          <span>Клуб</span>
         </div>
         <div className="grid grid-cols-[50px_50px_32px] gap-1.5 items-center text-right">
           <span>Очки</span>
