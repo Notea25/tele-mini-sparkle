@@ -675,7 +675,7 @@ const TeamBuilder = () => {
         <div className="grid grid-cols-[90px_40px_30px] gap-1.5 items-center pl-2">
           <button 
             onClick={() => handleSort('name')}
-            className="flex items-center gap-0.5 hover:text-foreground transition-colors"
+            className={`flex items-center gap-0.5 transition-colors ${sortField === 'name' ? 'text-primary' : 'hover:text-foreground'}`}
           >
             <span>Игрок</span>
             {sortField === 'name' ? (
@@ -690,7 +690,7 @@ const TeamBuilder = () => {
         <div className="grid grid-cols-[50px_50px_32px] gap-1.5 items-center">
           <button 
             onClick={() => handleSort('points')}
-            className="flex items-center justify-end gap-0.5 hover:text-foreground transition-colors"
+            className={`flex items-center justify-end gap-0.5 transition-colors ${sortField === 'points' ? 'text-primary' : 'hover:text-foreground'}`}
           >
             <span>Очки</span>
             {sortField === 'points' ? (
@@ -701,7 +701,7 @@ const TeamBuilder = () => {
           </button>
           <button 
             onClick={() => handleSort('price')}
-            className="flex items-center justify-end gap-0.5 hover:text-foreground transition-colors"
+            className={`flex items-center justify-end gap-0.5 transition-colors ${sortField === 'price' ? 'text-primary' : 'hover:text-foreground'}`}
           >
             <span>Цена</span>
             {sortField === 'price' ? (
