@@ -54,8 +54,8 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
     const topPositions: Record<number, string> = {
       1: "4%",
       2: "20%",
-      3: "44%",
-      4: "68%",
+      3: "36%",
+      4: "52%",
     };
 
     const leftPositions: Record<number, Record<number, string>> = {
