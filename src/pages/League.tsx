@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, ChevronRight, TrendingUp, TrendingDown, Minus, Trophy, ArrowLeftRight, Shirt } from "lucide-react";
+import { Pencil, ChevronRight, TrendingUp, TrendingDown, Minus, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
 import homeIcon from "@/assets/home-icon.png";
+import btnTeam from "@/assets/btn-team.png";
+import btnTransfers from "@/assets/btn-transfers.png";
 
 const League = () => {
   const navigate = useNavigate();
@@ -151,23 +153,17 @@ const League = () => {
 
         {/* Action buttons */}
         <div className="grid grid-cols-2 gap-3 mb-8">
-          <Button 
+          <img 
+            src={btnTeam} 
+            alt="Команда" 
+            className="w-full cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => navigate("/team-builder")}
-            className="bg-primary text-primary-foreground rounded-2xl py-8 font-semibold text-lg relative h-auto"
-          >
-            Команда
-            <div className="absolute bottom-2 right-2 w-8 h-8 bg-black/80 rounded-full flex items-center justify-center">
-              <Shirt className="w-4 h-4 text-white" />
-            </div>
-          </Button>
-          <Button 
-            className="bg-primary text-primary-foreground rounded-2xl py-8 font-semibold text-lg relative h-auto"
-          >
-            Трансферы
-            <div className="absolute bottom-2 right-2 w-8 h-8 bg-black/80 rounded-full flex items-center justify-center">
-              <ArrowLeftRight className="w-4 h-4 text-white" />
-            </div>
-          </Button>
+          />
+          <img 
+            src={btnTransfers} 
+            alt="Трансферы" 
+            className="w-full cursor-pointer hover:opacity-90 transition-opacity"
+          />
         </div>
 
         {/* Tournament Table */}
