@@ -139,29 +139,29 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
                     className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
                   />
                   {/* Price tag */}
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">
-                    <span className="text-[6px]">•</span>
+                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[8px] font-bold px-1.5 py-px rounded-full flex items-center gap-0.5">
+                    <span className="text-[5px]">•</span>
                     <span>{(assignedPlayer.price || 9).toFixed(1).replace('.', ',')}</span>
-                    <span className="text-[6px]">•</span>
+                    <span className="text-[5px]">•</span>
                   </div>
                 </div>
                 
                 {/* Position and name */}
                 <div 
-                  className="flex items-center gap-1 mt-1.5 cursor-pointer hover:opacity-80 bg-white/50 rounded-full px-2 py-0.5"
+                  className="flex items-center gap-0.5 mt-0.5 cursor-pointer hover:opacity-80 bg-white/50 rounded-full px-1.5 py-px"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <span className="text-black/60 text-[10px] font-medium">
+                  <span className="text-black/60 text-[8px] font-medium">
                     {assignedPlayer.position}
                   </span>
-                  <span className="text-black text-[10px] font-medium">
+                  <span className="text-black text-[8px] font-medium">
                     {assignedPlayer.name}
                   </span>
                 </div>
                 
                 {/* Club badge */}
-                <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center gap-0.5 mt-0.5">
-                  <span className="text-[8px]">(Д)</span>
+                <div className="bg-primary text-primary-foreground text-[7px] font-medium px-1 py-px rounded-full flex items-center gap-0.5">
+                  <span className="text-[7px]">(Д)</span>
                   <span>{assignedPlayer.team}</span>
                 </div>
               </div>
