@@ -46,18 +46,12 @@ const CategoryFilter = () => {
         <Button
           key={category.id}
           variant={category.id === "all" ? "default" : "secondary"}
-          className={`flex items-center gap-2 rounded-full whitespace-nowrap px-4 ${
-            category.id !== "all" ? "border" : ""
+          className={`flex items-center gap-2 rounded-full whitespace-nowrap px-4 h-10 ${
+            category.id !== "all" ? "border border-[#363546] bg-[#1D1C25]" : ""
           }`}
-          style={{
-            height: "40px",
-            ...(category.id !== "all" && { borderColor: "#363546" }),
-          }}
         >
           <span className="text-[20px] w-5 h-5 flex items-center justify-center">{category.icon}</span>
-          <span className="text-[12px] font-medium" style={{ color: "#6D6A88" }}>
-            {category.label}
-          </span>
+          <span className="text-[12px] font-medium text-[#6D6A88]">{category.label}</span>
         </Button>
       ))}
     </div>
