@@ -4,9 +4,8 @@ import logo from "@/assets/logo.png";
 const FooterNav = () => {
   return (
     <footer className="mt-8 pb-8 px-4">
-      <div className="flex justify-center items-center gap-3 mb-8">
+      <div className="flex justify-center mb-8">
         <img src={logo} alt="Fantasy Sports" className="h-8" />
-        <span className="text-foreground text-xl font-bold italic tracking-wide">FANTASY SPORTS</span>
       </div>
 
       <div className="flex justify-center gap-6">
