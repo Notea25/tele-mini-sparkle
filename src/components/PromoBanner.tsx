@@ -8,7 +8,6 @@ const PromoBannerSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   const images = [
     { src: banner1, alt: "Beterra Cup 1" },
@@ -20,7 +19,6 @@ const PromoBannerSlider = () => {
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
-    setIsAutoPlaying(false);
   }, []);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
@@ -52,30 +50,18 @@ const PromoBannerSlider = () => {
     setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   }, [images.length]);
 
+  // Автопрокрутка каждые 5 секунд
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
 
-    if (isAutoPlaying) {
-      interval = setInterval(() => {
-        nextSlide();
-      }, 5000);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isAutoPlaying, nextSlide]);
-
-  const handleMouseEnter = () => setIsAutoPlaying(false);
-  const handleMouseLeave = () => setIsAutoPlaying(true);
+    return () => clearInterval(interval);
+  }, [nextSlide]);
 
   return (
     <div className="mx-4 mt-4">
-      <div
-        className="relative overflow-hidden rounded-xl group"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <div className="relative overflow-hidden rounded-xl">
         <div
           className="relative flex transition-transform duration-500 ease-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -95,9 +81,10 @@ const PromoBannerSlider = () => {
           ))}
         </div>
 
+        {/* Кнопки навигации */}
         <button
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 lg:opacity-70"
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 hover:opacity-100 focus:opacity-100 lg:opacity-70"
           aria-label="Предыдущий слайд"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,7 +94,7 @@ const PromoBannerSlider = () => {
 
         <button
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 lg:opacity-70"
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 hover:opacity-100 focus:opacity-100 lg:opacity-70"
           aria-label="Следующий слайд"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,18 +102,14 @@ const PromoBannerSlider = () => {
           </svg>
         </button>
 
-        {/* Исправленные точки - одинаковый размер */}
+        {/* Точки-индикаторы */}
         <div className="absolute bottom-4 left-0 right-0 flex justify-center">
           <div className="flex space-x-2">
             {images.map((_, index) => (
               <button
                 key={index}
-                onClick={() => {
-                  setCurrentSlide(index);
-                  setIsAutoPlaying(false);
-                  setTimeout(() => setIsAutoPlaying(true), 3000);
-                }}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2 h-2 rounded-full transition-colors duration-300 ${
                   index === currentSlide ? "bg-white" : "bg-white/50 hover:bg-white/70"
                 }`}
                 aria-label={`Перейти к слайду ${index + 1}`}
@@ -136,6 +119,7 @@ const PromoBannerSlider = () => {
         </div>
       </div>
 
+      {/* Мобильные контролы */}
       <div className="flex items-center justify-center mt-4 space-x-4 md:hidden">
         <button
           onClick={prevSlide}
@@ -159,31 +143,6 @@ const PromoBannerSlider = () => {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
-        </button>
-      </div>
-
-      <div className="flex justify-center mt-2">
-        <button
-          onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-          className="text-sm text-gray-500 hover:text-gray-700 flex items-center space-x-1"
-          aria-label={isAutoPlaying ? "Пауза" : "Продолжить"}
-        >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            {isAutoPlaying ? (
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            ) : (
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                clipRule="evenodd"
-              />
-            )}
-          </svg>
-          <span>{isAutoPlaying ? "Пауза" : "Воспроизвести"}</span>
         </button>
       </div>
     </div>
