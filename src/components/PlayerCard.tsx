@@ -6,6 +6,7 @@ import {
 import { Button } from "@/components/ui/button";
 import playerPhoto from "@/assets/player-photo.png";
 import clubLogo from "@/assets/club-logo.png";
+import clubBelshina from "@/assets/club-belshina.png";
 
 interface PlayerData {
   id: number;
@@ -48,13 +49,13 @@ const PlayerCard = ({
     "НП": "Нападающий",
   };
 
-  // Mock form data for recent matches
+  // Mock form data for recent matches with club images
   const recentForm = [
-    { tour: 24, opponent: "BAT", home: true, points: 4 },
-    { tour: 25, opponent: "TOR", home: false, points: -1 },
-    { tour: 26, opponent: "ARS", home: true, points: 2 },
-    { tour: 27, opponent: "MOL", home: false, points: 5 },
-    { tour: 28, opponent: "VIT", home: true, points: 3 },
+    { tour: 24, opponent: "BAT", home: true, points: 4, logo: clubLogo },
+    { tour: 25, opponent: "TOR", home: false, points: -1, logo: clubBelshina },
+    { tour: 26, opponent: "ARS", home: true, points: 2, logo: clubLogo },
+    { tour: 27, opponent: "MOL", home: false, points: 5, logo: clubBelshina },
+    { tour: 28, opponent: "VIT", home: true, points: 3, logo: clubLogo },
   ];
 
   return (
@@ -142,8 +143,8 @@ const PlayerCard = ({
               {recentForm.map((match, idx) => (
                 <div key={idx} className="text-center">
                   <span className="text-muted-foreground text-xs block">Тур {match.tour}</span>
-                  <div className="w-8 h-8 mx-auto my-2 bg-secondary rounded-lg flex items-center justify-center">
-                    <span className="text-xs">🏆</span>
+                  <div className="w-8 h-8 mx-auto my-2 flex items-center justify-center">
+                    <img src={match.logo} alt={match.opponent} className="w-6 h-6 object-contain" />
                   </div>
                   <span className="text-muted-foreground text-xs block">
                     {match.opponent} ({match.home ? "H" : "G"})
