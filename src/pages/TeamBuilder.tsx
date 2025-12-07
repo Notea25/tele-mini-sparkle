@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
 import FormationField from "@/components/FormationField";
+import TeamListView from "@/components/TeamListView";
 import PlayerCard from "@/components/PlayerCard";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
@@ -693,6 +694,16 @@ const TeamBuilder = () => {
             </Select>
           </div>
         </>
+      )}
+
+      {activeTab === "list" && (
+        <TeamListView 
+          selectedPlayers={selectedPlayersData}
+          onRemovePlayer={(id) => togglePlayer(id)}
+          onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
+          onEmptySlotClick={handleEmptySlotClick}
+          clubIcons={clubIcons}
+        />
       )}
 
       {/* Position Filters */}
