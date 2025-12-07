@@ -179,7 +179,7 @@ const League = () => {
                 src={btnTeam} 
                 alt="Команда" 
                 className="w-full cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => navigate("/team-builder")}
+                onClick={() => navigate("/team-management")}
               />
               <img 
                 src={btnTransfers} 
