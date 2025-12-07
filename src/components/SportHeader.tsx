@@ -1,6 +1,7 @@
 import { X, ChevronDown, MoreHorizontal, Share, RefreshCw, Home, FileText, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTelegram } from "@/providers/TelegramProvider";
 import logo from "@/assets/logo.png";
 import {
   DropdownMenu,
@@ -11,6 +12,7 @@ import {
 
 const SportHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { close, isTelegram, user, hapticFeedback } = useTelegram();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,21 +24,25 @@ const SportHeader = () => {
   }, []);
 
   const handleShare = () => {
+    hapticFeedback("light");
     if (navigator.share) {
       navigator.share({ title: document.title, url: window.location.href });
     }
   };
 
   const handleRefresh = () => {
+    hapticFeedback("medium");
     window.location.reload();
   };
 
   const handleAddToHome = () => {
+    hapticFeedback("light");
     alert("Добавьте сайт на главный экран через меню браузера");
   };
 
   const handleClose = () => {
-    window.close();
+    hapticFeedback("medium");
+    close();
   };
 
   return (
@@ -95,7 +101,15 @@ const SportHeader = () => {
           <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
         </button>
         <Link to="/profile">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent" />
+          {user?.photo_url ? (
+            <img 
+              src={user.photo_url} 
+              alt={user.first_name || "User"} 
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent" />
+          )}
         </Link>
       </div>
     </header>
