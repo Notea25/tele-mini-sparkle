@@ -1,125 +1,71 @@
-import { useState, useEffect, useCallback } from "react";
+import SportHeader from "@/components/SportHeader";
+import PromoBanner from "@/components/PromoBanner";
+import SearchBar from "@/components/SearchBar";
+import CategoryFilter from "@/components/CategoryFilter";
+import SportCard from "@/components/SportCard";
+import FooterNav from "@/components/FooterNav";
+import { ChevronDown } from "lucide-react";
+import leagueLogo from "@/assets/league-logo.png";
+import footballIcon from "@/assets/football-icon.png";
+import basketballIcon from "@/assets/basketball-icon.png";
+import hockeyIcon from "@/assets/hockey-icon.png";
+import csgoIcon from "@/assets/csgo-icon.png";
 
-import banner1 from "@/assets/beterra-banner.png";
-import banner2 from "@/assets/beterra-banner.png";
-import banner3 from "@/assets/beterra-banner.png";
-
-const PromoBannerSlider = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-  const images = [
-    { src: banner1, alt: "Beterra Cup 1" },
-    { src: banner2, alt: "Beterra Cup 2" },
-    { src: banner3, alt: "Beterra Cup 3" },
-  ];
-
-  const minSwipeDistance = 50;
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    if (!touchStart || !touchEnd) return;
-
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe) {
-      nextSlide();
-    } else if (isRightSwipe) {
-      prevSlide();
-    }
-
-    setTouchStart(null);
-    setTouchEnd(null);
-  }, [touchStart, touchEnd]);
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  }, [images.length]);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  }, [images.length]);
-
-  // Автопрокрутка каждые 5 секунд
-  useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [nextSlide]);
-
+const Index = () => {
   return (
-    <div className="mx-4 mt-4">
-      <div className="relative overflow-hidden rounded-xl">
-        <div
-          className="relative flex transition-transform duration-500 ease-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {images.map((image, index) => (
-            <div key={index} className="w-full flex-shrink-0">
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-auto object-contain rounded-xl select-none"
-                draggable="false"
-              />
-            </div>
-          ))}
-        </div>
+    <div className="min-h-screen bg-background">
+      <SportHeader />
+      <PromoBanner />
 
-        {/* Кнопки навигации - ТОЛЬКО на десктопе (lg и выше) */}
-        <button
-          onClick={prevSlide}
-          className="hidden lg:block absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-70 hover:opacity-100 focus:opacity-100"
-          aria-label="Предыдущий слайд"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="hidden lg:block absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-70 hover:opacity-100 focus:opacity-100"
-          aria-label="Следующий слайд"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-
-        {/* Точки-индикаторы - всегда видны */}
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-          <div className="flex space-x-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                  index === currentSlide ? "bg-white" : "bg-white/50 hover:bg-white/70"
-                }`}
-                aria-label={`Перейти к слайду ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
+      <div className="px-4 mt-6">
+        <h2 className="text-foreground text-2xl font-bold mb-4">Чемпионаты</h2>
       </div>
+
+      <SearchBar />
+
+      <div className="px-4 mt-4 flex items-center justify-between">
+        <button className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
+          <span className="font-medium">Сначала топ лиги</span>
+          <ChevronDown className="w-4 h-4" />
+        </button>
+      </div>
+
+      <CategoryFilter />
+
+      <div className="mt-6">
+        <SportCard
+          title="Футбол"
+          iconImage={footballIcon}
+          leagueIcon={leagueLogo}
+          league="Беларусь"
+          date="04.04"
+          time="19:00"
+          glowColor="120 85% 55%"
+          href="/create-team"
+        />
+
+        <SportCard
+          title="Баскетбол"
+          iconImage={basketballIcon}
+          comingSoon
+          comingSoonYear="2026"
+          glowColor="35 85% 55%"
+        />
+
+        <SportCard title="Хоккей" iconImage={hockeyIcon} comingSoon comingSoonYear="2028" glowColor="200 85% 55%" />
+
+        <SportCard
+          title="Counter-Strike 2"
+          iconImage={csgoIcon}
+          comingSoon
+          comingSoonYear="2029"
+          glowColor="0 85% 55%"
+        />
+      </div>
+
+      <FooterNav />
     </div>
   );
 };
 
-export default PromoBannerSlider;
+export default Index;
