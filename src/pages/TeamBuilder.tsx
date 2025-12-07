@@ -751,8 +751,8 @@ const TeamBuilder = () => {
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
           )}
         </button>
-        <span className="w-8 text-center">Поз</span>
-        <span className="w-6 text-center">Клуб</span>
+        <span className="w-8"></span>
+        <span className="w-6"></span>
         <button 
           onClick={() => handleSort('points')}
           className={`w-12 flex items-center justify-end gap-0.5 transition-colors ${sortField === 'points' ? 'text-primary' : 'hover:text-foreground'}`}
