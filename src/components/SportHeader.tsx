@@ -25,7 +25,6 @@ const SportHeader = () => {
     <header
       className={`bg-background sticky top-0 z-50 transition-opacity duration-300 ${isScrolled ? "opacity-30" : "opacity-100"}`}
     >
-      {/* Этот div теперь будет видимым */}
       <div className="flex justify-between items-center px-4 pt-3 pb-4">
         <button onClick={handleRefresh}>
           <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
