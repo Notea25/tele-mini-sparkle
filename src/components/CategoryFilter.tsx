@@ -5,6 +5,7 @@ const categories = [
   { id: "all", label: "Все лиги", icon: "⚡" },
   { id: "football", label: "Футбол", icon: "⚽" },
   { id: "basketball", label: "Баскетбол", icon: "🏀" },
+  { id: "Counter-Strike 2", label: "Counter-Strike 2", icon: "🏀" },
 ];
 
 const CategoryFilter = () => {
