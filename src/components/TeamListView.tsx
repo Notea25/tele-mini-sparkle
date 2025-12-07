@@ -1,6 +1,4 @@
 import { X, Plus, Flame } from "lucide-react";
-import playerJerseyTeam from "@/assets/player-jersey-team.png";
-import playerJerseyWhite from "@/assets/player-jersey-white.png";
 
 interface PlayerData {
   id: number;
@@ -66,25 +64,9 @@ const TeamListView = ({
             key={`${slot.position}-${slot.slotIndex}`}
             className="bg-card rounded-xl p-3 flex items-center gap-3"
           >
-            {/* Jersey Icon */}
-            <div className="relative flex-shrink-0">
-              <img
-                src={isOccupied ? playerJerseyTeam : playerJerseyWhite}
-                alt={isOccupied ? slot.player?.name : "Empty"}
-                className="w-10 h-10 object-contain"
-              />
-              {isOccupied && slot.player?.price && (
-                <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[8px] font-bold px-1.5 py-px rounded-full flex items-center gap-0.5">
-                  <span className="text-[5px]">•</span>
-                  <span>{slot.player.price.toFixed(1).replace('.', ',')}</span>
-                  <span className="text-[5px]">•</span>
-                </div>
-              )}
-              {!isOccupied && (
-                <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[10px] font-medium">
-                  {slot.position}
-                </span>
-              )}
+            {/* Position Badge */}
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+              <span className="text-muted-foreground text-xs font-medium">{slot.position}</span>
             </div>
 
             {/* Player Info or Empty Slot */}
@@ -95,21 +77,20 @@ const TeamListView = ({
                   onClick={() => onPlayerClick?.(slot.player!)}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs">{slot.position}</span>
                     <span className="text-foreground font-medium truncate">{slot.player.name}</span>
+                    {clubIcons[slot.player.team] && (
+                      <img 
+                        src={clubIcons[slot.player.team]} 
+                        alt={slot.player.team}
+                        className="w-4 h-4 object-contain"
+                      />
+                    )}
                   </div>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <div className="flex items-center gap-1">
-                      {clubIcons[slot.player.team] && (
-                        <img 
-                          src={clubIcons[slot.player.team]} 
-                          alt={slot.player.team}
-                          className="w-4 h-4 object-contain"
-                        />
-                      )}
-                      <span className="text-muted-foreground text-xs">{slot.player.team}</span>
-                    </div>
-                  </div>
+                  {slot.player.price && (
+                    <span className="text-primary text-xs font-medium">
+                      {slot.player.price.toFixed(1).replace('.', ',')} млн
+                    </span>
+                  )}
                 </div>
               ) : (
                 <div 
