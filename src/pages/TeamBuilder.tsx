@@ -540,7 +540,7 @@ const TeamBuilder = () => {
           </div>
 
           {/* Price Range */}
-          <div className="px-4 -mt-24 relative z-10">
+          <div className="px-4 -mt-32 relative z-10">
             <span className="text-foreground text-sm mb-3 block">Цена</span>
             <div className="flex gap-4">
               <div className="flex items-center gap-2">
