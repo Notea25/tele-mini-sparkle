@@ -49,7 +49,9 @@ const CategoryFilter = () => {
           className="flex items-center gap-2 rounded-full whitespace-nowrap h-8 px-3"
         >
           <span className="text-[20px] w-5 h-5 flex items-center justify-center">{category.icon}</span>
-          <span className="text-xs font-medium">{category.label}</span>
+          <span className="text-[12px] font-medium" style={{ color: "#6D6A88" }}>
+            {category.label}
+          </span>
         </Button>
       ))}
     </div>
