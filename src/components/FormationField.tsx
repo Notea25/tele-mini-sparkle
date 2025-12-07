@@ -52,16 +52,16 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
 
   const getPlayerStyle = (row: number, col: number) => {
     const topPositions: Record<number, string> = {
-      1: "4%",
-      2: "20%",
-      3: "36%",
-      4: "52%",
+      1: "8%",
+      2: "28%",
+      3: "52%",
+      4: "78%",
     };
 
     const leftPositions: Record<number, Record<number, string>> = {
-      1: { 2: "37%", 4: "63%" },
-      2: { 1: "14%", 2: "30%", 3: "50%", 4: "70%", 5: "86%" },
-      3: { 1: "14%", 2: "30%", 3: "50%", 4: "70%", 5: "86%" },
+      1: { 2: "38%", 4: "62%" },
+      2: { 1: "15%", 2: "30%", 3: "50%", 4: "70%", 5: "85%" },
+      3: { 1: "15%", 2: "30%", 3: "50%", 4: "70%", 5: "85%" },
       4: { 2: "30%", 3: "50%", 4: "70%" },
     };
 
@@ -165,7 +165,7 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
                   alt="Player"
                   className="w-8 h-8 sm:w-9 sm:h-9"
                 />
-                <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[10px] font-bold">
+                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#1a1a2e] text-[10px] font-bold">
                   {slot.position}
                 </span>
               </div>
