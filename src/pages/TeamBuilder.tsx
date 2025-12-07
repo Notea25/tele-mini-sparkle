@@ -530,7 +530,7 @@ const TeamBuilder = () => {
       {activeTab === "formation" && (
         <>
           {/* Football Field */}
-          <div className="px-4 mt-4">
+          <div className="mt-4">
             <FormationField 
               selectedPlayers={selectedPlayersData} 
               onRemovePlayer={(id) => togglePlayer(id)}
