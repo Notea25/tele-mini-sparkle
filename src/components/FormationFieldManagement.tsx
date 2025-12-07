@@ -117,10 +117,10 @@ const FormationFieldManagement = ({
         </span>
       </div>
       
-      {/* Club badge - same width as name */}
-      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-2 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5 min-w-max">
+      {/* Club badge */}
+      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5">
         <span>(Д)</span>
-        <span className="whitespace-nowrap">{player.team.length > 10 ? player.team.substring(0, 10) : player.team}</span>
+        <span className="whitespace-nowrap">{player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
       </div>
     </div>
   );
