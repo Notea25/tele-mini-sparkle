@@ -48,7 +48,8 @@ const SearchBar = () => {
             isActive ? "text-white placeholder:text-white/70" : "text-foreground placeholder:text-[#4B485F]"
           }`}
           style={{
-            backgroundColor: "#1A1924",
+            // backgroundColor: "#1A1924",
+            backgroundColor: "#ffffff",
             borderColor: isActive ? "rgba(255, 255, 255, 0.2)" : "#2D2B3E",
           }}
           onFocus={() => setIsActive(true)}
