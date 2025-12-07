@@ -923,27 +923,6 @@ const TeamBuilder = () => {
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="px-4 mt-6 mb-6 flex gap-3">
-        <Button
-          onClick={handleAutoFill}
-          className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full py-3"
-        >
-          Автосбор
-        </Button>
-        <Button
-          onClick={handleReset}
-          disabled={selectedPlayers.length === 0}
-          className={`flex-1 font-semibold rounded-full py-3 ${
-            selectedPlayers.length === 0
-              ? "bg-[#1A1A2E] text-muted-foreground opacity-50 cursor-not-allowed"
-              : "bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white"
-          }`}
-        >
-          Сбросить
-        </Button>
-      </div>
-
       {/* Team Cost & Balance - Sticky */}
       <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-40">
         <div className="flex justify-between mb-4">
@@ -956,6 +935,28 @@ const TeamBuilder = () => {
             <p className="text-foreground text-3xl font-bold">{currentBalance.toFixed(1)}</p>
           </div>
         </div>
+        
+        {/* Action Buttons */}
+        <div className="flex gap-3 mb-3">
+          <Button
+            onClick={handleAutoFill}
+            className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full py-3"
+          >
+            Автосбор
+          </Button>
+          <Button
+            onClick={handleReset}
+            disabled={selectedPlayers.length === 0}
+            className={`flex-1 font-semibold rounded-full py-3 ${
+              selectedPlayers.length === 0
+                ? "bg-[#1A1A2E] text-muted-foreground opacity-50 cursor-not-allowed"
+                : "bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white"
+            }`}
+          >
+            Сбросить
+          </Button>
+        </div>
+        
         <Button
           disabled={selectedPlayers.length === 0}
           className={`w-full rounded-full py-3 font-semibold text-black ${
