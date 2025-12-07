@@ -33,7 +33,7 @@ const Index = () => {
           className="text-foreground text-[28px] font-normal leading-[130%] tracking-normal mb-4"
           style={{ fontFamily: "Unbounded, sans-serif" }}
         >
-          Лиги
+          Чемпионаты
         </h2>
       </div>
 
