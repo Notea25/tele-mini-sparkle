@@ -63,11 +63,8 @@ const TeamListView = ({
         return (
           <div
             key={`${slot.position}-${slot.slotIndex}`}
-            className="bg-card rounded-xl px-3 py-2 flex items-center"
+            className="bg-card rounded-full px-4 py-2 flex items-center"
           >
-            {/* Position - fixed width */}
-            <span className="text-muted-foreground text-xs w-6 flex-shrink-0">{slot.position}</span>
-            
             {isOccupied && slot.player ? (
               <>
                 {/* Player name - flexible */}
@@ -78,25 +75,28 @@ const TeamListView = ({
                   <span className="text-foreground font-medium truncate">{slot.player.name}</span>
                 </div>
                 
+                {/* Position - fixed width */}
+                <span className="w-8 text-center text-muted-foreground text-xs flex-shrink-0">{slot.position}</span>
+                
                 {/* Club icon - fixed width */}
                 <div className="w-6 flex-shrink-0 flex justify-center">
                   {clubIcons[slot.player.team] && (
                     <img 
                       src={clubIcons[slot.player.team]} 
                       alt={slot.player.team}
-                      className="w-4 h-4 object-contain"
+                      className="w-5 h-5 object-contain"
                     />
                   )}
                 </div>
                 
                 {/* Points - fixed width */}
                 <div className="w-12 flex-shrink-0 flex items-center justify-end gap-1 text-primary">
-                  <img src={flameIcon} alt="points" className="w-3 h-3 object-contain" />
-                  <span className="text-xs font-medium">{slot.player.points}</span>
+                  <img src={flameIcon} alt="points" className="w-4 h-4 object-contain" />
+                  <span className="text-sm font-medium">{slot.player.points}</span>
                 </div>
                 
                 {/* Price - fixed width */}
-                <span className="w-10 flex-shrink-0 text-muted-foreground text-xs text-right">
+                <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">
                   {slot.player.price?.toFixed(1).replace('.', ',')}
                 </span>
                 
@@ -122,6 +122,9 @@ const TeamListView = ({
                 >
                   <span className="text-muted-foreground text-sm">{slot.label}</span>
                 </div>
+                
+                {/* Position - fixed width */}
+                <span className="w-8 text-center text-muted-foreground text-xs flex-shrink-0">{slot.position}</span>
                 
                 {/* Add button */}
                 <button

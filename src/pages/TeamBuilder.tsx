@@ -738,15 +738,52 @@ const TeamBuilder = () => {
         </div>
       </div>
 
+      {/* Players List Header */}
+      <div className="px-4 mt-6 flex items-center text-xs text-muted-foreground">
+        <button 
+          onClick={() => handleSort('name')}
+          className={`flex-1 flex items-center gap-0.5 transition-colors ${sortField === 'name' ? 'text-primary' : 'hover:text-foreground'}`}
+        >
+          <span>Игрок</span>
+          {sortField === 'name' ? (
+            sortDirection === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
+          ) : (
+            <ChevronsUpDown className="w-3 h-3 opacity-50" />
+          )}
+        </button>
+        <span className="w-8 text-center">Поз</span>
+        <span className="w-6 text-center">Клуб</span>
+        <button 
+          onClick={() => handleSort('points')}
+          className={`w-12 flex items-center justify-end gap-0.5 transition-colors ${sortField === 'points' ? 'text-primary' : 'hover:text-foreground'}`}
+        >
+          <span>Очки</span>
+          {sortField === 'points' ? (
+            sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
+          ) : (
+            <ChevronsUpDown className="w-3 h-3 opacity-50" />
+          )}
+        </button>
+        <button 
+          onClick={() => handleSort('price')}
+          className={`w-10 flex items-center justify-end gap-0.5 transition-colors ${sortField === 'price' ? 'text-primary' : 'hover:text-foreground'}`}
+        >
+          <span>Цена</span>
+          {sortField === 'price' ? (
+            sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
+          ) : (
+            <ChevronsUpDown className="w-3 h-3 opacity-50" />
+          )}
+        </button>
+        <span className="w-8"></span>
+      </div>
+
       {/* Players List */}
-      <div className="px-4 mt-4 space-y-2">
+      <div className="px-4 mt-3 space-y-2">
         {paginatedPlayers.map((player) => {
           const isSelected = selectedPlayerIds.includes(player.id);
           return (
-            <div key={player.id} className="bg-card rounded-xl px-3 py-2 flex items-center">
-              {/* Position - fixed width */}
-              <span className="text-muted-foreground text-xs w-6 flex-shrink-0">{player.position}</span>
-              
+            <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
               {/* Player name - flexible */}
               <div 
                 className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
@@ -755,23 +792,26 @@ const TeamBuilder = () => {
                 <span className="text-foreground font-medium truncate">{player.name}</span>
               </div>
               
+              {/* Position - fixed width */}
+              <span className="w-8 text-center text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
+              
               {/* Club icon - fixed width */}
               <div className="w-6 flex-shrink-0 flex justify-center">
                 <img 
                   src={clubIcons[player.team] || clubLogo} 
                   alt={player.team}
-                  className="w-4 h-4 object-contain"
+                  className="w-5 h-5 object-contain"
                 />
               </div>
               
               {/* Points - fixed width */}
               <div className="w-12 flex-shrink-0 flex items-center justify-end gap-1 text-primary">
-                <img src={flameIcon} alt="points" className="w-3 h-3 object-contain" />
-                <span className="text-xs font-medium">{player.points}</span>
+                <img src={flameIcon} alt="points" className="w-4 h-4 object-contain" />
+                <span className="text-sm font-medium">{player.points}</span>
               </div>
               
               {/* Price - fixed width */}
-              <span className="w-10 flex-shrink-0 text-muted-foreground text-xs text-right">
+              <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">
                 {player.price.toFixed(1).replace('.', ',')}
               </span>
               
