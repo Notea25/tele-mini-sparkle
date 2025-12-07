@@ -208,9 +208,13 @@ const League = () => {
                 <span className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
                 <span className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.totalPoints.toLocaleString()}</span>
               </div>
-              <span className={`font-bold text-sm w-5 ${row.isUser ? "text-primary" : "text-transparent"}`}>
-                {row.isUser ? "Ты" : ""}
-              </span>
+              {row.isUser ? (
+                <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-xs">
+                  Ты
+                </span>
+              ) : (
+                <span className="w-8" />
+              )}
             </div>
           ))}
         </div>
