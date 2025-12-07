@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
+import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
@@ -101,35 +102,37 @@ const TeamManagement = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Mock data - main squad players
-  const mainSquadPlayers: PlayerData[] = [
+  // State for players (mutable for swaps)
+  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerData[]>([
     // Вратарь (1)
     { id: 0, name: "Вакулич", team: "Динамо Минск", position: "ВР", points: 29, price: 9, slotIndex: 0 },
     // Защитники (4)
-    { id: 4, name: "Вакулич", team: "Динамо Минск", position: "ЗЩ", points: 29, price: 9, slotIndex: 0 },
-    { id: 5, name: "Вакулич", team: "Динамо Минск", position: "ЗЩ", points: 29, price: 9, slotIndex: 1 },
-    { id: 6, name: "Вакулич", team: "Динамо Минск", position: "ЗЩ", points: 29, price: 9, slotIndex: 2 },
-    { id: 7, name: "Вакулич", team: "Динамо Минск", position: "ЗЩ", points: 29, price: 9, slotIndex: 3 },
+    { id: 4, name: "Иванов", team: "БАТЭ", position: "ЗЩ", points: 35, price: 8, slotIndex: 0 },
+    { id: 5, name: "Петров", team: "Шахтер", position: "ЗЩ", points: 28, price: 7, slotIndex: 1 },
+    { id: 6, name: "Сидоров", team: "Неман", position: "ЗЩ", points: 31, price: 8.5, slotIndex: 2 },
+    { id: 7, name: "Козлов", team: "Славия", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 3 },
     // Полузащитники (4)
-    { id: 12, name: "Вакулич", team: "Динамо Минск", position: "ПЗ", points: 29, price: 9, slotIndex: 0 },
-    { id: 13, name: "Вакулич", team: "Динамо Минск", position: "ПЗ", points: 29, price: 9, slotIndex: 1 },
-    { id: 14, name: "Вакулич", team: "Динамо Минск", position: "ПЗ", points: 29, price: 9, slotIndex: 2 },
-    { id: 15, name: "Вакулич", team: "Динамо Минск", position: "ПЗ", points: 29, price: 9, slotIndex: 3 },
+    { id: 12, name: "Михайлов", team: "Динамо Минск", position: "ПЗ", points: 42, price: 10, slotIndex: 0 },
+    { id: 13, name: "Федоров", team: "БАТЭ", position: "ПЗ", points: 38, price: 9.5, slotIndex: 1 },
+    { id: 14, name: "Алексеев", team: "Торпедо", position: "ПЗ", points: 33, price: 8, slotIndex: 2 },
+    { id: 15, name: "Николаев", team: "Шахтер", position: "ПЗ", points: 36, price: 9, slotIndex: 3 },
     // Нападающие (2)
-    { id: 22, name: "Вакулич", team: "Динамо Минск", position: "НП", points: 29, price: 9, slotIndex: 0 },
-    { id: 23, name: "Вакулич", team: "Динамо Минск", position: "НП", points: 29, price: 9, slotIndex: 1 },
-  ];
+    { id: 22, name: "Плотников", team: "Динамо Минск", position: "НП", points: 48, price: 11, slotIndex: 0 },
+    { id: 23, name: "Громов", team: "БАТЭ", position: "НП", points: 44, price: 10.5, slotIndex: 1 },
+  ]);
 
-  // Mock data - bench players
-  const benchPlayers: PlayerData[] = [
-    { id: 100, name: "Вакулич", team: "Динамо Минск", position: "ЗЩ", points: 29, price: 9, isOnBench: true },
-    { id: 101, name: "Вакулич", team: "Динамо Минск", position: "ПЗ", points: 29, price: 9, isOnBench: true },
-    { id: 102, name: "Вакулич", team: "Динамо Минск", position: "ПЗ", points: 29, price: 9, isOnBench: true },
-    { id: 103, name: "Вакулич", team: "Динамо Минск", position: "ВР", points: 29, price: 9, isOnBench: true },
-  ];
+  const [benchPlayers, setBenchPlayers] = useState<PlayerData[]>([
+    { id: 100, name: "Смирнов", team: "Белшина", position: "ЗЩ", points: 22, price: 5.5, isOnBench: true },
+    { id: 101, name: "Кузнецов", team: "Неман", position: "ПЗ", points: 25, price: 6, isOnBench: true },
+    { id: 102, name: "Попов", team: "Славия", position: "ПЗ", points: 24, price: 5.5, isOnBench: true },
+    { id: 103, name: "Соколов", team: "Торпедо", position: "ВР", points: 20, price: 5, isOnBench: true },
+  ]);
+
+  // Swap drawer state
+  const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
+  const [playerToSwap, setPlayerToSwap] = useState<PlayerData | null>(null);
 
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
-  const selectedPlayersData = mainSquadPlayers;
 
   // Group players by position for list view
   const playersByPosition = {
@@ -147,8 +150,69 @@ const TeamManagement = () => {
   };
 
   const handlePlayerSwap = (playerId: number) => {
-    // Navigate to transfers or open swap modal
-    console.log("Swap player:", playerId);
+    const player = allPlayers.find(p => p.id === playerId);
+    if (player) {
+      setPlayerToSwap(player);
+      setSwapDrawerOpen(true);
+    }
+  };
+
+  const handleSwapConfirm = (fromPlayerId: number, toPlayerId: number) => {
+    const fromPlayer = allPlayers.find(p => p.id === fromPlayerId);
+    const toPlayer = allPlayers.find(p => p.id === toPlayerId);
+    
+    if (!fromPlayer || !toPlayer) return;
+
+    // Determine if swapping between main and bench
+    const fromIsOnBench = fromPlayer.isOnBench;
+    const toIsOnBench = toPlayer.isOnBench;
+
+    if (fromIsOnBench && !toIsOnBench) {
+      // Bench player replacing field player
+      const toSlotIndex = toPlayer.slotIndex;
+      
+      setMainSquadPlayers(prev => 
+        prev.map(p => p.id === toPlayerId 
+          ? { ...fromPlayer, slotIndex: toSlotIndex, isOnBench: false } 
+          : p
+        )
+      );
+      setBenchPlayers(prev => 
+        prev.map(p => p.id === fromPlayerId 
+          ? { ...toPlayer, slotIndex: undefined, isOnBench: true } 
+          : p
+        )
+      );
+    } else if (!fromIsOnBench && toIsOnBench) {
+      // Field player replacing bench player
+      const fromSlotIndex = fromPlayer.slotIndex;
+      
+      setMainSquadPlayers(prev => 
+        prev.map(p => p.id === fromPlayerId 
+          ? { ...toPlayer, slotIndex: fromSlotIndex, isOnBench: false } 
+          : p
+        )
+      );
+      setBenchPlayers(prev => 
+        prev.map(p => p.id === toPlayerId 
+          ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } 
+          : p
+        )
+      );
+    }
+  };
+
+  // Get available players for swap
+  const getAvailableSwapPlayers = () => {
+    if (!playerToSwap) return [];
+    
+    if (playerToSwap.isOnBench) {
+      // Bench player - can swap with field players of same position
+      return mainSquadPlayers.filter(p => p.position === playerToSwap.position);
+    } else {
+      // Field player - can swap with bench players of same position
+      return benchPlayers.filter(p => p.position === playerToSwap.position);
+    }
   };
 
   const renderListSection = (position: string, players: PlayerData[]) => (
@@ -511,6 +575,18 @@ const TeamManagement = () => {
           onSetViceCaptain={setViceCaptain}
         />
       )}
+
+      {/* Swap Player Drawer */}
+      <SwapPlayerDrawer
+        isOpen={swapDrawerOpen}
+        onClose={() => {
+          setSwapDrawerOpen(false);
+          setPlayerToSwap(null);
+        }}
+        selectedPlayer={playerToSwap}
+        availablePlayers={getAvailableSwapPlayers()}
+        onSwap={handleSwapConfirm}
+      />
     </div>
   );
 };
