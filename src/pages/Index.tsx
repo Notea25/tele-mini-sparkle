@@ -22,7 +22,7 @@ const Index = () => {
       </div> */}
       <div className="px-4 mt-6">
         <h2
-          className="text-foreground text-[28px] font-normal leading-[130%] tracking-normal mb-4"
+          className="text-foreground text-[59px] font-normal leading-[130%] tracking-normal mb-4"
           style={{ fontFamily: "Unbounded, sans-serif" }}
         >
           Лиги
