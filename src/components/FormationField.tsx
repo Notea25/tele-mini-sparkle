@@ -165,7 +165,7 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
                   alt="Player"
                   className="w-8 h-8 sm:w-9 sm:h-9"
                 />
-                <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[10px] font-bold">
+                <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[10px] font-bold -translate-x-0.5">
                   {slot.position}
                 </span>
               </div>
