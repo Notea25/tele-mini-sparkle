@@ -125,9 +125,9 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center"
+                    className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
                   >
-                    <X className="w-3 h-3 text-muted-foreground" />
+                    <X className="w-2.5 h-2.5 text-black/70" />
                   </button>
                 )}
                 
@@ -148,13 +148,13 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
                 
                 {/* Position and name */}
                 <div 
-                  className="flex items-center gap-1 mt-1.5 cursor-pointer hover:opacity-80"
+                  className="flex items-center gap-1 mt-1.5 cursor-pointer hover:opacity-80 bg-white/50 rounded-full px-2 py-0.5"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <span className="text-muted-foreground text-[10px] font-medium">
+                  <span className="text-black/60 text-[10px] font-medium">
                     {assignedPlayer.position}
                   </span>
-                  <span className="text-white text-[10px] font-medium">
+                  <span className="text-black text-[10px] font-medium">
                     {assignedPlayer.name}
                   </span>
                 </div>
