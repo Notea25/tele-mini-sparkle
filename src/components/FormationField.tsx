@@ -159,7 +159,7 @@ const FormationField = ({
                       <span className="text-[7px]" style={{ color: "#7D7A94" }}>
                         (Д)
                       </span>
-                      <span>{assignedPlayer.team}</span>
+                      <span style={{ color: "#212121" }}>{assignedPlayer.team}</span>
                     </span>
                   </div>
                 </div>
