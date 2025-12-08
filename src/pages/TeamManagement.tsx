@@ -8,6 +8,7 @@ import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
+import BoostDrawer from "@/components/BoostDrawer";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
@@ -63,11 +64,18 @@ const TeamManagement = () => {
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName] = useState(() => getSavedTeam().teamName);
   const [specialChips, setSpecialChips] = useState(initialChips);
+  const [selectedBoostChip, setSelectedBoostChip] = useState<typeof initialChips[0] | null>(null);
+  const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
 
-  const toggleChip = (chipId: string) => {
+  const openBoostDrawer = (chip: typeof initialChips[0]) => {
+    setSelectedBoostChip(chip);
+    setIsBoostDrawerOpen(true);
+  };
+
+  const applyBoost = (chipId: string) => {
     setSpecialChips(prev => 
       prev.map(chip => 
-        chip.id === chipId ? { ...chip, active: !chip.active } : chip
+        chip.id === chipId ? { ...chip, active: false } : chip
       )
     );
   };
@@ -361,7 +369,7 @@ const TeamManagement = () => {
           {specialChips.map((chip) => (
             <div
               key={chip.id}
-              onClick={() => toggleChip(chip.id)}
+              onClick={() => openBoostDrawer(chip)}
               className="flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-card cursor-pointer transition-all hover:bg-card/80"
             >
               <img 
@@ -534,6 +542,14 @@ const TeamManagement = () => {
         selectedPlayer={playerToSwap}
         availablePlayers={getAvailableSwapPlayers()}
         onSwap={handleSwapConfirm}
+      />
+
+      {/* Boost Drawer */}
+      <BoostDrawer
+        chip={selectedBoostChip ? specialChips.find(c => c.id === selectedBoostChip.id) || null : null}
+        isOpen={isBoostDrawerOpen}
+        onClose={() => setIsBoostDrawerOpen(false)}
+        onApply={applyBoost}
       />
     </div>
   );
