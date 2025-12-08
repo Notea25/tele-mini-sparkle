@@ -31,19 +31,19 @@ const socialLinks = [
   {
     name: "Instagram",
     icon: Instagram,
-    href: "https://instagram.com/your-profile",
+    href: "https://www.onliner.by/",
     ariaLabel: "Перейти в наш Instagram",
   },
   {
     name: "Telegram",
     icon: Send,
-    href: "https://t.me/your-channel",
+    href: "https://www.onliner.by/",
     ariaLabel: "Перейти в наш Telegram",
   },
   {
     name: "YouTube",
     icon: Youtube,
-    href: "https://youtube.com/your-channel",
+    href: "https://www.onliner.by/",
     ariaLabel: "Перейти на наш YouTube канал",
   },
 ];
