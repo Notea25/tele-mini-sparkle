@@ -118,7 +118,6 @@ const FormationField = ({
               // Occupied slot with player
               <div className="relative flex flex-col items-center">
                 {/* Delete button */}
-                /*{" "}
                 {onRemovePlayer && (
                   <button
                     onClick={(e) => {
@@ -129,8 +128,8 @@ const FormationField = ({
                   >
                     <X className="w-2.5 h-2.5 text-black/70" />
                   </button>
-                )}{" "}
-                */
+                )}
+
                 {/* Jersey */}
                 <div className="relative">
                   <img
@@ -145,6 +144,7 @@ const FormationField = ({
                     <span className="text-[5px]">•</span>
                   </div>
                 </div>
+
                 <div
                   className="mt-0.5 cursor-pointer hover:opacity-80 rounded-[4.52px] shadow-sm overflow-hidden"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
