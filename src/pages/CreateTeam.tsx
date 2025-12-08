@@ -42,8 +42,15 @@ const CreateTeam = () => {
     setTeamName(value.slice(0, MAX_NAME_LENGTH));
   };
 
+  const isFormValid = teamName.trim().length > 0 && favoriteTeam.length > 0;
+
   const validateAndNavigate = () => {
-    const name = teamName.trim() || "Lucky Team";
+    if (!isFormValid) {
+      toast.error("Заполните все поля");
+      return;
+    }
+
+    const name = teamName.trim();
     
     try {
       if (filter.isProfane(name.toLowerCase())) {
@@ -116,8 +123,9 @@ const CreateTeam = () => {
         {/* Create Team Button */}
         <Button 
           onClick={validateAndNavigate}
-          className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
-          style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
+          disabled={!isFormValid}
+          className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
         >
           Создать команду
         </Button>
