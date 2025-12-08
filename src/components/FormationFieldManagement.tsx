@@ -158,7 +158,7 @@ const FormationFieldManagement = ({
       </div>
 
       {/* Bench section */}
-      <div className="mt-4 pb-6">
+      <div className="-mt-2 pb-6">
         <div className="bg-card/50 rounded-2xl p-4">
           <div className="flex gap-2 justify-between">
             {benchPlayers.map((player) => (
