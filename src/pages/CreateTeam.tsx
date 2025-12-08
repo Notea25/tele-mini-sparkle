@@ -89,11 +89,11 @@ const CreateTeam = () => {
             value={teamName}
             onChange={(e) => handleNameChange(e.target.value)}
             maxLength={MAX_NAME_LENGTH}
-            className="w-full h-14 bg-card/80 border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-16"
+            className="w-full h-14 bg-card/80 border-border text-foreground placeholder:text-muted-foreground rounded-xl"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xs pointer-events-none">
             {teamName.length}/{MAX_NAME_LENGTH}
-          </span>
+          </div>
         </div>
 
         {/* Favorite Team Select */}
