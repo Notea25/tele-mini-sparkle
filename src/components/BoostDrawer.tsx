@@ -18,7 +18,7 @@ interface BoostDrawerProps {
 
 const boostDescriptions: Record<string, { title: string; description: string; usedText?: string }> = {
   bench: {
-    title: "Bench Boost",
+    title: "Скамейка+",
     description: "Очки, набранные игроками, оставленными на скамейке запасных в течение тура, будут добавлены к общему количеству очков. Отмена может быть произведена в любое время до окончания игровой недели.",
     usedText: "Использовано 29 тур"
   },
