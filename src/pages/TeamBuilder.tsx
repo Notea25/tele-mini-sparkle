@@ -993,10 +993,18 @@ const TeamBuilder = () => {
         </div>
         
         <Button
-          disabled={selectedPlayers.length === 0}
-          onClick={() => navigate("/league")}
+          disabled={selectedPlayers.length < 15}
+          onClick={() => {
+            if (selectedPlayers.length < 15) {
+              toast.error("Состав не сформирован", {
+                description: `Выбрано ${selectedPlayers.length} из 15 игроков`
+              });
+            } else {
+              navigate("/league");
+            }
+          }}
           className={`w-full rounded-full py-3 font-semibold text-black ${
-            selectedPlayers.length === 0 ? "bg-[#4A5D23] cursor-not-allowed" : "bg-[#A8FF00] hover:bg-[#98EE00]"
+            selectedPlayers.length < 15 ? "bg-[#4A5D23] cursor-not-allowed" : "bg-[#A8FF00] hover:bg-[#98EE00]"
           }`}
         >
           Сохранить
