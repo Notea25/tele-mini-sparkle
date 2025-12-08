@@ -1,195 +1,3 @@
-// import footballField from "@/assets/football-field.png";
-// import playerJerseyWhite from "@/assets/player-jersey-white.png";
-// import playerJerseyTeam from "@/assets/player-jersey-team.png";
-// import { X } from "lucide-react";
-
-// interface PlayerData {
-//   id: number;
-//   name: string;
-//   team: string;
-//   position: string;
-//   points: number;
-//   price?: number;
-//   slotIndex?: number;
-// }
-
-// interface FormationPosition {
-//   position: string;
-//   row: number;
-//   col: number;
-// }
-
-// interface FormationFieldProps {
-//   selectedPlayers?: PlayerData[];
-//   onRemovePlayer?: (playerId: number) => void;
-//   onPlayerClick?: (player: PlayerData) => void;
-//   onEmptySlotClick?: (position: string) => void;
-// }
-
-// const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, onEmptySlotClick }: FormationFieldProps) => {
-//   // Formation: 2 ВР (goalkeepers), 5 ЗЩ (defenders), 5 ПЗ (midfielders), 3 НП (forwards)
-//   const formation: FormationPosition[] = [
-//     // Row 1 - Goalkeepers (top)
-//     { position: "ВР", row: 1, col: 2 },
-//     { position: "ВР", row: 1, col: 4 },
-//     // Row 2 - Defenders
-//     { position: "ЗЩ", row: 2, col: 1 },
-//     { position: "ЗЩ", row: 2, col: 2 },
-//     { position: "ЗЩ", row: 2, col: 3 },
-//     { position: "ЗЩ", row: 2, col: 4 },
-//     { position: "ЗЩ", row: 2, col: 5 },
-//     // Row 3 - Midfielders
-//     { position: "ПЗ", row: 3, col: 1 },
-//     { position: "ПЗ", row: 3, col: 2 },
-//     { position: "ПЗ", row: 3, col: 3 },
-//     { position: "ПЗ", row: 3, col: 4 },
-//     { position: "ПЗ", row: 3, col: 5 },
-//     // Row 4 - Forwards (bottom)
-//     { position: "НП", row: 4, col: 2 },
-//     { position: "НП", row: 4, col: 3 },
-//     { position: "НП", row: 4, col: 4 },
-//   ];
-
-//   const getPlayerStyle = (row: number, col: number) => {
-//     const topPositions: Record<number, string> = {
-//       1: "4%",
-//       2: "20%",
-//       3: "36%",
-//       4: "52%",
-//     };
-
-//     const leftPositions: Record<number, Record<number, string>> = {
-//       1: { 2: "37%", 4: "63%" },
-//       2: { 1: "14%", 2: "30%", 3: "50%", 4: "70%", 5: "86%" },
-//       3: { 1: "14%", 2: "30%", 3: "50%", 4: "70%", 5: "86%" },
-//       4: { 2: "30%", 3: "50%", 4: "70%" },
-//     };
-
-//     return {
-//       top: topPositions[row],
-//       left: leftPositions[row][col],
-//     };
-//   };
-
-//   // Map position abbreviations
-//   const positionMap: Record<string, string> = {
-//     "ВР": "ВР",
-//     "ЗЩ": "ЗЩ",
-//     "ПЗ": "ПЗ",
-//     "НП": "НП",
-//   };
-
-//   // Get assigned player for a formation slot
-//   const getAssignedPlayer = (formationPos: FormationPosition, globalSlotIndex: number) => {
-//     // Find the slot index within the position
-//     const slotsForPosition = formation.filter(f => f.position === formationPos.position);
-//     const slotPositionIndex = slotsForPosition.findIndex(
-//       s => s.row === formationPos.row && s.col === formationPos.col
-//     );
-
-//     // Find player assigned to this specific slot
-//     return selectedPlayers.find(p =>
-//       p.position === formationPos.position && p.slotIndex === slotPositionIndex
-//     );
-//   };
-
-//   return (
-//     <div className="relative w-full">
-//       <img
-//         src={footballField}
-//         alt="Football field"
-//         className="w-full rounded-2xl"
-//       />
-//       {formation.map((slot, idx) => {
-//         const style = getPlayerStyle(slot.row, slot.col);
-//         const assignedPlayer = getAssignedPlayer(slot, idx);
-//         const isOccupied = !!assignedPlayer;
-
-//         return (
-//           <div
-//             key={idx}
-//             className={`absolute flex flex-col items-center ${isOccupied ? 'z-20' : 'z-10'}`}
-//             style={{
-//               top: style.top,
-//               left: style.left,
-//               transform: "translateX(-50%)",
-//             }}
-//           >
-//           {isOccupied ? (
-//               // Occupied slot with player
-//               <div className="relative flex flex-col items-center">
-//                 {/* Delete button */}
-//                 {onRemovePlayer && (
-//                   <button
-//                     onClick={(e) => {
-//                       e.stopPropagation();
-//                       onRemovePlayer(assignedPlayer.id);
-//                     }}
-//                     className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
-//                   >
-//                     <X className="w-2.5 h-2.5 text-black/70" />
-//                   </button>
-//                 )}
-
-//                 {/* Jersey */}
-//                 <div className="relative">
-//                   <img
-//                     src={playerJerseyTeam}
-//                     alt={assignedPlayer.name}
-//                     className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-//                   />
-//                   {/* Price tag */}
-//                   <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[8px] font-bold px-1.5 py-px rounded-full flex items-center gap-0.5">
-//                     <span className="text-[5px]">•</span>
-//                     <span>{(assignedPlayer.price || 9).toFixed(1).replace('.', ',')}</span>
-//                     <span className="text-[5px]">•</span>
-//                   </div>
-//                 </div>
-
-//                 {/* Position and name */}
-//                 <div
-//                   className="flex items-center gap-0.5 mt-0.5 cursor-pointer hover:opacity-80 bg-white/50 rounded-full px-1.5 py-px"
-//                   onClick={() => onPlayerClick?.(assignedPlayer)}
-//                 >
-//                   <span className="text-black/60 text-[8px] font-medium">
-//                     {assignedPlayer.position}
-//                   </span>
-//                   <span className="text-black text-[8px] font-medium">
-//                     {assignedPlayer.name}
-//                   </span>
-//                 </div>
-
-//                 {/* Club badge */}
-//                 <div className="bg-primary text-primary-foreground text-[7px] font-medium px-1 py-px rounded-full flex items-center gap-0.5">
-//                   <span className="text-[7px]">(Д)</span>
-//                   <span>{assignedPlayer.team}</span>
-//                 </div>
-//               </div>
-//             ) : (
-//               // Empty slot
-//               <div
-//                 className="relative cursor-pointer hover:opacity-80"
-//                 onClick={() => onEmptySlotClick?.(slot.position)}
-//               >
-//                 <img
-//                   src={playerJerseyWhite}
-//                   alt="Player"
-//                   className="w-8 h-8 sm:w-9 sm:h-9"
-//                 />
-//                 <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium -translate-x-0.5">
-//                   {slot.position}
-//                 </span>
-//               </div>
-//             )}
-//           </div>
-//         );
-//       })}
-//     </div>
-//   );
-// };
-
-// export default FormationField;
-
 import footballField from "@/assets/football-field.png";
 import playerJerseyWhite from "@/assets/player-jersey-white.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
@@ -268,6 +76,14 @@ const FormationField = ({
     };
   };
 
+  // Map position abbreviations
+  const positionMap: Record<string, string> = {
+    ВР: "ВР",
+    ЗЩ: "ЗЩ",
+    ПЗ: "ПЗ",
+    НП: "НП",
+  };
+
   // Get assigned player for a formation slot
   const getAssignedPlayer = (formationPos: FormationPosition, globalSlotIndex: number) => {
     // Find the slot index within the position
@@ -299,89 +115,61 @@ const FormationField = ({
             }}
           >
             {isOccupied ? (
-              // Занятый слот с игроком - НОВЫЙ СТИЛЬ
+              // Occupied slot with player
               <div className="relative flex flex-col items-center">
-                {/* Кнопка удаления */}
+                {/* Delete button */}
                 {onRemovePlayer && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute -top-1.5 -right-1.5 z-50 w-5 h-5 flex items-center justify-center bg-red-500 rounded-full hover:bg-red-600 transition-colors"
+                    className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
                   >
-                    <X className="w-2.5 h-2.5 text-white" />
+                    <X className="w-2.5 h-2.5 text-black/70" />
                   </button>
                 )}
 
-                {/* Новый контейнер с позицией и фамилией */}
-                <div className="flex flex-col items-center min-w-[60px]">
-                  {/* Верхний контейнер - позиция и фамилия */}
-                  <div
-                    className="flex items-center gap-0.5 px-1 py-0.5 rounded-t-[4.52px] bg-white cursor-pointer hover:opacity-90 transition-opacity shadow-sm"
-                    onClick={() => onPlayerClick?.(assignedPlayer)}
-                    style={{
-                      fontFamily: "'Rubik', sans-serif",
-                      borderBottom: "1px solid #f0f0f0",
-                    }}
-                  >
-                    <span className="text-[#7D7A94] text-[8px] font-medium uppercase">{assignedPlayer.position}</span>
-                    <span className="text-[#212121] text-[8px] font-medium truncate max-w-[50px]">
-                      {assignedPlayer.name}
-                    </span>
+                {/* Jersey */}
+                <div className="relative">
+                  <img
+                    src={playerJerseyTeam}
+                    alt={assignedPlayer.name}
+                    className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                  />
+                  {/* Price tag */}
+                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[8px] font-bold px-1.5 py-px rounded-full flex items-center gap-0.5">
+                    <span className="text-[5px]">•</span>
+                    <span>{(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}</span>
+                    <span className="text-[5px]">•</span>
                   </div>
+                </div>
 
-                  {/* Нижний контейнер - название клуба */}
-                  <div
-                    className="flex items-center justify-center gap-0.5 px-1 py-0.5 rounded-b-[4.52px] bg-[#9AF154] cursor-pointer hover:opacity-90 transition-opacity shadow-sm w-full"
-                    onClick={() => onPlayerClick?.(assignedPlayer)}
-                    style={{ fontFamily: "'Rubik', sans-serif" }}
-                  >
-                    <span className="text-[#212121] text-[8px] font-medium truncate max-w-[50px] text-center">
-                      {assignedPlayer.team}
-                    </span>
-                  </div>
+                {/* Position and name */}
+                <div
+                  className="flex items-center gap-0.5 mt-0.5 cursor-pointer hover:opacity-80 bg-white/50 rounded-full px-1.5 py-px"
+                  onClick={() => onPlayerClick?.(assignedPlayer)}
+                >
+                  <span className="text-black/60 text-[8px] font-medium">{assignedPlayer.position}</span>
+                  <span className="text-black text-[8px] font-medium">{assignedPlayer.name}</span>
+                </div>
 
-                  {/* Цена игрока */}
-                  <div className="mt-0.5 bg-[#B855E4] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
-                    {(assignedPlayer.price || 0).toFixed(1).replace(".", ",")}
-                  </div>
+                {/* Club badge */}
+                <div className="bg-primary text-primary-foreground text-[7px] font-medium px-1 py-px rounded-full flex items-center gap-0.5">
+                  <span className="text-[7px]">(Д)</span>
+                  <span>{assignedPlayer.team}</span>
                 </div>
               </div>
             ) : (
-              // Пустой слот
+              // Empty slot
               <div
-                className="relative cursor-pointer hover:opacity-80 flex flex-col items-center"
+                className="relative cursor-pointer hover:opacity-80"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
-                {/* Пустой слот с позицией */}
-                <div className="flex flex-col items-center min-w-[50px]">
-                  {/* Верхний контейнер - пустой */}
-                  <div className="flex items-center gap-0.5 px-1 py-0.5 rounded-t-[4.52px] bg-white/80">
-                    <span
-                      className="text-[#7D7A94] text-[8px] font-medium uppercase"
-                      style={{ fontFamily: "'Rubik', sans-serif" }}
-                    >
-                      {slot.position}
-                    </span>
-                    <span
-                      className="text-[#212121] text-[8px] font-medium"
-                      style={{ fontFamily: "'Rubik', sans-serif" }}
-                    >
-                      ...
-                    </span>
-                  </div>
-
-                  {/* Нижний контейнер - пустой */}
-                  <div className="flex items-center justify-center gap-0.5 px-1 py-0.5 rounded-b-[4.52px] bg-[#9AF154]/50 w-full">
-                    <span
-                      className="text-[#212121] text-[8px] font-medium opacity-50"
-                      style={{ fontFamily: "'Rubik', sans-serif" }}
-                    >
-                      ...
-                    </span>
-                  </div>
-                </div>
+                <img src={playerJerseyWhite} alt="Player" className="w-8 h-8 sm:w-9 sm:h-9" />
+                <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium -translate-x-0.5">
+                  {slot.position}
+                </span>
               </div>
             )}
           </div>
