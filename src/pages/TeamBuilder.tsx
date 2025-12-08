@@ -17,7 +17,7 @@ import {
   ChevronsUpDown,
   ChevronUp,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
@@ -46,6 +46,7 @@ const clubIcons: Record<string, string> = {
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const playerListRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
@@ -59,7 +60,10 @@ const TeamBuilder = () => {
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
-  const [teamName, setTeamName] = useState("Lucky Team");
+  const [teamName, setTeamName] = useState(() => {
+    const state = location.state as { teamName?: string } | null;
+    return state?.teamName || "Lucky Team";
+  });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showSquadError, setShowSquadError] = useState(false);
   // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
