@@ -62,7 +62,7 @@ const TeamBuilder = () => {
   const [teamName, setTeamName] = useState("Lucky Team");
   const [isEditingTeamName, setIsEditingTeamName] = useState(false);
   const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
-  
+  const [showSquadError, setShowSquadError] = useState(false);
   // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
   const [sortField, setSortField] = useState<'name' | 'points' | 'price' | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
@@ -970,6 +970,18 @@ const TeamBuilder = () => {
             <p className="text-foreground text-base font-bold">{currentBalance.toFixed(1)}</p>
           </div>
         </div>
+
+        {/* Squad Error Message */}
+        {showSquadError && selectedPlayers.length < 15 && (
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-6 h-6 rounded-full bg-[#6B6B8D] flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-sm font-bold">!</span>
+            </div>
+            <p className="text-muted-foreground text-sm">
+              Состав не сформирован. Выбрано {selectedPlayers.length} из 15 игроков
+            </p>
+          </div>
+        )}
         
         {/* Action Buttons */}
         <div className="flex gap-3 mb-3">
@@ -993,18 +1005,15 @@ const TeamBuilder = () => {
         </div>
         
         <Button
-          disabled={selectedPlayers.length < 15}
           onClick={() => {
             if (selectedPlayers.length < 15) {
-              toast.error("Состав не сформирован", {
-                description: `Выбрано ${selectedPlayers.length} из 15 игроков`
-              });
+              setShowSquadError(true);
             } else {
               navigate("/league");
             }
           }}
           className={`w-full rounded-full py-3 font-semibold text-black ${
-            selectedPlayers.length < 15 ? "bg-[#4A5D23] cursor-not-allowed" : "bg-[#A8FF00] hover:bg-[#98EE00]"
+            selectedPlayers.length < 15 ? "bg-[#4A5D23]" : "bg-[#A8FF00] hover:bg-[#98EE00]"
           }`}
         >
           Сохранить
