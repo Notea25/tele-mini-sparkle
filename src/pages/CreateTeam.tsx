@@ -73,7 +73,7 @@ const CreateTeam = () => {
 
         {/* Create Team Button */}
         <Button 
-          onClick={() => navigate("/team-builder")}
+          onClick={() => navigate("/team-builder", { state: { teamName: teamName || "Lucky Team" } })}
           className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
           style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
         >

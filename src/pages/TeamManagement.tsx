@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, Pencil, Check, ArrowLeftRight } from "lucide-react";
+import { ChevronDown, ArrowLeftRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
@@ -67,9 +67,7 @@ const TeamManagement = () => {
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
-  const [teamName, setTeamName] = useState("Lucky Team");
-  const [isEditingTeamName, setIsEditingTeamName] = useState(false);
-  const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
+  const [teamName] = useState("Lucky Team");
 
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");
@@ -304,50 +302,7 @@ const TeamManagement = () => {
         
         {/* Team name */}
         <div className="flex items-center gap-3 mb-2">
-          {isEditingTeamName ? (
-            <div className="flex items-center gap-2">
-              <Input
-                value={editedTeamName}
-                onChange={(e) => setEditedTeamName(e.target.value)}
-                className="text-2xl font-bold bg-card border-border text-foreground h-10 w-72"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    setTeamName(editedTeamName || "Lucky Team");
-                    setIsEditingTeamName(false);
-                  }
-                  if (e.key === "Escape") {
-                    setEditedTeamName(teamName);
-                    setIsEditingTeamName(false);
-                  }
-                }}
-              />
-              <button
-                className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"
-                onClick={() => {
-                  setTeamName(editedTeamName || "Lucky Team");
-                  setIsEditingTeamName(false);
-                }}
-              >
-                <Check className="w-5 h-5 text-primary-foreground" />
-              </button>
-            </div>
-          ) : (
-            <>
-              <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-primary"
-                onClick={() => {
-                  setEditedTeamName(teamName);
-                  setIsEditingTeamName(true);
-                }}
-              >
-                <Pencil className="w-4 h-4" />
-              </Button>
-            </>
-          )}
+          <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
         </div>
         
         <div className="flex items-center justify-between text-sm">

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Pencil, ChevronRight, ChevronDown, ChevronUp, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
+import EditTeamNameModal from "@/components/EditTeamNameModal";
 import homeIcon from "@/assets/home-icon.png";
 import btnTeam from "@/assets/btn-team.png";
 import btnTransfers from "@/assets/btn-transfers.png";
@@ -18,6 +19,7 @@ const League = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">("main");
   const [teamName, setTeamName] = useState("Lucky Team");
+  const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
 
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");
@@ -120,7 +122,10 @@ const League = () => {
             {/* Team Name */}
             <div className="flex items-center justify-center gap-2 mb-4">
               <h1 className="text-2xl font-bold text-foreground">{teamName}</h1>
-              <Pencil className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground" />
+              <Pencil 
+                className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground" 
+                onClick={() => setIsEditTeamNameModalOpen(true)}
+              />
             </div>
 
             {/* Current Tour Stats */}
@@ -414,6 +419,13 @@ const League = () => {
           </>
         )}
       </main>
+
+      <EditTeamNameModal
+        isOpen={isEditTeamNameModalOpen}
+        onClose={() => setIsEditTeamNameModalOpen(false)}
+        currentName={teamName}
+        onSave={setTeamName}
+      />
     </div>
   );
 };
