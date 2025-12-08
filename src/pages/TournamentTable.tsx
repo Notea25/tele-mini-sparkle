@@ -180,7 +180,7 @@ const TournamentTable = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SportHeader />
+      <SportHeader backTo="/league" />
 
       <main className="flex-1 px-4 pb-6">
         {/* Breadcrumb */}

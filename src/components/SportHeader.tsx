@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { useTelegram } from "@/providers/TelegramProvider";
 import logo from "@/assets/logo.png";
 
-const SportHeader = () => {
+interface SportHeaderProps {
+  backTo?: string;
+}
+
+const SportHeader = ({ backTo }: SportHeaderProps = {}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useTelegram();
   const location = useLocation();
@@ -26,7 +30,11 @@ const SportHeader = () => {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    if (backTo) {
+      navigate(backTo);
+    } else {
+      navigate(-1);
+    }
   };
 
   return (

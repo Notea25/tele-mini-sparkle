@@ -116,7 +116,7 @@ const Transfers = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <SportHeader />
+      <SportHeader backTo="/league" />
 
       {/* Breadcrumb */}
       <div className="px-4 mt-4">

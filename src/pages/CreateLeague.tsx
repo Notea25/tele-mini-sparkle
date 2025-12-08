@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import SportHeader from "@/components/SportHeader";
 
 const CreateLeague = () => {
   const navigate = useNavigate();
@@ -15,7 +16,9 @@ const CreateLeague = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col px-4 pt-8">
+    <div className="min-h-screen bg-background flex flex-col">
+      <SportHeader backTo="/league" />
+      <div className="flex-1 px-4 pt-8">
       {/* Title */}
       <h1 className="text-3xl font-bold text-foreground italic mb-6">
         Создай свою лигу
@@ -38,6 +41,7 @@ const CreateLeague = () => {
       >
         Создать лигу
       </Button>
+      </div>
     </div>
   );
 };

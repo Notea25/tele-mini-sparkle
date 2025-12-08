@@ -61,7 +61,7 @@ const DreamTeam = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SportHeader />
+      <SportHeader backTo="/league" />
 
       {/* Breadcrumb */}
       <div className="px-4 mt-4">
