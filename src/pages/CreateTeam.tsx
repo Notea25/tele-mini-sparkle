@@ -6,7 +6,9 @@ import { ArrowLeft, Trophy, User, TrendingUp, Award, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { Filter } from "bad-words";
+import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg.png";
 import playersExample from "@/assets/players-example.png";
 import scoringExample from "@/assets/scoring-example.png";
@@ -16,10 +18,44 @@ import prize3rdPlace from "@/assets/prize-3rd-place.png";
 import prize2ndPlace from "@/assets/prize-2nd-place.png";
 import prize1stPlace from "@/assets/prize-1st-place.png";
 
+const MAX_NAME_LENGTH = 15;
+
+const russianBadWords = [
+  "хуй", "хуя", "хуе", "хуи", "пизд", "блять", "бля", "блядь", "ебать", "еба", 
+  "ебу", "ебан", "ебл", "сука", "суки", "сучк", "мудак", "мудил", "пидор", 
+  "пидар", "гандон", "залупа", "шлюх", "дрочи", "хер", "жопа", "срань", 
+  "говно", "дерьмо", "засранец", "уебан", "уёб", "ёб", "долбоёб", "мразь"
+];
+
 const CreateTeam = () => {
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState("");
   const [favoriteTeam, setFavoriteTeam] = useState("");
+
+  const filter = useMemo(() => {
+    const f = new Filter();
+    f.addWords(...russianBadWords);
+    return f;
+  }, []);
+
+  const handleNameChange = (value: string) => {
+    setTeamName(value.slice(0, MAX_NAME_LENGTH));
+  };
+
+  const validateAndNavigate = () => {
+    const name = teamName.trim() || "Lucky Team";
+    
+    try {
+      if (filter.isProfane(name.toLowerCase())) {
+        toast.error("Название содержит недопустимые слова");
+        return;
+      }
+    } catch {
+      // If filter fails, allow navigation
+    }
+    
+    navigate("/team-builder", { state: { teamName: name } });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -47,12 +83,18 @@ const CreateTeam = () => {
       {/* Team Creation Form */}
       <div className="px-4 mt-6 space-y-3">
         {/* Team Name Input */}
-        <Input
-          placeholder="Название команды"
-          value={teamName}
-          onChange={(e) => setTeamName(e.target.value)}
-          className="w-full h-14 bg-card/80 border-border text-foreground placeholder:text-muted-foreground rounded-xl"
-        />
+        <div className="relative">
+          <Input
+            placeholder="Название команды"
+            value={teamName}
+            onChange={(e) => handleNameChange(e.target.value)}
+            maxLength={MAX_NAME_LENGTH}
+            className="w-full h-14 bg-card/80 border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-16"
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+            {teamName.length}/{MAX_NAME_LENGTH}
+          </span>
+        </div>
 
         {/* Favorite Team Select */}
         <Select value={favoriteTeam} onValueChange={setFavoriteTeam}>
@@ -73,7 +115,7 @@ const CreateTeam = () => {
 
         {/* Create Team Button */}
         <Button 
-          onClick={() => navigate("/team-builder", { state: { teamName: teamName || "Lucky Team" } })}
+          onClick={validateAndNavigate}
           className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
           style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
         >
