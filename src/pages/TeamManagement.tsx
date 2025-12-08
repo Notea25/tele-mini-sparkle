@@ -67,7 +67,7 @@ const TeamManagement = () => {
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
-  const [teamName] = useState("Lucky Team");
+  const [teamName] = useState(() => localStorage.getItem('fantasyTeamName') || "Lucky Team");
 
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");

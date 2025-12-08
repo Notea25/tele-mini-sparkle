@@ -18,8 +18,16 @@ import trophyBronze from "@/assets/trophy-bronze.png";
 const League = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">("main");
-  const [teamName, setTeamName] = useState("Lucky Team");
+  const [teamName, setTeamName] = useState(() => {
+    return localStorage.getItem('fantasyTeamName') || "Lucky Team";
+  });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
+
+  // Save team name to localStorage when it changes
+  const handleSaveTeamName = (newName: string) => {
+    setTeamName(newName);
+    localStorage.setItem('fantasyTeamName', newName);
+  };
 
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");
@@ -424,7 +432,7 @@ const League = () => {
         isOpen={isEditTeamNameModalOpen}
         onClose={() => setIsEditTeamNameModalOpen(false)}
         currentName={teamName}
-        onSave={setTeamName}
+        onSave={handleSaveTeamName}
       />
     </div>
   );
