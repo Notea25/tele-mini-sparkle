@@ -781,44 +781,20 @@ const TeamBuilder = () => {
           const isSelected = selectedPlayerIds.includes(player.id);
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-              {/* Новый контейнер с позицией, фамилией и клубом */}
-              <div className="flex-1 flex items-center gap-2 min-w-0">
-                {/* Контейнер с позицией/фамилией и клубом */}
-                <div
-                  className="flex flex-col min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
-                  onClick={() => setSelectedPlayerForCard(player.id)}
-                >
-                  {/* Верхний контейнер */}
-                  <div className="flex items-center gap-1 px-1 py-0.5 rounded-t-[4.52px] bg-white">
-                    <span
-                      className="text-[#7D7A94] text-[8px] font-medium uppercase flex-shrink-0 leading-none"
-                      style={{ fontFamily: "'Rubik', sans-serif" }}
-                    >
-                      {player.position}
-                    </span>
-                    <span
-                      className="text-[#212121] text-[8px] font-medium truncate leading-none"
-                      style={{ fontFamily: "'Rubik', sans-serif" }}
-                    >
-                      {player.name}
-                    </span>
-                  </div>
+              {/* Player name - flexible */}
+              <div
+                className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
+                onClick={() => setSelectedPlayerForCard(player.id)}
+              >
+                <span className="text-foreground font-medium truncate">{player.name}</span>
+              </div>
 
-                  {/* Нижний контейнер с иконкой клуба */}
-                  <div className="flex items-center gap-1 px-1 py-0.5 rounded-b-[4.52px] bg-[#9AF154]">
-                    <img
-                      src={clubIcons[player.team] || clubLogo}
-                      alt={player.team}
-                      className="w-3 h-3 object-contain"
-                    />
-                    <span
-                      className="text-[#212121] text-[8px] font-medium truncate leading-none"
-                      style={{ fontFamily: "'Rubik', sans-serif" }}
-                    >
-                      {player.team}
-                    </span>
-                  </div>
-                </div>
+              {/* Position - fixed width */}
+              <span className="w-8 text-center text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
+
+              {/* Club icon - fixed width */}
+              <div className="w-6 flex-shrink-0 flex justify-center">
+                <img src={clubIcons[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
               </div>
 
               {/* Points - fixed width */}
