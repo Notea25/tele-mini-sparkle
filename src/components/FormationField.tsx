@@ -146,7 +146,7 @@ const FormationField = ({
                 </div>
 
                 <div
-                  className="mt-0.5 cursor-pointer hover:opacity-80 rounded-md shadow-sm overflow-hidden"
+                  className="mt-0.5 cursor-pointer hover:opacity-80 rounded-[4.52px] shadow-sm overflow-hidden"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
                   <div className="flex items-center bg-white px-1.5 py-px">
