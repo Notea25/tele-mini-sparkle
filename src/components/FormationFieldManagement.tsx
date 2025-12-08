@@ -167,7 +167,7 @@ const FormationFieldManagement = ({
               </div>
             ))}
           </div>
-          <p className="text-center text-muted-foreground text-sm mt-4 italic">Замены</p>
+          <p className="text-center text-muted-foreground text-sm mt-4">Замены</p>
         </div>
       </div>
     </div>
