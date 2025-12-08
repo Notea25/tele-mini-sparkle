@@ -145,18 +145,15 @@ const FormationField = ({
                   </div>
                 </div>
 
-                {/* Position, name and club - ОБЪЕДИНЕННЫЙ КОНТЕЙНЕР */}
                 <div
                   className="mt-0.5 cursor-pointer hover:opacity-80 rounded-md shadow-sm overflow-hidden"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  {/* Верхняя часть с позицией и именем */}
                   <div className="flex items-center bg-white px-1.5 py-px">
                     <span className="text-white text-[8px] font-bold uppercase mr-1">{assignedPlayer.position}</span>
                     <span className="text-white text-[8px] font-bold truncate">{assignedPlayer.name}</span>
                   </div>
 
-                  {/* Нижняя часть с клубом */}
                   <div className="bg-primary px-1.5 py-px flex items-center justify-center">
                     <span className="text-primary text-[8px] font-bold flex items-center gap-0.5">
                       <span className="text-[7px]">(Д)</span>
@@ -166,7 +163,6 @@ const FormationField = ({
                 </div>
               </div>
             ) : (
-              // Empty slot - старый стиль остается без изменений
               <div
                 className="relative cursor-pointer hover:opacity-80"
                 onClick={() => onEmptySlotClick?.(slot.position)}
