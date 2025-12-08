@@ -9,6 +9,7 @@ import CreateTeam from "./pages/CreateTeam";
 import TeamBuilder from "./pages/TeamBuilder";
 import TeamManagement from "./pages/TeamManagement";
 import League from "./pages/League";
+import CreateLeague from "./pages/CreateLeague";
 import TournamentTable from "./pages/TournamentTable";
 import YourTeam from "./pages/YourTeam";
 import DreamTeam from "./pages/DreamTeam";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/team-builder" element={<TeamBuilder />} />
             <Route path="/team-management" element={<TeamManagement />} />
             <Route path="/league" element={<League />} />
+            <Route path="/create-league" element={<CreateLeague />} />
             <Route path="/tournament-table" element={<TournamentTable />} />
             <Route path="/your-team" element={<YourTeam />} />
             <Route path="/dream-team" element={<DreamTeam />} />
