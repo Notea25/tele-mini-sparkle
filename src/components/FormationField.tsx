@@ -136,7 +136,6 @@ const FormationField = ({
                     src={playerJerseyTeam}
                     alt={assignedPlayer.name}
                     className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-                    style={{ color: "#212121" }}
                   />
                   {/* Price tag */}
                   <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[8px] font-bold px-1.5 py-px rounded-full flex items-center gap-0.5">
@@ -157,7 +156,9 @@ const FormationField = ({
 
                   <div className="bg-primary px-1.5 py-px flex items-center justify-center">
                     <span className="text-white text-[8px] font-bold flex items-center gap-0.5">
-                      <span className="text-[7px]">(Д)</span>
+                      <span className="text-[7px]" style={{ color: "#7D7A94" }}>
+                        (Д)
+                      </span>
                       <span>{assignedPlayer.team}</span>
                     </span>
                   </div>
