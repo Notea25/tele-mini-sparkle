@@ -367,12 +367,7 @@ const TeamManagement = () => {
               <img 
                 src={chip.icon} 
                 alt={chip.label} 
-                className="w-8 h-8 object-contain mb-1 transition-all"
-                style={{ 
-                  filter: chip.active 
-                    ? "invert(62%) sepia(75%) saturate(3986%) hue-rotate(83deg) brightness(107%) contrast(117%)" 
-                    : "brightness(0.4) saturate(0%)"
-                }}
+                className={`w-8 h-8 object-contain mb-1 transition-all ${!chip.active ? "grayscale opacity-50" : ""}`}
               />
               <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
               <span className={`text-[8px] ${chip.active ? "text-primary" : "text-muted-foreground"}`}>
