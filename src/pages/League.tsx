@@ -131,7 +131,10 @@ const League = () => {
             </div>
 
             <div className="grid grid-cols-3 gap-3 mb-6">
-              <div className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border">
+              <div 
+                className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-colors"
+                onClick={() => navigate("/tournament-table")}
+              >
                 <span className="text-2xl font-bold text-foreground">40</span>
                 <span className="text-[10px] text-muted-foreground whitespace-nowrap">Средний результат</span>
                 <span className="text-muted-foreground text-sm">→</span>
