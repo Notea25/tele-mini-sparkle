@@ -194,6 +194,7 @@ const League = () => {
                 src={btnTransfers} 
                 alt="Трансферы" 
                 className="w-full cursor-pointer hover:opacity-90 transition-opacity"
+                onClick={() => navigate("/transfers")}
               />
             </div>
 
