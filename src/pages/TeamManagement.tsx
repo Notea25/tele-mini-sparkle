@@ -32,7 +32,7 @@ const clubIcons: Record<string, string> = {
 
 // Special chips data with icons
 const initialChips = [
-  { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Исп. 29 тур", active: true },
+  { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Подробнее", active: true },
   { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", active: true },
   { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", active: true },
   { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", active: true },
