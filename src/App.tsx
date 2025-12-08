@@ -9,6 +9,7 @@ import CreateTeam from "./pages/CreateTeam";
 import TeamBuilder from "./pages/TeamBuilder";
 import TeamManagement from "./pages/TeamManagement";
 import League from "./pages/League";
+import TournamentTable from "./pages/TournamentTable";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/team-builder" element={<TeamBuilder />} />
             <Route path="/team-management" element={<TeamManagement />} />
             <Route path="/league" element={<League />} />
+            <Route path="/tournament-table" element={<TournamentTable />} />
             <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
