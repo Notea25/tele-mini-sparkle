@@ -150,8 +150,12 @@ const FormationField = ({
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
                   <div className="flex items-center bg-white px-1.5 py-px">
-                    <span className="text-primary text-[8px] font-bold uppercase mr-1">{assignedPlayer.position}</span>
-                    <span className="text-primary text-[8px] font-bold truncate">{assignedPlayer.name}</span>
+                    <span className="text-[8px] font-bold uppercase mr-1" style={{ color: "#7D7A94" }}>
+                      {assignedPlayer.position}
+                    </span>
+                    <span className="text-[8px] font-bold truncate" style={{ color: "#212121" }}>
+                      {assignedPlayer.name}
+                    </span>
                   </div>
 
                   <div className="bg-primary px-1.5 py-px flex items-center justify-center">
