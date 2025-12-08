@@ -201,7 +201,7 @@ const Transfers = () => {
 
       {/* Formation View */}
       {activeTab === "formation" && (
-        <div className="px-4 mt-4">
+        <div className="mt-4">
           <div 
             className="relative w-full rounded-2xl overflow-hidden"
             style={{ 
