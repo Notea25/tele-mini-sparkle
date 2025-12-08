@@ -126,7 +126,7 @@ const FormationFieldManagement = ({
   );
 
   return (
-    <div className="px-4">
+    <div>
       {/* Football Field */}
       <div className="relative w-full">
         <img
