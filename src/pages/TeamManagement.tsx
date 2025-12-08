@@ -12,7 +12,7 @@ import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
 import flameIcon from "@/assets/flame-icon.png";
-import iconBench from "@/assets/icon-bench.png";
+import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon3x from "@/assets/icon-3x.png";
 import iconStar from "@/assets/icon-star.png";
 import iconFree from "@/assets/icon-free.png";
@@ -31,7 +31,7 @@ const clubIcons: Record<string, string> = {
 
 // Special chips data with icons
 const initialChips = [
-  { id: "bench", icon: iconBench, label: "Скамейка +", sublabel: "Исп. 29 тур", active: false },
+  { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Исп. 29 тур", active: false },
   { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", active: true },
   { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", active: true },
   { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", active: true },
