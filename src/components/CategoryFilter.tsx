@@ -33,6 +33,8 @@ const categories = [
   { id: "all", label: "Все лиги", icon: "⚡" },
   { id: "football", label: "Футбол", icon: "⚽" },
   { id: "basketball", label: "Баскетбол", icon: "🏀" },
+  { id: "hockey", label: "Хоккей", icon: "🏒" },
+  { id: "dota2", label: "Dota 2", icon: "🎮" },
   { id: "cs2", label: "Counter-Strike 2", icon: "🎯" },
 ];
 
