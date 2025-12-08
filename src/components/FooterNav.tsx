@@ -50,8 +50,8 @@ const socialLinks = [
 
 const FooterNav = () => {
   return (
-    <footer className="mt-8 pb-8 px-4">
-      <div className="flex justify-center mb-8">
+    <footer className="mt-8 pb-8 px-4 border-t" style={{ borderColor: "#363546" }}>
+      <div className="flex justify-center mb-8 pt-8">
         <img src={logo} alt="Fantasy Sports" className="h-8" />
       </div>
 
