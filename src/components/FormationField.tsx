@@ -141,11 +141,9 @@ const FormationField = ({
                   {/* Price tag */}
                   <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex items-center justify-center">
                     <div className="relative">
-                      {/* Фоновая картинка тега */}
                       <img src={tag} alt="price tag" className="w-auto h-5 object-contain" />
-                      {/* Текст поверх картинки */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-black text-[8px] font-bold">
+                        <span className="text-white text-[8px] font-bold">
                           {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
                         </span>
                       </div>
