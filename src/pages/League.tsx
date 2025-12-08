@@ -248,6 +248,7 @@ const League = () => {
             <Button
               variant="outline"
               className="w-full mt-6 rounded-full py-6 font-semibold border-border"
+              onClick={() => navigate("/tournament-table")}
             >
               Смотреть все
             </Button>
