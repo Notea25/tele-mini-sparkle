@@ -30,7 +30,7 @@ const clubIcons: Record<string, string> = {
 };
 
 // Special chips data with icons
-const specialChips = [
+const initialChips = [
   { id: "bench", icon: iconBench, label: "Скамейка +", sublabel: "Исп. 29 тур", active: false },
   { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", active: true },
   { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", active: true },
@@ -62,7 +62,15 @@ const TeamManagement = () => {
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName] = useState(() => getSavedTeam().teamName);
+  const [specialChips, setSpecialChips] = useState(initialChips);
 
+  const toggleChip = (chipId: string) => {
+    setSpecialChips(prev => 
+      prev.map(chip => 
+        chip.id === chipId ? { ...chip, active: !chip.active } : chip
+      )
+    );
+  };
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");
   const tournamentStartDate = new Date("2025-12-04T19:00:00");
@@ -353,9 +361,14 @@ const TeamManagement = () => {
           {specialChips.map((chip) => (
             <div
               key={chip.id}
-              className="flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-card"
+              onClick={() => toggleChip(chip.id)}
+              className="flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-card cursor-pointer transition-all hover:bg-card/80"
             >
-              <img src={chip.icon} alt={chip.label} className="w-8 h-8 object-contain mb-1" />
+              <img 
+                src={chip.icon} 
+                alt={chip.label} 
+                className={`w-8 h-8 object-contain mb-1 transition-all ${!chip.active ? "grayscale opacity-50" : ""}`}
+              />
               <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
               <span className={`text-[8px] ${chip.active ? "text-primary" : "text-muted-foreground"}`}>
                 {chip.sublabel}
