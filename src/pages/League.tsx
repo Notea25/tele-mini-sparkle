@@ -330,7 +330,10 @@ const League = () => {
             </div>
 
             {/* Create league button */}
-            <Button className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground mb-8">
+            <Button 
+              className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground mb-8"
+              onClick={() => navigate("/create-league")}
+            >
               Создать лигу
             </Button>
 
