@@ -126,7 +126,7 @@ const FormationField = ({
                     }}
                     className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
                   >
-                    {/* <X className="w-2.5 h-2.5 text-black/70" /> */}
+                    <X className="w-2.5 h-2.5 text-black/70" />
                   </button>
                 )}
 
