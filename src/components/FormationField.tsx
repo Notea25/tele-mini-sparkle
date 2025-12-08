@@ -327,23 +327,24 @@ const FormationField = ({
                   </div>
                 </div>
 
-                {/* Position and name - НОВЫЙ СТИЛЬ для выбранного игрока */}
+                {/* Position, name and club - ОБЪЕДИНЕННЫЙ КОНТЕЙНЕР */}
                 <div
-                  className="flex flex-col items-center mt-0.5 cursor-pointer hover:opacity-80"
+                  className="mt-0.5 cursor-pointer hover:opacity-80 rounded-md shadow-sm overflow-hidden"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <div className="bg-primary rounded-t-md px-1.5 py-px">
-                    <span className="text-white text-[8px] font-bold uppercase">{assignedPlayer.position}</span>
+                  {/* Верхняя часть с позицией и именем */}
+                  <div className="flex items-center bg-primary px-1.5 py-px">
+                    <span className="text-white text-[8px] font-bold uppercase mr-1">{assignedPlayer.position}</span>
+                    <span className="text-white text-[8px] font-bold truncate">{assignedPlayer.name}</span>
                   </div>
-                  <div className="bg-white rounded-b-md px-1.5 py-px">
-                    <span className="text-black text-[8px] font-bold">{assignedPlayer.name}</span>
-                  </div>
-                </div>
 
-                {/* Club badge - НОВЫЙ СТИЛЬ для выбранного игрока */}
-                <div className="bg-primary text-white text-[8px] font-bold px-1.5 py-px rounded-md mt-1 flex items-center gap-0.5 shadow-sm">
-                  <span className="text-[7px]">(Д)</span>
-                  <span>{assignedPlayer.team}</span>
+                  {/* Нижняя часть с клубом */}
+                  <div className="bg-white px-1.5 py-px flex items-center justify-center">
+                    <span className="text-primary text-[8px] font-bold flex items-center gap-0.5">
+                      <span className="text-[7px]">(Д)</span>
+                      <span>{assignedPlayer.team}</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             ) : (
