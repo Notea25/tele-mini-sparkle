@@ -142,33 +142,12 @@ const DreamTeam = () => {
 
       {/* Formation View */}
       {activeTab === "formation" && (
-        <div className="px-4 mt-6">
+        <div className="mt-6">
           <FormationFieldManagement
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={() => {}}
           />
-
-          {/* Bench Section */}
-          <div className="mt-6 bg-card rounded-2xl p-4">
-            <div className="grid grid-cols-4 gap-2">
-              {benchPlayers.map((player) => (
-                <div key={player.id} className="flex flex-col items-center">
-                  <div className="relative">
-                    <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center">
-                      <span className="text-foreground text-xs">{player.position}</span>
-                    </div>
-                    <div className="absolute -top-1 -right-1 bg-primary rounded px-1">
-                      <span className="text-[8px] text-primary-foreground">{player.price}</span>
-                    </div>
-                  </div>
-                  <span className="text-foreground text-[10px] mt-1 text-center truncate w-full">{player.position} {player.name}</span>
-                  <span className="text-muted-foreground text-[8px]">(Д) {player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-center text-muted-foreground text-sm mt-3">Замены</p>
-          </div>
         </div>
       )}
 
