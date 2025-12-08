@@ -3,14 +3,12 @@ import { ChevronRight, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import SportHeader from "@/components/SportHeader";
-import { getSavedTeam, getTeamPlayers, PlayerData } from "@/lib/teamData";
+import FormationFieldManagement from "@/components/FormationFieldManagement";
+import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import homeIcon from "@/assets/home-icon.png";
 import icon2x from "@/assets/icon-2x.png";
 import iconStar from "@/assets/icon-star.png";
 import iconFree from "@/assets/icon-free.png";
-import footballField from "@/assets/football-field.png";
-import playerJerseyTeam from "@/assets/player-jersey-team.png";
-import playerJerseyWhite from "@/assets/player-jersey-white.png";
 
 const specialChips = [
   { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее" },
@@ -24,12 +22,14 @@ const Transfers = () => {
   const [teamName] = useState(() => getSavedTeam().teamName);
 
   // Load saved team
-  const [players, setPlayers] = useState<PlayerData[]>([]);
+  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerData[]>([]);
+  const [benchPlayers, setBenchPlayers] = useState<PlayerData[]>([]);
 
   useEffect(() => {
-    const teamPlayers = getTeamPlayers();
-    if (teamPlayers.length > 0) {
-      setPlayers(teamPlayers);
+    const { mainSquad, bench } = getMainSquadAndBench();
+    if (mainSquad.length > 0) {
+      setMainSquadPlayers(mainSquad);
+      setBenchPlayers(bench);
     }
   }, []);
 
@@ -61,57 +61,14 @@ const Transfers = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const totalPrice = players.reduce((sum, p) => sum + p.price, 0);
+  const allPlayers = [...mainSquadPlayers, ...benchPlayers];
+  const totalPrice = allPlayers.reduce((sum, p) => sum + p.price, 0);
   const freeTransfers = 5;
   const budget = 100 - totalPrice;
 
   const handleRemovePlayer = (playerId: number) => {
-    setPlayers(prev => prev.filter(p => p.id !== playerId));
-  };
-
-  // Formation 2-5-5-3
-  const formation = [
-    { position: "ВР", row: 1, col: 2, slotIndex: 0 },
-    { position: "ВР", row: 1, col: 4, slotIndex: 1 },
-    { position: "ЗЩ", row: 2, col: 1, slotIndex: 0 },
-    { position: "ЗЩ", row: 2, col: 2, slotIndex: 1 },
-    { position: "ЗЩ", row: 2, col: 3, slotIndex: 2 },
-    { position: "ЗЩ", row: 2, col: 4, slotIndex: 3 },
-    { position: "ЗЩ", row: 2, col: 5, slotIndex: 4 },
-    { position: "ПЗ", row: 3, col: 1, slotIndex: 0 },
-    { position: "ПЗ", row: 3, col: 2, slotIndex: 1 },
-    { position: "ПЗ", row: 3, col: 3, slotIndex: 2 },
-    { position: "ПЗ", row: 3, col: 4, slotIndex: 3 },
-    { position: "ПЗ", row: 3, col: 5, slotIndex: 4 },
-    { position: "НП", row: 4, col: 2, slotIndex: 0 },
-    { position: "НП", row: 4, col: 3, slotIndex: 1 },
-    { position: "НП", row: 4, col: 4, slotIndex: 2 },
-  ];
-
-  const getPlayerStyle = (row: number, col: number) => {
-    const topPositions: Record<number, string> = {
-      1: "2%",
-      2: "22%",
-      3: "48%",
-      4: "74%",
-    };
-
-    const leftPositions: Record<number, Record<number, string>> = {
-      1: { 2: "30%", 4: "70%" },
-      2: { 1: "10%", 2: "28%", 3: "50%", 4: "72%", 5: "90%" },
-      3: { 1: "10%", 2: "28%", 3: "50%", 4: "72%", 5: "90%" },
-      4: { 2: "28%", 3: "50%", 4: "72%" },
-    };
-
-    return {
-      top: topPositions[row] || "0%",
-      left: leftPositions[row]?.[col] || "50%",
-      transform: "translateX(-50%)",
-    };
-  };
-
-  const getPlayerForSlot = (position: string, slotIndex: number) => {
-    return players.find(p => p.position === position && p.slotIndex === slotIndex);
+    setMainSquadPlayers(prev => prev.filter(p => p.id !== playerId));
+    setBenchPlayers(prev => prev.filter(p => p.id !== playerId));
   };
 
   return (
@@ -202,67 +159,11 @@ const Transfers = () => {
       {/* Formation View */}
       {activeTab === "formation" && (
         <div className="mt-4">
-          <div 
-            className="relative w-full rounded-2xl overflow-hidden"
-            style={{ 
-              backgroundImage: `url(${footballField})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              minHeight: '500px'
-            }}
-          >
-            {formation.map((slot, idx) => {
-              const player = getPlayerForSlot(slot.position, slot.slotIndex);
-              const style = getPlayerStyle(slot.row, slot.col);
-
-              return (
-                <div
-                  key={idx}
-                  className="absolute flex flex-col items-center"
-                  style={style}
-                >
-                  <div className="relative">
-                    {player ? (
-                      <>
-                        <img 
-                          src={playerJerseyTeam} 
-                          alt="Jersey" 
-                          className="w-12 h-12 object-contain"
-                        />
-                        <button
-                          onClick={() => handleRemovePlayer(player.id)}
-                          className="absolute -top-1 -right-1 w-4 h-4 bg-muted rounded-full flex items-center justify-center"
-                        >
-                          <X className="w-3 h-3 text-foreground" />
-                        </button>
-                        <div className="absolute bottom-0 left-0 right-0 flex justify-center">
-                          <div className="flex items-center gap-0.5 bg-primary/90 rounded px-1">
-                            <span className="text-[8px] text-primary-foreground">{player.price}</span>
-                            <span className="text-[8px] text-primary-foreground">•</span>
-                            <span className="text-[8px] text-primary-foreground font-bold">{player.points}</span>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <img 
-                        src={playerJerseyWhite} 
-                        alt="Empty" 
-                        className="w-12 h-12 object-contain opacity-50"
-                      />
-                    )}
-                  </div>
-                  <div className="bg-background/90 rounded px-2 py-0.5 mt-1 text-center">
-                    <span className="text-[9px] text-foreground block">
-                      {player ? `${slot.position} ${player.name}` : slot.position}
-                    </span>
-                    {player && (
-                      <span className="text-[8px] text-muted-foreground">(Д) {player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <FormationFieldManagement
+            mainSquadPlayers={mainSquadPlayers}
+            benchPlayers={benchPlayers}
+            onPlayerClick={() => {}}
+          />
         </div>
       )}
 
@@ -278,7 +179,7 @@ const Transfers = () => {
           </div>
 
           <div className="space-y-2">
-            {players.map((player) => (
+            {allPlayers.map((player) => (
               <div
                 key={player.id}
                 className="bg-card rounded-full px-4 py-2 flex items-center"
