@@ -14,7 +14,6 @@ import {
   Minus,
   ArrowLeft,
   Pencil,
-  Check,
   ChevronsUpDown,
   ChevronUp,
 } from "lucide-react";
@@ -26,6 +25,7 @@ import FooterNav from "@/components/FooterNav";
 import FormationField from "@/components/FormationField";
 import TeamListView from "@/components/TeamListView";
 import PlayerCard from "@/components/PlayerCard";
+import EditTeamNameModal from "@/components/EditTeamNameModal";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
@@ -60,8 +60,7 @@ const TeamBuilder = () => {
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName, setTeamName] = useState("Lucky Team");
-  const [isEditingTeamName, setIsEditingTeamName] = useState(false);
-  const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
+  const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showSquadError, setShowSquadError] = useState(false);
   // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
   const [sortField, setSortField] = useState<'name' | 'points' | 'price' | null>(null);
@@ -537,50 +536,15 @@ const TeamBuilder = () => {
           </div>
         </div>
         <div className="flex items-center gap-3 mb-2">
-          {isEditingTeamName ? (
-            <div className="flex items-center gap-2">
-              <Input
-                value={editedTeamName}
-                onChange={(e) => setEditedTeamName(e.target.value)}
-                className="text-2xl font-bold bg-card border-border text-foreground h-10 w-72"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    setTeamName(editedTeamName || "Lucky Team");
-                    setIsEditingTeamName(false);
-                  }
-                  if (e.key === "Escape") {
-                    setEditedTeamName(teamName);
-                    setIsEditingTeamName(false);
-                  }
-                }}
-              />
-              <button
-                className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"
-                onClick={() => {
-                  setTeamName(editedTeamName || "Lucky Team");
-                  setIsEditingTeamName(false);
-                }}
-              >
-                <Check className="w-5 h-5 text-primary-foreground" />
-              </button>
-            </div>
-          ) : (
-            <>
-              <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-primary"
-                onClick={() => {
-                  setEditedTeamName(teamName);
-                  setIsEditingTeamName(true);
-                }}
-              >
-                <Pencil className="w-4 h-4" />
-              </Button>
-            </>
-          )}
+          <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-primary"
+            onClick={() => setIsEditTeamNameModalOpen(true)}
+          >
+            <Pencil className="w-4 h-4" />
+          </Button>
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Дедлайн: 14.12.2025 в 19:00</span>
@@ -1032,6 +996,13 @@ const TeamBuilder = () => {
         isViceCaptain={selectedPlayerForCard === viceCaptain}
         onSetCaptain={setCaptain}
         onSetViceCaptain={setViceCaptain}
+      />
+
+      <EditTeamNameModal
+        isOpen={isEditTeamNameModalOpen}
+        onClose={() => setIsEditTeamNameModalOpen(false)}
+        currentName={teamName}
+        onSave={setTeamName}
       />
     </div>
   );
