@@ -3,8 +3,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronDown, ArrowLeftRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
 import SportHeader from "@/components/SportHeader";
+import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
@@ -47,13 +47,7 @@ const formationOptions = [
   { value: "1-5-4-1", label: "Схема (1 ВР - 5 ЗЩ - 4 ПЗ - 1 НП)" },
 ];
 
-interface PlayerData {
-  id: number;
-  name: string;
-  team: string;
-  position: string;
-  points: number;
-  price: number;
+interface PlayerDataExt extends PlayerData {
   slotIndex?: number;
   isCaptain?: boolean;
   isViceCaptain?: boolean;
@@ -67,7 +61,7 @@ const TeamManagement = () => {
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
-  const [teamName] = useState(() => localStorage.getItem('fantasyTeamName') || "Lucky Team");
+  const [teamName] = useState(() => getSavedTeam().teamName);
 
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");
@@ -100,31 +94,17 @@ const TeamManagement = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // State for players (mutable for swaps)
-  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerData[]>([
-    // Вратарь (1)
-    { id: 0, name: "Вакулич", team: "Динамо Минск", position: "ВР", points: 29, price: 9, slotIndex: 0 },
-    // Защитники (4)
-    { id: 4, name: "Иванов", team: "БАТЭ", position: "ЗЩ", points: 35, price: 8, slotIndex: 0 },
-    { id: 5, name: "Петров", team: "Шахтер", position: "ЗЩ", points: 28, price: 7, slotIndex: 1 },
-    { id: 6, name: "Сидоров", team: "Неман", position: "ЗЩ", points: 31, price: 8.5, slotIndex: 2 },
-    { id: 7, name: "Козлов", team: "Славия", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 3 },
-    // Полузащитники (4)
-    { id: 12, name: "Михайлов", team: "Динамо Минск", position: "ПЗ", points: 42, price: 10, slotIndex: 0 },
-    { id: 13, name: "Федоров", team: "БАТЭ", position: "ПЗ", points: 38, price: 9.5, slotIndex: 1 },
-    { id: 14, name: "Алексеев", team: "Торпедо", position: "ПЗ", points: 33, price: 8, slotIndex: 2 },
-    { id: 15, name: "Николаев", team: "Шахтер", position: "ПЗ", points: 36, price: 9, slotIndex: 3 },
-    // Нападающие (2)
-    { id: 22, name: "Плотников", team: "Динамо Минск", position: "НП", points: 48, price: 11, slotIndex: 0 },
-    { id: 23, name: "Громов", team: "БАТЭ", position: "НП", points: 44, price: 10.5, slotIndex: 1 },
-  ]);
+  // Load saved team from localStorage
+  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerDataExt[]>([]);
+  const [benchPlayers, setBenchPlayers] = useState<PlayerDataExt[]>([]);
 
-  const [benchPlayers, setBenchPlayers] = useState<PlayerData[]>([
-    { id: 100, name: "Смирнов", team: "Белшина", position: "ЗЩ", points: 22, price: 5.5, isOnBench: true },
-    { id: 101, name: "Кузнецов", team: "Неман", position: "ПЗ", points: 25, price: 6, isOnBench: true },
-    { id: 102, name: "Попов", team: "Славия", position: "ПЗ", points: 24, price: 5.5, isOnBench: true },
-    { id: 103, name: "Соколов", team: "Торпедо", position: "ВР", points: 20, price: 5, isOnBench: true },
-  ]);
+  useEffect(() => {
+    const { mainSquad, bench } = getMainSquadAndBench();
+    if (mainSquad.length > 0) {
+      setMainSquadPlayers(mainSquad);
+      setBenchPlayers(bench);
+    }
+  }, []);
 
   // Swap drawer state
   const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);

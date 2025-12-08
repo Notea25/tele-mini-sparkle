@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Pencil, Check, X } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
 import SportHeader from "@/components/SportHeader";
+import { getSavedTeam, getTeamPlayers, PlayerData } from "@/lib/teamData";
 import homeIcon from "@/assets/home-icon.png";
 import icon2x from "@/assets/icon-2x.png";
 import iconStar from "@/assets/icon-star.png";
@@ -11,16 +11,6 @@ import iconFree from "@/assets/icon-free.png";
 import footballField from "@/assets/football-field.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
 import playerJerseyWhite from "@/assets/player-jersey-white.png";
-
-interface PlayerData {
-  id: number;
-  name: string;
-  team: string;
-  position: string;
-  points: number;
-  price: number;
-  slotIndex?: number;
-}
 
 const specialChips = [
   { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее" },
@@ -31,9 +21,17 @@ const specialChips = [
 const Transfers = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
-  const [teamName, setTeamName] = useState("Lucky Team");
-  const [isEditingTeamName, setIsEditingTeamName] = useState(false);
-  const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
+  const [teamName] = useState(() => getSavedTeam().teamName);
+
+  // Load saved team
+  const [players, setPlayers] = useState<PlayerData[]>([]);
+
+  useEffect(() => {
+    const teamPlayers = getTeamPlayers();
+    if (teamPlayers.length > 0) {
+      setPlayers(teamPlayers);
+    }
+  }, []);
 
   // Deadline countdown
   const deadlineDate = new Date("2025-12-14T19:00:00");
@@ -63,28 +61,9 @@ const Transfers = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Players data
-  const [players, setPlayers] = useState<PlayerData[]>([
-    { id: 0, name: "Плотников", team: "Динамо Минск", position: "ВР", points: 26, price: 6.5, slotIndex: 0 },
-    { id: 1, name: "Плотников", team: "БАТЭ", position: "ВР", points: 26, price: 6.5, slotIndex: 1 },
-    { id: 4, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 0 },
-    { id: 5, name: "Плотников", team: "БАТЭ", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 1 },
-    { id: 6, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 2 },
-    { id: 7, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 3 },
-    { id: 8, name: "Плотников", team: "Белшина", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 4 },
-    { id: 12, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 26, price: 6.5, slotIndex: 0 },
-    { id: 13, name: "Плотников", team: "Белшина", position: "ПЗ", points: 26, price: 6.5, slotIndex: 1 },
-    { id: 14, name: "Плотников", team: "БАТЭ", position: "ПЗ", points: 26, price: 6.5, slotIndex: 2 },
-    { id: 15, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 26, price: 6.5, slotIndex: 3 },
-    { id: 16, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 26, price: 6.5, slotIndex: 4 },
-    { id: 22, name: "Плотников", team: "БАТЭ", position: "НП", points: 26, price: 6.5, slotIndex: 0 },
-    { id: 23, name: "Плотников", team: "Динамо Минск", position: "НП", points: 26, price: 6.5, slotIndex: 1 },
-    { id: 24, name: "Плотников", team: "Белшина", position: "НП", points: 26, price: 6.5, slotIndex: 2 },
-  ]);
-
-  const freeTransfers = 5;
-  const budget = 8;
   const totalPrice = players.reduce((sum, p) => sum + p.price, 0);
+  const freeTransfers = 5;
+  const budget = 100 - totalPrice;
 
   const handleRemovePlayer = (playerId: number) => {
     setPlayers(prev => prev.filter(p => p.id !== playerId));
@@ -159,48 +138,7 @@ const Transfers = () => {
 
       {/* Team Name */}
       <div className="px-4 mt-4 flex items-center justify-center gap-2">
-        {isEditingTeamName ? (
-          <div className="flex items-center gap-2">
-            <Input
-              value={editedTeamName}
-              onChange={(e) => setEditedTeamName(e.target.value)}
-              className="text-2xl font-bold bg-card border-border text-foreground h-10 w-56 text-center"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  setTeamName(editedTeamName || "Lucky Team");
-                  setIsEditingTeamName(false);
-                }
-                if (e.key === "Escape") {
-                  setEditedTeamName(teamName);
-                  setIsEditingTeamName(false);
-                }
-              }}
-            />
-            <button
-              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"
-              onClick={() => {
-                setTeamName(editedTeamName || "Lucky Team");
-                setIsEditingTeamName(false);
-              }}
-            >
-              <Check className="w-5 h-5 text-primary-foreground" />
-            </button>
-          </div>
-        ) : (
-          <>
-            <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
-            <button
-              className="text-muted-foreground hover:text-primary transition-colors"
-              onClick={() => {
-                setEditedTeamName(teamName);
-                setIsEditingTeamName(true);
-              }}
-            >
-              <Pencil className="w-5 h-5" />
-            </button>
-          </>
-        )}
+        <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
       </div>
 
       {/* Deadline */}

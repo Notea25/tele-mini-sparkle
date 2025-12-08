@@ -1,58 +1,29 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Pencil, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
+import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import homeIcon from "@/assets/home-icon.png";
-
-interface PlayerData {
-  id: number;
-  name: string;
-  team: string;
-  position: string;
-  points: number;
-  price: number;
-  slotIndex?: number;
-  isCaptain?: boolean;
-  isViceCaptain?: boolean;
-  isOnBench?: boolean;
-}
 
 const YourTeam = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [currentTour, setCurrentTour] = useState(29);
-  const [teamName, setTeamName] = useState("Lucky Team");
-  const [isEditingTeamName, setIsEditingTeamName] = useState(false);
-  const [editedTeamName, setEditedTeamName] = useState("Lucky Team");
+  const [teamName] = useState(() => getSavedTeam().teamName);
 
-  // Main squad players
-  const mainSquadPlayers: PlayerData[] = [
-    // Вратарь (1)
-    { id: 0, name: "Плотников", team: "Динамо Минск", position: "ВР", points: 26, price: 6.5, slotIndex: 0 },
-    // Защитники (4)
-    { id: 4, name: "Плотников", team: "Белшина", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 0 },
-    { id: 5, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 1, isCaptain: true },
-    { id: 6, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 2 },
-    { id: 7, name: "Плотников", team: "БАТЭ", position: "ЗЩ", points: 26, price: 6.5, slotIndex: 3 },
-    // Полузащитники (4)
-    { id: 12, name: "Плотников", team: "Белшина", position: "ПЗ", points: 26, price: 6.5, slotIndex: 0 },
-    { id: 13, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 26, price: 6.5, slotIndex: 1 },
-    { id: 14, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 26, price: 6.5, slotIndex: 2 },
-    { id: 15, name: "Плотников", team: "БАТЭ", position: "ПЗ", points: 26, price: 6.5, slotIndex: 3 },
-    // Нападающие (2)
-    { id: 22, name: "Плотников", team: "Динамо Минск", position: "НП", points: 26, price: 6.5, slotIndex: 0 },
-    { id: 23, name: "Плотников", team: "БАТЭ", position: "НП", points: 26, price: 6.5, slotIndex: 1 },
-  ];
+  // Load saved team
+  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerData[]>([]);
+  const [benchPlayers, setBenchPlayers] = useState<PlayerData[]>([]);
 
-  const benchPlayers: PlayerData[] = [
-    { id: 100, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 26, price: 6.5, isOnBench: true },
-    { id: 101, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 26, price: 6.5, isOnBench: true },
-    { id: 102, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 26, price: 6.5, isOnBench: true },
-    { id: 103, name: "Плотников", team: "Динамо Минск", position: "ВР", points: 26, price: 6.5, isOnBench: true },
-  ];
+  useEffect(() => {
+    const { mainSquad, bench } = getMainSquadAndBench();
+    if (mainSquad.length > 0) {
+      setMainSquadPlayers(mainSquad);
+      setBenchPlayers(bench);
+    }
+  }, []);
 
   // Calculate total points
   const totalPoints = mainSquadPlayers.reduce((sum, p) => sum + p.points, 0);
@@ -89,48 +60,7 @@ const YourTeam = () => {
 
       {/* Team Name */}
       <div className="px-4 mt-4 flex items-center justify-center gap-2">
-        {isEditingTeamName ? (
-          <div className="flex items-center gap-2">
-            <Input
-              value={editedTeamName}
-              onChange={(e) => setEditedTeamName(e.target.value)}
-              className="text-2xl font-bold bg-card border-border text-foreground h-10 w-56 text-center"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  setTeamName(editedTeamName || "Lucky Team");
-                  setIsEditingTeamName(false);
-                }
-                if (e.key === "Escape") {
-                  setEditedTeamName(teamName);
-                  setIsEditingTeamName(false);
-                }
-              }}
-            />
-            <button
-              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"
-              onClick={() => {
-                setTeamName(editedTeamName || "Lucky Team");
-                setIsEditingTeamName(false);
-              }}
-            >
-              <Check className="w-5 h-5 text-primary-foreground" />
-            </button>
-          </div>
-        ) : (
-          <>
-            <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
-            <button
-              className="text-muted-foreground hover:text-primary transition-colors"
-              onClick={() => {
-                setEditedTeamName(teamName);
-                setIsEditingTeamName(true);
-              }}
-            >
-              <Pencil className="w-5 h-5" />
-            </button>
-          </>
-        )}
+        <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
       </div>
 
       {/* Tour Selector */}
