@@ -12,6 +12,7 @@ import League from "./pages/League";
 import TournamentTable from "./pages/TournamentTable";
 import YourTeam from "./pages/YourTeam";
 import DreamTeam from "./pages/DreamTeam";
+import Transfers from "./pages/Transfers";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/tournament-table" element={<TournamentTable />} />
             <Route path="/your-team" element={<YourTeam />} />
             <Route path="/dream-team" element={<DreamTeam />} />
+            <Route path="/transfers" element={<Transfers />} />
             <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
