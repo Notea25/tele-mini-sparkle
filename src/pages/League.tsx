@@ -147,7 +147,10 @@ const League = () => {
                 <span className="text-[10px] text-primary-foreground/80 whitespace-nowrap">Твои очки</span>
                 <span className="text-primary-foreground text-sm">→</span>
               </div>
-              <div className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border">
+              <div 
+                className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-colors"
+                onClick={() => navigate("/dream-team")}
+              >
                 <span className="text-2xl font-bold text-foreground">129</span>
                 <span className="text-[10px] text-muted-foreground whitespace-nowrap">Лучший результат</span>
                 <span className="text-muted-foreground text-sm">→</span>
