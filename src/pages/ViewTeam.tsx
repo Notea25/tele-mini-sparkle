@@ -145,11 +145,11 @@ const ViewTeam = () => {
 
       {/* Points Card */}
       <div className="px-4 mt-6">
-        <div className="bg-primary rounded-2xl p-4 flex flex-col items-center">
+        <div className="bg-primary rounded-t-2xl p-4 flex flex-col items-center">
           <span className="text-4xl font-bold text-primary-foreground">{totalPoints}</span>
           <span className="text-primary-foreground/80 text-sm">Очки</span>
         </div>
-        <div className="bg-secondary/80 rounded-b-2xl py-2 text-center -mt-2">
+        <div className="bg-secondary rounded-b-2xl py-2 text-center">
           <span className="text-foreground text-sm font-medium">3x Капитан</span>
         </div>
       </div>
