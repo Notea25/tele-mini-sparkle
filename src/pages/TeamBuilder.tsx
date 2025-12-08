@@ -35,13 +35,13 @@ const ITEMS_PER_PAGE = 8;
 
 // Club icons mapping
 const clubIcons: Record<string, string> = {
-  "Белшина": clubBelshina,
-  "БАТЭ": clubLogo,
+  Белшина: clubBelshina,
+  БАТЭ: clubLogo,
   "Динамо Минск": clubLogo,
-  "Шахтер": clubLogo,
-  "Неман": clubLogo,
-  "Славия": clubLogo,
-  "Торпедо": clubLogo,
+  Шахтер: clubLogo,
+  Неман: clubLogo,
+  Славия: clubLogo,
+  Торпедо: clubLogo,
 };
 
 const TeamBuilder = () => {
@@ -50,8 +50,8 @@ const TeamBuilder = () => {
   const playerListRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
-  const [selectedPlayers, setSelectedPlayers] = useState<{id: number; slotIndex: number}[]>(() => {
-    const saved = localStorage.getItem('fantasyTeamPlayers');
+  const [selectedPlayers, setSelectedPlayers] = useState<{ id: number; slotIndex: number }[]>(() => {
+    const saved = localStorage.getItem("fantasyTeamPlayers");
     return saved ? JSON.parse(saved) : [];
   });
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,38 +61,38 @@ const TeamBuilder = () => {
   const [priceFrom, setPriceFrom] = useState(3);
   const [priceTo, setPriceTo] = useState(10);
   const [captain, setCaptain] = useState<number | null>(() => {
-    const saved = localStorage.getItem('fantasyTeamCaptain');
+    const saved = localStorage.getItem("fantasyTeamCaptain");
     return saved ? JSON.parse(saved) : null;
   });
   const [viceCaptain, setViceCaptain] = useState<number | null>(() => {
-    const saved = localStorage.getItem('fantasyTeamViceCaptain');
+    const saved = localStorage.getItem("fantasyTeamViceCaptain");
     return saved ? JSON.parse(saved) : null;
   });
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName, setTeamName] = useState(() => {
     const state = location.state as { teamName?: string } | null;
     if (state?.teamName) {
-      localStorage.setItem('fantasyTeamName', state.teamName);
+      localStorage.setItem("fantasyTeamName", state.teamName);
       return state.teamName;
     }
-    const saved = localStorage.getItem('fantasyTeamName');
+    const saved = localStorage.getItem("fantasyTeamName");
     return saved || "Lucky Team";
   });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showSquadError, setShowSquadError] = useState(false);
   // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
-  const [sortField, setSortField] = useState<'name' | 'points' | 'price' | null>(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
+  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
 
-  const handleSort = (field: 'name' | 'points' | 'price') => {
+  const handleSort = (field: "name" | "points" | "price") => {
     if (sortField !== field) {
       // New field: start with asc for name, desc for points/price
       setSortField(field);
-      setSortDirection(field === 'name' ? 'asc' : 'desc');
-    } else if (sortDirection === 'asc') {
+      setSortDirection(field === "name" ? "asc" : "desc");
+    } else if (sortDirection === "asc") {
       // Second click: switch direction
-      setSortDirection('desc');
-    } else if (sortDirection === 'desc') {
+      setSortDirection("desc");
+    } else if (sortDirection === "desc") {
       // Third click: clear sort
       setSortField(null);
       setSortDirection(null);
@@ -111,14 +111,14 @@ const TeamBuilder = () => {
       const difference = deadlineDate.getTime() - now.getTime();
       const totalDuration = deadlineDate.getTime() - tournamentStartDate.getTime();
       const elapsed = now.getTime() - tournamentStartDate.getTime();
-      
+
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((difference / (1000 * 60)) % 60);
         const seconds = Math.floor((difference / 1000) % 60);
         const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-        
+
         setTimeLeft({ days, hours, minutes, seconds, progress });
       } else {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 100 });
@@ -127,7 +127,7 @@ const TeamBuilder = () => {
 
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);
-    
+
     return () => clearInterval(timer);
   }, []);
 
@@ -229,11 +229,13 @@ const TeamBuilder = () => {
     { id: 79, name: "Дроздов", team: "Торпедо", position: "НП", points: 68, price: 6.7 },
   ];
 
-  const selectedPlayerIds = selectedPlayers.map(sp => sp.id);
-  const selectedPlayersData = players.filter((p) => selectedPlayerIds.includes(p.id)).map(p => {
-    const slotInfo = selectedPlayers.find(sp => sp.id === p.id);
-    return { ...p, slotIndex: slotInfo?.slotIndex };
-  });
+  const selectedPlayerIds = selectedPlayers.map((sp) => sp.id);
+  const selectedPlayersData = players
+    .filter((p) => selectedPlayerIds.includes(p.id))
+    .map((p) => {
+      const slotInfo = selectedPlayers.find((sp) => sp.id === p.id);
+      return { ...p, slotIndex: slotInfo?.slotIndex };
+    });
 
   // Filter players based on activeFilter, search query, team, and points
   const filteredPlayers = players.filter((player) => {
@@ -267,16 +269,16 @@ const TeamBuilder = () => {
   // Apply sorting
   const sortedPlayers = [...filteredPlayers].sort((a, b) => {
     if (!sortField || !sortDirection) return 0;
-    
-    if (sortField === 'name') {
-      const comparison = a.name.localeCompare(b.name, 'ru');
-      return sortDirection === 'asc' ? comparison : -comparison;
+
+    if (sortField === "name") {
+      const comparison = a.name.localeCompare(b.name, "ru");
+      return sortDirection === "asc" ? comparison : -comparison;
     }
-    if (sortField === 'points') {
-      return sortDirection === 'desc' ? b.points - a.points : a.points - b.points;
+    if (sortField === "points") {
+      return sortDirection === "desc" ? b.points - a.points : a.points - b.points;
     }
-    if (sortField === 'price') {
-      return sortDirection === 'desc' ? b.price - a.price : a.price - b.price;
+    if (sortField === "price") {
+      return sortDirection === "desc" ? b.price - a.price : a.price - b.price;
     }
     return 0;
   });
@@ -338,17 +340,17 @@ const TeamBuilder = () => {
   };
 
   const positionToFilter: Record<string, string> = {
-    "ВР": "Вратари",
-    "ЗЩ": "Защитники",
-    "ПЗ": "Полузащитники",
-    "НП": "Нападающие",
+    ВР: "Вратари",
+    ЗЩ: "Защитники",
+    ПЗ: "Полузащитники",
+    НП: "Нападающие",
   };
 
   const handleEmptySlotClick = (position: string) => {
     const filterName = positionToFilter[position] || "Все";
     setActiveFilter(filterName);
     setCurrentPage(1);
-    
+
     setTimeout(() => {
       playerListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
@@ -359,7 +361,7 @@ const TeamBuilder = () => {
   const currentTeamCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
   const currentBalance = BUDGET - currentTeamCost;
 
-  const getPlayersCountByClub = (playerSelections: {id: number; slotIndex: number}[], clubName: string) => {
+  const getPlayersCountByClub = (playerSelections: { id: number; slotIndex: number }[], clubName: string) => {
     return playerSelections.filter((sel) => {
       const p = players.find((player) => player.id === sel.id);
       return p?.team === clubName;
@@ -368,13 +370,13 @@ const TeamBuilder = () => {
 
   // Formation slots per position
   const POSITION_SLOTS: Record<string, number> = {
-    "ВР": 2,
-    "ЗЩ": 5,
-    "ПЗ": 5,
-    "НП": 3,
+    ВР: 2,
+    ЗЩ: 5,
+    ПЗ: 5,
+    НП: 3,
   };
 
-  const getPlayersCountByPosition = (playerSelections: {id: number; slotIndex: number}[], position: string) => {
+  const getPlayersCountByPosition = (playerSelections: { id: number; slotIndex: number }[], position: string) => {
     return playerSelections.filter((sel) => {
       const p = players.find((player) => player.id === sel.id);
       return p?.position === position;
@@ -384,12 +386,12 @@ const TeamBuilder = () => {
   const getNextAvailableSlot = (position: string): number => {
     const maxSlots = POSITION_SLOTS[position] || 0;
     const usedSlots = selectedPlayers
-      .filter(sp => {
-        const p = players.find(player => player.id === sp.id);
+      .filter((sp) => {
+        const p = players.find((player) => player.id === sp.id);
         return p?.position === position;
       })
-      .map(sp => sp.slotIndex);
-    
+      .map((sp) => sp.slotIndex);
+
     for (let i = 0; i < maxSlots; i++) {
       if (!usedSlots.includes(i)) return i;
     }
@@ -400,7 +402,7 @@ const TeamBuilder = () => {
     const player = players.find((p) => p.id === playerId);
     if (!player) return;
 
-    const existingSelection = selectedPlayers.find(sp => sp.id === playerId);
+    const existingSelection = selectedPlayers.find((sp) => sp.id === playerId);
     if (existingSelection) {
       // Remove player - also clear captain/vice-captain if needed
       if (captain === playerId) setCaptain(null);
@@ -439,21 +441,21 @@ const TeamBuilder = () => {
   const handleAutoFill = () => {
     // Formation: 2 ВР, 5 ЗЩ, 5 ПЗ, 3 НП
     const formation: Record<string, number> = { ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3 };
-    
+
     // Start with currently selected players
     const newSelectedPlayers = [...selectedPlayers];
     let totalCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
-    
+
     // Count existing club selections
     const clubCounts: Record<string, number> = {};
-    selectedPlayersData.forEach(p => {
+    selectedPlayersData.forEach((p) => {
       clubCounts[p.team] = (clubCounts[p.team] || 0) + 1;
     });
-    
+
     // Count existing position selections and used slots
     const positionCounts: Record<string, number> = {};
     const usedSlotsByPosition: Record<string, number[]> = { ВР: [], ЗЩ: [], ПЗ: [], НП: [] };
-    selectedPlayersData.forEach(p => {
+    selectedPlayersData.forEach((p) => {
       positionCounts[p.position] = (positionCounts[p.position] || 0) + 1;
       if (p.slotIndex !== undefined) {
         usedSlotsByPosition[p.position].push(p.slotIndex);
@@ -470,24 +472,24 @@ const TeamBuilder = () => {
       return shuffled;
     };
 
-    const selectedIdsSet = new Set(newSelectedPlayers.map(sp => sp.id));
+    const selectedIdsSet = new Set(newSelectedPlayers.map((sp) => sp.id));
 
     // Fill remaining slots for each position
     Object.entries(formation).forEach(([position, maxCount]) => {
       const currentCount = positionCounts[position] || 0;
       const slotsToFill = maxCount - currentCount;
-      
+
       if (slotsToFill <= 0) return;
-      
+
       // Get available players for this position (not already selected), shuffled randomly
       const availablePlayers = shuffleArray(
-        players.filter((p) => p.position === position && !selectedIdsSet.has(p.id))
+        players.filter((p) => p.position === position && !selectedIdsSet.has(p.id)),
       );
-      
+
       let added = 0;
       for (const player of availablePlayers) {
         if (added >= slotsToFill) break;
-        
+
         const currentClubCount = clubCounts[player.team] || 0;
         if (totalCost + player.price <= BUDGET && currentClubCount < MAX_PLAYERS_PER_CLUB) {
           // Find next available slot for this position
@@ -540,10 +542,10 @@ const TeamBuilder = () => {
       <div className="px-4 mt-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <img 
-              src={homeIcon} 
-              alt="Home" 
-              className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity" 
+            <img
+              src={homeIcon}
+              alt="Home"
+              className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => navigate("/")}
             />
             <span>Футбол</span>
@@ -567,7 +569,8 @@ const TeamBuilder = () => {
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Дедлайн: 14.12.2025 в 19:00</span>
           <span className="text-foreground">
-            {timeLeft.days} дн. {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
+            {timeLeft.days} дн. {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
+            {String(timeLeft.seconds).padStart(2, "0")}
           </span>
         </div>
       </div>
@@ -575,7 +578,7 @@ const TeamBuilder = () => {
       {/* Deadline Progress Bar */}
       <div className="px-4 mt-4">
         <div className="w-full h-2 bg-card rounded-full overflow-hidden">
-          <div 
+          <div
             className="h-full bg-primary rounded-full transition-all duration-300"
             style={{ width: `${timeLeft.progress}%` }}
           />
@@ -610,8 +613,8 @@ const TeamBuilder = () => {
         <>
           {/* Football Field */}
           <div className="mt-4">
-            <FormationField 
-              selectedPlayers={selectedPlayersData} 
+            <FormationField
+              selectedPlayers={selectedPlayersData}
               onRemovePlayer={(id) => togglePlayer(id)}
               onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
               onEmptySlotClick={handleEmptySlotClick}
@@ -680,7 +683,7 @@ const TeamBuilder = () => {
       )}
 
       {activeTab === "list" && (
-        <TeamListView 
+        <TeamListView
           selectedPlayers={selectedPlayersData}
           onRemovePlayer={(id) => togglePlayer(id)}
           onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
@@ -722,37 +725,49 @@ const TeamBuilder = () => {
 
       {/* Players List Header */}
       <div className="px-4 mt-6 flex items-center text-xs text-muted-foreground">
-        <button 
-          onClick={() => handleSort('name')}
-          className={`flex-1 flex items-center gap-0.5 transition-colors ${sortField === 'name' ? 'text-primary' : 'hover:text-foreground'}`}
+        <button
+          onClick={() => handleSort("name")}
+          className={`flex-1 flex items-center gap-0.5 transition-colors ${sortField === "name" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Игрок</span>
-          {sortField === 'name' ? (
-            sortDirection === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
+          {sortField === "name" ? (
+            sortDirection === "asc" ? (
+              <ChevronUp className="w-3 h-3" />
+            ) : (
+              <ChevronDown className="w-3 h-3" />
+            )
           ) : (
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
           )}
         </button>
         <span className="w-8"></span>
         <span className="w-6"></span>
-        <button 
-          onClick={() => handleSort('points')}
-          className={`w-12 flex items-center justify-end gap-0.5 transition-colors ${sortField === 'points' ? 'text-primary' : 'hover:text-foreground'}`}
+        <button
+          onClick={() => handleSort("points")}
+          className={`w-12 flex items-center justify-end gap-0.5 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Очки</span>
-          {sortField === 'points' ? (
-            sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
+          {sortField === "points" ? (
+            sortDirection === "desc" ? (
+              <ChevronDown className="w-3 h-3" />
+            ) : (
+              <ChevronUp className="w-3 h-3" />
+            )
           ) : (
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
           )}
         </button>
-        <button 
-          onClick={() => handleSort('price')}
-          className={`w-10 flex items-center justify-end gap-0.5 transition-colors ${sortField === 'price' ? 'text-primary' : 'hover:text-foreground'}`}
+        <button
+          onClick={() => handleSort("price")}
+          className={`w-10 flex items-center justify-end gap-0.5 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Цена</span>
-          {sortField === 'price' ? (
-            sortDirection === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />
+          {sortField === "price" ? (
+            sortDirection === "desc" ? (
+              <ChevronDown className="w-3 h-3" />
+            ) : (
+              <ChevronUp className="w-3 h-3" />
+            )
           ) : (
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
           )}
@@ -766,44 +781,62 @@ const TeamBuilder = () => {
           const isSelected = selectedPlayerIds.includes(player.id);
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-              {/* Player name - flexible */}
-              <div 
-                className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-                onClick={() => setSelectedPlayerForCard(player.id)}
-              >
-                <span className="text-foreground font-medium truncate">{player.name}</span>
+              {/* Новый контейнер с позицией, фамилией и клубом */}
+              <div className="flex-1 flex items-center gap-2 min-w-0">
+                {/* Контейнер с позицией/фамилией и клубом */}
+                <div
+                  className="flex flex-col min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={() => setSelectedPlayerForCard(player.id)}
+                >
+                  {/* Верхний контейнер */}
+                  <div className="flex items-center gap-1 px-1 py-0.5 rounded-t-[4.52px] bg-white">
+                    <span
+                      className="text-[#7D7A94] text-[8px] font-medium uppercase flex-shrink-0 leading-none"
+                      style={{ fontFamily: "'Rubik', sans-serif" }}
+                    >
+                      {player.position}
+                    </span>
+                    <span
+                      className="text-[#212121] text-[8px] font-medium truncate leading-none"
+                      style={{ fontFamily: "'Rubik', sans-serif" }}
+                    >
+                      {player.name}
+                    </span>
+                  </div>
+
+                  {/* Нижний контейнер с иконкой клуба */}
+                  <div className="flex items-center gap-1 px-1 py-0.5 rounded-b-[4.52px] bg-[#9AF154]">
+                    <img
+                      src={clubIcons[player.team] || clubLogo}
+                      alt={player.team}
+                      className="w-3 h-3 object-contain"
+                    />
+                    <span
+                      className="text-[#212121] text-[8px] font-medium truncate leading-none"
+                      style={{ fontFamily: "'Rubik', sans-serif" }}
+                    >
+                      {player.team}
+                    </span>
+                  </div>
+                </div>
               </div>
-              
-              {/* Position - fixed width */}
-              <span className="w-8 text-center text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
-              
-              {/* Club icon - fixed width */}
-              <div className="w-6 flex-shrink-0 flex justify-center">
-                <img 
-                  src={clubIcons[player.team] || clubLogo} 
-                  alt={player.team}
-                  className="w-5 h-5 object-contain"
-                />
-              </div>
-              
+
               {/* Points - fixed width */}
               <div className="w-12 flex-shrink-0 flex items-center justify-end gap-1 text-primary">
                 <img src={flameIcon} alt="points" className="w-4 h-4 object-contain" />
                 <span className="text-sm font-medium">{player.points}</span>
               </div>
-              
+
               {/* Price - fixed width */}
               <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">
-                {player.price.toFixed(1).replace('.', ',')}
+                {player.price.toFixed(1).replace(".", ",")}
               </span>
-              
+
               {/* Add/Remove button */}
               <button
                 onClick={() => togglePlayer(player.id)}
                 className={`w-6 h-6 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
-                  isSelected
-                    ? "bg-muted hover:bg-muted/80"
-                    : "bg-primary hover:bg-primary/90"
+                  isSelected ? "bg-muted hover:bg-muted/80" : "bg-primary hover:bg-primary/90"
                 }`}
               >
                 {isSelected ? (
@@ -827,39 +860,39 @@ const TeamBuilder = () => {
           >
             <ChevronLeft className="w-5 h-5 text-muted-foreground" />
           </button>
-          
+
           {/* Page numbers */}
           {(() => {
             const pages: (number | string)[] = [];
-            
+
             if (totalPages <= 5) {
               for (let i = 1; i <= totalPages; i++) pages.push(i);
             } else {
               // Always show 1, 2, 3
               pages.push(1, 2, 3);
               // Add ellipsis and last page
-              pages.push('...', totalPages);
+              pages.push("...", totalPages);
             }
-            
-            return pages.map((page, idx) => (
-              page === '...' ? (
-                <span key={`ellipsis-${idx}`} className="text-muted-foreground text-sm">...</span>
+
+            return pages.map((page, idx) =>
+              page === "..." ? (
+                <span key={`ellipsis-${idx}`} className="text-muted-foreground text-sm">
+                  ...
+                </span>
               ) : (
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page as number)}
                   className={`text-sm font-medium transition-colors ${
-                    page === currentPage 
-                      ? "text-primary" 
-                      : "text-muted-foreground hover:text-foreground"
+                    page === currentPage ? "text-primary" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {page}
                 </button>
-              )
-            ));
+              ),
+            );
           })()}
-          
+
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
@@ -964,7 +997,7 @@ const TeamBuilder = () => {
             </p>
           </div>
         )}
-        
+
         {/* Action Buttons */}
         <div className="flex gap-3 mb-3">
           <Button
@@ -985,17 +1018,17 @@ const TeamBuilder = () => {
             Сбросить
           </Button>
         </div>
-        
+
         <Button
           onClick={() => {
             if (selectedPlayers.length < 15) {
               setShowSquadError(true);
             } else {
               // Save to localStorage before navigating
-              localStorage.setItem('fantasyTeamPlayers', JSON.stringify(selectedPlayers));
-              localStorage.setItem('fantasyTeamName', teamName);
-              localStorage.setItem('fantasyTeamCaptain', JSON.stringify(captain));
-              localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(viceCaptain));
+              localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
+              localStorage.setItem("fantasyTeamName", teamName);
+              localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
+              localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
               navigate("/league");
             }
           }}
@@ -1007,10 +1040,9 @@ const TeamBuilder = () => {
         </Button>
       </div>
 
-      
       {/* Player Card Drawer */}
       <PlayerCard
-        player={players.find(p => p.id === selectedPlayerForCard) || null}
+        player={players.find((p) => p.id === selectedPlayerForCard) || null}
         isOpen={selectedPlayerForCard !== null}
         onClose={() => setSelectedPlayerForCard(null)}
         isSelected={selectedPlayerForCard !== null && selectedPlayerIds.includes(selectedPlayerForCard)}
@@ -1027,7 +1059,7 @@ const TeamBuilder = () => {
         currentName={teamName}
         onSave={(newName) => {
           setTeamName(newName);
-          localStorage.setItem('fantasyTeamName', newName);
+          localStorage.setItem("fantasyTeamName", newName);
         }}
       />
     </div>
