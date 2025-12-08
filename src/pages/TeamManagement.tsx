@@ -276,7 +276,7 @@ const TeamManagement = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SportHeader />
+      <SportHeader backTo="/league" />
 
       {/* Team Header */}
       <div className="px-4 mt-6">
