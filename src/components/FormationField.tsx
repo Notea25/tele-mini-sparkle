@@ -1,7 +1,8 @@
 import footballField from "@/assets/football-field.png";
 import playerJerseyWhite from "@/assets/player-jersey-white.png";
-import playerJerseyTeam from "@/assets/player-jersey-team.png";
+import playerJerseyTeamNew from "@/assets/player-jersey-team-new.png";
 import { X } from "lucide-react";
+import clubLogo from "@/assets/club-logo.png";
 
 interface PlayerData {
   id: number;
@@ -52,17 +53,17 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
 
   const getPlayerStyle = (row: number, col: number) => {
     const topPositions: Record<number, string> = {
-      1: "4%",
-      2: "20%",
-      3: "36%",
-      4: "52%",
+      1: "2%",
+      2: "24%",
+      3: "46%",
+      4: "68%",
     };
 
     const leftPositions: Record<number, Record<number, string>> = {
-      1: { 2: "37%", 4: "63%" },
-      2: { 1: "14%", 2: "30%", 3: "50%", 4: "70%", 5: "86%" },
-      3: { 1: "14%", 2: "30%", 3: "50%", 4: "70%", 5: "86%" },
-      4: { 2: "30%", 3: "50%", 4: "70%" },
+      1: { 2: "33%", 4: "67%" },
+      2: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" },
+      3: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" },
+      4: { 2: "25%", 3: "50%", 4: "75%" },
     };
 
     return {
@@ -116,7 +117,7 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
             }}
           >
           {isOccupied ? (
-              // Occupied slot with player
+              // Occupied slot with player - new design matching reference
               <div className="relative flex flex-col items-center">
                 {/* Delete button */}
                 {onRemovePlayer && (
@@ -125,44 +126,47 @@ const FormationField = ({ selectedPlayers = [], onRemovePlayer, onPlayerClick, o
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
+                    className="absolute -top-1 -right-3 z-50 w-5 h-5 flex items-center justify-center bg-card rounded-md shadow-sm"
                   >
-                    <X className="w-2.5 h-2.5 text-black/70" />
+                    <X className="w-3 h-3 text-muted-foreground" />
                   </button>
                 )}
                 
-                {/* Jersey */}
+                {/* Jersey with price and points badges */}
                 <div className="relative">
                   <img
-                    src={playerJerseyTeam}
+                    src={playerJerseyTeamNew}
                     alt={assignedPlayer.name}
-                    className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                    className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
                   />
-                  {/* Price tag */}
-                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[8px] font-bold px-1.5 py-px rounded-full flex items-center gap-0.5">
-                    <span className="text-[5px]">•</span>
-                    <span>{(assignedPlayer.price || 9).toFixed(1).replace('.', ',')}</span>
-                    <span className="text-[5px]">•</span>
+                  {/* Price badge (left - green) */}
+                  <div className="absolute bottom-0 left-0 -translate-x-1/4 bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[28px] text-center">
+                    {(assignedPlayer.price || 6.5).toFixed(1).replace('.', ',')}
+                  </div>
+                  {/* Points badge (right - with icon) */}
+                  <div className="absolute bottom-0 right-0 translate-x-1/4 bg-[#2D3748] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 min-w-[28px] justify-center">
+                    <img src={clubLogo} alt="" className="w-3 h-3" />
+                    <span>{assignedPlayer.points}</span>
                   </div>
                 </div>
                 
-                {/* Position and name */}
+                {/* Position and name - white rounded pill */}
                 <div 
-                  className="flex items-center gap-0.5 mt-0.5 cursor-pointer hover:opacity-80 bg-white/50 rounded-full px-1.5 py-px"
+                  className="flex items-center gap-1 mt-1 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5 shadow-sm"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <span className="text-black/60 text-[8px] font-medium">
+                  <span className="text-muted-foreground text-[9px] font-medium">
                     {assignedPlayer.position}
                   </span>
-                  <span className="text-black text-[8px] font-medium">
-                    {assignedPlayer.name}
+                  <span className="text-foreground text-[9px] font-semibold whitespace-nowrap">
+                    {assignedPlayer.name.length > 10 ? assignedPlayer.name.substring(0, 10) : assignedPlayer.name}
                   </span>
                 </div>
                 
-                {/* Club badge */}
-                <div className="bg-primary text-primary-foreground text-[7px] font-medium px-1 py-px rounded-full flex items-center gap-0.5">
-                  <span className="text-[7px]">(Д)</span>
-                  <span>{assignedPlayer.team}</span>
+                {/* Club badge - green rounded pill */}
+                <div className="bg-primary text-primary-foreground text-[8px] font-medium px-2 py-0.5 rounded-full flex items-center gap-0.5 mt-0.5">
+                  <span>(Д)</span>
+                  <span className="whitespace-nowrap">{assignedPlayer.team.length > 10 ? assignedPlayer.team.substring(0, 10) : assignedPlayer.team}</span>
                 </div>
               </div>
             ) : (

@@ -1,5 +1,6 @@
 import footballField from "@/assets/football-field.png";
-import playerJerseyTeam from "@/assets/player-jersey-team.png";
+import playerJerseyTeamNew from "@/assets/player-jersey-team-new.png";
+import clubLogo from "@/assets/club-logo.png";
 import { ArrowLeftRight } from "lucide-react";
 
 interface PlayerData {
@@ -48,17 +49,17 @@ const FormationFieldManagement = ({
 
   const getPlayerStyle = (row: number, col: number) => {
     const topPositions: Record<number, string> = {
-      1: "4%",
-      2: "22%",
-      3: "44%",
-      4: "66%",
+      1: "2%",
+      2: "24%",
+      3: "46%",
+      4: "68%",
     };
 
     const leftPositions: Record<number, Record<number, string>> = {
       1: { 3: "50%" },
-      2: { 1: "12%", 2: "32%", 4: "68%", 5: "88%" },
-      3: { 1: "12%", 2: "32%", 4: "68%", 5: "88%" },
-      4: { 2: "32%", 4: "68%" },
+      2: { 1: "10%", 2: "30%", 4: "70%", 5: "90%" },
+      3: { 1: "10%", 2: "30%", 4: "70%", 5: "90%" },
+      4: { 2: "33%", 4: "67%" },
     };
 
     return {
@@ -80,47 +81,47 @@ const FormationFieldManagement = ({
             e.stopPropagation();
             onSwapPlayer(player.id);
           }}
-          className="absolute -top-1 -right-1 z-50 w-5 h-5 flex items-center justify-center bg-card rounded-md"
+          className="absolute -top-1 -right-3 z-50 w-5 h-5 flex items-center justify-center bg-card rounded-md shadow-sm"
         >
           <ArrowLeftRight className="w-3 h-3 text-muted-foreground" />
         </button>
       )}
       
-      {/* Jersey */}
+      {/* Jersey with price and points badges */}
       <div className="relative">
         <img
-          src={playerJerseyTeam}
+          src={playerJerseyTeamNew}
           alt={player.name}
-          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+          className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
         />
-        {/* Price and points tag */}
-        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-0.5">
-          <span className="bg-[#B855E4] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-            {(player.price || 6.5).toFixed(1).replace('.', ',')}
-          </span>
-          <span className="bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-            {player.points}
-          </span>
+        {/* Price badge (left - green) */}
+        <div className="absolute bottom-0 left-0 -translate-x-1/4 bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[28px] text-center">
+          {(player.price || 6.5).toFixed(1).replace('.', ',')}
+        </div>
+        {/* Points badge (right - with icon) */}
+        <div className="absolute bottom-0 right-0 translate-x-1/4 bg-[#2D3748] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 min-w-[28px] justify-center">
+          <img src={clubLogo} alt="" className="w-3 h-3" />
+          <span>{player.points}</span>
         </div>
       </div>
       
-      {/* Position and name */}
+      {/* Position and name - white rounded pill */}
       <div 
-        className="flex items-center gap-0.5 mt-1.5 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5 min-w-max"
+        className="flex items-center gap-1 mt-1 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5 shadow-sm"
         onClick={() => onPlayerClick?.(player)}
       >
-        <span className="text-black/60 text-[9px] font-medium">
+        <span className="text-muted-foreground text-[9px] font-medium">
           {player.position}
         </span>
-        <span className="text-black text-[9px] font-medium whitespace-nowrap">
-          {player.name}
+        <span className="text-foreground text-[9px] font-semibold whitespace-nowrap">
+          {player.name.length > 10 ? player.name.substring(0, 10) : player.name}
         </span>
       </div>
       
-      {/* Club badge */}
-      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5">
+      {/* Club badge - green rounded pill */}
+      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-2 py-0.5 rounded-full flex items-center gap-0.5 mt-0.5">
         <span>(Д)</span>
-        <span className="whitespace-nowrap">{player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
+        <span className="whitespace-nowrap">{player.team.length > 10 ? player.team.substring(0, 10) : player.team}</span>
       </div>
     </div>
   );
