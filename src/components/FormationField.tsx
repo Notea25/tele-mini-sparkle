@@ -138,7 +138,7 @@ const FormationField = ({
                     className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
                   />
                   {/* Price tag */}
-                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-[#B855E4] text-white text-[8px] font-bold px-1.5 py-px rounded-full flex items-center gap-0.5">
+                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 bg-[#B855E4] text-black text-[8px] font-bold px-1.5 py-px rounded-full flex items-center gap-0.5">
                     <span className="text-[5px]">•</span>
                     <span>{(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}</span>
                     <span className="text-[5px]">•</span>
