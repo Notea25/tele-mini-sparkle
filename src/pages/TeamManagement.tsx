@@ -379,7 +379,7 @@ const TeamManagement = () => {
               />
               <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
               <span className={`text-[8px] ${chip.active ? "text-primary" : "text-muted-foreground"}`}>
-                {chip.sublabel}
+                {chip.active ? chip.sublabel : "Использовано"}
               </span>
             </div>
           ))}
