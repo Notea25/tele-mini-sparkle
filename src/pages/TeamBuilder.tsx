@@ -50,19 +50,33 @@ const TeamBuilder = () => {
   const playerListRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
-  const [selectedPlayers, setSelectedPlayers] = useState<{id: number; slotIndex: number}[]>([]);
+  const [selectedPlayers, setSelectedPlayers] = useState<{id: number; slotIndex: number}[]>(() => {
+    const saved = localStorage.getItem('fantasyTeamPlayers');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
   const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
   const [priceFrom, setPriceFrom] = useState(3);
   const [priceTo, setPriceTo] = useState(10);
-  const [captain, setCaptain] = useState<number | null>(null);
-  const [viceCaptain, setViceCaptain] = useState<number | null>(null);
+  const [captain, setCaptain] = useState<number | null>(() => {
+    const saved = localStorage.getItem('fantasyTeamCaptain');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [viceCaptain, setViceCaptain] = useState<number | null>(() => {
+    const saved = localStorage.getItem('fantasyTeamViceCaptain');
+    return saved ? JSON.parse(saved) : null;
+  });
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName, setTeamName] = useState(() => {
     const state = location.state as { teamName?: string } | null;
-    return state?.teamName || "Lucky Team";
+    if (state?.teamName) {
+      localStorage.setItem('fantasyTeamName', state.teamName);
+      return state.teamName;
+    }
+    const saved = localStorage.getItem('fantasyTeamName');
+    return saved || "Lucky Team";
   });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showSquadError, setShowSquadError] = useState(false);
@@ -977,6 +991,11 @@ const TeamBuilder = () => {
             if (selectedPlayers.length < 15) {
               setShowSquadError(true);
             } else {
+              // Save to localStorage before navigating
+              localStorage.setItem('fantasyTeamPlayers', JSON.stringify(selectedPlayers));
+              localStorage.setItem('fantasyTeamName', teamName);
+              localStorage.setItem('fantasyTeamCaptain', JSON.stringify(captain));
+              localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(viceCaptain));
               navigate("/league");
             }
           }}
@@ -1006,7 +1025,10 @@ const TeamBuilder = () => {
         isOpen={isEditTeamNameModalOpen}
         onClose={() => setIsEditTeamNameModalOpen(false)}
         currentName={teamName}
-        onSave={setTeamName}
+        onSave={(newName) => {
+          setTeamName(newName);
+          localStorage.setItem('fantasyTeamName', newName);
+        }}
       />
     </div>
   );
