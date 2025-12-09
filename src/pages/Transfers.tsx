@@ -10,6 +10,7 @@ import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import BuyPlayerDrawer from "@/components/BuyPlayerDrawer";
+import ConfirmTransfersDrawer from "@/components/ConfirmTransfersDrawer";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -114,9 +115,13 @@ const Transfers = () => {
   
   // Track initial state to detect changes
   const initialStateRef = useRef<string>("");
+  const initialPlayersRef = useRef<PlayerDataExt[]>([]);
   const [hasChanges, setHasChanges] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  
+  // Confirm transfers drawer state
+  const [showConfirmDrawer, setShowConfirmDrawer] = useState(false);
 
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
@@ -125,6 +130,7 @@ const Transfers = () => {
       setBenchPlayers(bench);
       // Store initial state
       initialStateRef.current = JSON.stringify([...mainSquad, ...bench].map(p => p.id).sort());
+      initialPlayersRef.current = [...mainSquad, ...bench];
     }
   }, []);
 
@@ -158,6 +164,36 @@ const Transfers = () => {
   
   // Buy player drawer state
   const [buyDrawerOpen, setBuyDrawerOpen] = useState(false);
+
+  // Calculate transfer records for confirmation
+  const getTransferRecords = () => {
+    const currentPlayerIds = new Set([...mainSquadPlayers, ...benchPlayers].map(p => p.id));
+    const initialPlayerIds = new Set(initialPlayersRef.current.map(p => p.id));
+    
+    const playersOut = initialPlayersRef.current.filter(p => !currentPlayerIds.has(p.id));
+    const playersIn = [...mainSquadPlayers, ...benchPlayers].filter(p => !initialPlayerIds.has(p.id));
+    
+    const transfers: Array<{
+      type: "swap" | "buy" | "sell";
+      playerOut?: { id: number; name: string; points: number };
+      playerIn?: { id: number; name: string; points: number };
+    }> = [];
+    
+    // Match players out with players in as swaps
+    const maxPairs = Math.max(playersOut.length, playersIn.length);
+    for (let i = 0; i < maxPairs; i++) {
+      const pOut = playersOut[i];
+      const pIn = playersIn[i];
+      
+      transfers.push({
+        type: pOut && pIn ? "swap" : (pOut ? "sell" : "buy"),
+        playerOut: pOut ? { id: pOut.id, name: pOut.name, points: pOut.points } : undefined,
+        playerIn: pIn ? { id: pIn.id, name: pIn.name, points: pIn.points } : undefined,
+      });
+    }
+    
+    return transfers;
+  };
 
   const handleNavigationAttempt = (targetPath: string) => {
     if (hasChanges) {
@@ -737,13 +773,7 @@ const Transfers = () => {
                 toast.error(`Состав не сформирован. Выбрано ${allPlayers.length} из 15 игроков`);
                 return;
               }
-              // Save changes to localStorage
-              saveTeamTransfers(mainSquadPlayers, benchPlayers, captain, viceCaptain);
-              // Update initial state to reflect saved changes
-              initialStateRef.current = JSON.stringify(allPlayers.map(p => p.id).sort());
-              setHasChanges(false);
-              toast.success("Изменения сохранены");
-              navigate("/league");
+              setShowConfirmDrawer(true);
             }}
             className={`flex-1 rounded-full h-12 font-semibold ${
               allPlayers.length < 15 
@@ -847,6 +877,25 @@ const Transfers = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Confirm Transfers Drawer */}
+      <ConfirmTransfersDrawer
+        isOpen={showConfirmDrawer}
+        onClose={() => setShowConfirmDrawer(false)}
+        onConfirm={() => {
+          saveTeamTransfers(mainSquadPlayers, benchPlayers, captain, viceCaptain);
+          initialStateRef.current = JSON.stringify(allPlayers.map(p => p.id).sort());
+          initialPlayersRef.current = [...mainSquadPlayers, ...benchPlayers];
+          setHasChanges(false);
+          setShowConfirmDrawer(false);
+          toast.success("Изменения сохранены");
+          navigate("/league");
+        }}
+        transfers={getTransferRecords()}
+        freeTransfersUsed={Math.min(getTransferRecords().length, freeTransfers)}
+        additionalTransfersUsed={Math.max(0, getTransferRecords().length - freeTransfers)}
+        remainingBudget={Math.round(budget)}
+      />
     </div>
   );
 };
