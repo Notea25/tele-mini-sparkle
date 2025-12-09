@@ -23,7 +23,10 @@ const League = () => {
     return localStorage.getItem("fantasyTeamName") || "Lucky Team";
   });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
+  const [showAllCommercialLeagues, setShowAllCommercialLeagues] = useState(false);
 
+  // Current tour for determining finished leagues (simulated as tour 6 for demo)
+  const currentTour = 6;
   // Save team name to localStorage when it changes
   const handleSaveTeamName = (newName: string) => {
     setTeamName(newName);
@@ -66,19 +69,24 @@ const League = () => {
     { position: 9, change: "down", name: "Моя команда", tourPoints: 32, totalPoints: 3123, isUser: true },
   ];
 
-  // Commercial leagues data
+  // Commercial leagues data with end tour for blur logic
   const commercialLeagues = [
-    { name: "Betera", prize: "100 Freebet", period: "1-3 тур" },
-    { name: "BNB", prize: "1000 BYN", period: "4-6 тур" },
-    { name: "Atlant-M", prize: "iPhone 17", period: "7-9 тур" },
-    { name: "ABFF", prize: "VIP-ложа", period: "10-12 тур" },
-    { name: "BCS", prize: "MacBook", period: "13-15 тур" },
-    { name: "HC Dinamo", prize: "Абонемент", period: "16-18 тур" },
-    { name: "Maxline", prize: "250 Free Spin", period: "19-21 тур" },
-    { name: "Papa Doner", prize: "100 BYN", period: "22-24 тур" },
-    { name: "Zubr", prize: "AirPods", period: "25-27 тур" },
-    { name: "Hello", prize: "1000 минут", period: "28-30 тур" },
+    { id: "betera", name: "Betera", prize: "100 Freebet", period: "1-3 тур", endTour: 3 },
+    { id: "bnb", name: "BNB", prize: "1000 BYN", period: "4-6 тур", endTour: 6 },
+    { id: "atlant-m", name: "Atlant-M", prize: "iPhone 17", period: "7-9 тур", endTour: 9 },
+    { id: "abff", name: "ABFF", prize: "VIP-ложа", period: "10-12 тур", endTour: 12 },
+    { id: "bcs", name: "BCS", prize: "MacBook", period: "13-15 тур", endTour: 15 },
+    { id: "hc-dinamo", name: "HC Dinamo", prize: "Абонемент", period: "16-18 тур", endTour: 18 },
+    { id: "maxline", name: "Maxline", prize: "250 Free Spin", period: "19-21 тур", endTour: 21 },
+    { id: "papa-doner", name: "Papa Doner", prize: "100 BYN", period: "22-24 тур", endTour: 24 },
+    { id: "zubr", name: "Zubr", prize: "AirPods", period: "25-27 тур", endTour: 27 },
+    { id: "hello", name: "Hello", prize: "1000 минут", period: "28-30 тур", endTour: 30 },
   ];
+
+  // Determine which leagues to display based on showAll state
+  const displayedCommercialLeagues = showAllCommercialLeagues 
+    ? commercialLeagues 
+    : commercialLeagues.slice(0, 4);
 
   // My leagues data - combine static data with user-created leagues
   const staticLeagues: Array<{
@@ -346,20 +354,41 @@ const League = () => {
 
             {/* Commercial leagues rows */}
             <div className="space-y-2 mb-4">
-              {commercialLeagues.map((league, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full">
-                  <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
-                  <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
-                  <span className="col-span-3 text-foreground text-sm">{league.period}</span>
-                  <span className="col-span-1 text-muted-foreground text-right">→</span>
-                </div>
-              ))}
+              {displayedCommercialLeagues.map((league, idx) => {
+                const isFinished = currentTour > league.endTour;
+                return (
+                  <div 
+                    key={idx} 
+                    className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
+                      isFinished ? "opacity-40" : ""
+                    }`}
+                    onClick={() => navigate(`/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}`)}
+                  >
+                    <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
+                    <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
+                    <span className="col-span-3 text-foreground text-sm">{league.period}</span>
+                    <span className="col-span-1 text-muted-foreground text-right">→</span>
+                  </div>
+                );
+              })}
             </div>
 
             {/* See all commercial */}
-            <button className="w-full flex items-center justify-center gap-1 text-foreground text-sm py-2 mb-8">
-              <ChevronDown className="w-4 h-4" />
-              Смотреть все
+            <button 
+              className="w-full flex items-center justify-center gap-1 text-foreground text-sm py-2 mb-8"
+              onClick={() => setShowAllCommercialLeagues(!showAllCommercialLeagues)}
+            >
+              {showAllCommercialLeagues ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Скрыть
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  Смотреть все
+                </>
+              )}
             </button>
 
             {/* My Leagues */}
