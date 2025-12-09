@@ -2,12 +2,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
+import BuyPlayerDrawer from "@/components/BuyPlayerDrawer";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
@@ -111,6 +113,9 @@ const Transfers = () => {
   // Swap drawer state
   const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
   const [playerToSwap, setPlayerToSwap] = useState<PlayerData | null>(null);
+  
+  // Buy player drawer state
+  const [buyDrawerOpen, setBuyDrawerOpen] = useState(false);
 
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
 
@@ -118,6 +123,42 @@ const Transfers = () => {
   const totalPrice = allPlayers.reduce((sum, p) => sum + (p.price || 0), 0);
   const budget = 100 - totalPrice;
   const freeTransfers = 5;
+  const MAX_PLAYERS_PER_CLUB = 3;
+  const MAX_SQUAD_SIZE = 15;
+
+  const getPlayersCountByClub = (clubName: string) => {
+    return allPlayers.filter(p => p.team === clubName).length;
+  };
+
+  const handleBuyPlayer = (player: PlayerData) => {
+    // Check if team is already full
+    if (allPlayers.length >= MAX_SQUAD_SIZE) {
+      toast.error("Команда уже полная (15 игроков)");
+      return;
+    }
+
+    // Check budget
+    if (player.price > budget) {
+      toast.error("Недостаточно бюджета");
+      return;
+    }
+
+    // Check club limit
+    if (getPlayersCountByClub(player.team) >= MAX_PLAYERS_PER_CLUB) {
+      toast.error(`Нельзя добавить больше ${MAX_PLAYERS_PER_CLUB} игроков из одного клуба`);
+      return;
+    }
+
+    // Add to bench by default
+    const newPlayer: PlayerDataExt = {
+      ...player,
+      isOnBench: true,
+    };
+    
+    setBenchPlayers(prev => [...prev, newPlayer]);
+    setBuyDrawerOpen(false);
+    toast.success(`${player.name} добавлен в команду`);
+  };
 
   // Group players by position for list view
   const playersByPosition = {
@@ -453,7 +494,7 @@ const Transfers = () => {
         {/* Buttons Row */}
         <div className="flex gap-3">
           <Button 
-            onClick={() => navigate("/add-player")}
+            onClick={() => setBuyDrawerOpen(true)}
             className="flex-1 bg-card text-foreground hover:bg-card/80 rounded-full h-12 border border-border"
           >
             <Plus className="w-5 h-5 mr-2" />
@@ -510,6 +551,17 @@ const Transfers = () => {
         isOpen={isBoostDrawerOpen}
         onClose={() => setIsBoostDrawerOpen(false)}
         onApply={applyBoost}
+      />
+
+      {/* Buy Player Drawer */}
+      <BuyPlayerDrawer
+        isOpen={buyDrawerOpen}
+        onClose={() => setBuyDrawerOpen(false)}
+        onBuyPlayer={handleBuyPlayer}
+        currentTeamPlayerIds={allPlayers.map(p => p.id)}
+        currentBudget={budget}
+        getPlayersCountByClub={getPlayersCountByClub}
+        maxPlayersPerClub={MAX_PLAYERS_PER_CLUB}
       />
     </div>
   );
