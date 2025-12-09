@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { User, ChevronRight, Crown } from "lucide-react";
+import { User, ChevronRight } from "lucide-react";
 import SportHeader from "@/components/SportHeader";
 import homeIcon from "@/assets/home-icon.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
@@ -116,7 +116,7 @@ const CreateLeague = () => {
           <div className="flex items-center gap-3 mb-6">
             <h1 className="text-3xl font-bold text-foreground">{createdLeague.name}</h1>
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <Crown className="w-4 h-4 text-primary" />
+              <User className="w-4 h-4 text-primary" />
             </div>
           </div>
 
