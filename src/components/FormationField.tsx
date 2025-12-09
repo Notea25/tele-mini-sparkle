@@ -162,7 +162,7 @@ const FormationField = ({
                   className="mt-0.5 cursor-pointer hover:opacity-80 rounded-[4.52px] shadow-sm overflow-hidden"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <div className="flex items-center bg-white px-1.5 py-px w-[70px]">
+                  <div className="flex items-center bg-white px-1.5 py-px w-[65px]">
                     <span className="text-[8px] font-bold uppercase mr-1" style={{ color: "#7D7A94" }}>
                       {assignedPlayer.position}
                     </span>
@@ -171,7 +171,7 @@ const FormationField = ({
                     </span>
                   </div>
 
-                  <div className="bg-primary px-1.5 py-px flex items-center justify-center w-[70px]">
+                  <div className="bg-primary px-1.5 py-px flex items-center justify-center w-[65px]">
                     <span className="text-white text-[8px] font-bold flex items-center gap-0.5">
                       <span className="text-[7px]" style={{ color: "#7D7A94" }}>
                         (Д)
