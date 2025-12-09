@@ -780,9 +780,14 @@ const Transfers = () => {
           <AlertDialogFooter className="flex flex-col gap-2 sm:flex-col">
             <AlertDialogAction 
               onClick={handleSaveAndExit}
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              disabled={allPlayers.length < 15}
+              className={`${
+                allPlayers.length < 15 
+                  ? "bg-[#4A5D23] text-muted-foreground cursor-not-allowed" 
+                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+              }`}
             >
-              Сохранить
+              Сохранить {allPlayers.length < 15 && `(${allPlayers.length}/15)`}
             </AlertDialogAction>
             <AlertDialogCancel 
               onClick={handleExitWithoutSaving}
