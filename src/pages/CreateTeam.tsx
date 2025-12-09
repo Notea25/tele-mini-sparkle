@@ -142,7 +142,7 @@ const CreateTeam = () => {
           <SelectContent className="bg-card border-border">
             <SelectItem value="dinamo-minsk">Динамо Минск</SelectItem>
             <SelectItem value="bate">БАТЭ</SelectItem>
-            <SelectItem value="shakhtyor">Шахтер</SelectItem>
+            <SelectItem value="ml">МЛ Витебск</SelectItem>
             <SelectItem value="neman">Неман</SelectItem>
             <SelectItem value="energetik">Энергетик-БГУ</SelectItem>
             <SelectItem value="torpedo">Торпедо-БелАЗ</SelectItem>
