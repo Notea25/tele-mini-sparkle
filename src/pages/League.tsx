@@ -242,9 +242,9 @@ const League = () => {
                     style={{ width: "calc(100% - 24px)" }}
                   >
                     <div className="col-span-2 flex items-center gap-1">
-                      {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
+                      {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                       {row.change === "down" && !row.isUser && (
-                        <img src={arrowDownGreen} alt="down" className="w-3 h-3" />
+                        <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
                       )}
                       {row.change === "down" && row.isUser && (
                         <img src={arrowDownBlack} alt="down" className="w-3 h-3" />
@@ -345,9 +345,9 @@ const League = () => {
             <div className="space-y-2 mb-4">
               {myLeagues.map((league, idx) => (
                 <div key={idx} className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full">
-                  <div className="col-span-4 flex items-center gap-1">
-                    {league.change === "down" && <img src={arrowDownGreen} alt="down" className="w-3 h-3" />}
-                    {league.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
+                <div className="col-span-4 flex items-center gap-1">
+                    {league.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                    {league.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
                     <span className="text-foreground text-sm">{league.place}</span>
                   </div>
                   <span className="col-span-6 text-foreground text-sm truncate">{league.name}</span>
@@ -396,9 +396,9 @@ const League = () => {
                     style={{ width: "calc(100% - 24px)" }}
                   >
                     <div className="col-span-2 flex items-center gap-1">
-                      {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
+                      {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                       {row.change === "down" && !row.isUser && (
-                        <img src={arrowDownGreen} alt="down" className="w-3 h-3" />
+                        <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
                       )}
                       {row.change === "down" && row.isUser && (
                         <img src={arrowDownBlack} alt="down" className="w-3 h-3" />
