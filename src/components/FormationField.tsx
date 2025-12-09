@@ -169,7 +169,8 @@ const FormationField = ({
                       {assignedPlayer.position}
                     </span>
                     <span className="text-[8px] font-bold truncate" style={{ color: "#212121" }}>
-                      {assignedPlayer.name}
+                      /* {assignedPlayer.name} */
+                      {lengthCorrectFoo(assignedPlayer.name)}
                     </span>
                   </div>
 
