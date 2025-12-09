@@ -67,16 +67,16 @@ const League = () => {
 
   // Commercial leagues data
   const commercialLeagues = [
-    { name: "Betera", prize: "100 Freebet", period: "1-3 туры" },
-    { name: "BNB", prize: "1000 BYN", period: "4-6 туры" },
-    { name: "Atlant-M", prize: "iPhone 17", period: "7-9 туры" },
-    { name: "ABFF", prize: "VIP-ложа", period: "10-12 туры" },
-    { name: "BCS", prize: "MacBook", period: "13-15 туры" },
-    { name: "Dinamo", prize: "Абонемент", period: "16-18 туры" },
-    { name: "Maxline", prize: "250 Free Spin", period: "19-21 туры" },
-    { name: "Papa Doner", prize: "Сертификат - 100 BYN", period: "22-24 туры" },
-    { name: "Zubr", prize: "AirPods", period: "25-27 туры" },
-    { name: "Hello", prize: "1000 минут", period: "28-30 туры" },
+    { name: "Betera", prize: "100 Freebet", period: "1-3 тур" },
+    { name: "BNB", prize: "1000 BYN", period: "4-6 тур" },
+    { name: "Atlant-M", prize: "iPhone 17", period: "7-9 тур" },
+    { name: "ABFF", prize: "VIP-ложа", period: "10-12 тур" },
+    { name: "BCS", prize: "MacBook", period: "13-15 тур" },
+    { name: "HC Dinamo", prize: "Абонемент", period: "16-18 тур" },
+    { name: "Maxline", prize: "250 Free Spin", period: "19-21 тур" },
+    { name: "Papa Doner", prize: "100 BYN", period: "22-24 тур" },
+    { name: "Zubr", prize: "AirPods", period: "25-27 тур" },
+    { name: "Hello", prize: "1000 минут", period: "28-30 тур" },
   ];
 
   // My leagues data
