@@ -8,17 +8,6 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
@@ -123,44 +112,12 @@ const Transfers = () => {
   const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
   const [playerToSwap, setPlayerToSwap] = useState<PlayerData | null>(null);
 
-  // Sell confirmation dialog state
-  const [sellDialogOpen, setSellDialogOpen] = useState(false);
-  const [playerToSell, setPlayerToSell] = useState<PlayerDataExt | null>(null);
-  const { toast } = useToast();
-
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
 
   // Calculate budget info
   const totalPrice = allPlayers.reduce((sum, p) => sum + (p.price || 0), 0);
   const budget = 100 - totalPrice;
   const freeTransfers = 5;
-
-  // Handle sell player
-  const handleSellClick = (playerId: number) => {
-    const player = allPlayers.find(p => p.id === playerId);
-    if (player) {
-      setPlayerToSell(player);
-      setSellDialogOpen(true);
-    }
-  };
-
-  const confirmSellPlayer = () => {
-    if (!playerToSell) return;
-
-    if (playerToSell.isOnBench) {
-      setBenchPlayers(prev => prev.filter(p => p.id !== playerToSell.id));
-    } else {
-      setMainSquadPlayers(prev => prev.filter(p => p.id !== playerToSell.id));
-    }
-
-    toast({
-      title: "Игрок продан",
-      description: `${playerToSell.name} продан за ${playerToSell.price} млн. Бюджет: ${(budget + playerToSell.price).toFixed(1)} млн`,
-    });
-
-    setSellDialogOpen(false);
-    setPlayerToSell(null);
-  };
 
   // Group players by position for list view
   const playersByPosition = {
@@ -511,8 +468,8 @@ const Transfers = () => {
           onSetViceCaptain={setViceCaptain}
           variant="transfers"
           onSell={(playerId) => {
-            setSelectedPlayerForCard(null);
-            handleSellClick(playerId);
+            console.log("Sell player:", playerId);
+            // TODO: Implement sell logic
           }}
           onSwap={(playerId) => {
             const player = allPlayers.find(p => p.id === playerId);
@@ -543,32 +500,6 @@ const Transfers = () => {
         onClose={() => setIsBoostDrawerOpen(false)}
         onApply={applyBoost}
       />
-
-      {/* Sell Confirmation Dialog */}
-      <AlertDialog open={sellDialogOpen} onOpenChange={setSellDialogOpen}>
-        <AlertDialogContent className="bg-card border-border">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground">Продать игрока?</AlertDialogTitle>
-            <AlertDialogDescription className="text-muted-foreground">
-              Вы уверены, что хотите продать{" "}
-              <span className="text-foreground font-semibold">{playerToSell?.name}</span> за{" "}
-              <span className="text-primary font-semibold">{playerToSell?.price} млн</span>?
-              Эта сумма будет добавлена к вашему бюджету.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-secondary text-foreground hover:bg-secondary/80 rounded-full">
-              Отмена
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmSellPlayer}
-              className="bg-red-500 hover:bg-red-600 text-white rounded-full"
-            >
-              Продать
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
