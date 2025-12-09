@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
-import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
+import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers } from "@/lib/teamData";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
@@ -184,7 +184,12 @@ const Transfers = () => {
       setShowExitDialog(false);
       return;
     }
-    // TODO: Save changes to localStorage/backend
+    // Save changes to localStorage
+    saveTeamTransfers(mainSquadPlayers, benchPlayers, captain, viceCaptain);
+    // Update initial state to reflect saved changes
+    initialStateRef.current = JSON.stringify(allPlayersList.map(p => p.id).sort());
+    setHasChanges(false);
+    toast.success("Изменения сохранены");
     setShowExitDialog(false);
     navigate(pendingNavigation || "/league");
     setPendingNavigation(null);
@@ -732,6 +737,12 @@ const Transfers = () => {
                 toast.error(`Состав не сформирован. Выбрано ${allPlayers.length} из 15 игроков`);
                 return;
               }
+              // Save changes to localStorage
+              saveTeamTransfers(mainSquadPlayers, benchPlayers, captain, viceCaptain);
+              // Update initial state to reflect saved changes
+              initialStateRef.current = JSON.stringify(allPlayers.map(p => p.id).sort());
+              setHasChanges(false);
+              toast.success("Изменения сохранены");
               navigate("/league");
             }}
             className={`flex-1 rounded-full h-12 font-semibold ${

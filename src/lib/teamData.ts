@@ -161,3 +161,37 @@ export function getMainSquadAndBench(): { mainSquad: PlayerData[]; bench: Player
   
   return { mainSquad, bench };
 }
+
+// Save team transfers (updated squad composition)
+export function saveTeamTransfers(
+  mainSquadPlayers: PlayerData[], 
+  benchPlayers: PlayerData[],
+  captain?: number | null,
+  viceCaptain?: number | null
+): void {
+  // Convert back to the format used in TeamBuilder
+  const allTeamPlayers = [...mainSquadPlayers, ...benchPlayers];
+  
+  // Recalculate slot indices for storage
+  const slotCountByPosition: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
+  
+  const selectedPlayers = allTeamPlayers.map(player => {
+    const slotIndex = player.slotIndex !== undefined 
+      ? player.slotIndex 
+      : slotCountByPosition[player.position]++;
+    
+    return {
+      id: player.id,
+      slotIndex: slotIndex
+    };
+  });
+  
+  localStorage.setItem('fantasyTeamPlayers', JSON.stringify(selectedPlayers));
+  
+  if (captain !== undefined) {
+    localStorage.setItem('fantasyTeamCaptain', JSON.stringify(captain));
+  }
+  if (viceCaptain !== undefined) {
+    localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(viceCaptain));
+  }
+}
