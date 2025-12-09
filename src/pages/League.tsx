@@ -360,8 +360,10 @@ const League = () => {
                 return (
                   <div
                     key={idx}
-                    className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
-                      isFinished ? "opacity-40" : ""
+                    className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full cursor-pointer transition-colors ${
+                      isFinished 
+                        ? "bg-secondary/80" 
+                        : "bg-secondary/50 hover:bg-secondary/70"
                     }`}
                     onClick={() =>
                       navigate(
@@ -369,9 +371,9 @@ const League = () => {
                       )
                     }
                   >
-                    <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
-                    <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
-                    <span className="col-span-3 text-foreground text-sm">{league.period}</span>
+                    <span className={`col-span-4 text-sm truncate ${isFinished ? "text-muted-foreground" : "text-foreground"}`}>{league.name}</span>
+                    <span className={`col-span-4 text-sm truncate ${isFinished ? "text-muted-foreground" : "text-foreground"}`}>{league.prize}</span>
+                    <span className={`col-span-3 text-sm ${isFinished ? "text-muted-foreground" : "text-foreground"}`}>{league.period}</span>
                     <span className="col-span-1 text-muted-foreground text-right">→</span>
                   </div>
                 );
