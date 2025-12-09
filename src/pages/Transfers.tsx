@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeftRight, Plus } from "lucide-react";
+import { ArrowLeftRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -130,7 +130,7 @@ const Transfers = () => {
     return allPlayers.filter(p => p.team === clubName).length;
   };
 
-  const handleBuyPlayer = (player: PlayerData) => {
+  const handleBuyPlayer = (player: PlayerData, targetPosition?: string, isOnBench?: boolean, targetSlotIndex?: number) => {
     // Check if team is already full
     if (allPlayers.length >= MAX_SQUAD_SIZE) {
       toast.error("Команда уже полная (15 игроков)");
@@ -149,13 +149,73 @@ const Transfers = () => {
       return;
     }
 
-    // Add to bench by default
-    const newPlayer: PlayerDataExt = {
-      ...player,
-      isOnBench: true,
-    };
+    // If specific slot is provided (from clicking empty slot)
+    if (targetPosition !== undefined && isOnBench !== undefined && targetSlotIndex !== undefined) {
+      if (isOnBench) {
+        const newPlayer: PlayerDataExt = {
+          ...player,
+          isOnBench: true,
+        };
+        setBenchPlayers(prev => [...prev, newPlayer]);
+      } else {
+        const newPlayer: PlayerDataExt = {
+          ...player,
+          slotIndex: targetSlotIndex,
+          isOnBench: false,
+        };
+        setMainSquadPlayers(prev => [...prev, newPlayer]);
+      }
+      setBuyDrawerOpen(false);
+      toast.success(`${player.name} добавлен в команду`);
+      return;
+    }
+
+    // Priority: fill main squad empty slots first, then bench
+    // Check for empty slots in main squad
+    const formationSlots = [
+      { position: "ВР", count: 1 },
+      { position: "ЗЩ", count: 4 },
+      { position: "ПЗ", count: 4 },
+      { position: "НП", count: 2 },
+    ];
+
+    let addedToMainSquad = false;
     
-    setBenchPlayers(prev => [...prev, newPlayer]);
+    for (const slot of formationSlots) {
+      if (slot.position === player.position) {
+        const occupiedSlots = mainSquadPlayers
+          .filter(p => p.position === slot.position)
+          .map(p => p.slotIndex);
+        
+        for (let i = 0; i < slot.count; i++) {
+          if (!occupiedSlots.includes(i)) {
+            const newPlayer: PlayerDataExt = {
+              ...player,
+              slotIndex: i,
+              isOnBench: false,
+            };
+            setMainSquadPlayers(prev => [...prev, newPlayer]);
+            addedToMainSquad = true;
+            break;
+          }
+        }
+        break;
+      }
+    }
+
+    // If no main squad slot available, add to bench
+    if (!addedToMainSquad) {
+      if (benchPlayers.length >= 4) {
+        toast.error("Скамейка запасных заполнена");
+        return;
+      }
+      const newPlayer: PlayerDataExt = {
+        ...player,
+        isOnBench: true,
+      };
+      setBenchPlayers(prev => [...prev, newPlayer]);
+    }
+
     setBuyDrawerOpen(false);
     toast.success(`${player.name} добавлен в команду`);
   };
@@ -406,8 +466,10 @@ const Transfers = () => {
           <FormationFieldManagement 
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
+            maxBenchSize={4}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onRemovePlayer={handleSellPlayer}
+            onEmptySlotClick={() => setBuyDrawerOpen(true)}
           />
         </div>
       ) : (
@@ -495,14 +557,15 @@ const Transfers = () => {
         <div className="flex gap-3">
           <Button 
             onClick={() => setBuyDrawerOpen(true)}
-            className="flex-1 bg-card text-foreground hover:bg-card/80 rounded-full h-12 border border-border"
+            className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full h-12"
           >
-            <Plus className="w-5 h-5 mr-2" />
-            Добавить игрока
+            + Добавить игрока
           </Button>
           <Button 
             onClick={() => navigate("/league")}
-            className="flex-1 bg-primary/30 text-primary hover:bg-primary/40 rounded-full h-12"
+            className={`flex-1 rounded-full h-12 font-semibold text-black ${
+              allPlayers.length < 15 ? "bg-[#4A5D23]" : "bg-[#A8FF00] hover:bg-[#98EE00]"
+            }`}
           >
             Сохранить
           </Button>
