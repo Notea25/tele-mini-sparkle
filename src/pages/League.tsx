@@ -84,9 +84,7 @@ const League = () => {
   ];
 
   // Determine which leagues to display based on showAll state
-  const displayedCommercialLeagues = showAllCommercialLeagues 
-    ? commercialLeagues 
-    : commercialLeagues.slice(0, 4);
+  const displayedCommercialLeagues = showAllCommercialLeagues ? commercialLeagues : commercialLeagues.slice(0, 4);
 
   // My leagues data - combine static data with user-created leagues
   const staticLeagues: Array<{
@@ -104,12 +102,14 @@ const League = () => {
   ];
 
   // Load user-created leagues from localStorage
-  const [userCreatedLeagues, setUserCreatedLeagues] = useState<Array<{
-    id: string;
-    name: string;
-    participants: number;
-    isOwner: boolean;
-  }>>([]);
+  const [userCreatedLeagues, setUserCreatedLeagues] = useState<
+    Array<{
+      id: string;
+      name: string;
+      participants: number;
+      isOwner: boolean;
+    }>
+  >([]);
 
   useEffect(() => {
     const savedLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
@@ -117,7 +117,7 @@ const League = () => {
   }, []);
 
   const myLeagues = [
-    ...userCreatedLeagues.map(league => ({
+    ...userCreatedLeagues.map((league) => ({
       place: `1 / ${league.participants}`,
       name: league.name,
       hasIcon: true,
@@ -357,12 +357,16 @@ const League = () => {
               {displayedCommercialLeagues.map((league, idx) => {
                 const isFinished = currentTour > league.endTour;
                 return (
-                  <div 
-                    key={idx} 
+                  <div
+                    key={idx}
                     className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
                       isFinished ? "opacity-40" : ""
                     }`}
-                    onClick={() => navigate(`/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}`)}
+                    onClick={() =>
+                      navigate(
+                        `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}`,
+                      )
+                    }
                   >
                     <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
                     <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
@@ -374,7 +378,7 @@ const League = () => {
             </div>
 
             {/* See all commercial */}
-            <button 
+            <button
               className="w-full flex items-center justify-center gap-1 text-foreground text-sm py-2 mb-8"
               onClick={() => setShowAllCommercialLeagues(!showAllCommercialLeagues)}
             >
@@ -410,7 +414,9 @@ const League = () => {
                   key={idx}
                   className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
                   onClick={() => {
-                    navigate(`/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=${league.isOwner}`);
+                    navigate(
+                      `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=${league.isOwner}`,
+                    );
                   }}
                 >
                   <div className="col-span-4 flex items-center gap-1">
@@ -431,8 +437,8 @@ const League = () => {
             {/* Create league button */}
             <Button
               className={`w-full rounded-full py-6 font-semibold mb-8 ${
-                userCreatedLeagues.length >= 10 
-                  ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed" 
+                userCreatedLeagues.length >= 10
+                  ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
                   : "bg-primary text-primary-foreground"
               }`}
               onClick={() => {
@@ -447,7 +453,7 @@ const League = () => {
             </Button>
 
             {/* Club League */}
-            <h2 className="text-2xl font-bold text-foreground mb-2">Лига Динамо Минск</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">«Лига Динамо-Минск»</h2>
             <p className="text-muted-foreground text-sm mb-4">
               Соревнуйся с другими болельщиками твоего любимого клуба
             </p>
