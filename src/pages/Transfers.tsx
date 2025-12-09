@@ -407,7 +407,7 @@ const Transfers = () => {
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
-            onSwapPlayer={handlePlayerSwap}
+            onRemovePlayer={handleSellPlayer}
           />
         </div>
       ) : (

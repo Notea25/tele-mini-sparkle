@@ -1,6 +1,6 @@
 import footballField from "@/assets/football-field.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
-import { ArrowLeftRight } from "lucide-react";
+import { X, ArrowLeftRight } from "lucide-react";
 
 interface PlayerData {
   id: number;
@@ -18,6 +18,7 @@ interface FormationFieldManagementProps {
   mainSquadPlayers: PlayerData[];
   benchPlayers: PlayerData[];
   onPlayerClick?: (player: PlayerData) => void;
+  onRemovePlayer?: (playerId: number) => void;
   onSwapPlayer?: (playerId: number) => void;
 }
 
@@ -25,7 +26,8 @@ const FormationFieldManagement = ({
   mainSquadPlayers, 
   benchPlayers,
   onPlayerClick, 
-  onSwapPlayer 
+  onRemovePlayer,
+  onSwapPlayer
 }: FormationFieldManagementProps) => {
   // Formation 1-4-4-2: 1 GK, 4 DEF, 4 MID, 2 FWD = 11 players
   const formation = [
@@ -71,10 +73,21 @@ const FormationFieldManagement = ({
     return mainSquadPlayers.find(p => p.position === position && p.slotIndex === slotIndex);
   };
 
-  const renderPlayer = (player: PlayerData, showSwapButton = true) => (
+  const renderPlayer = (player: PlayerData, showActionButton = true) => (
     <div className="relative flex flex-col items-center">
-      {/* Swap button */}
-      {showSwapButton && onSwapPlayer && (
+      {/* Action button - Delete if onRemovePlayer provided, otherwise Swap */}
+      {showActionButton && onRemovePlayer && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemovePlayer(player.id);
+          }}
+          className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
+        >
+          <X className="w-2.5 h-2.5 text-black/70" />
+        </button>
+      )}
+      {showActionButton && !onRemovePlayer && onSwapPlayer && (
         <button
           onClick={(e) => {
             e.stopPropagation();
