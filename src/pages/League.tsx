@@ -140,7 +140,7 @@ const League = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <SportHeader />
 
-      <main className="flex-1 px-4 pb-6">
+      <main className="flex-1 px-4 pb-6 overflow-x-hidden">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
           <img
