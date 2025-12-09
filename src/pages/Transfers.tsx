@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { X, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useNavigate, useBlocker } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
@@ -137,6 +137,32 @@ const Transfers = () => {
     }
   }, [mainSquadPlayers, benchPlayers]);
 
+  // Handle browser beforeunload (tab close, refresh)
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasChanges]);
+
+  // Block React Router navigation
+  const blocker = useBlocker(
+    useCallback(() => hasChanges, [hasChanges])
+  );
+
+  // Show dialog when blocker is triggered
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      setShowExitDialog(true);
+    }
+  }, [blocker.state]);
+
   // Swap drawer state
   const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
   const [playerToSwap, setPlayerToSwap] = useState<PlayerData | null>(null);
@@ -161,12 +187,27 @@ const Transfers = () => {
     }
     // TODO: Save changes to localStorage/backend
     setShowExitDialog(false);
-    navigate("/league");
+    if (blocker.state === 'blocked') {
+      blocker.proceed();
+    } else {
+      navigate("/league");
+    }
   };
 
   const handleExitWithoutSaving = () => {
     setShowExitDialog(false);
-    navigate("/league");
+    if (blocker.state === 'blocked') {
+      blocker.proceed();
+    } else {
+      navigate("/league");
+    }
+  };
+
+  const handleContinueEditing = () => {
+    setShowExitDialog(false);
+    if (blocker.state === 'blocked') {
+      blocker.reset();
+    }
   };
 
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
@@ -796,7 +837,7 @@ const Transfers = () => {
               Не сохранять
             </AlertDialogCancel>
             <AlertDialogCancel 
-              onClick={() => setShowExitDialog(false)}
+              onClick={handleContinueEditing}
               className="bg-[#2A2A3E] border-0 text-foreground hover:bg-[#3A3A4E]"
             >
               Продолжить редактирование
