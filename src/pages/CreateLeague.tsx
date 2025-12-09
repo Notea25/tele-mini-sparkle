@@ -16,7 +16,7 @@ import homeIcon from "@/assets/home-icon.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
-import leagueCreationPlayers from "@/assets/league-creation-players.png";
+
 
 interface CreatedLeague {
   id: string;
@@ -258,14 +258,6 @@ const CreateLeague = () => {
           <span>Создание лиги</span>
         </div>
 
-        {/* Players Image - cropped to show only players */}
-        <div className="flex justify-center mb-4 overflow-hidden h-48">
-          <img
-            src={leagueCreationPlayers}
-            alt="Players"
-            className="w-full max-w-md object-cover object-top"
-          />
-        </div>
 
         {/* Title */}
         <h1 className="text-3xl font-bold text-foreground italic mb-6">
