@@ -104,9 +104,9 @@ const FormationField = ({
         const style = getPlayerStyle(slot.row, slot.col);
         const assignedPlayer = getAssignedPlayer(slot, idx);
         const isOccupied = !!assignedPlayer;
-        const lengthCorrectFoo = (text: string) => {
-          if (text.length > 8) {
-            return text.slice(0, 7) + "...";
+        const lengthCorrectFoo = (text: string, length: number, newLength) => {
+          if (text.length > length) {
+            return text.slice(0, newLength) + "...";
           } else {
             return text;
           }
@@ -167,7 +167,7 @@ const FormationField = ({
                       {assignedPlayer.position}
                     </span>
                     <span className="text-[8px] font-bold truncate" style={{ color: "#212121" }}>
-                      {lengthCorrectFoo(assignedPlayer.name)}
+                      {lengthCorrectFoo(assignedPlayer.name, 8, 7)}
                     </span>
                   </div>
 
@@ -176,7 +176,7 @@ const FormationField = ({
                       <span className="text-[7px]" style={{ color: "#7D7A94" }}>
                         (Д)
                       </span>
-                      <span style={{ color: "#212121" }}>{lengthCorrectFoo(assignedPlayer.team)}</span>
+                      <span style={{ color: "#212121" }}>{lengthCorrectFoo(assignedPlayer.team, 6, 5)}</span>
                     </span>
                   </div>
                 </div>
