@@ -587,7 +587,7 @@ const League = () => {
         )}
 
         {activeTab === "cup" && (
-          <>
+          <div className="w-full">
             {/* Main Cup */}
             <h2 className="text-2xl font-bold text-foreground mb-4">Кубок</h2>
 
@@ -596,7 +596,7 @@ const League = () => {
               <h3 className="text-2xl font-bold text-foreground mb-2">Скоро запустим</h3>
               <span className="text-primary text-xl font-medium">2026</span>
             </div>
-          </>
+          </div>
         )}
       </main>
 
