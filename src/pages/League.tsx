@@ -394,36 +394,7 @@ const League = () => {
             <h2 className="text-2xl font-bold text-foreground mb-4">Основные Кубок</h2>
             
             {/* Coming soon card */}
-            <div className="bg-secondary/30 rounded-2xl p-8 flex flex-col items-center justify-center min-h-[280px] mb-8 border border-border/50">
-              <h3 className="text-2xl font-bold text-foreground mb-2">Скоро запустим</h3>
-              <span className="text-primary text-xl font-medium">2026</span>
-            </div>
-
-            {/* Super cups */}
-            <h2 className="text-2xl font-bold text-foreground mb-4">Суперкубки (условно)</h2>
-
-            {/* Super cups table header */}
-            <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
-              <span className="col-span-4">Рейтинг</span>
-              <span className="col-span-8">Лига</span>
-            </div>
-
-            {/* Super cups rows */}
-            <div className="space-y-2 mb-8">
-              {[1, 2, 3].map((_, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full">
-                  <div className="col-span-4 flex items-center gap-1">
-                    <img src={arrowDownGreen} alt="down" className="w-3 h-3" />
-                    <span className="text-foreground text-sm">20 567</span>
-                  </div>
-                  <span className="col-span-6 text-foreground text-sm">Чемп</span>
-                  <span className="col-span-2 text-muted-foreground text-right">→</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Coming soon card 2 */}
-            <div className="bg-secondary/30 rounded-2xl p-8 flex flex-col items-center justify-center min-h-[200px] border border-border/50">
+            <div className="bg-secondary/30 rounded-2xl p-8 flex flex-col items-center justify-center min-h-[280px] border border-border/50">
               <h3 className="text-2xl font-bold text-foreground mb-2">Скоро запустим</h3>
               <span className="text-primary text-xl font-medium">2026</span>
             </div>
