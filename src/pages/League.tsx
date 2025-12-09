@@ -81,10 +81,10 @@ const League = () => {
 
   // My leagues data
   const myLeagues = [
-    { place: "2 / 43", name: "Shabany", hasIcon: true, change: "down" },
+    { place: "2 / 43", name: "Shabany", hasIcon: true, change: "up" },
     { place: "1 / 12", name: "Gold Cup", hasIcon: true, change: "up" },
     { place: "12 / 98", name: "SakaTop", hasIcon: false, change: "down" },
-    { place: "43 / 474", name: "Gunners", hasIcon: false, change: "up" },
+    { place: "43 / 474", name: "Gunners", hasIcon: false, change: "down" },
   ];
 
   const tabs = [
