@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { X, Plus } from "lucide-react";
-import { useNavigate, useBlocker } from "react-router-dom";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
@@ -151,18 +151,6 @@ const Transfers = () => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasChanges]);
 
-  // Block React Router navigation
-  const blocker = useBlocker(
-    useCallback(() => hasChanges, [hasChanges])
-  );
-
-  // Show dialog when blocker is triggered
-  useEffect(() => {
-    if (blocker.state === 'blocked') {
-      setShowExitDialog(true);
-    }
-  }, [blocker.state]);
-
   // Swap drawer state
   const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
   const [playerToSwap, setPlayerToSwap] = useState<PlayerData | null>(null);
@@ -187,27 +175,16 @@ const Transfers = () => {
     }
     // TODO: Save changes to localStorage/backend
     setShowExitDialog(false);
-    if (blocker.state === 'blocked') {
-      blocker.proceed();
-    } else {
-      navigate("/league");
-    }
+    navigate("/league");
   };
 
   const handleExitWithoutSaving = () => {
     setShowExitDialog(false);
-    if (blocker.state === 'blocked') {
-      blocker.proceed();
-    } else {
-      navigate("/league");
-    }
+    navigate("/league");
   };
 
   const handleContinueEditing = () => {
     setShowExitDialog(false);
-    if (blocker.state === 'blocked') {
-      blocker.reset();
-    }
   };
 
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
