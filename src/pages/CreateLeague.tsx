@@ -258,12 +258,12 @@ const CreateLeague = () => {
           <span>Создание лиги</span>
         </div>
 
-        {/* Players Image */}
-        <div className="flex justify-center mb-4">
+        {/* Players Image - cropped to show only players */}
+        <div className="flex justify-center mb-4 overflow-hidden h-48">
           <img
             src={leagueCreationPlayers}
             alt="Players"
-            className="w-full max-w-md object-contain"
+            className="w-full max-w-md object-cover object-top"
           />
         </div>
 
