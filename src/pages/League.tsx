@@ -81,10 +81,10 @@ const League = () => {
 
   // My leagues data
   const myLeagues = [
-    { place: "2 / 43", name: "Shabany", hasIcon: false, change: "up" },
-    { place: "1 / 12", name: "Gold Cup", hasIcon: false, change: "up" },
-    { place: "12 / 98", name: "SakaTop", hasIcon: true, change: "down" },
-    { place: "43 / 474", name: "Gunners", hasIcon: true, change: "down" },
+    { place: "2 / 43", name: "Shabany", hasIcon: true, change: "up" },
+    { place: "1 / 12", name: "Gold Cup", hasIcon: true, change: "up" },
+    { place: "12 / 98", name: "SakaTop", hasIcon: false, change: "down" },
+    { place: "43 / 474", name: "Gunners", hasIcon: false, change: "down" },
   ];
 
   const tabs = [
@@ -338,7 +338,7 @@ const League = () => {
             {/* My leagues table header */}
             <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
               <span className="col-span-4">Место в лиге</span>
-              <span className="col-span-8">Лига</span>
+              <span className="col-span-8">Название</span>
             </div>
 
             {/* My leagues rows */}
