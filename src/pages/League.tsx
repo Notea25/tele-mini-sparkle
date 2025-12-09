@@ -87,12 +87,12 @@ const League = () => {
     hasIcon: boolean;
     change: "up" | "down" | "same";
     isOwner: boolean;
-    id?: string;
+    id: string;
   }> = [
-    { place: "2 / 43", name: "Shabany", hasIcon: true, change: "up", isOwner: false },
-    { place: "1 / 12", name: "Gold Cup", hasIcon: true, change: "up", isOwner: false },
-    { place: "12 / 98", name: "SakaTop", hasIcon: false, change: "down", isOwner: false },
-    { place: "43 / 474", name: "Gunners", hasIcon: false, change: "down", isOwner: false },
+    { place: "2 / 43", name: "Shabany", hasIcon: true, change: "up", isOwner: true, id: "static-shabany" },
+    { place: "1 / 12", name: "Gold Cup", hasIcon: true, change: "up", isOwner: true, id: "static-goldcup" },
+    { place: "12 / 98", name: "SakaTop", hasIcon: false, change: "down", isOwner: false, id: "static-sakatop" },
+    { place: "43 / 474", name: "Gunners", hasIcon: false, change: "down", isOwner: false, id: "static-gunners" },
   ];
 
   // Load user-created leagues from localStorage
@@ -381,8 +381,10 @@ const League = () => {
                   key={idx}
                   className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
                   onClick={() => {
-                    if (league.id) {
+                    if (league.isOwner) {
                       navigate(`/create-league?id=${league.id}`);
+                    } else {
+                      navigate(`/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}`);
                     }
                   }}
                 >
@@ -395,7 +397,6 @@ const League = () => {
                   <span className="col-span-5 text-foreground text-sm truncate">{league.name}</span>
                   <div className="col-span-3 flex items-center justify-end gap-2">
                     {league.isOwner && <User className="w-4 h-4 text-primary" />}
-                    {league.hasIcon && !league.isOwner && <User className="w-4 h-4 text-muted-foreground" />}
                     <span className="text-muted-foreground">→</span>
                   </div>
                 </div>
