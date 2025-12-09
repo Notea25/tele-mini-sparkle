@@ -2,8 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { User, ChevronRight } from "lucide-react";
+import { User, ChevronRight, Copy } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import homeIcon from "@/assets/home-icon.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -21,6 +29,18 @@ const CreateLeague = () => {
   const navigate = useNavigate();
   const [leagueName, setLeagueName] = useState("");
   const [createdLeague, setCreatedLeague] = useState<CreatedLeague | null>(null);
+  const [showInviteDrawer, setShowInviteDrawer] = useState(false);
+
+  // Generate invite link
+  const getInviteLink = () => {
+    if (!createdLeague) return "";
+    return `https://fantasy-sports/liga-rb/${createdLeague.id}/invite`;
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(getInviteLink());
+    toast.success("Ссылка скопирована");
+  };
 
   // Check if we have a recently created league to display
   useEffect(() => {
@@ -66,13 +86,7 @@ const CreateLeague = () => {
   };
 
   const handleInviteFriend = () => {
-    // TODO: Implement invite functionality (share link, etc.)
-    if (navigator.share) {
-      navigator.share({
-        title: `Присоединяйся к лиге ${createdLeague?.name}`,
-        text: `Приглашаю тебя в мою лигу "${createdLeague?.name}" в Fantasy Sports!`,
-      });
-    }
+    setShowInviteDrawer(true);
   };
 
   // Mock standings data for the league
@@ -168,6 +182,55 @@ const CreateLeague = () => {
             ✕ Удалить лигу
           </Button>
         </div>
+
+        {/* Invite Friends Drawer */}
+        <Drawer open={showInviteDrawer} onOpenChange={setShowInviteDrawer}>
+          <DrawerContent className="bg-background border-t border-border">
+            <DrawerHeader className="text-center">
+              <DrawerTitle className="text-xl font-bold text-foreground">
+                Пригласить друзей
+              </DrawerTitle>
+            </DrawerHeader>
+            
+            <div className="px-6 pb-6 space-y-6">
+              {/* QR Code Section */}
+              <div className="flex flex-col items-center gap-3">
+                <span className="text-sm text-muted-foreground">QR</span>
+                <div className="bg-white p-4 rounded-lg">
+                  <QRCodeSVG
+                    value={getInviteLink()}
+                    size={180}
+                    level="M"
+                  />
+                </div>
+              </div>
+
+              {/* Invite Link Section */}
+              <div className="space-y-2">
+                <span className="text-sm text-muted-foreground">Ссылка приглашения</span>
+                <div className="flex items-center gap-2 bg-secondary/50 rounded-xl px-4 py-3">
+                  <span className="flex-1 text-foreground text-sm truncate">
+                    {getInviteLink()}
+                  </span>
+                  <button
+                    onClick={handleCopyLink}
+                    className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                  >
+                    <Copy className="w-5 h-5 text-muted-foreground" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Close Button */}
+              <Button
+                onClick={() => setShowInviteDrawer(false)}
+                className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
+              >
+                Закрыть
+              </Button>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
     );
   }
