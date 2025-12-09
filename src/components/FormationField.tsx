@@ -105,8 +105,8 @@ const FormationField = ({
         const assignedPlayer = getAssignedPlayer(slot, idx);
         const isOccupied = !!assignedPlayer;
         const lengthCorrectFoo = (text: string) => {
-          if (text.length > 4) {
-            return text.slice(0, 4) + "...";
+          if (text.length > 8) {
+            return text.slice(0, 7) + "...";
           } else {
             return text;
           }
@@ -162,7 +162,7 @@ const FormationField = ({
                   className="mt-0.5 cursor-pointer hover:opacity-80 rounded-[4.52px] shadow-sm overflow-hidden"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <div className="flex items-center bg-white px-1.5 py-px">
+                  <div className="flex items-center bg-white px-1.5 py-px w-[65px]">
                     <span className="text-[8px] font-bold uppercase mr-1" style={{ color: "#7D7A94" }}>
                       {assignedPlayer.position}
                     </span>
