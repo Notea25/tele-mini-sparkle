@@ -304,7 +304,7 @@ const League = () => {
             <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
               <span className="col-span-4">Название</span>
               <span className="col-span-4">Приз</span>
-              <span className="col-span-4">Срок</span>
+              <span className="col-span-4">Отрезок</span>
             </div>
 
             {/* Commercial leagues rows */}
