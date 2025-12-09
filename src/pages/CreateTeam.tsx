@@ -21,10 +21,41 @@ import prize1stPlace from "@/assets/prize-1st-place.png";
 const MAX_NAME_LENGTH = 15;
 
 const russianBadWords = [
-  "хуй", "хуя", "хуе", "хуи", "пизд", "блять", "бля", "блядь", "ебать", "еба", 
-  "ебу", "ебан", "ебл", "сука", "суки", "сучк", "мудак", "мудил", "пидор", 
-  "пидар", "гандон", "залупа", "шлюх", "дрочи", "хер", "жопа", "срань", 
-  "говно", "дерьмо", "засранец", "уебан", "уёб", "ёб", "долбоёб", "мразь"
+  "хуй",
+  "хуя",
+  "хуе",
+  "хуи",
+  "пизд",
+  "блять",
+  "бля",
+  "блядь",
+  "ебать",
+  "еба",
+  "ебу",
+  "ебан",
+  "ебл",
+  "сука",
+  "суки",
+  "сучк",
+  "мудак",
+  "мудил",
+  "пидор",
+  "пидар",
+  "гандон",
+  "залупа",
+  "шлюх",
+  "дрочи",
+  "хер",
+  "жопа",
+  "срань",
+  "говно",
+  "дерьмо",
+  "засранец",
+  "уебан",
+  "уёб",
+  "ёб",
+  "долбоёб",
+  "мразь",
 ];
 
 const CreateTeam = () => {
@@ -51,7 +82,7 @@ const CreateTeam = () => {
     }
 
     const name = teamName.trim();
-    
+
     try {
       if (filter.isProfane(name.toLowerCase())) {
         toast.error("Название содержит недопустимые слова");
@@ -60,7 +91,7 @@ const CreateTeam = () => {
     } catch {
       // If filter fails, allow navigation
     }
-    
+
     navigate("/team-builder", { state: { teamName: name } });
   };
 
@@ -68,7 +99,7 @@ const CreateTeam = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <SportHeader />
-      
+
       {/* Back Button */}
       <div className="px-4 mt-4">
         <Button
@@ -117,11 +148,13 @@ const CreateTeam = () => {
             <SelectItem value="torpedo">Торпедо-БелАЗ</SelectItem>
             <SelectItem value="slavia">Славия</SelectItem>
             <SelectItem value="isloch">Ислочь</SelectItem>
+            <SelectItem value="ml">МЛ Витебск</SelectItem>
+            <SelectItem value="dinamo-brest">Динамо Брест</SelectItem>
           </SelectContent>
         </Select>
 
         {/* Create Team Button */}
-        <Button 
+        <Button
           onClick={validateAndNavigate}
           disabled={!isFormValid}
           className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
@@ -131,23 +164,17 @@ const CreateTeam = () => {
         </Button>
       </div>
 
-
       {/* Collect Team Section */}
       <div className="px-4 mt-8 text-center">
         <h3 className="text-foreground text-3xl font-bold mb-4">Собирай команду</h3>
         <p className="text-muted-foreground text-base leading-relaxed">
           Воспользуйся бюджетом в <span className="text-primary font-semibold">100 миллионов</span>
-          <br />
-          и собери команду лучших игроков чемпионата
+          <br />и собери команду лучших игроков чемпионата
         </p>
 
         {/* Player Cards Image */}
         <div className="mt-6">
-          <img 
-            src={playersExample} 
-            alt="Players" 
-            className="w-full rounded-xl" 
-          />
+          <img src={playersExample} alt="Players" className="w-full rounded-xl" />
         </div>
       </div>
 
@@ -170,11 +197,7 @@ const CreateTeam = () => {
 
         {/* Scoring Example Image */}
         <div className="mt-6">
-          <img 
-            src={scoringExample} 
-            alt="Scoring Example" 
-            className="w-full rounded-xl" 
-          />
+          <img src={scoringExample} alt="Scoring Example" className="w-full rounded-xl" />
         </div>
       </div>
 
@@ -195,11 +218,7 @@ const CreateTeam = () => {
 
         {/* Transfers Example Image */}
         <div className="mt-6">
-          <img 
-            src={transfersExample} 
-            alt="Transfers Example" 
-            className="w-full rounded-xl" 
-          />
+          <img src={transfersExample} alt="Transfers Example" className="w-full rounded-xl" />
         </div>
       </div>
 
@@ -218,11 +237,7 @@ const CreateTeam = () => {
 
         {/* Leaderboard Example Image */}
         <div className="mt-6">
-          <img 
-            src={leaderboardExample} 
-            alt="Leaderboard Example" 
-            className="w-full rounded-xl" 
-          />
+          <img src={leaderboardExample} alt="Leaderboard Example" className="w-full rounded-xl" />
         </div>
       </div>
 
@@ -237,21 +252,9 @@ const CreateTeam = () => {
 
         {/* Prize Cards */}
         <div className="space-y-4">
-          <img 
-            src={prize3rdPlace} 
-            alt="3rd Place Prize" 
-            className="w-full rounded-xl" 
-          />
-          <img 
-            src={prize2ndPlace} 
-            alt="2nd Place Prize" 
-            className="w-full rounded-xl" 
-          />
-          <img 
-            src={prize1stPlace} 
-            alt="1st Place Prize" 
-            className="w-full rounded-xl" 
-          />
+          <img src={prize3rdPlace} alt="3rd Place Prize" className="w-full rounded-xl" />
+          <img src={prize2ndPlace} alt="2nd Place Prize" className="w-full rounded-xl" />
+          <img src={prize1stPlace} alt="1st Place Prize" className="w-full rounded-xl" />
         </div>
       </div>
 
