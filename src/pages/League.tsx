@@ -473,8 +473,8 @@ const League = () => {
               const topTeamNames = ["Ars", "Diamande", "Stayki"];
               const clubLeagueFullData = Array.from({ length: 100 }, (_, i) => ({
                 position: i + 1,
-                change: i % 3 === 0 ? "up" : i % 3 === 1 ? "down" : "same" as "up" | "down" | "same",
-                name: i === 8 ? "Моя команда" : i < 3 ? topTeamNames[i] : `Team ${i + 1}`,
+                change: i % 3 === 0 ? "up" : i % 3 === 1 ? "down" : ("same" as "up" | "down" | "same"),
+                name: i === 8 ? "Alepyz" : i < 3 ? topTeamNames[i] : `Team ${i + 1}`,
                 tourPoints: 32 - Math.floor(i / 10),
                 totalPoints: 3123 - i * 15,
                 isUser: i === 8,
@@ -530,7 +530,9 @@ const League = () => {
                           className={`col-span-2 text-right font-bold text-sm flex items-center justify-end gap-1 ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                         >
                           {row.totalPoints.toLocaleString()}
-                          <ArrowRight className={`w-4 h-4 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                          <ArrowRight
+                            className={`w-4 h-4 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`}
+                          />
                         </span>
                       </div>
                     ))}
