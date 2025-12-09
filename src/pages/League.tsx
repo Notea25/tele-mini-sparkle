@@ -343,8 +343,7 @@ const League = () => {
             {/* Commercial Leagues */}
             <h2 className="text-2xl font-bold text-foreground mb-2">Коммерческие лиги</h2>
             <p className="text-muted-foreground text-sm mb-4">
-              Участвуя в коммерческих лигах, вы боретесь за призы в 10-ти трёхтуровых отрезках сезона. Считаются только
-              очки внутри отрезка.
+              Соревнуйся за призы в коммерческих лигах
             </p>
 
             {/* Commercial leagues table header */}
