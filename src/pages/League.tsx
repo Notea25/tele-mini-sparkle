@@ -19,14 +19,14 @@ const League = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">("main");
   const [teamName, setTeamName] = useState(() => {
-    return localStorage.getItem('fantasyTeamName') || "Lucky Team";
+    return localStorage.getItem("fantasyTeamName") || "Lucky Team";
   });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
 
   // Save team name to localStorage when it changes
   const handleSaveTeamName = (newName: string) => {
     setTeamName(newName);
-    localStorage.setItem('fantasyTeamName', newName);
+    localStorage.setItem("fantasyTeamName", newName);
   };
 
   // Deadline countdown
@@ -40,14 +40,14 @@ const League = () => {
       const difference = deadlineDate.getTime() - now.getTime();
       const totalDuration = deadlineDate.getTime() - tournamentStartDate.getTime();
       const elapsed = now.getTime() - tournamentStartDate.getTime();
-      
+
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((difference / (1000 * 60)) % 60);
         const seconds = Math.floor((difference / 1000) % 60);
         const progress = Math.min((elapsed / totalDuration) * 100, 100);
-        
+
         setTimeLeft({ days, hours, minutes, seconds, progress });
       }
     };
@@ -96,10 +96,10 @@ const League = () => {
       <main className="flex-1 px-4 pb-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
-          <img 
-            src={homeIcon} 
-            alt="Home" 
-            className="w-4 h-4 cursor-pointer hover:opacity-80" 
+          <img
+            src={homeIcon}
+            alt="Home"
+            className="w-4 h-4 cursor-pointer hover:opacity-80"
             onClick={() => navigate("/")}
           />
           <ChevronRight className="w-3 h-3" />
@@ -130,8 +130,8 @@ const League = () => {
             {/* Team Name */}
             <div className="flex items-center justify-center gap-2 mb-4">
               <h1 className="text-2xl font-bold text-foreground">{teamName}</h1>
-              <Pencil 
-                className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground" 
+              <Pencil
+                className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground"
                 onClick={() => setIsEditTeamNameModalOpen(true)}
               />
             </div>
@@ -144,7 +144,7 @@ const League = () => {
             </div>
 
             <div className="grid grid-cols-3 gap-3 mb-6">
-              <div 
+              <div
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-colors"
                 onClick={() => navigate("/tournament-table")}
               >
@@ -152,7 +152,7 @@ const League = () => {
                 <span className="text-[10px] text-muted-foreground whitespace-nowrap">Средний результат</span>
                 <span className="text-muted-foreground text-sm">→</span>
               </div>
-              <div 
+              <div
                 className="bg-primary rounded-2xl px-3 py-2 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-colors"
                 onClick={() => navigate("/your-team")}
               >
@@ -160,7 +160,7 @@ const League = () => {
                 <span className="text-[10px] text-primary-foreground/80 whitespace-nowrap">Твои очки</span>
                 <span className="text-primary-foreground text-sm">→</span>
               </div>
-              <div 
+              <div
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-colors"
                 onClick={() => navigate("/dream-team")}
               >
@@ -183,7 +183,8 @@ const League = () => {
                 Дедлайн: <span className="text-foreground">04.04 в 19.00</span>
               </span>
               <span className="text-foreground text-sm">
-                {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+                {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:
+                {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
               </span>
             </div>
 
@@ -197,15 +198,15 @@ const League = () => {
 
             {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mb-8">
-              <img 
-                src={btnTeam} 
-                alt="Команда" 
+              <img
+                src={btnTeam}
+                alt="Команда"
                 className="w-full cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => navigate("/team-management")}
               />
-              <img 
-                src={btnTransfers} 
-                alt="Трансферы" 
+              <img
+                src={btnTransfers}
+                alt="Трансферы"
                 className="w-full cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => navigate("/transfers")}
               />
@@ -218,7 +219,11 @@ const League = () => {
             <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
               <span className="col-span-2">Позиция</span>
               <span className="col-span-4">Команда</span>
-              <span className="col-span-3 text-center">Очки / тур<br/>29</span>
+              <span className="col-span-3 text-center">
+                Очки / тур
+                <br />
+                29
+              </span>
               <span className="col-span-3 text-center">Всего очков</span>
             </div>
 
@@ -230,21 +235,39 @@ const League = () => {
                     className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
                       row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                     }`}
-                    style={{ width: 'calc(100% - 24px)' }}
+                    style={{ width: "calc(100% - 24px)" }}
                   >
                     <div className="col-span-2 flex items-center gap-1">
                       {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
-                      {row.change === "down" && !row.isUser && <img src={arrowDownGreen} alt="down" className="w-3 h-3" />}
-                      {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
+                      {row.change === "down" && !row.isUser && (
+                        <img src={arrowDownGreen} alt="down" className="w-3 h-3" />
+                      )}
+                      {row.change === "down" && row.isUser && (
+                        <img src={arrowDownBlack} alt="down" className="w-3 h-3" />
+                      )}
                       {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                      <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+                      <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                        {row.position}
+                      </span>
                       {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
                       {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
                       {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
                     </div>
-                    <span className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-                    <span className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-                    <span className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.totalPoints.toLocaleString()}</span>
+                    <span
+                      className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                    >
+                      {row.name}
+                    </span>
+                    <span
+                      className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                    >
+                      {row.tourPoints}
+                    </span>
+                    <span
+                      className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                    >
+                      {row.totalPoints.toLocaleString()}
+                    </span>
                   </div>
                   {row.isUser ? (
                     <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-xs">
@@ -330,7 +353,7 @@ const League = () => {
             </div>
 
             {/* Create league button */}
-            <Button 
+            <Button
               className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground mb-8"
               onClick={() => navigate("/create-league")}
             >
@@ -347,7 +370,11 @@ const League = () => {
             <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
               <span className="col-span-2">Позиция</span>
               <span className="col-span-4">Команда</span>
-              <span className="col-span-3 text-center">Очки / тур<br/>29</span>
+              <span className="col-span-3 text-center">
+                Очки / тур
+                <br />
+                29
+              </span>
               <span className="col-span-3 text-center">Всего очков</span>
             </div>
 
@@ -359,21 +386,39 @@ const League = () => {
                     className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
                       row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                     }`}
-                    style={{ width: 'calc(100% - 24px)' }}
+                    style={{ width: "calc(100% - 24px)" }}
                   >
                     <div className="col-span-2 flex items-center gap-1">
                       {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
-                      {row.change === "down" && !row.isUser && <img src={arrowDownGreen} alt="down" className="w-3 h-3" />}
-                      {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
+                      {row.change === "down" && !row.isUser && (
+                        <img src={arrowDownGreen} alt="down" className="w-3 h-3" />
+                      )}
+                      {row.change === "down" && row.isUser && (
+                        <img src={arrowDownBlack} alt="down" className="w-3 h-3" />
+                      )}
                       {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                      <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+                      <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                        {row.position}
+                      </span>
                       {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
                       {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
                       {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
                     </div>
-                    <span className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-                    <span className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-                    <span className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.totalPoints.toLocaleString()}</span>
+                    <span
+                      className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                    >
+                      {row.name}
+                    </span>
+                    <span
+                      className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                    >
+                      {row.tourPoints}
+                    </span>
+                    <span
+                      className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                    >
+                      {row.totalPoints.toLocaleString()}
+                    </span>
                   </div>
                   {row.isUser ? (
                     <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-xs">
@@ -391,8 +436,8 @@ const League = () => {
         {activeTab === "cup" && (
           <>
             {/* Main Cup */}
-            <h2 className="text-2xl font-bold text-foreground mb-4">Основные Кубок</h2>
-            
+            <h2 className="text-2xl font-bold text-foreground mb-4">Кубок</h2>
+
             {/* Coming soon card */}
             <div className="bg-secondary/30 rounded-2xl p-8 flex flex-col items-center justify-center min-h-[280px] border border-border/50">
               <h3 className="text-2xl font-bold text-foreground mb-2">Скоро запустим</h3>
