@@ -453,7 +453,7 @@ const League = () => {
             </Button>
 
             {/* Club League */}
-            <h2 className="text-2xl font-bold text-foreground mb-2">«Лига Динамо-Минск»</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Лига «Динамо-Минск»</h2>
             <p className="text-muted-foreground text-sm mb-4">
               Соревнуйся с другими болельщиками твоего любимого клуба
             </p>
