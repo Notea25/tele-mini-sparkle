@@ -142,6 +142,20 @@ const Transfers = () => {
     }
   };
 
+  const handleSellPlayer = (playerId: number) => {
+    const player = allPlayers.find(p => p.id === playerId);
+    if (!player) return;
+
+    if (player.isOnBench) {
+      setBenchPlayers(prev => prev.filter(p => p.id !== playerId));
+    } else {
+      setMainSquadPlayers(prev => prev.filter(p => p.id !== playerId));
+    }
+
+    // Close the player card drawer
+    setSelectedPlayerForCard(null);
+  };
+
   const handleSwapConfirm = (fromPlayerId: number, toPlayerId: number) => {
     const fromPlayer = allPlayers.find(p => p.id === fromPlayerId);
     const toPlayer = allPlayers.find(p => p.id === toPlayerId);
@@ -467,10 +481,7 @@ const Transfers = () => {
           onSetCaptain={setCaptain}
           onSetViceCaptain={setViceCaptain}
           variant="transfers"
-          onSell={(playerId) => {
-            console.log("Sell player:", playerId);
-            // TODO: Implement sell logic
-          }}
+          onSell={handleSellPlayer}
           onSwap={(playerId) => {
             const player = allPlayers.find(p => p.id === playerId);
             if (player) {
