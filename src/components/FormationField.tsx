@@ -176,7 +176,7 @@ const FormationField = ({
                       <span className="text-[7px]" style={{ color: "#7D7A94" }}>
                         (Д)
                       </span>
-                      <span style={{ color: "#212121" }}>{assignedPlayer.team}</span>
+                      <span style={{ color: "#212121" }}>{lengthCorrectFoo(assignedPlayer.team, 6, 5)}</span>
                     </span>
                   </div>
                 </div>
