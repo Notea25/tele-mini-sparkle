@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, ChevronRight, ChevronDown, ChevronUp, User } from "lucide-react";
+import { Pencil, ChevronRight, ChevronDown, ChevronUp, User, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
@@ -460,16 +460,12 @@ const League = () => {
               Соревнуйся с другими болельщиками твоего любимого клуба
             </p>
 
-            {/* Club league table header */}
-            <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
-              <span className="col-span-2">Позиция</span>
-              <span className="col-span-4">Команда</span>
-              <span className="col-span-3 text-center">
-                Очки / тур
-                <br />
-                29
-              </span>
-              <span className="col-span-3 text-center">Всего очков</span>
+            {/* Club league table header - same as Мои лиги */}
+            <div className="flex items-center justify-between px-4 py-2 text-xs text-muted-foreground">
+              <span>Место в лиге</span>
+              <span className="flex-1 text-center">Название</span>
+              <span className="w-16 text-center">Тур</span>
+              <span className="w-20 text-right">Всего</span>
             </div>
 
             {/* Club league data - full 100 users with user at position 9 */}
@@ -481,6 +477,7 @@ const League = () => {
                 tourPoints: 32 - Math.floor(i / 10),
                 totalPoints: 3123 - i * 15,
                 isUser: i === 8,
+                teamId: `team-${i + 1}`,
               }));
 
               // When collapsed: show top 3 + user (position 9)
@@ -497,12 +494,12 @@ const League = () => {
                     {displayData.map((row, idx) => (
                       <div key={idx} className="flex items-center gap-2">
                         <div
-                          className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
+                          className={`flex items-center justify-between flex-1 px-4 py-3 rounded-full cursor-pointer transition-opacity hover:opacity-80 ${
                             row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                           }`}
-                          style={{ width: "calc(100% - 24px)" }}
+                          onClick={() => navigate(`/view-team/${row.teamId}`)}
                         >
-                          <div className="col-span-2 flex items-center gap-1">
+                          <div className="flex items-center gap-2 min-w-[80px]">
                             {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                             {row.change === "down" && !row.isUser && (
                               <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
@@ -519,20 +516,21 @@ const League = () => {
                             {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
                           </div>
                           <span
-                            className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                            className={`flex-1 font-medium truncate px-2 ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                           >
                             {row.name}
                           </span>
                           <span
-                            className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                            className={`w-16 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                           >
                             {row.tourPoints}
                           </span>
                           <span
-                            className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                            className={`w-20 text-right font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                           >
                             {row.totalPoints.toLocaleString()}
                           </span>
+                          <ArrowRight className={`w-4 h-4 ml-2 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`} />
                         </div>
                         {row.isUser ? (
                           <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-xs">
