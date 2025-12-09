@@ -470,10 +470,11 @@ const League = () => {
 
             {/* Club league data - full 100 users with user at position 9 */}
             {(() => {
+              const topTeamNames = ["Ars", "Diamande", "Stayki"];
               const clubLeagueFullData = Array.from({ length: 100 }, (_, i) => ({
                 position: i + 1,
                 change: i % 3 === 0 ? "up" : i % 3 === 1 ? "down" : "same" as "up" | "down" | "same",
-                name: i === 8 ? "Моя команда" : `Lucky Team ${i + 1}`,
+                name: i === 8 ? "Моя команда" : i < 3 ? topTeamNames[i] : `Team ${i + 1}`,
                 tourPoints: 32 - Math.floor(i / 10),
                 totalPoints: 3123 - i * 15,
                 isUser: i === 8,
@@ -494,50 +495,50 @@ const League = () => {
                     {displayData.map((row, idx) => (
                       <div key={idx} className="flex items-center gap-2">
                         <div
-                          className={`flex items-center justify-between flex-1 px-4 py-3 rounded-full cursor-pointer transition-opacity hover:opacity-80 ${
+                          className={`flex items-center justify-between flex-1 px-3 py-2.5 rounded-full cursor-pointer transition-opacity hover:opacity-80 text-sm ${
                             row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                           }`}
                           onClick={() => navigate(`/view-team/${row.teamId}`)}
                         >
-                          <div className="flex items-center gap-2 min-w-[80px]">
-                            {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                          <div className="flex items-center gap-1 min-w-[60px]">
+                            {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-2.5 h-2.5 rotate-180" />}
                             {row.change === "down" && !row.isUser && (
-                              <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
+                              <img src={arrowUpRed} alt="down" className="w-2.5 h-2.5 rotate-180" />
                             )}
                             {row.change === "down" && row.isUser && (
-                              <img src={arrowDownBlack} alt="down" className="w-3 h-3" />
+                              <img src={arrowDownBlack} alt="down" className="w-2.5 h-2.5" />
                             )}
-                            {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                            <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                            {row.change === "same" && <img src={arrowSame} alt="same" className="w-2.5 h-2.5" />}
+                            <span className={`font-medium text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
                               {row.position}
                             </span>
-                            {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
-                            {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
-                            {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
+                            {row.position === 1 && <img src={trophyGold} alt="1st" className="w-3.5 h-3.5" />}
+                            {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-3.5 h-3.5" />}
+                            {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-3.5 h-3.5" />}
                           </div>
                           <span
-                            className={`flex-1 font-medium truncate px-2 ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                            className={`flex-1 font-medium truncate px-2 text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                           >
                             {row.name}
                           </span>
                           <span
-                            className={`w-16 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                            className={`w-12 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                           >
                             {row.tourPoints}
                           </span>
                           <span
-                            className={`w-20 text-right font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                            className={`w-16 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                           >
                             {row.totalPoints.toLocaleString()}
                           </span>
-                          <ArrowRight className={`w-4 h-4 ml-2 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                          <ArrowRight className={`w-3.5 h-3.5 ml-1 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`} />
                         </div>
                         {row.isUser ? (
-                          <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-xs">
+                          <span className="w-7 h-7 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-xs">
                             Ты
                           </span>
                         ) : (
-                          <span className="w-8" />
+                          <span className="w-7" />
                         )}
                       </div>
                     ))}
