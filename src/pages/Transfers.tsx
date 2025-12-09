@@ -643,9 +643,17 @@ const Transfers = () => {
             + Добавить игрока
           </Button>
           <Button 
-            onClick={() => navigate("/league")}
-            className={`flex-1 rounded-full h-12 font-semibold text-black ${
-              allPlayers.length < 15 ? "bg-[#4A5D23]" : "bg-[#A8FF00] hover:bg-[#98EE00]"
+            onClick={() => {
+              if (allPlayers.length < 15) {
+                toast.error(`Состав не сформирован. Выбрано ${allPlayers.length} из 15 игроков`);
+                return;
+              }
+              navigate("/league");
+            }}
+            className={`flex-1 rounded-full h-12 font-semibold ${
+              allPlayers.length < 15 
+                ? "bg-[#4A5D23] text-muted-foreground cursor-not-allowed" 
+                : "bg-[#A8FF00] hover:bg-[#98EE00] text-black"
             }`}
           >
             Сохранить
