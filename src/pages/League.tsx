@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, ChevronRight, ChevronDown, ChevronUp, User } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
@@ -376,13 +377,12 @@ const League = () => {
             {/* My leagues rows */}
             <div className="space-y-2 mb-4">
               {myLeagues.map((league, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
                   onClick={() => {
-                    if (league.isOwner && league.id) {
-                      sessionStorage.setItem("currentLeagueId", league.id);
-                      navigate("/create-league");
+                    if (league.id) {
+                      navigate(`/create-league?id=${league.id}`);
                     }
                   }}
                 >
@@ -404,8 +404,18 @@ const League = () => {
 
             {/* Create league button */}
             <Button
-              className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground mb-8"
-              onClick={() => navigate("/create-league")}
+              className={`w-full rounded-full py-6 font-semibold mb-8 ${
+                userCreatedLeagues.length >= 10 
+                  ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed" 
+                  : "bg-primary text-primary-foreground"
+              }`}
+              onClick={() => {
+                if (userCreatedLeagues.length >= 10) {
+                  toast.error("Вы не можете создать более 10 лиг, где вы являетесь владельцем");
+                } else {
+                  navigate("/create-league");
+                }
+              }}
             >
               Создать лигу
             </Button>

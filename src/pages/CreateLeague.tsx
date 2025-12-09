@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { User, ChevronRight, Copy } from "lucide-react";
@@ -17,6 +17,7 @@ import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
 
+const MAX_LEAGUES = 10;
 
 interface CreatedLeague {
   id: string;
@@ -28,14 +29,33 @@ interface CreatedLeague {
 
 const CreateLeague = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const leagueIdFromUrl = searchParams.get("id");
+  
   const [leagueName, setLeagueName] = useState("");
-  const [createdLeague, setCreatedLeague] = useState<CreatedLeague | null>(null);
+  const [viewingLeague, setViewingLeague] = useState<CreatedLeague | null>(null);
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
+  const [userLeaguesCount, setUserLeaguesCount] = useState(0);
+
+  // Check if viewing a specific league or creating new
+  useEffect(() => {
+    const savedLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
+    setUserLeaguesCount(savedLeagues.length);
+    
+    if (leagueIdFromUrl) {
+      const league = savedLeagues.find((l: CreatedLeague) => l.id === leagueIdFromUrl);
+      if (league) {
+        setViewingLeague(league);
+      }
+    } else {
+      setViewingLeague(null);
+    }
+  }, [leagueIdFromUrl]);
 
   // Generate invite link
   const getInviteLink = () => {
-    if (!createdLeague) return "";
-    return `https://fantasy-sports/liga-rb/${createdLeague.id}/invite`;
+    if (!viewingLeague) return "";
+    return `https://fantasy-sports/liga-rb/${viewingLeague.id}/invite`;
   };
 
   const handleCopyLink = () => {
@@ -43,19 +63,14 @@ const CreateLeague = () => {
     toast.success("Ссылка скопирована");
   };
 
-  // Check if we have a recently created league to display
-  useEffect(() => {
-    const currentLeagueId = sessionStorage.getItem("currentLeagueId");
-    if (currentLeagueId) {
-      const savedLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
-      const league = savedLeagues.find((l: CreatedLeague) => l.id === currentLeagueId);
-      if (league) {
-        setCreatedLeague(league);
-      }
-    }
-  }, []);
+  const isLimitReached = userLeaguesCount >= MAX_LEAGUES;
 
   const handleCreateLeague = () => {
+    if (isLimitReached) {
+      toast.error("Вы не можете создать более 10 лиг, где вы являетесь владельцем");
+      return;
+    }
+    
     if (leagueName.trim()) {
       const newLeague: CreatedLeague = {
         id: `league-${Date.now()}`,
@@ -69,19 +84,16 @@ const CreateLeague = () => {
       const existingLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
       localStorage.setItem("userCreatedLeagues", JSON.stringify([...existingLeagues, newLeague]));
       
-      // Store current league ID in session to show it
-      sessionStorage.setItem("currentLeagueId", newLeague.id);
-      
-      setCreatedLeague(newLeague);
+      // Navigate to view the created league
+      navigate(`/create-league?id=${newLeague.id}`);
     }
   };
 
   const handleDeleteLeague = () => {
-    if (createdLeague) {
+    if (viewingLeague) {
       const existingLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
-      const updatedLeagues = existingLeagues.filter((l: CreatedLeague) => l.id !== createdLeague.id);
+      const updatedLeagues = existingLeagues.filter((l: CreatedLeague) => l.id !== viewingLeague.id);
       localStorage.setItem("userCreatedLeagues", JSON.stringify(updatedLeagues));
-      sessionStorage.removeItem("currentLeagueId");
       navigate("/league");
     }
   };
@@ -104,8 +116,8 @@ const CreateLeague = () => {
     { position: 10, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
   ];
 
-  // If league is created, show the league management view
-  if (createdLeague) {
+  // If viewing a specific league, show the league management view
+  if (viewingLeague) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <SportHeader backTo="/league" />
@@ -124,12 +136,12 @@ const CreateLeague = () => {
             <ChevronRight className="w-3 h-3" />
             <span>Беларусь</span>
             <ChevronRight className="w-3 h-3" />
-            <span>{createdLeague.name}</span>
+            <span>{viewingLeague.name}</span>
           </div>
 
           {/* League Title with Owner Badge */}
           <div className="flex items-center gap-3 mb-6">
-            <h1 className="text-3xl font-bold text-foreground">{createdLeague.name}</h1>
+            <h1 className="text-3xl font-bold text-foreground">{viewingLeague.name}</h1>
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
               <User className="w-4 h-4 text-primary" />
             </div>
