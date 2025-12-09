@@ -116,6 +116,7 @@ const Transfers = () => {
   const initialStateRef = useRef<string>("");
   const [hasChanges, setHasChanges] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
@@ -158,12 +159,22 @@ const Transfers = () => {
   // Buy player drawer state
   const [buyDrawerOpen, setBuyDrawerOpen] = useState(false);
 
-  const handleBackClick = () => {
+  const handleNavigationAttempt = (targetPath: string) => {
     if (hasChanges) {
+      setPendingNavigation(targetPath);
       setShowExitDialog(true);
       return true; // Prevent default navigation
     }
+    navigate(targetPath);
     return false;
+  };
+
+  const handleBackClick = () => {
+    return handleNavigationAttempt("/league");
+  };
+
+  const handleHomeClick = () => {
+    handleNavigationAttempt("/");
   };
 
   const handleSaveAndExit = () => {
@@ -175,16 +186,19 @@ const Transfers = () => {
     }
     // TODO: Save changes to localStorage/backend
     setShowExitDialog(false);
-    navigate("/league");
+    navigate(pendingNavigation || "/league");
+    setPendingNavigation(null);
   };
 
   const handleExitWithoutSaving = () => {
     setShowExitDialog(false);
-    navigate("/league");
+    navigate(pendingNavigation || "/league");
+    setPendingNavigation(null);
   };
 
   const handleContinueEditing = () => {
     setShowExitDialog(false);
+    setPendingNavigation(null);
   };
 
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
@@ -500,7 +514,7 @@ const Transfers = () => {
               src={homeIcon} 
               alt="Home" 
               className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity" 
-              onClick={() => navigate("/")}
+              onClick={handleHomeClick}
             />
             <span>▸</span>
             <span>Футбол</span>
