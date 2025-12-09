@@ -1,5 +1,6 @@
 import footballField from "@/assets/football-field.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
+import playerJerseyWhite from "@/assets/player-jersey-white.png";
 import { X, ArrowLeftRight } from "lucide-react";
 
 interface PlayerData {
@@ -17,17 +18,21 @@ interface PlayerData {
 interface FormationFieldManagementProps {
   mainSquadPlayers: PlayerData[];
   benchPlayers: PlayerData[];
+  maxBenchSize?: number;
   onPlayerClick?: (player: PlayerData) => void;
   onRemovePlayer?: (playerId: number) => void;
   onSwapPlayer?: (playerId: number) => void;
+  onEmptySlotClick?: (position: string, isOnBench: boolean, slotIndex: number) => void;
 }
 
 const FormationFieldManagement = ({ 
   mainSquadPlayers, 
   benchPlayers,
+  maxBenchSize = 4,
   onPlayerClick, 
   onRemovePlayer,
-  onSwapPlayer
+  onSwapPlayer,
+  onEmptySlotClick
 }: FormationFieldManagementProps) => {
   // Formation 1-4-4-2: 1 GK, 4 DEF, 4 MID, 2 FWD = 11 players
   const formation = [
@@ -138,6 +143,18 @@ const FormationFieldManagement = ({
     </div>
   );
 
+  const renderEmptySlot = (position: string, isOnBench: boolean, slotIndex: number) => (
+    <div
+      className="relative cursor-pointer hover:opacity-80"
+      onClick={() => onEmptySlotClick?.(position, isOnBench, slotIndex)}
+    >
+      <img src={playerJerseyWhite} alt="Empty slot" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
+      <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium">
+        {position}
+      </span>
+    </div>
+  );
+
   return (
     <div>
       {/* Football Field */}
@@ -152,8 +169,6 @@ const FormationFieldManagement = ({
           const style = getPlayerStyle(slot.row, slot.col);
           const player = getPlayerForSlot(slot.position, slot.slotIndex);
 
-          if (!player) return null;
-
           return (
             <div
               key={idx}
@@ -164,7 +179,7 @@ const FormationFieldManagement = ({
                 transform: "translateX(-50%)",
               }}
             >
-              {renderPlayer(player)}
+              {player ? renderPlayer(player) : renderEmptySlot(slot.position, false, slot.slotIndex)}
             </div>
           );
         })}
@@ -174,11 +189,14 @@ const FormationFieldManagement = ({
       <div className="-mt-8 pb-6">
         <div className="bg-card/50 rounded-2xl p-4">
           <div className="flex gap-2 justify-between">
-            {benchPlayers.map((player) => (
-              <div key={player.id} className="flex flex-col items-center flex-1">
-                {renderPlayer(player)}
-              </div>
-            ))}
+            {Array.from({ length: maxBenchSize }).map((_, idx) => {
+              const player = benchPlayers[idx];
+              return (
+                <div key={idx} className="flex flex-col items-center flex-1">
+                  {player ? renderPlayer(player) : renderEmptySlot("ЗАМ", true, idx)}
+                </div>
+              );
+            })}
           </div>
           <p className="text-center text-muted-foreground text-sm mt-4">Замены</p>
         </div>
