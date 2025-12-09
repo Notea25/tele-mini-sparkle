@@ -104,6 +104,15 @@ const FormationField = ({
         const style = getPlayerStyle(slot.row, slot.col);
         const assignedPlayer = getAssignedPlayer(slot, idx);
         const isOccupied = !!assignedPlayer;
+        const lengthCorrectFoo = (text: string) => {
+          // if (text.lenth > 8) {
+          //   return text.slice(0, 7) + '...'
+          // }
+          // else {
+          //   return text
+          // }
+          text.lenth > 8 ? text.slice(0, 7) + "..." : text;
+        };
 
         return (
           <div
