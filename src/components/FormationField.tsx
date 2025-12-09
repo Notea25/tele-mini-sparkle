@@ -105,7 +105,7 @@ const FormationField = ({
         const assignedPlayer = getAssignedPlayer(slot, idx);
         const isOccupied = !!assignedPlayer;
         const lengthCorrectFoo = (text: string) => {
-          if (text.length > 8) {
+          if (text.length > 4) {
             return text.slice(0, 7) + "...";
           } else {
             return text;
