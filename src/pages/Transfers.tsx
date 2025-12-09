@@ -466,6 +466,18 @@ const Transfers = () => {
           isViceCaptain={viceCaptain === selectedPlayerForCard}
           onSetCaptain={setCaptain}
           onSetViceCaptain={setViceCaptain}
+          variant="transfers"
+          onSell={(playerId) => {
+            console.log("Sell player:", playerId);
+            // TODO: Implement sell logic
+          }}
+          onSwap={(playerId) => {
+            const player = allPlayers.find(p => p.id === playerId);
+            if (player) {
+              setPlayerToSwap(player);
+              setSwapDrawerOpen(true);
+            }
+          }}
         />
       )}
 
