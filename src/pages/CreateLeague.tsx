@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SportHeader from "@/components/SportHeader";
-import leagueCreationPlayers from "@/assets/league-creation-players.png";
 
 const CreateLeague = () => {
   const navigate = useNavigate();
@@ -20,15 +19,8 @@ const CreateLeague = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <SportHeader backTo="/league" />
       <div className="flex-1 px-4 pt-8">
-      {/* Players Image */}
-      <img 
-        src={leagueCreationPlayers} 
-        alt="League players" 
-        className="w-full max-w-md mx-auto mb-6"
-      />
-      
       {/* Title */}
-      <h1 className="text-3xl font-bold text-foreground italic mb-6 text-center">
+      <h1 className="text-3xl font-bold text-foreground italic mb-6">
         Создай свою лигу
       </h1>
 
