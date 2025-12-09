@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, ChevronRight, ChevronDown, ChevronUp, User, Crown } from "lucide-react";
+import { Pencil, ChevronRight, ChevronDown, ChevronUp, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
@@ -394,7 +394,7 @@ const League = () => {
                   </div>
                   <span className="col-span-5 text-foreground text-sm truncate">{league.name}</span>
                   <div className="col-span-3 flex items-center justify-end gap-2">
-                    {league.isOwner && <Crown className="w-4 h-4 text-primary" />}
+                    {league.isOwner && <User className="w-4 h-4 text-primary" />}
                     {league.hasIcon && !league.isOwner && <User className="w-4 h-4 text-muted-foreground" />}
                     <span className="text-muted-foreground">→</span>
                   </div>
