@@ -332,7 +332,7 @@ const League = () => {
             {/* My Leagues */}
             <h2 className="text-2xl font-bold text-foreground mb-2">Мои лиги</h2>
             <p className="text-muted-foreground text-sm mb-4">
-              Соревнуйся с друзьями в собственных лигах внутри Высшей лиги Беларуси по футболу
+              Соревнуйся с друзьями в собственных мини-лигах внутри Высшей лиги Беларуси по футболу
             </p>
 
             {/* My leagues table header */}
