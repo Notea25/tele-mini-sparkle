@@ -419,7 +419,7 @@ const Transfers = () => {
       )}
 
       {/* Fixed Bottom Section */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
         {/* Stats Row */}
         <div className="flex justify-between mb-4">
           <div className="text-center">
