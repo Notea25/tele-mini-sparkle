@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeftRight } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -309,62 +309,114 @@ const Transfers = () => {
     }
   };
 
-  const renderListSection = (position: string, players: PlayerData[]) => (
-    <div className="mb-6" key={position}>
-      <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
-      
-      <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
-        <span className="flex-1">Игрок ↕</span>
-        <span className="w-14 text-center">Клуб</span>
-        <span className="w-12 text-center">Очки ↕</span>
-        <span className="w-10 text-center">Цена ↕</span>
-        <span className="w-10"></span>
-      </div>
+  // Slot counts per position for main squad (1-4-4-2 formation)
+  const positionSlotCounts: Record<string, number> = {
+    "ВР": 1,
+    "ЗЩ": 4,
+    "ПЗ": 4,
+    "НП": 2,
+  };
 
-      <div className="space-y-2">
-        {players.map((player) => (
-          <div
-            key={player.id}
-            className="bg-card rounded-full px-4 py-2 flex items-center"
-          >
-            <div 
-              className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-              onClick={() => setSelectedPlayerForCard(player.id)}
-            >
-              <span className="text-foreground font-medium truncate">{player.name}</span>
-              <span className="text-muted-foreground text-xs">{player.position}</span>
-            </div>
-            
-            <div className="w-14 flex-shrink-0 flex justify-center">
-              {clubIcons[player.team] && (
-                <img 
-                  src={clubIcons[player.team]} 
-                  alt={player.team}
-                  className="w-5 h-5 object-contain"
-                />
-              )}
-            </div>
-            
-            <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-              {player.id % 3 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
-              <span className="text-foreground text-sm">{player.points}</span>
-            </div>
-            
-            <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-              {player.price}
-            </span>
-            
-            <button
-              onClick={() => handlePlayerSwap(player.id)}
-              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
-            >
-              <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
-            </button>
-          </div>
-        ))}
+  const renderListSection = (position: string, players: PlayerDataExt[]) => {
+    const slotCount = positionSlotCounts[position] || 0;
+    const occupiedSlots = players.map(p => p.slotIndex);
+    
+    // Create array of slots (filled and empty)
+    const slots: (PlayerDataExt | { isEmpty: true; slotIndex: number })[] = [];
+    for (let i = 0; i < slotCount; i++) {
+      const player = players.find(p => p.slotIndex === i);
+      if (player) {
+        slots.push(player);
+      } else {
+        slots.push({ isEmpty: true, slotIndex: i });
+      }
+    }
+
+    return (
+      <div className="mb-6" key={position}>
+        <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
+        
+        <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
+          <span className="flex-1">Игрок</span>
+          <span className="w-14 text-center">Клуб</span>
+          <span className="w-12 text-center">Очки</span>
+          <span className="w-10 text-center">Цена</span>
+          <span className="w-10"></span>
+        </div>
+
+        <div className="space-y-2">
+          {slots.map((slot, idx) => {
+            if ('isEmpty' in slot) {
+              // Empty slot
+              return (
+                <div
+                  key={`empty-${position}-${slot.slotIndex}`}
+                  className="bg-card/50 rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
+                  onClick={() => setBuyDrawerOpen(true)}
+                >
+                  <div className="flex-1 flex items-center gap-2 min-w-0">
+                    <span className="text-muted-foreground">Пустой слот</span>
+                    <span className="text-muted-foreground text-xs">{position}</span>
+                  </div>
+                  <div className="w-14 flex-shrink-0"></div>
+                  <div className="w-12 flex-shrink-0"></div>
+                  <span className="w-10 flex-shrink-0"></span>
+                  <button
+                    className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors flex-shrink-0"
+                  >
+                    <Plus className="w-4 h-4 text-primary" />
+                  </button>
+                </div>
+              );
+            }
+
+            // Player slot
+            const player = slot;
+            return (
+              <div
+                key={player.id}
+                className="bg-card rounded-full px-4 py-2 flex items-center"
+              >
+                <div 
+                  className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
+                  onClick={() => setSelectedPlayerForCard(player.id)}
+                >
+                  <span className="text-foreground font-medium truncate">{player.name}</span>
+                  <span className="text-muted-foreground text-xs">{player.position}</span>
+                </div>
+                
+                <div className="w-14 flex-shrink-0 flex justify-center">
+                  {clubIcons[player.team] && (
+                    <img 
+                      src={clubIcons[player.team]} 
+                      alt={player.team}
+                      className="w-5 h-5 object-contain"
+                    />
+                  )}
+                </div>
+                
+                <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
+                  {player.id % 3 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
+                  <span className="text-foreground text-sm">{player.points}</span>
+                </div>
+                
+                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
+                  {player.price}
+                </span>
+                
+                <button
+                  onClick={() => handleSellPlayer(player.id)}
+                  className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors flex-shrink-0"
+                >
+                  <X className="w-4 h-4 text-foreground" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background pb-32">
@@ -491,46 +543,75 @@ const Transfers = () => {
           </div>
 
           <div className="space-y-2">
-            {benchPlayers.map((player) => (
-              <div
-                key={player.id}
-                className="bg-card rounded-full px-4 py-2 flex items-center"
-              >
-                <div 
-                  className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-                  onClick={() => setSelectedPlayerForCard(player.id)}
+            {/* Render 4 bench slots */}
+            {Array.from({ length: 4 }).map((_, idx) => {
+              const player = benchPlayers[idx];
+              
+              if (!player) {
+                // Empty bench slot
+                return (
+                  <div
+                    key={`empty-bench-${idx}`}
+                    className="bg-card/50 rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
+                    onClick={() => setBuyDrawerOpen(true)}
+                  >
+                    <div className="flex-1 flex items-center gap-2 min-w-0">
+                      <span className="text-muted-foreground">Пустой слот</span>
+                      <span className="text-muted-foreground text-xs">ЗАМ</span>
+                    </div>
+                    <div className="w-14 flex-shrink-0"></div>
+                    <div className="w-12 flex-shrink-0"></div>
+                    <span className="w-10 flex-shrink-0"></span>
+                    <button
+                      className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors flex-shrink-0"
+                    >
+                      <Plus className="w-4 h-4 text-primary" />
+                    </button>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={player.id}
+                  className="bg-card rounded-full px-4 py-2 flex items-center"
                 >
-                  <span className="text-foreground font-medium truncate">{player.name}</span>
-                  <span className="text-muted-foreground text-xs">{player.position}</span>
+                  <div 
+                    className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
+                    onClick={() => setSelectedPlayerForCard(player.id)}
+                  >
+                    <span className="text-foreground font-medium truncate">{player.name}</span>
+                    <span className="text-muted-foreground text-xs">{player.position}</span>
+                  </div>
+                  
+                  <div className="w-14 flex-shrink-0 flex justify-center">
+                    {clubIcons[player.team] && (
+                      <img 
+                        src={clubIcons[player.team]} 
+                        alt={player.team}
+                        className="w-5 h-5 object-contain"
+                      />
+                    )}
+                  </div>
+                  
+                  <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
+                    {player.id % 2 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
+                    <span className="text-foreground text-sm">{player.points}</span>
+                  </div>
+                  
+                  <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
+                    {player.price}
+                  </span>
+                  
+                  <button
+                    onClick={() => handleSellPlayer(player.id)}
+                    className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors flex-shrink-0"
+                  >
+                    <X className="w-4 h-4 text-foreground" />
+                  </button>
                 </div>
-                
-                <div className="w-14 flex-shrink-0 flex justify-center">
-                  {clubIcons[player.team] && (
-                    <img 
-                      src={clubIcons[player.team]} 
-                      alt={player.team}
-                      className="w-5 h-5 object-contain"
-                    />
-                  )}
-                </div>
-                
-                <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-                  {player.id % 2 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
-                  <span className="text-foreground text-sm">{player.points}</span>
-                </div>
-                
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-                  {player.price}
-                </span>
-                
-                <button
-                  onClick={() => handlePlayerSwap(player.id)}
-                  className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
-                >
-                  <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
