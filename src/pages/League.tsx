@@ -464,8 +464,8 @@ const League = () => {
             <div className="flex items-center justify-between px-4 py-2 text-xs text-muted-foreground">
               <span>Место в лиге</span>
               <span className="flex-1 text-center">Название</span>
-              <span className="w-16 text-center">Тур</span>
-              <span className="w-20 text-right">Всего</span>
+              <span className="w-17 text-center">Тур</span>
+              <span className="w-19 text-right">Всего</span>
             </div>
 
             {/* Club league data - full 100 users with user at position 9 */}
