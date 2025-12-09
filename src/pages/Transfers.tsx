@@ -771,19 +771,25 @@ const Transfers = () => {
               У вас есть несохранённые изменения в составе команды. Хотите сохранить их перед выходом?
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex gap-2">
-            <AlertDialogCancel 
-              onClick={handleExitWithoutSaving}
-              className="bg-card border-border text-foreground hover:bg-card/80"
-            >
-              Не сохранять
-            </AlertDialogCancel>
+          <AlertDialogFooter className="flex flex-col gap-2 sm:flex-col">
             <AlertDialogAction 
               onClick={handleSaveAndExit}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               Сохранить
             </AlertDialogAction>
+            <AlertDialogCancel 
+              onClick={handleExitWithoutSaving}
+              className="bg-card border-border text-foreground hover:bg-card/80"
+            >
+              Не сохранять
+            </AlertDialogCancel>
+            <AlertDialogCancel 
+              onClick={() => setShowExitDialog(false)}
+              className="bg-[#2A2A3E] border-0 text-foreground hover:bg-[#3A3A4E]"
+            >
+              Продолжить редактирование
+            </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
