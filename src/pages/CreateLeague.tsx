@@ -16,6 +16,7 @@ import homeIcon from "@/assets/home-icon.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
+import leagueCreationPlayers from "@/assets/league-creation-players.png";
 
 interface CreatedLeague {
   id: string;
@@ -239,7 +240,33 @@ const CreateLeague = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <SportHeader backTo="/league" />
-      <div className="flex-1 px-4 pt-8">
+      
+      <main className="flex-1 px-4 pb-6">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
+          <img
+            src={homeIcon}
+            alt="Home"
+            className="w-4 h-4 cursor-pointer hover:opacity-80"
+            onClick={() => navigate("/")}
+          />
+          <ChevronRight className="w-3 h-3" />
+          <span>Футбол</span>
+          <ChevronRight className="w-3 h-3" />
+          <span>Беларусь</span>
+          <ChevronRight className="w-3 h-3" />
+          <span>Создание лиги</span>
+        </div>
+
+        {/* Players Image */}
+        <div className="flex justify-center mb-4">
+          <img
+            src={leagueCreationPlayers}
+            alt="Players"
+            className="w-full max-w-md object-contain"
+          />
+        </div>
+
         {/* Title */}
         <h1 className="text-3xl font-bold text-foreground italic mb-6">
           Создай свою лигу
@@ -262,7 +289,7 @@ const CreateLeague = () => {
         >
           Создать лигу
         </Button>
-      </div>
+      </main>
     </div>
   );
 };
