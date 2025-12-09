@@ -140,16 +140,22 @@ const CreateTeam = () => {
             <SelectValue placeholder="За какую команду болеешь" />
           </SelectTrigger>
           <SelectContent className="bg-card border-border">
-            <SelectItem value="dinamo-minsk">Динамо Минск</SelectItem>
+            <SelectItem value="arsenal">Арсенал</SelectItem>
+            <SelectItem value="baranovichi">Барановичи</SelectItem>
             <SelectItem value="bate">БАТЭ</SelectItem>
-            <SelectItem value="ml">МЛ Витебск</SelectItem>
-            <SelectItem value="neman">Неман</SelectItem>
-            <SelectItem value="energetik">Энергетик-БГУ</SelectItem>
-            <SelectItem value="torpedo">Торпедо-БелАЗ</SelectItem>
-            <SelectItem value="slavia">Славия</SelectItem>
+            <SelectItem value="belshina">Белшина</SelectItem>
+            <SelectItem value="vitebsk">Витебск</SelectItem>
+            <SelectItem value="gomel">Гомель</SelectItem>
+            <SelectItem value="dinamo-brest">Динамо-Брест</SelectItem>
+            <SelectItem value="dinamo-minsk">Динамо-Минск</SelectItem>
+            <SelectItem value="dnepr-mogilev">Днепр-Могилев</SelectItem>
             <SelectItem value="isloch">Ислочь</SelectItem>
+            <SelectItem value="minsk">Минск</SelectItem>
             <SelectItem value="ml">МЛ Витебск</SelectItem>
-            <SelectItem value="dinamo-brest">Динамо Брест</SelectItem>
+            <SelectItem value="naftan-novopolotsk">Нафтан-Новополоцк</SelectItem>
+            <SelectItem value="neman">Неман</SelectItem>
+            <SelectItem value="slavia">Славия-Мозырь</SelectItem>
+            <SelectItem value="torpedo">Торпедо-БелАЗ</SelectItem>
           </SelectContent>
         </Select>
 
