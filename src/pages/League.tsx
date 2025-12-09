@@ -381,11 +381,7 @@ const League = () => {
                   key={idx}
                   className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
                   onClick={() => {
-                    if (league.isOwner) {
-                      navigate(`/create-league?id=${league.id}`);
-                    } else {
-                      navigate(`/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}`);
-                    }
+                    navigate(`/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=${league.isOwner}`);
                   }}
                 >
                   <div className="col-span-4 flex items-center gap-1">
