@@ -461,11 +461,11 @@ const League = () => {
             </p>
 
             {/* Club league table header - same as Мои лиги */}
-            <div className="flex items-center justify-between px-4 py-2 text-xs text-muted-foreground">
-              <span>Место в лиге</span>
-              <span className="flex-1 text-center">Название</span>
-              <span className="w-16 text-center">Тур</span>
-              <span className="w-19 text-right">Всего</span>
+            <div className="grid grid-cols-12 gap-2 items-center px-4 py-2 text-xs text-muted-foreground">
+              <span className="col-span-4">Место в лиге</span>
+              <span className="col-span-4">Название</span>
+              <span className="col-span-2 text-center">Тур</span>
+              <span className="col-span-2 text-right pr-5">Всего</span>
             </div>
 
             {/* Club league data - full 100 users with user at position 9 */}
