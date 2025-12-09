@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, ChevronRight, ChevronDown, ChevronUp, User } from "lucide-react";
+import { Pencil, ChevronRight, ChevronDown, ChevronUp, User, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
@@ -79,12 +79,44 @@ const League = () => {
     { name: "Hello", prize: "1000 минут", period: "28-30 тур" },
   ];
 
-  // My leagues data
+  // My leagues data - combine static data with user-created leagues
+  const staticLeagues: Array<{
+    place: string;
+    name: string;
+    hasIcon: boolean;
+    change: "up" | "down" | "same";
+    isOwner: boolean;
+    id?: string;
+  }> = [
+    { place: "2 / 43", name: "Shabany", hasIcon: true, change: "up", isOwner: false },
+    { place: "1 / 12", name: "Gold Cup", hasIcon: true, change: "up", isOwner: false },
+    { place: "12 / 98", name: "SakaTop", hasIcon: false, change: "down", isOwner: false },
+    { place: "43 / 474", name: "Gunners", hasIcon: false, change: "down", isOwner: false },
+  ];
+
+  // Load user-created leagues from localStorage
+  const [userCreatedLeagues, setUserCreatedLeagues] = useState<Array<{
+    id: string;
+    name: string;
+    participants: number;
+    isOwner: boolean;
+  }>>([]);
+
+  useEffect(() => {
+    const savedLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
+    setUserCreatedLeagues(savedLeagues);
+  }, []);
+
   const myLeagues = [
-    { place: "2 / 43", name: "Shabany", hasIcon: true, change: "up" },
-    { place: "1 / 12", name: "Gold Cup", hasIcon: true, change: "up" },
-    { place: "12 / 98", name: "SakaTop", hasIcon: false, change: "down" },
-    { place: "43 / 474", name: "Gunners", hasIcon: false, change: "down" },
+    ...userCreatedLeagues.map(league => ({
+      place: `1 / ${league.participants}`,
+      name: league.name,
+      hasIcon: true,
+      change: "same" as const,
+      isOwner: true,
+      id: league.id,
+    })),
+    ...staticLeagues,
   ];
 
   const tabs = [
@@ -344,15 +376,26 @@ const League = () => {
             {/* My leagues rows */}
             <div className="space-y-2 mb-4">
               {myLeagues.map((league, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full">
-                <div className="col-span-4 flex items-center gap-1">
+                <div 
+                  key={idx} 
+                  className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
+                  onClick={() => {
+                    if (league.isOwner && league.id) {
+                      sessionStorage.setItem("currentLeagueId", league.id);
+                      navigate("/create-league");
+                    }
+                  }}
+                >
+                  <div className="col-span-4 flex items-center gap-1">
                     {league.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                     {league.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
+                    {league.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
                     <span className="text-foreground text-sm">{league.place}</span>
                   </div>
-                  <span className="col-span-6 text-foreground text-sm truncate">{league.name}</span>
-                  <div className="col-span-2 flex items-center justify-end gap-2">
-                    {league.hasIcon && <User className="w-4 h-4 text-muted-foreground" />}
+                  <span className="col-span-5 text-foreground text-sm truncate">{league.name}</span>
+                  <div className="col-span-3 flex items-center justify-end gap-2">
+                    {league.isOwner && <Crown className="w-4 h-4 text-primary" />}
+                    {league.hasIcon && !league.isOwner && <User className="w-4 h-4 text-muted-foreground" />}
                     <span className="text-muted-foreground">→</span>
                   </div>
                 </div>
