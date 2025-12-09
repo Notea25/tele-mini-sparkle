@@ -153,6 +153,12 @@ const Transfers = () => {
   };
 
   const handleSaveAndExit = () => {
+    const allPlayersList = [...mainSquadPlayers, ...benchPlayers];
+    if (allPlayersList.length < 15) {
+      toast.error(`Состав не сформирован. Выбрано ${allPlayersList.length} из 15 игроков`);
+      setShowExitDialog(false);
+      return;
+    }
     // TODO: Save changes to localStorage/backend
     setShowExitDialog(false);
     navigate("/league");
