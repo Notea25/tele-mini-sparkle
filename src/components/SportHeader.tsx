@@ -6,9 +6,10 @@ import logo from "@/assets/logo.png";
 
 interface SportHeaderProps {
   backTo?: string;
+  onBackClick?: () => boolean | void; // Return true to prevent default navigation
 }
 
-const SportHeader = ({ backTo }: SportHeaderProps = {}) => {
+const SportHeader = ({ backTo, onBackClick }: SportHeaderProps = {}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useTelegram();
   const location = useLocation();
@@ -30,6 +31,11 @@ const SportHeader = ({ backTo }: SportHeaderProps = {}) => {
   };
 
   const handleBack = () => {
+    // If onBackClick is provided and returns true, prevent default navigation
+    if (onBackClick && onBackClick() === true) {
+      return;
+    }
+    
     if (backTo) {
       navigate(backTo);
     } else {

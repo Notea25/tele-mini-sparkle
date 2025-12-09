@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { X, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
@@ -10,6 +10,16 @@ import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import BuyPlayerDrawer from "@/components/BuyPlayerDrawer";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
@@ -101,14 +111,31 @@ const Transfers = () => {
   // Load saved team from localStorage
   const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerDataExt[]>([]);
   const [benchPlayers, setBenchPlayers] = useState<PlayerDataExt[]>([]);
+  
+  // Track initial state to detect changes
+  const initialStateRef = useRef<string>("");
+  const [hasChanges, setHasChanges] = useState(false);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
     if (mainSquad.length > 0) {
       setMainSquadPlayers(mainSquad);
       setBenchPlayers(bench);
+      // Store initial state
+      initialStateRef.current = JSON.stringify([...mainSquad, ...bench].map(p => p.id).sort());
     }
   }, []);
+
+  // Check for changes whenever players change
+  useEffect(() => {
+    const currentState = JSON.stringify([...mainSquadPlayers, ...benchPlayers].map(p => p.id).sort());
+    if (initialStateRef.current && currentState !== initialStateRef.current) {
+      setHasChanges(true);
+    } else {
+      setHasChanges(false);
+    }
+  }, [mainSquadPlayers, benchPlayers]);
 
   // Swap drawer state
   const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
@@ -116,6 +143,25 @@ const Transfers = () => {
   
   // Buy player drawer state
   const [buyDrawerOpen, setBuyDrawerOpen] = useState(false);
+
+  const handleBackClick = () => {
+    if (hasChanges) {
+      setShowExitDialog(true);
+      return true; // Prevent default navigation
+    }
+    return false;
+  };
+
+  const handleSaveAndExit = () => {
+    // TODO: Save changes to localStorage/backend
+    setShowExitDialog(false);
+    navigate("/league");
+  };
+
+  const handleExitWithoutSaving = () => {
+    setShowExitDialog(false);
+    navigate("/league");
+  };
 
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
 
@@ -420,7 +466,7 @@ const Transfers = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <SportHeader backTo="/league" />
+      <SportHeader backTo="/league" onBackClick={handleBackClick} />
 
       {/* Team Header */}
       <div className="px-4 mt-6">
@@ -715,6 +761,32 @@ const Transfers = () => {
         getPlayersCountByClub={getPlayersCountByClub}
         maxPlayersPerClub={MAX_PLAYERS_PER_CLUB}
       />
+
+      {/* Exit Confirmation Dialog */}
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent className="bg-card border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">Несохранённые изменения</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
+              У вас есть несохранённые изменения в составе команды. Хотите сохранить их перед выходом?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex gap-2">
+            <AlertDialogCancel 
+              onClick={handleExitWithoutSaving}
+              className="bg-card border-border text-foreground hover:bg-card/80"
+            >
+              Не сохранять
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleSaveAndExit}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Сохранить
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
