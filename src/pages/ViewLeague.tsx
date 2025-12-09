@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronRight, Copy } from "lucide-react";
+import { ChevronRight, Copy, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ const ViewLeague = () => {
   const [searchParams] = useSearchParams();
   const leagueId = searchParams.get("id") || "";
   const leagueName = searchParams.get("name") || "Лига";
+  const isOwner = searchParams.get("owner") === "true";
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
 
@@ -35,6 +36,15 @@ const ViewLeague = () => {
 
   const handleLeaveLeague = () => {
     toast.success("Вы покинули лигу");
+    navigate("/league");
+  };
+
+  const handleDeleteLeague = () => {
+    // Remove from localStorage if it's a user-created league
+    const existingLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
+    const updatedLeagues = existingLeagues.filter((l: { id: string }) => l.id !== leagueId);
+    localStorage.setItem("userCreatedLeagues", JSON.stringify(updatedLeagues));
+    toast.success("Лига удалена");
     navigate("/league");
   };
 
@@ -77,8 +87,15 @@ const ViewLeague = () => {
           <span>{leagueName}</span>
         </div>
 
-        {/* League Title */}
-        <h1 className="text-3xl font-bold text-foreground mb-6">{leagueName}</h1>
+        {/* League Title with Owner Badge */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-foreground">{leagueName}</h1>
+          {isOwner && (
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <User className="w-5 h-5 text-primary" />
+            </div>
+          )}
+        </div>
 
         {/* Table Header */}
         <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
@@ -120,13 +137,23 @@ const ViewLeague = () => {
         >
           Пригласить друга
         </Button>
-        <Button
-          onClick={handleLeaveLeague}
-          variant="outline"
-          className="w-full rounded-full py-6 font-semibold border-border text-foreground"
-        >
-          Покинуть лигу
-        </Button>
+        {isOwner ? (
+          <Button
+            onClick={handleDeleteLeague}
+            variant="outline"
+            className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+          >
+            ✕ Удалить лигу
+          </Button>
+        ) : (
+          <Button
+            onClick={handleLeaveLeague}
+            variant="outline"
+            className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+          >
+            Покинуть лигу
+          </Button>
+        )}
       </div>
 
       {/* Invite Friends Drawer */}
