@@ -16,6 +16,7 @@ import homeIcon from "@/assets/home-icon.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
+import leagueCreationPlayers from "@/assets/league-creation-players.png";
 
 const MAX_LEAGUES = 10;
 
@@ -272,9 +273,16 @@ const CreateLeague = () => {
 
 
         {/* Title */}
-        <h1 className="text-3xl font-bold text-foreground italic mb-6">
+        <h1 className="text-3xl font-bold text-foreground mb-4">
           Создай свою лигу
         </h1>
+
+        {/* Players Image */}
+        <img 
+          src={leagueCreationPlayers} 
+          alt="League players" 
+          className="w-full mb-6"
+        />
 
         {/* League Name Input */}
         <Input
