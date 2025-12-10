@@ -16,9 +16,17 @@ import trophyGold from "@/assets/trophy-gold.png";
 import trophySilver from "@/assets/trophy-silver.png";
 import trophyBronze from "@/assets/trophy-bronze.png";
 
+const LEAGUE_TAB_KEY = "fantasyLeagueActiveTab";
+
 const League = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">("main");
+  const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(() => {
+    const savedTab = localStorage.getItem(LEAGUE_TAB_KEY);
+    if (savedTab === "main" || savedTab === "leagues" || savedTab === "cup") {
+      return savedTab;
+    }
+    return "main";
+  });
   const [teamName, setTeamName] = useState(() => {
     return localStorage.getItem("fantasyTeamName") || "Lucky Team";
   });
@@ -184,7 +192,11 @@ const League = () => {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as "main" | "leagues" | "cup")}
+              onClick={() => {
+                const newTab = tab.id as "main" | "leagues" | "cup";
+                setActiveTab(newTab);
+                localStorage.setItem(LEAGUE_TAB_KEY, newTab);
+              }}
               className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${
                 activeTab === tab.id
                   ? "bg-primary text-primary-foreground"
