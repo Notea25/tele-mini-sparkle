@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowLeftRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
@@ -11,11 +11,14 @@ import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg.png";
 import scoringExample from "@/assets/scoring-example.png";
-import transfersExample from "@/assets/transfers-example.png";
 import leaderboardExample from "@/assets/leaderboard-example.png";
 import prize3rdPlace from "@/assets/prize-3rd-place.png";
 import prize2ndPlace from "@/assets/prize-2nd-place.png";
 import prize1stPlace from "@/assets/prize-1st-place.png";
+import playerBykov from "@/assets/player-bykov.png";
+import playerKozlov from "@/assets/player-kozlov.png";
+import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
+import clubNeman from "@/assets/club-neman.png";
 
 const MAX_NAME_LENGTH = 15;
 
@@ -226,9 +229,46 @@ const CreateTeam = () => {
           более оптимальный
         </p>
 
-        {/* Transfers Example Image */}
-        <div className="mt-6">
-          <img src={transfersExample} alt="Transfers Example" className="w-full rounded-xl" />
+        {/* Transfers Player Cards */}
+        <div className="mt-6 flex justify-center items-center gap-2">
+          {/* Bykov Card */}
+          <div className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col" style={{ width: "140px", height: "180px" }}>
+            <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
+              <img src={clubDinamoBrest} alt="Club" className="max-w-full max-h-full object-contain" />
+            </div>
+            <div className="w-full flex-1 flex items-center justify-center">
+              <img src={playerBykov} alt="Быков" className="w-full h-full object-contain object-bottom" />
+            </div>
+            <div className="px-3 py-2">
+              <p className="text-foreground font-semibold text-sm truncate">Быков</p>
+              <div className="flex justify-between items-center mt-1">
+                <span className="text-muted-foreground text-xs">9 очков</span>
+                <span className="text-muted-foreground text-xs">ЗЩ</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Swap Arrow */}
+          <div className="flex items-center justify-center">
+            <ArrowLeftRight className="w-6 h-6 text-primary" />
+          </div>
+
+          {/* Kozlov Card */}
+          <div className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col" style={{ width: "140px", height: "180px" }}>
+            <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
+              <img src={clubNeman} alt="Club" className="max-w-full max-h-full object-contain" />
+            </div>
+            <div className="w-full flex-1 flex items-center justify-center">
+              <img src={playerKozlov} alt="Козлов" className="w-full h-full object-contain object-bottom" />
+            </div>
+            <div className="px-3 py-2">
+              <p className="text-foreground font-semibold text-sm truncate">Козлов</p>
+              <div className="flex justify-between items-center mt-1">
+                <span className="text-muted-foreground text-xs">7 очков</span>
+                <span className="text-muted-foreground text-xs">ПЗ</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
