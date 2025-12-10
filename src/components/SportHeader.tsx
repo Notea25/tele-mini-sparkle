@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useTelegram } from "@/providers/TelegramProvider";
 import logo from "@/assets/logo.png";
 
+const PROFILE_STORAGE_KEY = "fantasyUserProfile";
+
 interface SportHeaderProps {
   backTo?: string;
   onBackClick?: () => boolean | void; // Return true to prevent default navigation
@@ -16,6 +18,22 @@ const SportHeader = ({ backTo, onBackClick }: SportHeaderProps = {}) => {
   const navigate = useNavigate();
   
   const isHomePage = location.pathname === "/";
+
+  // Get profile image from localStorage
+  const getProfileImage = (): string | null => {
+    try {
+      const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
+      if (saved) {
+        const profile = JSON.parse(saved);
+        return profile.profileImage || null;
+      }
+    } catch {
+      return null;
+    }
+    return null;
+  };
+
+  const profileImage = getProfileImage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,7 +80,9 @@ const SportHeader = ({ backTo, onBackClick }: SportHeaderProps = {}) => {
           </button>
         </div>
         <Link to="/profile">
-          {user?.photo_url ? (
+          {profileImage ? (
+            <img src={profileImage} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+          ) : user?.photo_url ? (
             <img src={user.photo_url} alt={user.first_name || "User"} className="w-8 h-8 rounded-full object-cover" />
           ) : (
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent" />
