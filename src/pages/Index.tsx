@@ -6,10 +6,10 @@ import SportCard from "@/components/SportCard";
 import FooterNav from "@/components/FooterNav";
 import { ChevronDown } from "lucide-react";
 import leagueLogo from "@/assets/league-logo.png";
-import footballIcon from "@/assets/football-icon.png";
-import basketballIcon from "@/assets/basketball-icon.png";
-import hockeyIcon from "@/assets/hockey-icon.png";
-import csgoIcon from "@/assets/csgo-icon.png";
+import iconFootball from "@/assets/icon-football.png";
+import iconBasketball from "@/assets/icon-basketball.png";
+import iconHockey from "@/assets/icon-hockey.png";
+import iconCs2 from "@/assets/icon-cs2.png";
 import { useState } from "react";
 
 const Index = () => {
@@ -103,34 +103,48 @@ const Index = () => {
       <CategoryFilter />
 
       <div className="mt-6">
-        <SportCard
-          title="Футбол"
-          iconImage={footballIcon}
-          leagueIcon={leagueLogo}
-          league="Беларусь"
-          date="04.04"
-          time="19:00"
-          glowColor="120 85% 55%"
-          href="/create-team"
-        />
+        <div id="section-football">
+          <SportCard
+            title="Футбол"
+            iconImage={iconFootball}
+            leagueIcon={leagueLogo}
+            league="Беларусь"
+            date="04.04"
+            time="19:00"
+            glowColor="120 85% 55%"
+            href="/create-team"
+          />
+        </div>
 
-        <SportCard
-          title="Баскетбол"
-          iconImage={basketballIcon}
-          comingSoon
-          comingSoonYear="2026"
-          glowColor="35 85% 55%"
-        />
+        <div id="section-basketball">
+          <SportCard
+            title="Баскетбол"
+            iconImage={iconBasketball}
+            comingSoon
+            comingSoonYear="2026"
+            glowColor="35 85% 55%"
+          />
+        </div>
 
-        <SportCard title="Хоккей" iconImage={hockeyIcon} comingSoon comingSoonYear="2028" glowColor="200 85% 55%" />
+        <div id="section-hockey">
+          <SportCard 
+            title="Хоккей" 
+            iconImage={iconHockey} 
+            comingSoon 
+            comingSoonYear="2028" 
+            glowColor="200 85% 55%" 
+          />
+        </div>
 
-        <SportCard
-          title="Counter-Strike 2"
-          iconImage={csgoIcon}
-          comingSoon
-          comingSoonYear="2029"
-          glowColor="0 85% 55%"
-        />
+        <div id="section-cs2">
+          <SportCard
+            title="Counter-Strike 2"
+            iconImage={iconCs2}
+            comingSoon
+            comingSoonYear="2029"
+            glowColor="0 85% 55%"
+          />
+        </div>
       </div>
 
       <FooterNav />
