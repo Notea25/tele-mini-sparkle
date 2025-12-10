@@ -10,6 +10,7 @@ interface SportCardProps {
   league?: string;
   date?: string;
   time?: string;
+  participants?: number;
   comingSoon?: boolean;
   comingSoonYear?: string;
   glowColor?: string;
@@ -24,6 +25,7 @@ const SportCard = ({
   league,
   date,
   time,
+  participants,
   comingSoon,
   comingSoonYear,
   glowColor = "88 85% 55%",
@@ -35,6 +37,10 @@ const SportCard = ({
     if (href && !comingSoon) {
       navigate(href);
     }
+  };
+
+  const formatParticipants = (count: number) => {
+    return count.toLocaleString('ru-RU');
   };
 
   return (
@@ -93,8 +99,13 @@ const SportCard = ({
               </div>
               <div>
                 <h4 className="text-foreground font-bold text-xl">{league}</h4>
+                {participants !== undefined && (
+                  <p className="text-muted-foreground text-base">
+                    {formatParticipants(participants)} участников
+                  </p>
+                )}
                 <p className="text-muted-foreground text-base">
-                  Розыгрыш • {date} в {time}
+                  Дедлайн: {date} в {time}
                 </p>
               </div>
             </div>

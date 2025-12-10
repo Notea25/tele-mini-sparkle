@@ -109,8 +109,9 @@ const Index = () => {
             iconImage={iconFootball}
             leagueIcon={leagueLogo}
             league="Беларусь"
+            participants={26130}
             date="04.04"
-            time="19:00"
+            time="19.00"
             glowColor="120 85% 55%"
             href="/create-team"
           />
