@@ -44,7 +44,8 @@ const Profile = () => {
   }, [profile]);
 
   const handleBackClick = () => {
-    navigate(-1);
+    // Let SportHeader handle navigation with fallback
+    return false;
   };
 
   const handleHomeClick = () => {
