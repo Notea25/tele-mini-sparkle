@@ -26,7 +26,6 @@ interface Player {
 // Mock player data - can be replaced with real data
 const players: Player[] = [
   { id: 1, name: "Плотников", points: 9, position: "ВР", clubBadge: clubSlavia, photo: playerPlotnikov },
-  { id: 2, name: "Гиберо", points: 6, position: "НП", clubBadge: "", photo: "" },
   { id: 3, name: "Козлов", points: 7, position: "ПЗ", clubBadge: clubNeman, photo: playerKozlov },
   { id: 4, name: "Быков", points: 9, position: "ПЗ", clubBadge: clubDinamoBrest, photo: playerBykov },
   { id: 5, name: "Бруй", points: 9, position: "ЗЩ", clubBadge: "", photo: "" },
@@ -172,11 +171,11 @@ const InfinitePlayerCarousel = () => {
             }}
           >
             {/* Club Badge - top right */}
-            <div className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center">
+            <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
               {player.clubBadge ? (
-                <img src={player.clubBadge} alt="Club" className="w-full h-full object-contain" />
+                <img src={player.clubBadge} alt="Club" className="max-w-full max-h-full object-contain" />
               ) : (
-                <span className="text-lg">🛡️</span>
+                <span className="text-sm">🛡️</span>
               )}
             </div>
             
