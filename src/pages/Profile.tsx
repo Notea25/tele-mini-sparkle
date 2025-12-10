@@ -44,7 +44,7 @@ const Profile = () => {
   }, [profile]);
 
   const handleBackClick = () => {
-    navigate("/");
+    navigate(-1);
   };
 
   const handleHomeClick = () => {
