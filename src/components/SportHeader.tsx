@@ -57,7 +57,12 @@ const SportHeader = ({ backTo, onBackClick }: SportHeaderProps = {}) => {
     if (backTo) {
       navigate(backTo);
     } else {
-      navigate(-1);
+      // Check if there's history to go back to, otherwise go home
+      if (window.history.length > 1) {
+        navigate(-1);
+      } else {
+        navigate("/");
+      }
     }
   };
 
