@@ -1,6 +1,10 @@
 import { useRef, useEffect, useState } from "react";
 import playerPlotnikov from "@/assets/player-plotnikov.png";
 import clubSlavia from "@/assets/club-slavia.png";
+import playerKozlov from "@/assets/player-kozlov.png";
+import clubNeman from "@/assets/club-neman.png";
+import playerBykov from "@/assets/player-bykov.png";
+import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
 
 // Configurable settings
 const CONFIG = {
@@ -23,8 +27,8 @@ interface Player {
 const players: Player[] = [
   { id: 1, name: "Плотников", points: 9, position: "ВР", clubBadge: clubSlavia, photo: playerPlotnikov },
   { id: 2, name: "Гиберо", points: 6, position: "НП", clubBadge: "", photo: "" },
-  { id: 3, name: "Козлов", points: 7, position: "ПЗ", clubBadge: "", photo: "" },
-  { id: 4, name: "Быков", points: 9, position: "ПЗ", clubBadge: "", photo: "" },
+  { id: 3, name: "Козлов", points: 7, position: "ПЗ", clubBadge: clubNeman, photo: playerKozlov },
+  { id: 4, name: "Быков", points: 9, position: "ПЗ", clubBadge: clubDinamoBrest, photo: playerBykov },
   { id: 5, name: "Бруй", points: 9, position: "ЗЩ", clubBadge: "", photo: "" },
   { id: 6, name: "Зубович", points: 9, position: "НП", clubBadge: "", photo: "" },
   { id: 7, name: "Савицкий", points: 8, position: "ПЗ", clubBadge: "", photo: "" },
