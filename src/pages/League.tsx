@@ -29,6 +29,30 @@ const League = () => {
 
   // Current tour for determining finished leagues (simulated as tour 6 for demo)
   const currentTour = 6;
+
+  // Club to league name mapping
+  const clubToLeagueName: Record<string, string> = {
+    "arsenal": "Лига «Арсенала»",
+    "baranovichi": "Лига «Барановичи»",
+    "bate": "Лига «БАТЭ»",
+    "belshina": "Лига «Белшина»",
+    "vitebsk": "Лига «Витебск»",
+    "gomel": "Лига «Гомель»",
+    "dinamo-brest": "Лига «Динамо-Брест»",
+    "dinamo-minsk": "Лига «Динамо-Минск»",
+    "dnepr-mogilev": "Лига «Днепр-Могилев»",
+    "isloch": "Лига «Ислочь»",
+    "minsk": "Лига «Минск»",
+    "ml": "Лига «МЛ Витебск»",
+    "naftan-novopolotsk": "Лига «Нафтан-Новополоцк»",
+    "neman": "Лига «Неман»",
+    "slavia": "Лига «Славия-Мозырь»",
+    "torpedo": "Лига «Торпедо-БелАЗ»",
+  };
+
+  // Get user's favorite team from localStorage
+  const favoriteTeam = localStorage.getItem("fantasyFavoriteTeam") || "dinamo-minsk";
+  const clubLeagueName = clubToLeagueName[favoriteTeam] || "Лига «Динамо-Минск»";
   // Save team name to localStorage when it changes
   const handleSaveTeamName = (newName: string) => {
     setTeamName(newName);
@@ -454,7 +478,7 @@ const League = () => {
             </Button>
 
             {/* Club League */}
-            <h2 className="text-2xl font-bold text-foreground mb-2">Лига «Динамо-Минск»</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">{clubLeagueName}</h2>
             <p className="text-muted-foreground text-sm mb-4">
               Соревнуйся с другими болельщиками твоего любимого клуба
             </p>

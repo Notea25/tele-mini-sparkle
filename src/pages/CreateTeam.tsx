@@ -92,6 +92,9 @@ const CreateTeam = () => {
       // If filter fails, allow navigation
     }
 
+    // Save favorite team to localStorage for club league display
+    localStorage.setItem("fantasyFavoriteTeam", favoriteTeam);
+
     navigate("/team-builder", { state: { teamName: name } });
   };
 
