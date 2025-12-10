@@ -159,24 +159,23 @@ const InfinitePlayerCarousel = () => {
         {extendedPlayers.map((player, index) => (
           <div
             key={`${player.id}-${index}`}
-            className="flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden"
+            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
             style={{
               width: `${CONFIG.itemWidth}px`,
               height: `${CONFIG.itemHeight}px`,
             }}
           >
-            {/* Club Badge */}
-            <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm">
-              {player.clubBadge}
+            {/* Club Badge - top right */}
+            <div className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center">
+              <span className="text-lg">{player.clubBadge}</span>
             </div>
             
             {/* Player Photo Placeholder */}
             <div 
-              className="w-full bg-gradient-to-b from-muted/30 to-card flex items-center justify-center"
-              style={{ height: `${CONFIG.itemHeight - 60}px` }}
+              className="w-full flex-1 flex items-center justify-center"
             >
-              <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center">
-                <span className="text-3xl text-muted-foreground">👤</span>
+              <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center">
+                <span className="text-2xl text-muted-foreground">👤</span>
               </div>
             </div>
             
