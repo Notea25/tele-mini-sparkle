@@ -1,16 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Trophy, User, TrendingUp, Award, Gift } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
+import InfinitePlayerCarousel from "@/components/InfinitePlayerCarousel";
 import { useState, useMemo } from "react";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg.png";
-import playersExample from "@/assets/players-example.png";
 import scoringExample from "@/assets/scoring-example.png";
 import transfersExample from "@/assets/transfers-example.png";
 import leaderboardExample from "@/assets/leaderboard-example.png";
@@ -174,16 +173,18 @@ const CreateTeam = () => {
       </div>
 
       {/* Collect Team Section */}
-      <div className="px-4 mt-8 text-center">
-        <h3 className="text-foreground text-3xl font-bold mb-4">Собирай команду</h3>
-        <p className="text-muted-foreground text-base leading-relaxed">
-          Воспользуйся бюджетом в <span className="text-primary font-semibold">100 миллионов</span>
-          <br />и собери команду лучших игроков чемпионата
-        </p>
+      <div className="mt-8 text-center">
+        <div className="px-4">
+          <h3 className="text-foreground text-3xl font-bold mb-4">Собирай команду</h3>
+          <p className="text-muted-foreground text-base leading-relaxed">
+            Воспользуйся бюджетом в <span className="text-primary font-semibold">100 миллионов</span>
+            <br />и собери команду лучших игроков чемпионата
+          </p>
+        </div>
 
-        {/* Player Cards Image */}
+        {/* Infinite Player Carousel */}
         <div className="mt-6">
-          <img src={playersExample} alt="Players" className="w-full rounded-xl" />
+          <InfinitePlayerCarousel />
         </div>
       </div>
 
