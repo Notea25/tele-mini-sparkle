@@ -195,17 +195,17 @@ const CreateTeam = () => {
       <div className="px-4 mt-8 text-center">
         <h3 className="text-foreground text-3xl font-bold mb-4">Набирай очки</h3>
         <p className="text-muted-foreground text-base leading-relaxed">
-          Игроки приносят очки за реальные действия
+          Каждый игрок будет получать или терять
           <br />
-          в матчах.
+          очки за свои действия в реальных матчах.
           <br />
-          Разные позиции дают разный бонус:
+          Количество очков может отличаться, в
           <br />
-          например, защитник за гол получает 6 очков,
+          зависимости от амплуа футболиста.
           <br />
-          нападающий — 4.
+          Например, защитник получит за гол — 6
           <br />
-          Следи за формой и результатами.
+          очков, а нападающий — 4 очка
         </p>
 
         {/* Scoring Example Image */}
@@ -232,10 +232,7 @@ const CreateTeam = () => {
         {/* Transfers Player Cards */}
         <div className="mt-6 flex justify-center items-center gap-2">
           {/* Bykov Card */}
-          <div
-            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
-            style={{ width: "140px", height: "180px" }}
-          >
+          <div className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col" style={{ width: "140px", height: "180px" }}>
             <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
               <img src={clubDinamoBrest} alt="Club" className="max-w-full max-h-full object-contain" />
             </div>
@@ -257,10 +254,7 @@ const CreateTeam = () => {
           </div>
 
           {/* Kozlov Card */}
-          <div
-            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
-            style={{ width: "140px", height: "180px" }}
-          >
+          <div className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col" style={{ width: "140px", height: "180px" }}>
             <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
               <img src={clubNeman} alt="Club" className="max-w-full max-h-full object-contain" />
             </div>
