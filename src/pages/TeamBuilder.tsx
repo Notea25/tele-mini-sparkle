@@ -50,9 +50,15 @@ const TeamBuilder = () => {
   const playerListRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
+  
+  // Track initial state for unsaved changes detection
+  const initialPlayersRef = useRef<string>("");
+  
   const [selectedPlayers, setSelectedPlayers] = useState<{ id: number; slotIndex: number }[]>(() => {
     const saved = localStorage.getItem("fantasyTeamPlayers");
-    return saved ? JSON.parse(saved) : [];
+    const parsed = saved ? JSON.parse(saved) : [];
+    initialPlayersRef.current = JSON.stringify(parsed);
+    return parsed;
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,6 +89,9 @@ const TeamBuilder = () => {
   // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
+
+  // Check for unsaved changes
+  const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
 
   const handleSort = (field: "name" | "points" | "price") => {
     if (sortField !== field) {
@@ -510,6 +519,26 @@ const TeamBuilder = () => {
     setSelectedPlayers(newSelectedPlayers);
   };
 
+  const handleSaveChanges = () => {
+    if (selectedPlayers.length < 15) {
+      setShowSquadError(true);
+      toast.error(`Состав не сформирован. Выбрано ${selectedPlayers.length} из 15 игроков`);
+      return;
+    }
+    localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
+    localStorage.setItem("fantasyTeamName", teamName);
+    localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
+    localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
+    initialPlayersRef.current = JSON.stringify(selectedPlayers);
+    toast.success("Изменения сохранены");
+  };
+
+  const handleDiscardChanges = () => {
+    // Reset to initial state
+    const initial = JSON.parse(initialPlayersRef.current || "[]");
+    setSelectedPlayers(initial);
+  };
+
   const leaderboard = Array(10)
     .fill(null)
     .map((_, i) => ({
@@ -523,7 +552,11 @@ const TeamBuilder = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <SportHeader />
+      <SportHeader 
+        hasUnsavedChanges={hasUnsavedChanges}
+        onSaveChanges={handleSaveChanges}
+        onDiscardChanges={handleDiscardChanges}
+      />
 
       {/* Back Button */}
       <div className="px-4 mt-4">
