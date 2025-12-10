@@ -44,8 +44,8 @@ const SportHeader = ({ backTo, onBackClick }: SportHeaderProps = {}) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleRefresh = () => {
-    window.location.reload();
+  const handleLogoClick = () => {
+    navigate("/");
   };
 
   const handleBack = () => {
@@ -80,7 +80,7 @@ const SportHeader = ({ backTo, onBackClick }: SportHeaderProps = {}) => {
               <ChevronLeft className="w-5 h-5 text-foreground" />
             </button>
           )}
-          <button onClick={handleRefresh}>
+          <button onClick={handleLogoClick}>
             <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
           </button>
         </div>
