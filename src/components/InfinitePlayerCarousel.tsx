@@ -1,4 +1,6 @@
 import { useRef, useEffect, useState } from "react";
+import playerPlotnikov from "@/assets/player-plotnikov.png";
+import clubSlavia from "@/assets/club-slavia.png";
 
 // Configurable settings
 const CONFIG = {
@@ -19,14 +21,14 @@ interface Player {
 
 // Mock player data - can be replaced with real data
 const players: Player[] = [
-  { id: 1, name: "Плотников", points: 9, position: "ВР", clubBadge: "🛡️", photo: "" },
-  { id: 2, name: "Гиберо", points: 6, position: "НП", clubBadge: "🛡️", photo: "" },
-  { id: 3, name: "Козлов", points: 7, position: "ПЗ", clubBadge: "🛡️", photo: "" },
-  { id: 4, name: "Быков", points: 9, position: "ПЗ", clubBadge: "🛡️", photo: "" },
-  { id: 5, name: "Бруй", points: 9, position: "ЗЩ", clubBadge: "🛡️", photo: "" },
-  { id: 6, name: "Зубович", points: 9, position: "НП", clubBadge: "🛡️", photo: "" },
-  { id: 7, name: "Савицкий", points: 8, position: "ПЗ", clubBadge: "🛡️", photo: "" },
-  { id: 8, name: "Громыко", points: 7, position: "ЗЩ", clubBadge: "🛡️", photo: "" },
+  { id: 1, name: "Плотников", points: 9, position: "ВР", clubBadge: clubSlavia, photo: playerPlotnikov },
+  { id: 2, name: "Гиберо", points: 6, position: "НП", clubBadge: "", photo: "" },
+  { id: 3, name: "Козлов", points: 7, position: "ПЗ", clubBadge: "", photo: "" },
+  { id: 4, name: "Быков", points: 9, position: "ПЗ", clubBadge: "", photo: "" },
+  { id: 5, name: "Бруй", points: 9, position: "ЗЩ", clubBadge: "", photo: "" },
+  { id: 6, name: "Зубович", points: 9, position: "НП", clubBadge: "", photo: "" },
+  { id: 7, name: "Савицкий", points: 8, position: "ПЗ", clubBadge: "", photo: "" },
+  { id: 8, name: "Громыко", points: 7, position: "ЗЩ", clubBadge: "", photo: "" },
 ];
 
 const InfinitePlayerCarousel = () => {
@@ -167,16 +169,22 @@ const InfinitePlayerCarousel = () => {
           >
             {/* Club Badge - top right */}
             <div className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center">
-              <span className="text-lg">{player.clubBadge}</span>
+              {player.clubBadge ? (
+                <img src={player.clubBadge} alt="Club" className="w-full h-full object-contain" />
+              ) : (
+                <span className="text-lg">🛡️</span>
+              )}
             </div>
             
-            {/* Player Photo Placeholder */}
-            <div 
-              className="w-full flex-1 flex items-center justify-center"
-            >
-              <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center">
-                <span className="text-2xl text-muted-foreground">👤</span>
-              </div>
+            {/* Player Photo */}
+            <div className="w-full flex-1 flex items-center justify-center">
+              {player.photo ? (
+                <img src={player.photo} alt={player.name} className="w-full h-full object-contain object-bottom" />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center">
+                  <span className="text-2xl text-muted-foreground">👤</span>
+                </div>
+              )}
             </div>
             
             {/* Player Info */}
