@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TelegramProvider } from "./providers/TelegramProvider";
 import SplashScreen from "./components/SplashScreen";
+import OnboardingScreen from "./components/OnboardingScreen";
+import { shouldShowOnboarding, markOnboardingCompleted } from "./lib/onboardingUtils";
 import Index from "./pages/Index";
 import CreateTeam from "./pages/CreateTeam";
 import TeamBuilder from "./pages/TeamBuilder";
@@ -25,6 +27,19 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    // Check if onboarding should be shown after splash completes
+    if (!showSplash) {
+      setShowOnboarding(shouldShowOnboarding());
+    }
+  }, [showSplash]);
+
+  const handleOnboardingComplete = () => {
+    markOnboardingCompleted();
+    setShowOnboarding(false);
+  };
 
   return (
     <TelegramProvider>
@@ -32,6 +47,9 @@ const App = () => {
         <TooltipProvider>
           {showSplash && (
             <SplashScreen onComplete={() => setShowSplash(false)} minDuration={2500} />
+          )}
+          {!showSplash && showOnboarding && (
+            <OnboardingScreen onComplete={handleOnboardingComplete} />
           )}
           <Toaster />
           <Sonner />
