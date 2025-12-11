@@ -22,8 +22,8 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0f]">
-      <div className="relative w-20 h-20">
-        {/* Main logo without dot - using CSS mask to hide the dot */}
+      <div className="relative w-20 h-24">
+        {/* Main logo without dot - using CSS mask to hide only the dot area */}
         <div 
           className="absolute inset-0"
           style={{
@@ -31,16 +31,16 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
-            clipPath: 'polygon(0 0, 75% 0, 75% 100%, 0 100%)',
+            clipPath: 'polygon(0 0, 100% 0, 100% 35%, 72% 35%, 72% 55%, 100% 55%, 100% 100%, 0 100%)',
           }}
         />
         
         {/* Animated dot */}
         <div 
-          className="absolute w-[15%] h-[15%] bg-primary rounded-[3px] animate-bounce-dot"
+          className="absolute w-[14%] h-[12%] bg-primary rounded-[3px] animate-bounce-dot"
           style={{
-            right: '5%',
-            top: '32%',
+            right: '6%',
+            top: '38%',
           }}
         />
       </div>
