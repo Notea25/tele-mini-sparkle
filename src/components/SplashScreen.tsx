@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import logoSymbol from "@/assets/logo-symbol.png";
 
 interface SplashScreenProps {
   onComplete?: () => void;
@@ -21,30 +22,25 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0f]">
-      <div className="relative w-24 h-24">
-        {/* Main "f" shape - the curved part */}
-        <svg
-          viewBox="0 0 100 100"
-          className="w-full h-full"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* The curved "S/f" shape */}
-          <path
-            d="M30 85 C30 85, 30 50, 30 40 C30 20, 50 15, 65 25 C75 32, 75 45, 65 50"
-            stroke="#a3e635"
-            strokeWidth="12"
-            strokeLinecap="round"
-            fill="none"
-          />
-        </svg>
+      <div className="relative w-20 h-20">
+        {/* Main logo without dot - using CSS mask to hide the dot */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${logoSymbol})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            clipPath: 'polygon(0 0, 75% 0, 75% 100%, 0 100%)',
+          }}
+        />
         
         {/* Animated dot */}
         <div 
-          className="absolute w-4 h-4 bg-[#a3e635] rounded-sm animate-bounce-dot"
+          className="absolute w-[15%] h-[15%] bg-primary rounded-[3px] animate-bounce-dot"
           style={{
-            right: '12px',
-            top: '38px',
+            right: '5%',
+            top: '32%',
           }}
         />
       </div>
