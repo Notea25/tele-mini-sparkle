@@ -166,9 +166,10 @@ const Profile = () => {
             <Input
               type="text"
               value={profile.birthDate}
-              onChange={(e) => handleBirthDateChange(e.target.value)}
+              readOnly
+              disabled
               placeholder="12.12.2000"
-              className="bg-secondary border-0 rounded-xl h-12 text-foreground placeholder:text-muted-foreground"
+              className="bg-secondary border-0 rounded-xl h-12 text-foreground placeholder:text-muted-foreground opacity-70 cursor-not-allowed"
             />
           </div>
         </div>

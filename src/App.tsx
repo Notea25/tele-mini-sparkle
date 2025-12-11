@@ -7,7 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TelegramProvider } from "./providers/TelegramProvider";
 import SplashScreen from "./components/SplashScreen";
 import OnboardingScreen from "./components/OnboardingScreen";
-import { shouldShowOnboarding, markOnboardingCompleted } from "./lib/onboardingUtils";
+import RegistrationScreen from "./components/RegistrationScreen";
+import { shouldShowOnboarding, markOnboardingCompleted, shouldShowRegistration } from "./lib/onboardingUtils";
 import Index from "./pages/Index";
 import CreateTeam from "./pages/CreateTeam";
 import TeamBuilder from "./pages/TeamBuilder";
@@ -28,29 +29,61 @@ const queryClient = new QueryClient();
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showRegistration, setShowRegistration] = useState(false);
 
   useEffect(() => {
-    // Check if onboarding should be shown after splash completes
+    // Check screens after splash completes
     if (!showSplash) {
-      setShowOnboarding(shouldShowOnboarding());
+      if (shouldShowOnboarding()) {
+        setShowOnboarding(true);
+      } else if (shouldShowRegistration()) {
+        setShowRegistration(true);
+      }
     }
   }, [showSplash]);
 
   const handleOnboardingComplete = () => {
     markOnboardingCompleted();
     setShowOnboarding(false);
+    // After onboarding, check if registration is needed
+    if (shouldShowRegistration()) {
+      setShowRegistration(true);
+    }
   };
+
+  const handleRegistrationComplete = () => {
+    setShowRegistration(false);
+  };
+
+  // Show splash, onboarding, or registration screens
+  if (showSplash) {
+    return (
+      <TelegramProvider>
+        <SplashScreen onComplete={() => setShowSplash(false)} minDuration={2500} />
+      </TelegramProvider>
+    );
+  }
+
+  if (showOnboarding) {
+    return (
+      <TelegramProvider>
+        <OnboardingScreen onComplete={handleOnboardingComplete} />
+      </TelegramProvider>
+    );
+  }
+
+  if (showRegistration) {
+    return (
+      <TelegramProvider>
+        <RegistrationScreen onComplete={handleRegistrationComplete} />
+      </TelegramProvider>
+    );
+  }
 
   return (
     <TelegramProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          {showSplash && (
-            <SplashScreen onComplete={() => setShowSplash(false)} minDuration={2500} />
-          )}
-          {!showSplash && showOnboarding && (
-            <OnboardingScreen onComplete={handleOnboardingComplete} />
-          )}
           <Toaster />
           <Sonner />
           <BrowserRouter>
