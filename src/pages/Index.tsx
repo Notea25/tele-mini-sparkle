@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SportHeader from "@/components/SportHeader";
 import PromoBanner from "@/components/PromoBanner";
 import SearchBar from "@/components/SearchBar";
@@ -10,13 +12,36 @@ import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
 import iconHockey from "@/assets/icon-hockey.png";
 import iconCs2 from "@/assets/icon-cs2.png";
-import { useState } from "react";
+
+const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState("Сначала ТОП-лиги");
 
   const sortOptions = ["Избранные", "Сначала ТОП-лиги", "От А до Я", "От Я до А"];
+
+  // Check if this is a referral link and user is already registered
+  useEffect(() => {
+    const refParam = searchParams.get('ref');
+    if (refParam) {
+      // Check if user is already registered
+      const profileData = localStorage.getItem(PROFILE_STORAGE_KEY);
+      if (profileData) {
+        try {
+          const profile = JSON.parse(profileData);
+          if (profile.userName && profile.birthDate) {
+            // User is registered, redirect to /create-team
+            navigate('/create-team', { replace: true });
+          }
+        } catch {
+          // Invalid profile data, continue normally
+        }
+      }
+    }
+  }, [searchParams, navigate]);
 
   const handleSelect = (option: string) => {
     setSelectedSort(option);
