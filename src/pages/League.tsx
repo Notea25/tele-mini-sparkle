@@ -15,6 +15,7 @@ import arrowDownBlack from "@/assets/arrow-down-black.png";
 import trophyGold from "@/assets/trophy-gold.png";
 import trophySilver from "@/assets/trophy-silver.png";
 import trophyBronze from "@/assets/trophy-bronze.png";
+import { getLeaguePreviewTeams } from "@/lib/tournamentData";
 
 const LEAGUE_TAB_KEY = "fantasyLeagueActiveTab";
 
@@ -102,13 +103,8 @@ const League = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Tournament table data
-  const tableData = [
-    { position: 1, change: "up", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 2, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 3, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 9, change: "down", name: "Моя команда", tourPoints: 32, totalPoints: 3123, isUser: true },
-  ];
+  // Tournament table data from shared source
+  const tableData = getLeaguePreviewTeams();
 
   // Commercial leagues data with end tour for blur logic and deadlines
   const commercialLeagues = [

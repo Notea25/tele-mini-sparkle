@@ -10,75 +10,14 @@ import arrowDownBlack from "@/assets/arrow-down-black.png";
 import trophyGold from "@/assets/trophy-gold.png";
 import trophySilver from "@/assets/trophy-silver.png";
 import trophyBronze from "@/assets/trophy-bronze.png";
-
-// Random team names
-const teamNames = [
-  "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",
-  "Blue Lions", "Silver Hawks", "Dark Knights", "Fire Dragons", "Ice Warriors",
-  "Royal Tigers", "Electric City", "Shadow Wolves", "Crimson Kings", "Emerald Stars",
-  "Diamond FC", "Platinum United", "Bronze Legends", "Copper Chiefs", "Steel Titans",
-  "Galaxy FC", "Cosmic Stars", "Meteor United", "Comet FC", "Asteroid FC",
-  "Ocean Waves", "River Flow", "Lake City", "Mountain FC", "Valley United",
-  "Forest Rangers", "Desert Hawks", "Tundra Bears", "Jungle Cats", "Savanna Lions",
-  "Arctic Foxes", "Tropical Storm", "Volcano FC", "Canyon City", "Prairie Dogs",
-  "Night Owls", "Dawn Breakers", "Sunset FC", "Twilight United", "Midnight FC",
-  "Victory FC", "Champion Stars", "Glory United", "Honor FC", "Pride City",
-  "Spirit FC", "Soul United", "Heart FC", "Mind Warriors", "Power FC",
-  "Speed Demons", "Flash FC", "Lightning FC", "Bolt United", "Spark City",
-  "Alpha FC", "Beta United", "Gamma FC", "Delta City", "Omega FC",
-  "Zenith Stars", "Apex United", "Summit FC", "Peak City", "Pinnacle FC",
-  "Nova FC", "Quantum United", "Fusion FC", "Energy City", "Dynamo FC",
-  "Rocket FC", "Jet United", "Turbo FC", "Nitro City", "Boost FC",
-  "Legend FC", "Myth United", "Epic FC", "Hero City", "Champion FC",
-  "Elite Stars", "Premier United", "Supreme FC", "Ultimate City", "Max FC",
-  "Prime FC", "Core United", "Base FC", "Root City", "Origin FC",
-  "Future FC", "Next United", "Forward FC", "Ahead City", "Beyond FC"
-];
+import { tournamentTeams } from "@/lib/tournamentData";
 
 const TournamentTable = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Generate 100 random teams
-  const allTeams = useMemo(() => {
-    const teams = [];
-    const changes = ["up", "down", "same"];
-    
-    for (let i = 1; i <= 100; i++) {
-      const isUser = i === 17;
-      teams.push({
-        id: i,
-        position: i,
-        change: changes[Math.floor(Math.random() * 3)],
-        name: isUser ? "Моя команда" : teamNames[(i - 1) % teamNames.length],
-        tourPoints: Math.floor(Math.random() * 40) + 15,
-        totalPoints: Math.floor(Math.random() * 2000) + 1500,
-        isUser
-      });
-    }
-    
-    // Sort by total points descending
-    teams.sort((a, b) => b.totalPoints - a.totalPoints);
-    
-    // Update positions after sorting
-    teams.forEach((team, idx) => {
-      team.position = idx + 1;
-    });
-    
-    // Find and move user to position 17
-    const userTeamIndex = teams.findIndex(t => t.isUser);
-    if (userTeamIndex !== -1) {
-      const userTeam = teams.splice(userTeamIndex, 1)[0];
-      teams.splice(16, 0, userTeam);
-      // Recalculate positions
-      teams.forEach((team, idx) => {
-        team.position = idx + 1;
-      });
-    }
-    
-    return teams;
-  }, []);
+  const allTeams = tournamentTeams;
 
   const totalPages = Math.ceil(allTeams.length / itemsPerPage);
   
@@ -98,7 +37,7 @@ const TournamentTable = () => {
     if (team.isUser) {
       navigate("/your-team");
     } else {
-      navigate(`/view-team/${team.id}`);
+      navigate(`/view-team?id=${team.id}&name=${encodeURIComponent(team.name)}`);
     }
   };
 
