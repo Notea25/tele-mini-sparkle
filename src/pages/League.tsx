@@ -402,6 +402,8 @@ const League = () => {
             <div className="space-y-2 mb-4">
               {displayedCommercialLeagues.map((league, idx) => {
                 const isFinished = currentTour > league.endTour;
+                const userCommercialLeagues = JSON.parse(localStorage.getItem("userCommercialLeagues") || "[]");
+                const isParticipating = userCommercialLeagues.includes(league.id);
                 return (
                   <div key={idx} className="space-y-1">
                     <span className="text-xs text-muted-foreground ml-4">
@@ -420,7 +422,7 @@ const League = () => {
                       <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
                       <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
                       <span className="col-span-3 text-foreground text-sm">{league.period}</span>
-                      <span className="col-span-1 text-muted-foreground text-right">→</span>
+                      <span className={`col-span-1 text-right ${isParticipating ? "text-primary" : "text-muted-foreground"}`}>→</span>
                     </div>
                   </div>
                 );
