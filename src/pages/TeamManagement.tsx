@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronDown, ArrowLeftRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
@@ -79,7 +80,8 @@ const TeamManagement = () => {
     // Check if another boost is already pending
     const hasPendingBoost = specialChips.some(chip => chip.status === "pending");
     if (hasPendingBoost) {
-      return; // Can only use one boost per tour
+      toast.error("В одном туре можно использовать только 1 буст");
+      return;
     }
     
     setSpecialChips(prev => 
