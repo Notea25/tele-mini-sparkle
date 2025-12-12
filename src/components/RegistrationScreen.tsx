@@ -8,9 +8,29 @@ const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 
 // Russian profanity list
 const russianBadWords = [
-  "блять", "сука", "хуй", "пизда", "ебать", "бля", "нахуй", "пиздец", 
-  "хуйня", "ебаный", "ебанутый", "мудак", "дебил", "идиот", "долбоеб",
-  "залупа", "хер", "жопа", "срака", "говно", "дерьмо", "пидор", "пидорас"
+  "блять",
+  "сука",
+  "хуй",
+  "пизда",
+  "ебать",
+  "бля",
+  "нахуй",
+  "пиздец",
+  "хуйня",
+  "ебаный",
+  "ебанутый",
+  "мудак",
+  "дебил",
+  "идиот",
+  "долбоеб",
+  "залупа",
+  "хер",
+  "жопа",
+  "срака",
+  "говно",
+  "дерьмо",
+  "пидор",
+  "пидорас",
 ];
 
 interface RegistrationScreenProps {
@@ -25,23 +45,23 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
   const validateNickname = (name: string): boolean => {
     if (name.length === 0) {
-      setNicknameError("Введите никнейм");
+      setNicknameError("Придумай имя пользователя");
       return false;
     }
     if (name.length > 15) {
-      setNicknameError("Никнейм не может быть длиннее 15 символов");
+      setNicknameError("Имя не может быть длиннее 15 символов");
       return false;
     }
 
     // Check for profanity
     const filter = new Filter();
     filter.addWords(...russianBadWords);
-    
+
     const lowerName = name.toLowerCase();
-    const hasProfanity = russianBadWords.some(word => lowerName.includes(word)) || filter.isProfane(name);
-    
+    const hasProfanity = russianBadWords.some((word) => lowerName.includes(word)) || filter.isProfane(name);
+
     if (hasProfanity) {
-      setNicknameError("Никнейм содержит недопустимые слова");
+      setNicknameError("Имя содержит недопустимые слова");
       return false;
     }
 
@@ -51,16 +71,16 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
   const validateBirthDate = (date: string): boolean => {
     if (date.length === 0) {
-      setBirthDateError("Введите дату рождения");
+      setBirthDateError("Укажи дату рождения");
       return false;
     }
 
     // Basic date format validation (DD.MM.YYYY)
     const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
     const match = date.match(dateRegex);
-    
+
     if (!match) {
-      setBirthDateError("Введите дату в формате ДД.ММ.ГГГГ");
+      setBirthDateError("Укажи дату в формате ДД.ММ.ГГГГ");
       return false;
     }
 
@@ -89,7 +109,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
     const today = new Date();
     const age = today.getFullYear() - birthDateObj.getFullYear();
     const monthDiff = today.getMonth() - birthDateObj.getMonth();
-    
+
     if (age < 6 || (age === 6 && monthDiff < 0)) {
       setBirthDateError("Вам должно быть не менее 6 лет");
       return false;
@@ -101,10 +121,10 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
   const handleSubmit = () => {
     const trimmedNickname = nickname.trim();
-    
+
     const isNicknameValid = validateNickname(trimmedNickname);
     const isBirthDateValid = validateBirthDate(birthDate);
-    
+
     if (!isNicknameValid || !isBirthDateValid) return;
 
     // Save to profile storage
@@ -117,16 +137,16 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileData));
     localStorage.setItem("fantasyRegistrationCompleted", "true");
-    
+
     onComplete();
   };
 
   const handleBirthDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    
+
     // Auto-format: add dots after DD and MM
     const digitsOnly = value.replace(/\D/g, "");
-    
+
     if (digitsOnly.length <= 2) {
       value = digitsOnly;
     } else if (digitsOnly.length <= 4) {
@@ -134,7 +154,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
     } else {
       value = `${digitsOnly.slice(0, 2)}.${digitsOnly.slice(2, 4)}.${digitsOnly.slice(4, 8)}`;
     }
-    
+
     setBirthDate(value);
     if (birthDateError) setBirthDateError(null);
   };
@@ -150,11 +170,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 min-h-0">
         {/* Players image */}
         <div className="w-full max-w-sm mb-8 flex-shrink-0">
-          <img 
-            src={playersWelcome} 
-            alt="Welcome"
-            className="w-full h-auto object-cover rounded-2xl"
-          />
+          <img src={playersWelcome} alt="Welcome" className="w-full h-auto object-cover rounded-2xl" />
         </div>
 
         {/* Title */}
@@ -177,34 +193,27 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
               value={nickname}
               onChange={handleNicknameChange}
               placeholder="Никнейм"
-              className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${nicknameError ? 'ring-2 ring-destructive' : ''}`}
+              className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${nicknameError ? "ring-2 ring-destructive" : ""}`}
             />
-            {nicknameError && (
-              <p className="text-destructive text-sm mt-1 px-1">{nicknameError}</p>
-            )}
+            {nicknameError && <p className="text-destructive text-sm mt-1 px-1">{nicknameError}</p>}
           </div>
           <div>
             <Input
               value={birthDate}
               onChange={handleBirthDateChange}
               placeholder="Дата рождения (ДД.ММ.ГГГГ)"
-              className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${birthDateError ? 'ring-2 ring-destructive' : ''}`}
+              className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${birthDateError ? "ring-2 ring-destructive" : ""}`}
               maxLength={10}
               inputMode="numeric"
             />
-            {birthDateError && (
-              <p className="text-destructive text-sm mt-1 px-1">{birthDateError}</p>
-            )}
+            {birthDateError && <p className="text-destructive text-sm mt-1 px-1">{birthDateError}</p>}
           </div>
         </div>
       </div>
 
       {/* Button */}
       <div className="px-6 pb-8 flex-shrink-0">
-        <Button 
-          onClick={handleSubmit}
-          className="w-full h-14 text-lg font-semibold"
-        >
+        <Button onClick={handleSubmit} className="w-full h-14 text-lg font-semibold">
           Готово
         </Button>
       </div>
