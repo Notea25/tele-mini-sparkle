@@ -1,7 +1,8 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight, AlertCircle } from "lucide-react";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
+import { BoostChip } from "@/components/BoostDrawer";
 
 interface TransferRecord {
   type: "swap" | "buy" | "sell";
@@ -25,6 +26,7 @@ interface ConfirmTransfersDrawerProps {
   freeTransfersUsed: number;
   additionalTransfersUsed: number;
   remainingBudget: number;
+  boosts?: BoostChip[];
 }
 
 const ConfirmTransfersDrawer = ({
@@ -35,7 +37,21 @@ const ConfirmTransfersDrawer = ({
   freeTransfersUsed,
   additionalTransfersUsed,
   remainingBudget,
+  boosts = [],
 }: ConfirmTransfersDrawerProps) => {
+  // Check if any boost is active (pending)
+  const hasActiveBoost = boosts.some(b => b.status === "pending");
+
+  const getBoostStatusText = (boost: BoostChip) => {
+    if (boost.status === "pending") {
+      return "Используется";
+    }
+    if (boost.status === "used" && boost.usedInTour) {
+      return `${boost.usedInTour} тур`;
+    }
+    return "Не использован";
+  };
+
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-card border-border max-h-[85vh]">
@@ -94,6 +110,44 @@ const ConfirmTransfersDrawer = ({
             <p className="text-center text-muted-foreground py-6">
               Нет изменений для сохранения
             </p>
+          )}
+
+          {/* Boosts Section - only show if there are boosts */}
+          {boosts.length > 0 && (
+            <div className="mb-6">
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                {boosts.map((boost) => (
+                  <div
+                    key={boost.id}
+                    className={`flex flex-col items-center p-3 rounded-xl min-w-[100px] relative ${
+                      boost.status === "pending"
+                        ? "bg-card border-2 border-primary"
+                        : "bg-card/50 grayscale opacity-60"
+                    }`}
+                  >
+                    <img 
+                      src={boost.icon} 
+                      alt={boost.label} 
+                      className={`w-8 h-8 mb-1 ${boost.status !== "pending" ? "grayscale" : ""}`} 
+                    />
+                    <span className={`text-xs font-medium text-center ${
+                      boost.status === "pending" ? "text-foreground" : "text-muted-foreground"
+                    }`}>
+                      {boost.label}
+                    </span>
+                    <span className={`text-[10px] text-center ${
+                      boost.status === "pending" ? "text-primary" : "text-muted-foreground"
+                    }`}>
+                      {getBoostStatusText(boost)}
+                    </span>
+                    {/* Alert circle indicator */}
+                    <AlertCircle className={`absolute top-1 right-1 w-4 h-4 ${
+                      boost.status === "pending" ? "text-primary" : "text-muted-foreground/50"
+                    }`} />
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           {/* Stats Section */}

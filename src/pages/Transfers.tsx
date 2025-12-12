@@ -936,6 +936,7 @@ const Transfers = () => {
         freeTransfersUsed={Math.min(getTransferRecords().length, freeTransfers)}
         additionalTransfersUsed={Math.max(0, getTransferRecords().length - freeTransfers)}
         remainingBudget={Math.round(budget)}
+        boosts={specialChips}
       />
     </div>
   );
