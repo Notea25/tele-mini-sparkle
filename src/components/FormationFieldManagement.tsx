@@ -2,6 +2,7 @@ import footballField from "@/assets/football-field.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
 import playerJerseyWhite from "@/assets/player-jersey-white.png";
 import { X, ArrowLeftRight } from "lucide-react";
+import { getFormationSlots, getPlayerPosition, detectFormation, FormationKey } from "@/lib/formationUtils";
 
 interface PlayerData {
   id: number;
@@ -34,45 +35,9 @@ const FormationFieldManagement = ({
   onSwapPlayer,
   onEmptySlotClick
 }: FormationFieldManagementProps) => {
-  // Formation 1-4-4-2: 1 GK, 4 DEF, 4 MID, 2 FWD = 11 players
-  const formation = [
-    // Row 1 - Goalkeeper (1)
-    { position: "ВР", row: 1, col: 3, slotIndex: 0 },
-    // Row 2 - Defenders (4)
-    { position: "ЗЩ", row: 2, col: 1, slotIndex: 0 },
-    { position: "ЗЩ", row: 2, col: 2, slotIndex: 1 },
-    { position: "ЗЩ", row: 2, col: 4, slotIndex: 2 },
-    { position: "ЗЩ", row: 2, col: 5, slotIndex: 3 },
-    // Row 3 - Midfielders (4)
-    { position: "ПЗ", row: 3, col: 1, slotIndex: 0 },
-    { position: "ПЗ", row: 3, col: 2, slotIndex: 1 },
-    { position: "ПЗ", row: 3, col: 4, slotIndex: 2 },
-    { position: "ПЗ", row: 3, col: 5, slotIndex: 3 },
-    // Row 4 - Forwards (2)
-    { position: "НП", row: 4, col: 2, slotIndex: 0 },
-    { position: "НП", row: 4, col: 4, slotIndex: 1 },
-  ];
-
-  const getPlayerStyle = (row: number, col: number) => {
-    const topPositions: Record<number, string> = {
-      1: "4%",
-      2: "22%",
-      3: "44%",
-      4: "66%",
-    };
-
-    const leftPositions: Record<number, Record<number, string>> = {
-      1: { 3: "50%" },
-      2: { 1: "12%", 2: "32%", 4: "68%", 5: "88%" },
-      3: { 1: "12%", 2: "32%", 4: "68%", 5: "88%" },
-      4: { 2: "32%", 4: "68%" },
-    };
-
-    return {
-      top: topPositions[row],
-      left: leftPositions[row][col],
-    };
-  };
+  // Detect current formation based on players
+  const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
+  const formation = getFormationSlots(currentFormation);
 
   const getPlayerForSlot = (position: string, slotIndex: number) => {
     return mainSquadPlayers.find(p => p.position === position && p.slotIndex === slotIndex);
@@ -166,7 +131,7 @@ const FormationFieldManagement = ({
         />
         
         {formation.map((slot, idx) => {
-          const style = getPlayerStyle(slot.row, slot.col);
+          const style = getPlayerPosition(slot.row, slot.col);
           const player = getPlayerForSlot(slot.position, slot.slotIndex);
 
           return (
