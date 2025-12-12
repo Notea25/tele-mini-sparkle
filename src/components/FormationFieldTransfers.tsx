@@ -30,20 +30,16 @@ const TRANSFERS_FORMATION = {
   "НП": { count: 3, row: 4 },
 };
 
-// Get column positions based on number of players in a row - equal spacing from center
+// Get column positions based on number of players in a row
 function getColumnPositions(count: number): number[] {
-  if (count === 1) return [3];
-  
-  const minCol = 1;
-  const maxCol = 5;
-  const range = maxCol - minCol;
-  const gap = range / (count - 1);
-  
-  const positions: number[] = [];
-  for (let i = 0; i < count; i++) {
-    positions.push(minCol + i * gap);
+  switch (count) {
+    case 1: return [3];
+    case 2: return [2, 4];
+    case 3: return [1.5, 3, 4.5];
+    case 4: return [1, 2.2, 3.8, 5];
+    case 5: return [0.8, 1.9, 3, 4.1, 5.2];
+    default: return [3];
   }
-  return positions;
 }
 
 // Get CSS positioning for a player on the field
@@ -55,9 +51,7 @@ const getPlayerPosition = (row: number, col: number) => {
     4: "72%",
   };
 
-  // Calculate left position based on column (1-5 range)
-  // 10% margin on each side, so range is 10% to 90%
-  const leftPercent = 10 + ((col - 1) / 4) * 80;
+  const leftPercent = 10 + ((col - 0.8) / (5.2 - 0.8)) * 80;
 
   return {
     top: topPositions[row],
