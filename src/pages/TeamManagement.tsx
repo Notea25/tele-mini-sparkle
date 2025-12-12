@@ -212,7 +212,7 @@ const TeamManagement = () => {
   const renderListSection = (position: string, players: PlayerData[]) => (
     <div className="mb-6" key={position}>
       {/* Position header */}
-      <h3 className="text-aquamarine font-medium mb-2">{positionLabels[position]}</h3>
+      <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
       
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
@@ -264,9 +264,9 @@ const TeamManagement = () => {
             {/* Swap button */}
             <button
               onClick={() => handlePlayerSwap(player.id)}
-              className="w-8 h-8 rounded-full bg-aquamarine flex items-center justify-center hover:bg-aquamarine/90 transition-colors flex-shrink-0"
+              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
             >
-              <ArrowLeftRight className="w-4 h-4 text-background" />
+              <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
             </button>
           </div>
         ))}
@@ -313,7 +313,7 @@ const TeamManagement = () => {
       <div className="px-4 mt-4">
         <div className="w-full h-2 bg-card rounded-full overflow-hidden">
           <div 
-            className="h-full bg-aquamarine rounded-full transition-all duration-300"
+            className="h-full bg-primary rounded-full transition-all duration-300"
             style={{ width: `${timeLeft.progress}%` }}
           />
         </div>
@@ -325,7 +325,7 @@ const TeamManagement = () => {
           onClick={() => setActiveTab("formation")}
           className={`flex-1 rounded-full ${
             activeTab === "formation"
-              ? "bg-aquamarine text-background hover:bg-aquamarine/90"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
         >
@@ -335,7 +335,7 @@ const TeamManagement = () => {
           onClick={() => setActiveTab("list")}
           className={`flex-1 rounded-full ${
             activeTab === "list"
-              ? "bg-aquamarine text-background hover:bg-aquamarine/90"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
         >
@@ -378,7 +378,7 @@ const TeamManagement = () => {
                 className={`w-8 h-8 object-contain mb-1 transition-all ${!chip.active ? "grayscale opacity-50" : ""}`}
               />
               <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
-              <span className={`text-[8px] ${chip.active ? "text-aquamarine" : "text-muted-foreground"}`}>
+              <span className={`text-[8px] ${chip.active ? "text-primary" : "text-muted-foreground"}`}>
                 {chip.active ? chip.sublabel : "Использовано"}
               </span>
             </div>
@@ -507,9 +507,9 @@ const TeamManagement = () => {
                 {/* Swap button */}
                 <button
                   onClick={() => handlePlayerSwap(player.id)}
-                  className="w-8 h-8 rounded-full bg-aquamarine flex items-center justify-center hover:bg-aquamarine/90 transition-colors flex-shrink-0"
+                  className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
                 >
-                  <ArrowLeftRight className="w-4 h-4 text-background" />
+                  <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
                 </button>
               </div>
             ))}
