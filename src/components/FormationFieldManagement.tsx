@@ -69,13 +69,18 @@ const FormationFieldManagement = ({
         </button>
       )}
       
-      {/* Jersey */}
+      {/* Jersey with 3D effect */}
       <div className="relative">
-        <img
-          src={playerJerseyTeam}
-          alt={player.name}
-          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-        />
+        <div className="relative w-14 h-14 sm:w-16 sm:h-16">
+          <img
+            src={playerJerseyTeam}
+            alt={player.name}
+            className="w-full h-full object-contain"
+            style={{
+              filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.35)) drop-shadow(0 4px 6px rgba(0,0,0,0.25)) drop-shadow(2px 2px 4px rgba(0,0,0,0.2))',
+            }}
+          />
+        </div>
         {/* Price and points tag */}
         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-0.5">
           <span className="bg-[#B855E4] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
@@ -113,10 +118,19 @@ const FormationFieldManagement = ({
       className="relative cursor-pointer hover:opacity-80"
       onClick={() => onEmptySlotClick?.(position, isOnBench, slotIndex)}
     >
-      <img src={playerJerseyWhite} alt="Empty slot" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-      <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium">
-        {position}
-      </span>
+      <div className="w-14 h-14 sm:w-16 sm:h-16 relative">
+        <img 
+          src={playerJerseyWhite} 
+          alt="Empty slot" 
+          className="w-full h-full object-contain"
+          style={{
+            filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.35)) drop-shadow(0 4px 6px rgba(0,0,0,0.25)) drop-shadow(2px 2px 4px rgba(0,0,0,0.2))',
+          }}
+        />
+        <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium">
+          {position}
+        </span>
+      </div>
     </div>
   );
 
