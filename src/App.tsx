@@ -26,19 +26,34 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const PROFILE_STORAGE_KEY = "fantasyUserProfile";
+
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showRegistration, setShowRegistration] = useState(false);
   const [isReferral, setIsReferral] = useState(false);
+  const [isLeagueInvite, setIsLeagueInvite] = useState(false);
 
   useEffect(() => {
-    // Check if this is a referral link
     const urlParams = new URLSearchParams(window.location.search);
+    
+    // Check if this is a league invite link
+    const leagueInviteParam = urlParams.get('leagueInvite');
+    if (leagueInviteParam) {
+      setIsLeagueInvite(true);
+      // Store league invite info for later
+      localStorage.setItem('fantasyLeagueInvite', JSON.stringify({
+        leagueId: leagueInviteParam,
+        leagueName: urlParams.get('leagueName') || 'Лига',
+        inviter: urlParams.get('inviter') || 'user'
+      }));
+    }
+    
+    // Check if this is a regular referral link
     const refParam = urlParams.get('ref');
     if (refParam) {
       setIsReferral(true);
-      // Store referral info if needed
       localStorage.setItem('fantasyReferrer', refParam);
     }
   }, []);
@@ -46,8 +61,17 @@ const App = () => {
   useEffect(() => {
     // Check screens after splash completes
     if (!showSplash) {
+      // Check if user is registered
+      const isRegistered = !shouldShowRegistration();
+      
+      // If league invite and user registered, skip onboarding
+      if (isLeagueInvite && isRegistered) {
+        // User already registered, will see league invite modal
+        return;
+      }
+      
       // If referral and user already registered, skip onboarding/registration
-      if (isReferral && !shouldShowRegistration()) {
+      if (isReferral && isRegistered) {
         // User already registered, will be redirected to /create-team via Index
         return;
       }
@@ -58,7 +82,7 @@ const App = () => {
         setShowRegistration(true);
       }
     }
-  }, [showSplash, isReferral]);
+  }, [showSplash, isReferral, isLeagueInvite]);
 
   const handleOnboardingComplete = () => {
     markOnboardingCompleted();
