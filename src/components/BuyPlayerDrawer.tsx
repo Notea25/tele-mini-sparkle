@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -118,7 +118,15 @@ interface BuyPlayerDrawerProps {
   currentBudget: number;
   getPlayersCountByClub: (clubName: string) => number;
   maxPlayersPerClub: number;
+  initialPositionFilter?: string | null;
 }
+
+const positionToFilterMap: Record<string, string> = {
+  "ВР": "Вратари",
+  "ЗЩ": "Защитники",
+  "ПЗ": "Полузащитники",
+  "НП": "Нападающие",
+};
 
 const BuyPlayerDrawer = ({
   isOpen,
@@ -128,6 +136,7 @@ const BuyPlayerDrawer = ({
   currentBudget,
   getPlayersCountByClub,
   maxPlayersPerClub,
+  initialPositionFilter,
 }: BuyPlayerDrawerProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
@@ -138,6 +147,17 @@ const BuyPlayerDrawer = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
+
+  // Apply initial position filter when drawer opens
+  useEffect(() => {
+    if (isOpen && initialPositionFilter) {
+      const filterName = positionToFilterMap[initialPositionFilter];
+      if (filterName) {
+        setActiveFilter(filterName);
+        setCurrentPage(1);
+      }
+    }
+  }, [isOpen, initialPositionFilter]);
 
   const teams = ["Все команды", "Динамо Минск", "БАТЭ", "Шахтер", "Неман", "Славия", "Торпедо"];
   const pointsOptions = [
