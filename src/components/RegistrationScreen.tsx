@@ -84,14 +84,14 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
       return false;
     }
 
-    // Check if user is at least 14 years old
+    // Check if user is at least 6 years old
     const birthDateObj = new Date(year, month - 1, day);
     const today = new Date();
     const age = today.getFullYear() - birthDateObj.getFullYear();
     const monthDiff = today.getMonth() - birthDateObj.getMonth();
     
-    if (age < 14 || (age === 14 && monthDiff < 0)) {
-      setBirthDateError("Вам должно быть не менее 14 лет");
+    if (age < 6 || (age === 6 && monthDiff < 0)) {
+      setBirthDateError("Вам должно быть не менее 6 лет");
       return false;
     }
 
