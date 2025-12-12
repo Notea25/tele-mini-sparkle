@@ -28,6 +28,8 @@ import flameIcon from "@/assets/flame-icon.png";
 import icon2x from "@/assets/icon-2x.png";
 import iconStar from "@/assets/icon-star.png";
 import iconFree from "@/assets/icon-free.png";
+import iconBenchPlus from "@/assets/icon-bench-plus.png";
+import icon3x from "@/assets/icon-3x.png";
 
 // Club icons mapping
 const clubIcons: Record<string, string> = {
@@ -42,11 +44,19 @@ const clubIcons: Record<string, string> = {
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
 
-// Special chips for transfers - only 3 chips as per reference
+// Special chips for transfers page UI - only 2 chips
 const initialChips: BoostChip[] = [
-  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
   { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
   { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
+];
+
+// All 5 boosts for confirmation drawer
+const allBoostsTemplate: BoostChip[] = [
+  { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Подробнее", status: "available" },
+  { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
+  { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
+  { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
+  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
 ];
 
 interface PlayerDataExt extends PlayerData {
@@ -936,7 +946,14 @@ const Transfers = () => {
         freeTransfersUsed={Math.min(getTransferRecords().length, freeTransfers)}
         additionalTransfersUsed={Math.max(0, getTransferRecords().length - freeTransfers)}
         remainingBudget={Math.round(budget)}
-        boosts={specialChips}
+        boosts={allBoostsTemplate.map(boost => {
+          // Find if this boost is pending in the current page's specialChips
+          const currentChip = specialChips.find(c => c.id === boost.id);
+          if (currentChip) {
+            return currentChip;
+          }
+          return boost;
+        })}
       />
     </div>
   );
