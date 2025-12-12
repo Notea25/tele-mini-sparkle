@@ -49,15 +49,15 @@ export const getFormationSlots = (formation: FormationKey) => {
   return slots;
 };
 
-// Get column positions based on number of players in a row
+// Get left percentage positions based on number of players in a row - uniform spacing
 function getColumnPositions(count: number): number[] {
   switch (count) {
-    case 1: return [3]; // Center
-    case 2: return [2, 4]; // 2 sides
-    case 3: return [1.5, 3, 4.5]; // 3 spread
-    case 4: return [1, 2.2, 3.8, 5]; // 4 spread
-    case 5: return [0.8, 1.9, 3, 4.1, 5.2]; // 5 spread
-    default: return [3];
+    case 1: return [50]; // Center
+    case 2: return [37, 63]; // Symmetric around center
+    case 3: return [25, 50, 75]; // Equal thirds
+    case 4: return [12.5, 37.5, 62.5, 87.5]; // Equal quarters
+    case 5: return [10, 30, 50, 70, 90]; // Equal fifths
+    default: return [50];
   }
 }
 
@@ -70,13 +70,9 @@ export const getPlayerPosition = (row: number, col: number) => {
     4: "66%",
   };
 
-  // Calculate left position based on column (1-5 range, centered at 3)
-  // Full range is 10% to 90% for columns 0.8 to 5.2
-  const leftPercent = 10 + ((col - 0.8) / (5.2 - 0.8)) * 80;
-
   return {
     top: topPositions[row],
-    left: `${leftPercent}%`,
+    left: `${col}%`,
   };
 };
 
