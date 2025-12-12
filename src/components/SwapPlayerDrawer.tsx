@@ -1,6 +1,7 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight, AlertCircle } from "lucide-react";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
+import { FormationKey, FORMATION_LABELS } from "@/lib/formationUtils";
 
 interface PlayerData {
   id: number;
@@ -13,11 +14,18 @@ interface PlayerData {
   isOnBench?: boolean;
 }
 
+interface ValidSwapOption {
+  id: number;
+  position: string;
+  resultingFormation?: FormationKey;
+}
+
 interface SwapPlayerDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   selectedPlayer: PlayerData | null;
   availablePlayers: PlayerData[];
+  validSwapOptions: ValidSwapOption[];
   onSwap: (fromPlayerId: number, toPlayerId: number) => void;
 }
 
@@ -26,6 +34,7 @@ const SwapPlayerDrawer = ({
   onClose, 
   selectedPlayer, 
   availablePlayers,
+  validSwapOptions,
   onSwap 
 }: SwapPlayerDrawerProps) => {
   if (!selectedPlayer) return null;
@@ -35,16 +44,29 @@ const SwapPlayerDrawer = ({
     onClose();
   };
 
+  // Filter available players to only those with valid swap options
+  const validPlayerIds = new Set(validSwapOptions.map(opt => opt.id));
+  const validPlayers = availablePlayers.filter(p => validPlayerIds.has(p.id));
+  const invalidPlayers = availablePlayers.filter(p => !validPlayerIds.has(p.id));
+
+  const getResultingFormationLabel = (playerId: number) => {
+    const option = validSwapOptions.find(opt => opt.id === playerId);
+    if (option?.resultingFormation) {
+      return FORMATION_LABELS[option.resultingFormation];
+    }
+    return null;
+  };
+
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className="bg-card border-border">
+      <DrawerContent className="bg-card border-border max-h-[80vh]">
         <DrawerHeader>
           <DrawerTitle className="text-foreground text-center">
             Замена игрока
           </DrawerTitle>
         </DrawerHeader>
         
-        <div className="px-4 pb-6">
+        <div className="px-4 pb-6 overflow-y-auto">
           {/* Current player */}
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="flex flex-col items-center">
@@ -61,34 +83,71 @@ const SwapPlayerDrawer = ({
             </div>
           </div>
 
-          {/* Available players for swap */}
+          {/* Valid players for swap */}
           <div className="space-y-2">
             <p className="text-muted-foreground text-sm mb-3">
-              {selectedPlayer.isOnBench ? "Игроки на поле:" : "Игроки на скамейке:"}
+              {selectedPlayer.isOnBench ? "Доступные игроки на поле:" : "Доступные игроки на скамейке:"}
             </p>
             
-            {availablePlayers.length === 0 ? (
-              <p className="text-center text-muted-foreground py-4">
-                Нет доступных игроков для замены
-              </p>
+            {validPlayers.length === 0 ? (
+              <div className="flex flex-col items-center py-6 gap-2">
+                <AlertCircle className="w-8 h-8 text-muted-foreground" />
+                <p className="text-center text-muted-foreground">
+                  Нет доступных игроков для замены.
+                </p>
+                <p className="text-center text-muted-foreground text-xs">
+                  Замена невозможна - нет подходящей схемы
+                </p>
+              </div>
             ) : (
-              availablePlayers.map((player) => (
-                <button
-                  key={player.id}
-                  onClick={() => handleSwap(player)}
-                  className="w-full bg-secondary rounded-full px-4 py-3 flex items-center gap-3 hover:bg-secondary/80 transition-colors"
-                >
-                  <img src={playerJerseyTeam} alt={player.name} className="w-8 h-8 object-contain" />
-                  <div className="flex-1 text-left">
-                    <span className="text-foreground font-medium">{player.name}</span>
-                    <span className="text-muted-foreground text-xs ml-2">{player.position}</span>
+              validPlayers.map((player) => {
+                const formationLabel = getResultingFormationLabel(player.id);
+                return (
+                  <button
+                    key={player.id}
+                    onClick={() => handleSwap(player)}
+                    className="w-full bg-secondary rounded-2xl px-4 py-3 flex flex-col gap-1 hover:bg-secondary/80 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img src={playerJerseyTeam} alt={player.name} className="w-8 h-8 object-contain" />
+                      <div className="flex-1 text-left">
+                        <span className="text-foreground font-medium">{player.name}</span>
+                        <span className="text-muted-foreground text-xs ml-2">{player.position}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-primary text-sm">{player.points} очков</span>
+                        <span className="text-foreground text-sm">{player.price}₽</span>
+                      </div>
+                    </div>
+                    {formationLabel && player.position !== selectedPlayer.position && (
+                      <div className="text-xs text-primary/80 ml-11">
+                        → {formationLabel}
+                      </div>
+                    )}
+                  </button>
+                );
+              })
+            )}
+
+            {/* Show invalid options with explanation */}
+            {invalidPlayers.length > 0 && validPlayers.length > 0 && (
+              <>
+                <p className="text-muted-foreground text-xs mt-4 mb-2">
+                  Недоступно (нет подходящей схемы):
+                </p>
+                {invalidPlayers.map((player) => (
+                  <div
+                    key={player.id}
+                    className="w-full bg-secondary/30 rounded-2xl px-4 py-3 flex items-center gap-3 opacity-50"
+                  >
+                    <img src={playerJerseyTeam} alt={player.name} className="w-8 h-8 object-contain grayscale" />
+                    <div className="flex-1 text-left">
+                      <span className="text-muted-foreground font-medium">{player.name}</span>
+                      <span className="text-muted-foreground text-xs ml-2">{player.position}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-primary text-sm">{player.points} очков</span>
-                    <span className="text-foreground text-sm">{player.price}₽</span>
-                  </div>
-                </button>
-              ))
+                ))}
+              </>
             )}
           </div>
         </div>

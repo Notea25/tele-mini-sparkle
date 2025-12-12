@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
+import { getValidSwapOptions, detectFormation, FORMATION_LABELS, FormationKey } from "@/lib/formationUtils";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
@@ -42,14 +43,10 @@ const initialChips: BoostChip[] = [
   { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
 ];
 
-// Formation options
-const formationOptions = [
-  { value: "1-4-4-2", label: "Схема (1 ВР - 4 ЗЩ - 4 ПЗ - 2 НП)" },
-  { value: "1-4-3-3", label: "Схема (1 ВР - 4 ЗЩ - 3 ПЗ - 3 НП)" },
-  { value: "1-3-5-2", label: "Схема (1 ВР - 3 ЗЩ - 5 ПЗ - 2 НП)" },
-  { value: "1-5-3-2", label: "Схема (1 ВР - 5 ЗЩ - 3 ПЗ - 2 НП)" },
-  { value: "1-5-4-1", label: "Схема (1 ВР - 5 ЗЩ - 4 ПЗ - 1 НП)" },
-];
+// Formation options - all 8 valid formations
+const formationOptions: { value: FormationKey; label: string }[] = Object.entries(FORMATION_LABELS).map(
+  ([value, label]) => ({ value: value as FormationKey, label })
+);
 
 interface PlayerDataExt extends PlayerData {
   slotIndex?: number;
@@ -215,17 +212,23 @@ const TeamManagement = () => {
     }
   };
 
-  // Get available players for swap
+  // Get available players for swap (all players from opposite side)
   const getAvailableSwapPlayers = () => {
     if (!playerToSwap) return [];
     
     if (playerToSwap.isOnBench) {
-      // Bench player - can swap with field players of same position
-      return mainSquadPlayers.filter(p => p.position === playerToSwap.position);
+      // Bench player - return all field players
+      return mainSquadPlayers;
     } else {
-      // Field player - can swap with bench players of same position
-      return benchPlayers.filter(p => p.position === playerToSwap.position);
+      // Field player - return all bench players
+      return benchPlayers;
     }
+  };
+
+  // Get valid swap options based on formation rules
+  const getValidSwapOptionsForPlayer = () => {
+    if (!playerToSwap) return [];
+    return getValidSwapOptions(mainSquadPlayers, benchPlayers, playerToSwap);
   };
 
   const renderListSection = (position: string, players: PlayerData[]) => (
@@ -592,6 +595,7 @@ const TeamManagement = () => {
         }}
         selectedPlayer={playerToSwap}
         availablePlayers={getAvailableSwapPlayers()}
+        validSwapOptions={getValidSwapOptionsForPlayer()}
         onSwap={handleSwapConfirm}
       />
 

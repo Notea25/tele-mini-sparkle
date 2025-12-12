@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers } from "@/lib/teamData";
+import { getValidSwapOptions } from "@/lib/formationUtils";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
@@ -456,10 +457,16 @@ const Transfers = () => {
     if (!playerToSwap) return [];
     
     if (playerToSwap.isOnBench) {
-      return mainSquadPlayers.filter(p => p.position === playerToSwap.position);
+      return mainSquadPlayers;
     } else {
-      return benchPlayers.filter(p => p.position === playerToSwap.position);
+      return benchPlayers;
     }
+  };
+
+  // Get valid swap options based on formation rules
+  const getValidSwapOptionsForPlayer = () => {
+    if (!playerToSwap) return [];
+    return getValidSwapOptions(mainSquadPlayers, benchPlayers, playerToSwap);
   };
 
   // Slot counts per position for main squad (1-4-4-2 formation)
@@ -868,6 +875,7 @@ const Transfers = () => {
         }}
         selectedPlayer={playerToSwap}
         availablePlayers={getAvailableSwapPlayers()}
+        validSwapOptions={getValidSwapOptionsForPlayer()}
         onSwap={handleSwapConfirm}
       />
 
