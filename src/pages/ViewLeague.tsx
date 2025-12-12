@@ -15,6 +15,9 @@ import homeIcon from "@/assets/home-icon.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
+import prize1stPlace from "@/assets/prize-1st-place.png";
+import prize2ndPlace from "@/assets/prize-2nd-place.png";
+import prize3rdPlace from "@/assets/prize-3rd-place.png";
 
 const ViewLeague = () => {
   const navigate = useNavigate();
@@ -74,6 +77,22 @@ const ViewLeague = () => {
   const handleClose = () => {
     navigate("/league");
   };
+
+  // Prize data for commercial leagues
+  const commercialPrizes: Record<string, { prize: string; description: string; image: string }> = {
+    "betera": { prize: "100 Freebet", description: "Получите 100 фрибетов на ставки в Betera для лучших игроков турнира!", image: prize1stPlace },
+    "bnb": { prize: "1000 BYN", description: "Денежный приз 1000 белорусских рублей для победителя лиги!", image: prize2ndPlace },
+    "atlant-m": { prize: "iPhone 17", description: "Новейший iPhone 17 Pro Max для чемпиона лиги Atlant-M!", image: prize3rdPlace },
+    "abff": { prize: "VIP-ложа", description: "Эксклюзивное посещение VIP-ложи на матче сборной Беларуси!", image: prize1stPlace },
+    "bcs": { prize: "MacBook", description: "Ноутбук MacBook Air M3 для победителя турнира BCS!", image: prize2ndPlace },
+    "hc-dinamo": { prize: "Абонемент", description: "Годовой абонемент на все матчи ХК Динамо Минск!", image: prize3rdPlace },
+    "maxline": { prize: "250 Free Spin", description: "250 бесплатных вращений в казино Maxline для лидеров!", image: prize1stPlace },
+    "papa-doner": { prize: "100 BYN", description: "Сертификат на 100 BYN в сети ресторанов Papa Doner!", image: prize2ndPlace },
+    "zubr": { prize: "AirPods", description: "Беспроводные наушники Apple AirPods Pro 2 для победителя!", image: prize3rdPlace },
+    "hello": { prize: "1000 минут", description: "1000 минут на связь в сети Hello для лучшего менеджера!", image: prize1stPlace },
+  };
+
+  const currentPrize = commercialPrizes[leagueId];
 
   // Mock standings data
   const leagueStandings = [
@@ -150,6 +169,28 @@ const ViewLeague = () => {
             </div>
           ))}
         </div>
+
+        {/* Prize Section for Commercial Leagues */}
+        {isCommercial && currentPrize && (
+          <div className="mb-6 bg-secondary/30 rounded-2xl p-4 border border-border">
+            <h3 className="text-lg font-bold text-foreground mb-3">Главный приз</h3>
+            <div className="flex items-center gap-4">
+              <img 
+                src={currentPrize.image} 
+                alt={currentPrize.prize}
+                className="w-24 h-24 object-contain rounded-xl"
+              />
+              <div className="flex-1">
+                <span className="text-primary font-bold text-xl block mb-2">
+                  {currentPrize.prize}
+                </span>
+                <p className="text-muted-foreground text-sm">
+                  {currentPrize.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Fixed Bottom Buttons */}
