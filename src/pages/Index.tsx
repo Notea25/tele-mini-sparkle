@@ -17,6 +17,7 @@ import iconCs2 from "@/assets/icon-cs2.png";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 const TEAM_DATA_KEY = "fantasyTeamData";
+const FAVORITES_STORAGE_KEY = "fantasyFavoriteLeagues";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -31,8 +32,29 @@ const Index = () => {
   } | null>(null);
   const [hasTeam, setHasTeam] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [favorites, setFavorites] = useState<string[]>([]);
 
-  const sortOptions = ["Избранные", "Сначала ТОП-лиги", "От А до Я", "От Я до А"];
+  // Load favorites from localStorage
+  useEffect(() => {
+    const storedFavorites = localStorage.getItem(FAVORITES_STORAGE_KEY);
+    if (storedFavorites) {
+      try {
+        setFavorites(JSON.parse(storedFavorites));
+      } catch {
+        setFavorites([]);
+      }
+    }
+  }, []);
+
+  const toggleFavorite = useCallback((leagueId: string) => {
+    setFavorites(prev => {
+      const newFavorites = prev.includes(leagueId)
+        ? prev.filter(id => id !== leagueId)
+        : [...prev, leagueId];
+      localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(newFavorites));
+      return newFavorites;
+    });
+  }, []);
 
   // Scroll detection for active category
   useEffect(() => {
@@ -141,6 +163,38 @@ const Index = () => {
     setActiveCategory(categoryId);
   }, []);
 
+  const sortOptions = ["Избранные", "Сначала ТОП-лиги", "От А до Я", "От Я до А"];
+
+  // Define all leagues data for sorting
+  const allLeagues = [
+    { id: "football-belarus", title: "Футбол", section: "section-football", iconImage: iconFootball, leagueIcon: leagueLogo, league: "Беларусь", participants: 26130, date: "04.04", time: "19.00", glowColor: "120 85% 55%", href: "/create-team", comingSoon: false },
+    { id: "basketball", title: "Баскетбол", section: "section-basketball", iconImage: iconBasketball, glowColor: "35 85% 55%", comingSoon: true, comingSoonYear: "2026" },
+    { id: "hockey", title: "Хоккей", section: "section-hockey", iconImage: iconHockey, glowColor: "200 85% 55%", comingSoon: true, comingSoonYear: "2028" },
+    { id: "cs2", title: "Counter-Strike 2", section: "section-cs2", iconImage: iconCs2, glowColor: "0 85% 55%", comingSoon: true, comingSoonYear: "2029" },
+  ];
+
+  // Sort leagues based on selected option
+  const getSortedLeagues = () => {
+    const leagues = [...allLeagues];
+    
+    switch (selectedSort) {
+      case "Избранные":
+        return leagues.sort((a, b) => {
+          const aFav = favorites.includes(a.id) ? 1 : 0;
+          const bFav = favorites.includes(b.id) ? 1 : 0;
+          return bFav - aFav;
+        });
+      case "От А до Я":
+        return leagues.sort((a, b) => a.league?.localeCompare(b.league || a.title) || a.title.localeCompare(b.title));
+      case "От Я до А":
+        return leagues.sort((a, b) => b.league?.localeCompare(a.league || b.title) || b.title.localeCompare(a.title));
+      default:
+        return leagues;
+    }
+  };
+
+  const sortedLeagues = getSortedLeagues();
+
   return (
     <div className="min-h-screen bg-background">
       <SportHeader />
@@ -221,49 +275,26 @@ const Index = () => {
       <CategoryFilter activeCategory={activeCategory} onCategoryClick={handleCategoryClick} />
 
       <div className="mt-6">
-        <div id="section-football">
-          <SportCard
-            title="Футбол"
-            iconImage={iconFootball}
-            leagueIcon={leagueLogo}
-            league="Беларусь"
-            participants={26130}
-            date="04.04"
-            time="19.00"
-            glowColor="120 85% 55%"
-            href="/create-team"
-          />
-        </div>
-
-        <div id="section-basketball">
-          <SportCard
-            title="Баскетбол"
-            iconImage={iconBasketball}
-            comingSoon
-            comingSoonYear="2026"
-            glowColor="35 85% 55%"
-          />
-        </div>
-
-        <div id="section-hockey">
-          <SportCard 
-            title="Хоккей" 
-            iconImage={iconHockey} 
-            comingSoon 
-            comingSoonYear="2028" 
-            glowColor="200 85% 55%" 
-          />
-        </div>
-
-        <div id="section-cs2">
-          <SportCard
-            title="Counter-Strike 2"
-            iconImage={iconCs2}
-            comingSoon
-            comingSoonYear="2029"
-            glowColor="0 85% 55%"
-          />
-        </div>
+        {sortedLeagues.map((leagueData) => (
+          <div key={leagueData.id} id={leagueData.section}>
+            <SportCard
+              title={leagueData.title}
+              iconImage={leagueData.iconImage}
+              leagueIcon={leagueData.leagueIcon}
+              league={leagueData.league}
+              participants={leagueData.participants}
+              date={leagueData.date}
+              time={leagueData.time}
+              glowColor={leagueData.glowColor}
+              href={leagueData.href}
+              comingSoon={leagueData.comingSoon}
+              comingSoonYear={leagueData.comingSoonYear}
+              leagueId={leagueData.id}
+              isFavorite={favorites.includes(leagueData.id)}
+              onToggleFavorite={toggleFavorite}
+            />
+          </div>
+        ))}
       </div>
 
       <FooterNav />
