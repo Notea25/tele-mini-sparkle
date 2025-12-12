@@ -30,15 +30,15 @@ const TRANSFERS_FORMATION = {
   "НП": { count: 3, row: 4 },
 };
 
-// Get column positions based on number of players in a row
+// Get left percentage positions based on number of players in a row - uniform spacing
 function getColumnPositions(count: number): number[] {
   switch (count) {
-    case 1: return [3];
-    case 2: return [2, 4];
-    case 3: return [1.5, 3, 4.5];
-    case 4: return [1, 2.2, 3.8, 5];
-    case 5: return [0.8, 1.9, 3, 4.1, 5.2];
-    default: return [3];
+    case 1: return [50]; // Center
+    case 2: return [37, 63]; // Symmetric around center
+    case 3: return [25, 50, 75]; // Equal thirds
+    case 4: return [12.5, 37.5, 62.5, 87.5]; // Equal quarters
+    case 5: return [10, 30, 50, 70, 90]; // Equal fifths
+    default: return [50];
   }
 }
 
@@ -51,11 +51,9 @@ const getPlayerPosition = (row: number, col: number) => {
     4: "72%",
   };
 
-  const leftPercent = 10 + ((col - 0.8) / (5.2 - 0.8)) * 80;
-
   return {
     top: topPositions[row],
-    left: `${leftPercent}%`,
+    left: `${col}%`,
   };
 };
 
