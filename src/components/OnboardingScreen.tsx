@@ -11,10 +11,10 @@ interface OnboardingSlide {
 const slides: OnboardingSlide[] = [
   {
     image: fieldWithPlayers,
-    title: "Создавай свою команду",
+    title: "Создай свою команду",
     subtitle: (
       <>
-        Собери команду из <span className="text-primary">15</span> игроков чемпионата
+        Собери команду из <span className="text-primary">15 игроков</span> чемпионата
       </>
     ),
   },
@@ -28,9 +28,9 @@ const slides: OnboardingSlide[] = [
     title: "Борись за ценные призы",
     subtitle: (
       <>
-        Участвуй в основной и коммерческой лигах
+        Участвуй в основной и коммерческой
         <br />
-        создавай частные
+        лигах, создавай частные
       </>
     ),
   },
