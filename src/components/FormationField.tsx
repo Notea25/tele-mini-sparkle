@@ -64,11 +64,22 @@ const FormationField = ({
       4: "52%",
     };
 
+    // Equal spacing: columns 1-5, converted to 10%-90% range
+    const getLeftPosition = (row: number, col: number, count: number): string => {
+      if (count === 1) return "50%";
+      const minCol = 1;
+      const maxCol = 5;
+      const gap = (maxCol - minCol) / (count - 1);
+      const actualCol = minCol + (col - 1) * gap;
+      const leftPercent = 10 + ((actualCol - 1) / 4) * 80;
+      return `${leftPercent}%`;
+    };
+
     const leftPositions: Record<number, Record<number, string>> = {
-      1: { 2: "37%", 4: "63%" },
-      2: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" },
-      3: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" },
-      4: { 2: "30%", 3: "50%", 4: "70%" },
+      1: { 2: getLeftPosition(1, 1, 2), 4: getLeftPosition(1, 2, 2) },
+      2: { 1: getLeftPosition(2, 1, 5), 2: getLeftPosition(2, 2, 5), 3: getLeftPosition(2, 3, 5), 4: getLeftPosition(2, 4, 5), 5: getLeftPosition(2, 5, 5) },
+      3: { 1: getLeftPosition(3, 1, 5), 2: getLeftPosition(3, 2, 5), 3: getLeftPosition(3, 3, 5), 4: getLeftPosition(3, 4, 5), 5: getLeftPosition(3, 5, 5) },
+      4: { 2: getLeftPosition(4, 1, 3), 3: getLeftPosition(4, 2, 3), 4: getLeftPosition(4, 3, 3) },
     };
 
     return {
