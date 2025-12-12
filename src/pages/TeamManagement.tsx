@@ -179,37 +179,63 @@ const TeamManagement = () => {
 
     if (fromIsOnBench && !toIsOnBench) {
       // Bench player replacing field player
-      const toSlotIndex = toPlayer.slotIndex;
-      
-      setMainSquadPlayers(prev => 
-        prev.map(p => p.id === toPlayerId 
-          ? { ...fromPlayer, slotIndex: toSlotIndex, isOnBench: false } 
+      // Create new main squad: replace field player with bench player
+      const newMainSquad = mainSquadPlayers.map(p => 
+        p.id === toPlayerId 
+          ? { ...fromPlayer, isOnBench: false } 
           : p
-        )
       );
-      setBenchPlayers(prev => 
-        prev.map(p => p.id === fromPlayerId 
+      
+      // Create new bench: replace bench player with field player
+      const newBench = benchPlayers.map(p => 
+        p.id === fromPlayerId 
           ? { ...toPlayer, slotIndex: undefined, isOnBench: true } 
           : p
-        )
       );
+      
+      // Reassign slot indices based on positions
+      const reassignedMainSquad = reassignSlotIndices(newMainSquad);
+      
+      setMainSquadPlayers(reassignedMainSquad);
+      setBenchPlayers(newBench);
     } else if (!fromIsOnBench && toIsOnBench) {
       // Field player replacing bench player
-      const fromSlotIndex = fromPlayer.slotIndex;
-      
-      setMainSquadPlayers(prev => 
-        prev.map(p => p.id === fromPlayerId 
-          ? { ...toPlayer, slotIndex: fromSlotIndex, isOnBench: false } 
+      // Create new main squad: replace field player with bench player
+      const newMainSquad = mainSquadPlayers.map(p => 
+        p.id === fromPlayerId 
+          ? { ...toPlayer, isOnBench: false } 
           : p
-        )
       );
-      setBenchPlayers(prev => 
-        prev.map(p => p.id === toPlayerId 
+      
+      // Create new bench: replace bench player with field player
+      const newBench = benchPlayers.map(p => 
+        p.id === toPlayerId 
           ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } 
           : p
-        )
       );
+      
+      // Reassign slot indices based on positions
+      const reassignedMainSquad = reassignSlotIndices(newMainSquad);
+      
+      setMainSquadPlayers(reassignedMainSquad);
+      setBenchPlayers(newBench);
     }
+  };
+
+  // Helper function to reassign slot indices based on player positions
+  const reassignSlotIndices = (players: PlayerDataExt[]): PlayerDataExt[] => {
+    const positionCounters: Record<string, number> = {
+      "ВР": 0,
+      "ЗЩ": 0,
+      "ПЗ": 0,
+      "НП": 0,
+    };
+    
+    return players.map(player => {
+      const slotIndex = positionCounters[player.position] || 0;
+      positionCounters[player.position] = slotIndex + 1;
+      return { ...player, slotIndex };
+    });
   };
 
   // Get available players for swap (all players from opposite side)
