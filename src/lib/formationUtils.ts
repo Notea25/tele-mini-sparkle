@@ -64,7 +64,7 @@ function getColumnPositions(count: number): number[] {
 // Get CSS positioning for a player on the field
 export const getPlayerPosition = (row: number, col: number) => {
   const topPositions: Record<number, string> = {
-    1: "0%",
+    1: "2%",
     2: "22%",
     3: "44%",
     4: "66%",
