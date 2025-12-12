@@ -391,25 +391,6 @@ const TeamManagement = () => {
         </Button>
       </div>
 
-      {/* Formation selector (only in list view) */}
-      {activeTab === "list" && (
-        <div className="px-4 mt-4">
-          <Select value={selectedFormation} onValueChange={setSelectedFormation}>
-            <SelectTrigger className="w-full bg-card border-border text-foreground rounded-full">
-              <SelectValue>
-                {formationOptions.find(f => f.value === selectedFormation)?.label}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent className="bg-card border-border">
-              {formationOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value} className="text-foreground hover:bg-secondary cursor-pointer">
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
 
       {/* Special Chips */}
       <div className="px-4 mt-4">
