@@ -320,6 +320,26 @@ const TeamBuilder = () => {
     setCurrentPage(1);
   };
 
+  // Reset all filters
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setActiveFilter("Все");
+    setSelectedTeam("Все команды");
+    setSelectedPoints("Фильтр по очкам");
+    setPriceFrom(3);
+    setPriceTo(10);
+    setCurrentPage(1);
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters =
+    searchQuery !== "" ||
+    activeFilter !== "Все" ||
+    selectedTeam !== "Все команды" ||
+    selectedPoints !== "Фильтр по очкам" ||
+    priceFrom !== 3 ||
+    priceTo !== 10;
+
   // Price control handlers
   const handlePriceFromIncrease = () => {
     setPriceFrom((prev) => Math.min(prev + 1, priceTo));
@@ -338,15 +358,6 @@ const TeamBuilder = () => {
     setCurrentPage(1);
   };
 
-  const handleResetFilters = () => {
-    setSearchQuery("");
-    setSelectedTeam("Все команды");
-    setSelectedPoints("Фильтр по очкам");
-    setPriceFrom(3);
-    setPriceTo(10);
-    setActiveFilter("Все");
-    setCurrentPage(1);
-  };
 
   const positionToFilter: Record<string, string> = {
     ВР: "Вратари",
@@ -656,7 +667,18 @@ const TeamBuilder = () => {
 
           {/* Price Range */}
           <div className="px-4 -mt-36 relative z-10">
-            <span className="text-foreground text-sm mb-3 block">Цена</span>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-foreground text-sm">Цена</span>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-sm transition-colors"
+                >
+                  Сбросить фильтры
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
             <div className="flex gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground text-sm">от</span>

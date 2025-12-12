@@ -239,6 +239,15 @@ const BuyPlayerDrawer = ({
     setCurrentPage(1);
   };
 
+  // Check if any filters are active
+  const hasActiveFilters =
+    searchQuery !== "" ||
+    activeFilter !== "Все" ||
+    selectedTeam !== "Все команды" ||
+    selectedPoints !== "Фильтр по очкам" ||
+    priceFrom !== 3 ||
+    priceTo !== 15;
+
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-background max-h-[90vh]">
@@ -315,30 +324,53 @@ const BuyPlayerDrawer = ({
           </div>
 
           {/* Price range */}
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-muted-foreground text-xs">Цена:</span>
-            <div className="flex items-center gap-1 bg-card rounded-full px-2 py-1">
-              <button onClick={() => { setPriceFrom(Math.max(1, priceFrom - 1)); setCurrentPage(1); }} className="text-muted-foreground">
-                <Minus className="w-3 h-3" />
-              </button>
-              <span className="text-foreground text-xs w-6 text-center">{priceFrom}</span>
-              <button onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }} className="text-muted-foreground">
-                <Plus className="w-3 h-3" />
-              </button>
+          <div className="mb-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-muted-foreground text-xs">Цена</span>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-xs transition-colors"
+                >
+                  Сбросить фильтры
+                  <X className="w-3 h-3" />
+                </button>
+              )}
             </div>
-            <span className="text-muted-foreground text-xs">-</span>
-            <div className="flex items-center gap-1 bg-card rounded-full px-2 py-1">
-              <button onClick={() => { setPriceTo(Math.max(priceFrom, priceTo - 1)); setCurrentPage(1); }} className="text-muted-foreground">
-                <Minus className="w-3 h-3" />
-              </button>
-              <span className="text-foreground text-xs w-6 text-center">{priceTo}</span>
-              <button onClick={() => { setPriceTo(Math.min(15, priceTo + 1)); setCurrentPage(1); }} className="text-muted-foreground">
-                <Plus className="w-3 h-3" />
-              </button>
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground text-xs">от</span>
+              <div className="flex items-center gap-1 bg-card rounded-full px-2 py-1">
+                <button 
+                  onClick={() => { setPriceFrom(Math.max(1, priceFrom - 1)); setCurrentPage(1); }} 
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                >
+                  <Minus className="w-3 h-3 text-primary-foreground" />
+                </button>
+                <span className="text-foreground text-xs w-8 text-center">{priceFrom},0</span>
+                <button 
+                  onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }} 
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                >
+                  <Plus className="w-3 h-3 text-primary-foreground" />
+                </button>
+              </div>
+              <span className="text-muted-foreground text-xs">до</span>
+              <div className="flex items-center gap-1 bg-card rounded-full px-2 py-1">
+                <button 
+                  onClick={() => { setPriceTo(Math.max(priceFrom, priceTo - 1)); setCurrentPage(1); }} 
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                >
+                  <Minus className="w-3 h-3 text-primary-foreground" />
+                </button>
+                <span className="text-foreground text-xs w-8 text-center">{priceTo},0</span>
+                <button 
+                  onClick={() => { setPriceTo(Math.min(15, priceTo + 1)); setCurrentPage(1); }} 
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                >
+                  <Plus className="w-3 h-3 text-primary-foreground" />
+                </button>
+              </div>
             </div>
-            <Button onClick={handleResetFilters} variant="ghost" className="text-primary text-xs h-7 px-2">
-              Сбросить
-            </Button>
           </div>
 
           {/* Table header */}
