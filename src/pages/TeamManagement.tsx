@@ -552,6 +552,22 @@ const TeamManagement = () => {
         </div>
       )}
 
+      {/* Fixed Bottom Section with Save Button */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
+        <Button 
+          onClick={() => {
+            toast.success("Изменения сохранены");
+            navigate("/league");
+          }}
+          className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-full h-12"
+        >
+          Сохранить
+        </Button>
+      </div>
+
+      {/* Add padding to account for fixed bottom */}
+      <div className="h-24" />
+
       {/* Player Card Drawer */}
       {selectedPlayerForCard !== null && (
         <PlayerCard
