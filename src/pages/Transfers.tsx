@@ -420,36 +420,54 @@ const Transfers = () => {
     const fromIsOnBench = fromPlayer.isOnBench;
     const toIsOnBench = toPlayer.isOnBench;
 
-    if (fromIsOnBench && !toIsOnBench) {
-      const toSlotIndex = toPlayer.slotIndex;
+    // Helper function to reassign slot indices based on player positions
+    const reassignSlotIndices = (players: PlayerDataExt[]): PlayerDataExt[] => {
+      const positionCounters: Record<string, number> = {
+        "ВР": 0,
+        "ЗЩ": 0,
+        "ПЗ": 0,
+        "НП": 0,
+      };
       
-      setMainSquadPlayers(prev => 
-        prev.map(p => p.id === toPlayerId 
-          ? { ...fromPlayer, slotIndex: toSlotIndex, isOnBench: false } 
+      return players.map(player => {
+        const slotIndex = positionCounters[player.position] || 0;
+        positionCounters[player.position] = slotIndex + 1;
+        return { ...player, slotIndex };
+      });
+    };
+
+    if (fromIsOnBench && !toIsOnBench) {
+      // Bench player replacing field player
+      const newMainSquad = mainSquadPlayers.map(p => 
+        p.id === toPlayerId 
+          ? { ...fromPlayer, isOnBench: false } 
           : p
-        )
       );
-      setBenchPlayers(prev => 
-        prev.map(p => p.id === fromPlayerId 
+      
+      const newBench = benchPlayers.map(p => 
+        p.id === fromPlayerId 
           ? { ...toPlayer, slotIndex: undefined, isOnBench: true } 
           : p
-        )
       );
-    } else if (!fromIsOnBench && toIsOnBench) {
-      const fromSlotIndex = fromPlayer.slotIndex;
       
-      setMainSquadPlayers(prev => 
-        prev.map(p => p.id === fromPlayerId 
-          ? { ...toPlayer, slotIndex: fromSlotIndex, isOnBench: false } 
+      setMainSquadPlayers(reassignSlotIndices(newMainSquad));
+      setBenchPlayers(newBench);
+    } else if (!fromIsOnBench && toIsOnBench) {
+      // Field player replacing bench player
+      const newMainSquad = mainSquadPlayers.map(p => 
+        p.id === fromPlayerId 
+          ? { ...toPlayer, isOnBench: false } 
           : p
-        )
       );
-      setBenchPlayers(prev => 
-        prev.map(p => p.id === toPlayerId 
+      
+      const newBench = benchPlayers.map(p => 
+        p.id === toPlayerId 
           ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } 
           : p
-        )
       );
+      
+      setMainSquadPlayers(reassignSlotIndices(newMainSquad));
+      setBenchPlayers(newBench);
     }
   };
 
