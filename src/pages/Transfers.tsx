@@ -40,11 +40,13 @@ const clubIcons: Record<string, string> = {
   "Торпедо": clubLogo,
 };
 
+import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
+
 // Special chips for transfers - only 3 chips as per reference
-const initialChips = [
-  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", active: true },
-  { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", active: true },
-  { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", active: true },
+const initialChips: BoostChip[] = [
+  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
+  { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
+  { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
 ];
 
 interface PlayerDataExt extends PlayerData {
@@ -61,11 +63,12 @@ const Transfers = () => {
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName] = useState(() => getSavedTeam().teamName);
-  const [specialChips, setSpecialChips] = useState(initialChips);
-  const [selectedBoostChip, setSelectedBoostChip] = useState<typeof initialChips[0] | null>(null);
+  const [specialChips, setSpecialChips] = useState<BoostChip[]>(initialChips);
+  const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
+  const currentTour = 1; // Current tour number
 
-  const openBoostDrawer = (chip: typeof initialChips[0]) => {
+  const openBoostDrawer = (chip: BoostChip) => {
     setSelectedBoostChip(chip);
     setIsBoostDrawerOpen(true);
   };
@@ -73,7 +76,15 @@ const Transfers = () => {
   const applyBoost = (chipId: string) => {
     setSpecialChips(prev => 
       prev.map(chip => 
-        chip.id === chipId ? { ...chip, active: false } : chip
+        chip.id === chipId ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" } : chip
+      )
+    );
+  };
+
+  const cancelBoost = (chipId: string) => {
+    setSpecialChips(prev => 
+      prev.map(chip => 
+        chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее" } : chip
       )
     );
   };
@@ -600,16 +611,32 @@ const Transfers = () => {
             <div
               key={chip.id}
               onClick={() => openBoostDrawer(chip)}
-              className="flex-1 flex flex-col items-center justify-center py-4 rounded-2xl bg-card cursor-pointer transition-all hover:bg-card/80 border border-border"
+              className={`flex-1 flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all hover:bg-card/80 border ${
+                chip.status === "pending" 
+                  ? "bg-card ring-2 ring-primary border-primary" 
+                  : chip.status === "used" 
+                    ? "bg-card/50 border-border" 
+                    : "bg-card border-border"
+              }`}
             >
               <img 
                 src={chip.icon} 
                 alt={chip.label} 
-                className={`w-8 h-8 object-contain mb-1 transition-all ${!chip.active ? "grayscale opacity-50" : ""}`}
+                className={`w-8 h-8 object-contain mb-1 transition-all ${chip.status === "used" ? "grayscale opacity-50" : ""}`}
               />
               <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
-              <span className={`text-[8px] ${chip.active ? "text-primary" : "text-muted-foreground"}`}>
-                {chip.active ? chip.sublabel : "Использовано"}
+              <span className={`text-[8px] ${
+                chip.status === "pending" 
+                  ? "text-primary" 
+                  : chip.status === "used" 
+                    ? "text-muted-foreground" 
+                    : "text-primary"
+              }`}>
+                {chip.status === "pending" 
+                  ? "Используется" 
+                  : chip.status === "used" 
+                    ? `${chip.usedInTour} тур` 
+                    : chip.sublabel}
               </span>
             </div>
           ))}
@@ -833,6 +860,8 @@ const Transfers = () => {
         isOpen={isBoostDrawerOpen}
         onClose={() => setIsBoostDrawerOpen(false)}
         onApply={applyBoost}
+        onCancel={cancelBoost}
+        currentTour={currentTour}
       />
 
       {/* Buy Player Drawer */}
