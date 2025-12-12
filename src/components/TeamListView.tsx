@@ -75,8 +75,6 @@ const TeamListView = ({
                   <span className="text-foreground font-medium truncate">{slot.player.name}</span>
                 </div>
                 
-                {/* Position - fixed width */}
-                <span className="w-8 text-center text-muted-foreground text-xs flex-shrink-0">{slot.position}</span>
                 
                 {/* Club icon - fixed width */}
                 <div className="w-6 flex-shrink-0 flex justify-center">
@@ -123,8 +121,6 @@ const TeamListView = ({
                   <span className="text-muted-foreground text-sm">{slot.label}</span>
                 </div>
                 
-                {/* Position - fixed width */}
-                <span className="w-8 text-center text-muted-foreground text-xs flex-shrink-0">{slot.position}</span>
                 
                 {/* Add button */}
                 <button
