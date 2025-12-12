@@ -35,8 +35,12 @@ const League = () => {
   const [showAllClubLeague, setShowAllClubLeague] = useState(false);
   const [clubLeaguePage, setClubLeaguePage] = useState(1);
 
+  // First tour deadline - before this, show "pre-tournament" UI with zeroed stats
+  const firstTourDeadline = new Date("2025-12-14T19:00:00");
+  const [isTournamentStarted, setIsTournamentStarted] = useState(() => new Date() >= firstTourDeadline);
+
   // Current tour for determining finished leagues (simulated as tour 6 for demo)
-  const currentTour = 6;
+  const currentTour = isTournamentStarted ? 6 : 1;
 
   // Club to league name mapping
   const clubToLeagueName: Record<string, string> = {
@@ -78,6 +82,9 @@ const League = () => {
       const difference = deadlineDate.getTime() - now.getTime();
       const totalDuration = deadlineDate.getTime() - tournamentStartDate.getTime();
       const elapsed = now.getTime() - tournamentStartDate.getTime();
+
+      // Check if tournament has started
+      setIsTournamentStarted(now >= firstTourDeadline);
 
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
@@ -219,10 +226,10 @@ const League = () => {
               />
             </div>
 
-            {/* Current Tour Stats */}
+            {/* Current/First Tour Stats */}
             <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
-              <span className="text-muted-foreground text-sm whitespace-nowrap">29 тур</span>
+              <span className="text-muted-foreground text-sm whitespace-nowrap">{isTournamentStarted ? "29 тур" : "1 тур"}</span>
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
             </div>
 
@@ -231,7 +238,7 @@ const League = () => {
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-colors"
                 onClick={() => navigate("/tournament-table")}
               >
-                <span className="text-2xl font-bold text-foreground">40</span>
+                <span className="text-2xl font-bold text-foreground">{isTournamentStarted ? "40" : "0"}</span>
                 <span className="text-[10px] text-muted-foreground whitespace-nowrap">Средний результат</span>
                 <span className="text-muted-foreground text-sm">→</span>
               </div>
@@ -239,7 +246,7 @@ const League = () => {
                 className="bg-primary rounded-2xl px-3 py-2 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-colors"
                 onClick={() => navigate("/your-team")}
               >
-                <span className="text-2xl font-bold text-primary-foreground">55</span>
+                <span className="text-2xl font-bold text-primary-foreground">{isTournamentStarted ? "55" : "0"}</span>
                 <span className="text-[10px] text-primary-foreground/80 whitespace-nowrap">Твои очки</span>
                 <span className="text-primary-foreground text-sm">→</span>
               </div>
@@ -247,18 +254,20 @@ const League = () => {
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-colors"
                 onClick={() => navigate("/dream-team")}
               >
-                <span className="text-2xl font-bold text-foreground">129</span>
+                <span className="text-2xl font-bold text-foreground">{isTournamentStarted ? "129" : "0"}</span>
                 <span className="text-[10px] text-muted-foreground whitespace-nowrap">Лучший результат</span>
                 <span className="text-muted-foreground text-sm">→</span>
               </div>
             </div>
 
-            {/* Next Tour */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
-              <span className="text-muted-foreground text-sm whitespace-nowrap">30 тур</span>
-              <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
-            </div>
+            {/* Next Tour (only shown after tournament starts) */}
+            {isTournamentStarted && (
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
+                <span className="text-muted-foreground text-sm whitespace-nowrap">30 тур</span>
+                <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
+              </div>
+            )}
 
             {/* Deadline */}
             <div className="flex justify-between items-center mb-2">
@@ -305,7 +314,7 @@ const League = () => {
               <span className="col-span-3 text-center">
                 Очки / тур
                 <br />
-                29
+                {isTournamentStarted ? "29" : "1"}
               </span>
               <span className="col-span-3 text-center">Всего очков</span>
             </div>
