@@ -7,7 +7,7 @@ import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers } from "@/lib/teamData";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
-import SwapPlayerDrawer, { getFormationCounts, getFormationLabel, VALID_FORMATIONS } from "@/components/SwapPlayerDrawer";
+import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import BuyPlayerDrawer from "@/components/BuyPlayerDrawer";
 import ConfirmTransfersDrawer from "@/components/ConfirmTransfersDrawer";
@@ -409,77 +409,46 @@ const Transfers = () => {
     const fromIsOnBench = fromPlayer.isOnBench;
     const toIsOnBench = toPlayer.isOnBench;
 
-    let newMainSquadPlayers: PlayerDataExt[];
-    let newBenchPlayers: PlayerDataExt[];
-
     if (fromIsOnBench && !toIsOnBench) {
       const toSlotIndex = toPlayer.slotIndex;
       
-      newMainSquadPlayers = mainSquadPlayers.map(p => p.id === toPlayerId 
-        ? { ...fromPlayer, slotIndex: toSlotIndex, isOnBench: false } 
-        : p
+      setMainSquadPlayers(prev => 
+        prev.map(p => p.id === toPlayerId 
+          ? { ...fromPlayer, slotIndex: toSlotIndex, isOnBench: false } 
+          : p
+        )
       );
-      newBenchPlayers = benchPlayers.map(p => p.id === fromPlayerId 
-        ? { ...toPlayer, slotIndex: undefined, isOnBench: true } 
-        : p
+      setBenchPlayers(prev => 
+        prev.map(p => p.id === fromPlayerId 
+          ? { ...toPlayer, slotIndex: undefined, isOnBench: true } 
+          : p
+        )
       );
     } else if (!fromIsOnBench && toIsOnBench) {
       const fromSlotIndex = fromPlayer.slotIndex;
       
-      newMainSquadPlayers = mainSquadPlayers.map(p => p.id === fromPlayerId 
-        ? { ...toPlayer, slotIndex: fromSlotIndex, isOnBench: false } 
-        : p
+      setMainSquadPlayers(prev => 
+        prev.map(p => p.id === fromPlayerId 
+          ? { ...toPlayer, slotIndex: fromSlotIndex, isOnBench: false } 
+          : p
+        )
       );
-      newBenchPlayers = benchPlayers.map(p => p.id === toPlayerId 
-        ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } 
-        : p
+      setBenchPlayers(prev => 
+        prev.map(p => p.id === toPlayerId 
+          ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } 
+          : p
+        )
       );
-    } else {
-      return;
     }
-
-    // Get new formation counts and label
-    const newCounts = getFormationCounts(newMainSquadPlayers);
-    const formationLabel = getFormationLabel(newCounts);
-    
-    setMainSquadPlayers(newMainSquadPlayers);
-    setBenchPlayers(newBenchPlayers);
-    
-    // Show success toast with player names and new formation
-    toast.success(
-      <div className="space-y-1">
-        <div className="font-medium">Игрок {toPlayer.name} ({toPlayer.position}) заменен на {fromPlayer.name} ({fromPlayer.position})</div>
-        <div className="text-sm text-muted-foreground">Схема изменена на ({formationLabel})</div>
-      </div>
-    );
-  };
-
-  const handleSwapError = (errorMessage: string, validFormations: string[]) => {
-    toast.error(
-      <div className="space-y-2">
-        <div className="font-medium">{errorMessage}</div>
-        <div className="text-sm">Допустимые схемы:</div>
-        <ul className="text-xs space-y-1">
-          {validFormations.map((f, i) => (
-            <li key={i}>• {f}</li>
-          ))}
-        </ul>
-      </div>,
-      { duration: 6000 }
-    );
-    setSwapDrawerOpen(false);
-    setPlayerToSwap(null);
   };
 
   const getAvailableSwapPlayers = () => {
     if (!playerToSwap) return [];
     
     if (playerToSwap.isOnBench) {
-      // Bench player - can swap with any field player
-      return mainSquadPlayers;
+      return mainSquadPlayers.filter(p => p.position === playerToSwap.position);
     } else {
-      // Field player - can swap with any bench player
-      return benchPlayers;
+      return benchPlayers.filter(p => p.position === playerToSwap.position);
     }
   };
 
@@ -890,8 +859,6 @@ const Transfers = () => {
         selectedPlayer={playerToSwap}
         availablePlayers={getAvailableSwapPlayers()}
         onSwap={handleSwapConfirm}
-        onSwapError={handleSwapError}
-        mainSquadPlayers={mainSquadPlayers}
       />
 
       {/* Boost Drawer */}

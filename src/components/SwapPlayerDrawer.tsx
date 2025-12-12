@@ -13,53 +13,12 @@ interface PlayerData {
   isOnBench?: boolean;
 }
 
-// Valid formations: [GK, DEF, MID, FWD]
-export const VALID_FORMATIONS = [
-  { formation: [1, 4, 4, 2], label: "1 ВР - 4 ЗЩ - 4 ПЗ - 2 НП" },
-  { formation: [1, 3, 4, 3], label: "1 ВР - 3 ЗЩ - 4 ПЗ - 3 НП" },
-  { formation: [1, 3, 5, 2], label: "1 ВР - 3 ЗЩ - 5 ПЗ - 2 НП" },
-  { formation: [1, 4, 3, 3], label: "1 ВР - 4 ЗЩ - 3 ПЗ - 3 НП" },
-  { formation: [1, 4, 5, 1], label: "1 ВР - 4 ЗЩ - 5 ПЗ - 1 НП" },
-  { formation: [1, 5, 4, 1], label: "1 ВР - 5 ЗЩ - 4 ПЗ - 1 НП" },
-  { formation: [1, 5, 3, 2], label: "1 ВР - 5 ЗЩ - 3 ПЗ - 2 НП" },
-  { formation: [1, 5, 2, 3], label: "1 ВР - 5 ЗЩ - 2 ПЗ - 3 НП" },
-];
-
-export const getFormationCounts = (players: PlayerData[]): [number, number, number, number] => {
-  const gk = players.filter(p => p.position === "ВР").length;
-  const def = players.filter(p => p.position === "ЗЩ").length;
-  const mid = players.filter(p => p.position === "ПЗ").length;
-  const fwd = players.filter(p => p.position === "НП").length;
-  return [gk, def, mid, fwd];
-};
-
-export const isValidFormation = (counts: [number, number, number, number]): boolean => {
-  return VALID_FORMATIONS.some(f => 
-    f.formation[0] === counts[0] && 
-    f.formation[1] === counts[1] && 
-    f.formation[2] === counts[2] && 
-    f.formation[3] === counts[3]
-  );
-};
-
-export const getFormationLabel = (counts: [number, number, number, number]): string => {
-  const found = VALID_FORMATIONS.find(f => 
-    f.formation[0] === counts[0] && 
-    f.formation[1] === counts[1] && 
-    f.formation[2] === counts[2] && 
-    f.formation[3] === counts[3]
-  );
-  return found ? found.label : "";
-};
-
 interface SwapPlayerDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   selectedPlayer: PlayerData | null;
   availablePlayers: PlayerData[];
   onSwap: (fromPlayerId: number, toPlayerId: number) => void;
-  onSwapError?: (errorMessage: string, validFormations: string[]) => void;
-  mainSquadPlayers: PlayerData[];
 }
 
 const SwapPlayerDrawer = ({ 
@@ -67,46 +26,11 @@ const SwapPlayerDrawer = ({
   onClose, 
   selectedPlayer, 
   availablePlayers,
-  onSwap,
-  onSwapError,
-  mainSquadPlayers
+  onSwap 
 }: SwapPlayerDrawerProps) => {
   if (!selectedPlayer) return null;
 
   const handleSwap = (targetPlayer: PlayerData) => {
-    // Simulate the swap and check if the resulting formation is valid
-    let newMainSquad: PlayerData[];
-    
-    if (selectedPlayer.isOnBench && !targetPlayer.isOnBench) {
-      // Bench player replacing field player
-      newMainSquad = mainSquadPlayers.map(p => 
-        p.id === targetPlayer.id ? { ...selectedPlayer, isOnBench: false } : p
-      );
-    } else if (!selectedPlayer.isOnBench && targetPlayer.isOnBench) {
-      // Field player replacing bench player
-      newMainSquad = mainSquadPlayers.map(p => 
-        p.id === selectedPlayer.id ? { ...targetPlayer, isOnBench: false } : p
-      );
-    } else {
-      // Same location swap (shouldn't happen, but handle it)
-      newMainSquad = mainSquadPlayers;
-    }
-    
-    const newCounts = getFormationCounts(newMainSquad);
-    
-    if (!isValidFormation(newCounts)) {
-      // Invalid formation - show error
-      const validLabels = VALID_FORMATIONS.map(f => f.label);
-      if (onSwapError) {
-        onSwapError(
-          `Замена ${selectedPlayer.name} (${selectedPlayer.position}) на ${targetPlayer.name} (${targetPlayer.position}) невозможна`,
-          validLabels
-        );
-      }
-      return;
-    }
-    
-    // Valid swap
     onSwap(selectedPlayer.id, targetPlayer.id);
     onClose();
   };
