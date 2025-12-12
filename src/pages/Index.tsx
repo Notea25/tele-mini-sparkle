@@ -16,7 +16,7 @@ import iconHockey from "@/assets/icon-hockey.png";
 import iconCs2 from "@/assets/icon-cs2.png";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
-const TEAM_DATA_KEY = "fantasyTeamData";
+const TEAM_PLAYERS_KEY = "fantasyTeamPlayers";
 const FAVORITES_STORAGE_KEY = "fantasyFavoriteLeagues";
 
 const Index = () => {
@@ -90,11 +90,11 @@ const Index = () => {
 
   // Check if user has a team
   useEffect(() => {
-    const teamData = localStorage.getItem(TEAM_DATA_KEY);
-    if (teamData) {
+    const teamPlayers = localStorage.getItem(TEAM_PLAYERS_KEY);
+    if (teamPlayers) {
       try {
-        const parsed = JSON.parse(teamData);
-        setHasTeam(parsed.selectedPlayers && parsed.selectedPlayers.length > 0);
+        const parsed = JSON.parse(teamPlayers);
+        setHasTeam(Array.isArray(parsed) && parsed.length > 0);
       } catch {
         setHasTeam(false);
       }
