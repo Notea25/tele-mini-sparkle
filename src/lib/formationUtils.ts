@@ -49,16 +49,22 @@ export const getFormationSlots = (formation: FormationKey) => {
   return slots;
 };
 
-// Get column positions based on number of players in a row
+// Get column positions based on number of players in a row - equal spacing from center
 function getColumnPositions(count: number): number[] {
-  switch (count) {
-    case 1: return [3]; // Center
-    case 2: return [2, 4]; // 2 sides
-    case 3: return [1.5, 3, 4.5]; // 3 spread
-    case 4: return [1, 2.2, 3.8, 5]; // 4 spread
-    case 5: return [0.8, 1.9, 3, 4.1, 5.2]; // 5 spread
-    default: return [3];
+  // All positions centered around 3 (range 1-5)
+  // Equal spacing: each player gets equal distance from neighbors
+  if (count === 1) return [3];
+  
+  const minCol = 1;
+  const maxCol = 5;
+  const range = maxCol - minCol;
+  const gap = range / (count - 1);
+  
+  const positions: number[] = [];
+  for (let i = 0; i < count; i++) {
+    positions.push(minCol + i * gap);
   }
+  return positions;
 }
 
 // Get CSS positioning for a player on the field
@@ -70,9 +76,9 @@ export const getPlayerPosition = (row: number, col: number) => {
     4: "66%",
   };
 
-  // Calculate left position based on column (1-5 range, centered at 3)
-  // Full range is 10% to 90% for columns 0.8 to 5.2
-  const leftPercent = 10 + ((col - 0.8) / (5.2 - 0.8)) * 80;
+  // Calculate left position based on column (1-5 range)
+  // 10% margin on each side, so range is 10% to 90%
+  const leftPercent = 10 + ((col - 1) / 4) * 80;
 
   return {
     top: topPositions[row],
