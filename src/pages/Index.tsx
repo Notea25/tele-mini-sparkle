@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SportHeader from "@/components/SportHeader";
 import PromoBanner from "@/components/PromoBanner";
 import SearchBar from "@/components/SearchBar";
-import CategoryFilter from "@/components/CategoryFilter";
+import CategoryFilter, { categories } from "@/components/CategoryFilter";
 import SportCard from "@/components/SportCard";
 import FooterNav from "@/components/FooterNav";
 import LeagueInviteModal from "@/components/LeagueInviteModal";
@@ -30,8 +30,41 @@ const Index = () => {
     inviter: string;
   } | null>(null);
   const [hasTeam, setHasTeam] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("all");
 
   const sortOptions = ["Избранные", "Сначала ТОП-лиги", "От А до Я", "От Я до А"];
+
+  // Scroll detection for active category
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const headerOffset = 200; // Account for header height
+      
+      // Check sections from bottom to top to find the first visible one
+      const sectionsToCheck = categories.filter(c => c.scrollTo).reverse();
+      
+      for (const category of sectionsToCheck) {
+        if (category.scrollTo) {
+          const element = document.getElementById(category.scrollTo);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            const elementTop = rect.top + scrollY - headerOffset;
+            
+            if (scrollY >= elementTop) {
+              setActiveCategory(category.id);
+              return;
+            }
+          }
+        }
+      }
+      
+      // If we're at the top, set to "all"
+      setActiveCategory("all");
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Check if user has a team
   useEffect(() => {
@@ -103,6 +136,10 @@ const Index = () => {
       navigate('/league');
     }
   };
+
+  const handleCategoryClick = useCallback((categoryId: string) => {
+    setActiveCategory(categoryId);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -181,7 +218,7 @@ const Index = () => {
         </div>
       </div>
 
-      <CategoryFilter />
+      <CategoryFilter activeCategory={activeCategory} onCategoryClick={handleCategoryClick} />
 
       <div className="mt-6">
         <div id="section-football">
