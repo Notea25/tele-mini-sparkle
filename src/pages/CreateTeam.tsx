@@ -142,7 +142,7 @@ const CreateTeam = () => {
         {/* Favorite Team Select */}
         <Select value={favoriteTeam} onValueChange={setFavoriteTeam}>
           <SelectTrigger className="w-full h-14 bg-card/80 border-border text-foreground rounded-xl">
-            <SelectValue placeholder="За какую команду болеешь" />
+            <SelectValue placeholder="За какую команду болеешь?" />
           </SelectTrigger>
           <SelectContent className="bg-card border-border">
             <SelectItem value="arsenal">Арсенал</SelectItem>
@@ -232,7 +232,10 @@ const CreateTeam = () => {
         {/* Transfers Player Cards */}
         <div className="mt-6 flex justify-center items-center gap-2">
           {/* Bykov Card */}
-          <div className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col" style={{ width: "140px", height: "180px" }}>
+          <div
+            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
+            style={{ width: "140px", height: "180px" }}
+          >
             <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
               <img src={clubDinamoBrest} alt="Club" className="max-w-full max-h-full object-contain" />
             </div>
@@ -254,7 +257,10 @@ const CreateTeam = () => {
           </div>
 
           {/* Kozlov Card */}
-          <div className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col" style={{ width: "140px", height: "180px" }}>
+          <div
+            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
+            style={{ width: "140px", height: "180px" }}
+          >
             <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
               <img src={clubNeman} alt="Club" className="max-w-full max-h-full object-contain" />
             </div>
