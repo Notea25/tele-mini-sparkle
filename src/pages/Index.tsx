@@ -6,7 +6,9 @@ import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import SportCard from "@/components/SportCard";
 import FooterNav from "@/components/FooterNav";
+import LeagueInviteModal from "@/components/LeagueInviteModal";
 import { ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 import leagueLogo from "@/assets/league-logo.png";
 import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
@@ -14,14 +16,51 @@ import iconHockey from "@/assets/icon-hockey.png";
 import iconCs2 from "@/assets/icon-cs2.png";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
+const TEAM_DATA_KEY = "fantasyTeamData";
 
 const Index = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState("Сначала ТОП-лиги");
+  const [showLeagueInvite, setShowLeagueInvite] = useState(false);
+  const [leagueInviteData, setLeagueInviteData] = useState<{
+    leagueId: string;
+    leagueName: string;
+    inviter: string;
+  } | null>(null);
+  const [hasTeam, setHasTeam] = useState(false);
 
   const sortOptions = ["Избранные", "Сначала ТОП-лиги", "От А до Я", "От Я до А"];
+
+  // Check if user has a team
+  useEffect(() => {
+    const teamData = localStorage.getItem(TEAM_DATA_KEY);
+    if (teamData) {
+      try {
+        const parsed = JSON.parse(teamData);
+        setHasTeam(parsed.selectedPlayers && parsed.selectedPlayers.length > 0);
+      } catch {
+        setHasTeam(false);
+      }
+    }
+  }, []);
+
+  // Check for league invite
+  useEffect(() => {
+    const storedInvite = localStorage.getItem('fantasyLeagueInvite');
+    if (storedInvite) {
+      try {
+        const invite = JSON.parse(storedInvite);
+        setLeagueInviteData(invite);
+        setShowLeagueInvite(true);
+        // Clear the stored invite
+        localStorage.removeItem('fantasyLeagueInvite');
+      } catch {
+        // Invalid data
+      }
+    }
+  }, []);
 
   // Check if this is a referral link and user is already registered
   useEffect(() => {
@@ -46,6 +85,23 @@ const Index = () => {
   const handleSelect = (option: string) => {
     setSelectedSort(option);
     setIsDropdownOpen(false);
+  };
+
+  const handleJoinLeague = () => {
+    if (leagueInviteData) {
+      // Add user to league
+      const userLeagues = JSON.parse(localStorage.getItem('userJoinedLeagues') || '[]');
+      if (!userLeagues.find((l: { id: string }) => l.id === leagueInviteData.leagueId)) {
+        userLeagues.push({
+          id: leagueInviteData.leagueId,
+          name: leagueInviteData.leagueName,
+          joinedAt: new Date().toISOString()
+        });
+        localStorage.setItem('userJoinedLeagues', JSON.stringify(userLeagues));
+      }
+      toast.success(`Вы вступили в лигу "${leagueInviteData.leagueName}"`);
+      navigate('/league');
+    }
   };
 
   return (
@@ -174,6 +230,18 @@ const Index = () => {
       </div>
 
       <FooterNav />
+
+      {/* League Invite Modal */}
+      {leagueInviteData && (
+        <LeagueInviteModal
+          open={showLeagueInvite}
+          onOpenChange={setShowLeagueInvite}
+          leagueName={leagueInviteData.leagueName}
+          inviterName={leagueInviteData.inviter}
+          hasTeam={hasTeam}
+          onJoin={handleJoinLeague}
+        />
+      )}
     </div>
   );
 };

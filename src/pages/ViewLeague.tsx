@@ -25,8 +25,13 @@ const ViewLeague = () => {
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
 
+  // Get user ID for invite link
+  const profileData = localStorage.getItem("fantasyUserProfile");
+  const userName = profileData ? JSON.parse(profileData).userName || "user" : "user";
+
   const getInviteLink = () => {
-    return `https://fantasy-sports/liga-rb/${leagueId}/invite`;
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/?leagueInvite=${leagueId}&leagueName=${encodeURIComponent(leagueName)}&inviter=${encodeURIComponent(userName)}`;
   };
 
   const handleCopyLink = () => {
