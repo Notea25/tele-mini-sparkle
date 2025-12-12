@@ -15,6 +15,9 @@ interface SportCardProps {
   comingSoonYear?: string;
   glowColor?: string;
   href?: string;
+  leagueId?: string;
+  isFavorite?: boolean;
+  onToggleFavorite?: (leagueId: string) => void;
 }
 
 const SportCard = ({
@@ -30,12 +33,22 @@ const SportCard = ({
   comingSoonYear,
   glowColor = "88 85% 55%",
   href,
+  leagueId,
+  isFavorite = false,
+  onToggleFavorite,
 }: SportCardProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (href && !comingSoon) {
       navigate(href);
+    }
+  };
+
+  const handleStarClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (leagueId && onToggleFavorite) {
+      onToggleFavorite(leagueId);
     }
   };
 
@@ -110,7 +123,19 @@ const SportCard = ({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Star className="w-6 h-6 text-muted-foreground" />
+              <button
+                onClick={handleStarClick}
+                className="p-2 -m-2 touch-manipulation"
+                aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
+              >
+                <Star 
+                  className={`w-6 h-6 transition-colors ${
+                    isFavorite 
+                      ? "text-primary fill-primary" 
+                      : "text-muted-foreground hover:text-primary/70"
+                  }`} 
+                />
+              </button>
               <ChevronRight className="w-6 h-6 text-muted-foreground" />
             </div>
           </div>
