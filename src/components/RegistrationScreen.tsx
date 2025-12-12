@@ -183,7 +183,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
         {/* Subtitle */}
         <p className="text-muted-foreground text-center text-base mb-8 px-4">
-          До старта твоих побед осталось пару шагов
+          До старта твоих побед остался всего один шаг
         </p>
 
         {/* Form fields */}
@@ -192,7 +192,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
             <Input
               value={nickname}
               onChange={handleNicknameChange}
-              placeholder="Никнейм"
+              placeholder="Придумай имя пользователя"
               className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${nicknameError ? "ring-2 ring-destructive" : ""}`}
             />
             {nicknameError && <p className="text-destructive text-sm mt-1 px-1">{nicknameError}</p>}
@@ -201,7 +201,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
             <Input
               value={birthDate}
               onChange={handleBirthDateChange}
-              placeholder="Дата рождения (ДД.ММ.ГГГГ)"
+              placeholder="Укажи дату рождения (ДД.ММ.ГГГГ)"
               className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${birthDateError ? "ring-2 ring-destructive" : ""}`}
               maxLength={10}
               inputMode="numeric"
