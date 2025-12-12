@@ -77,7 +77,8 @@ const Transfers = () => {
     // Check if another boost is already pending
     const hasPendingBoost = specialChips.some(chip => chip.status === "pending");
     if (hasPendingBoost) {
-      return; // Can only use one boost per tour
+      toast.error("В одном туре можно использовать только 1 буст");
+      return;
     }
     
     setSpecialChips(prev => 
