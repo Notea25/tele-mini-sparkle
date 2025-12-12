@@ -22,12 +22,19 @@ const ViewLeague = () => {
   const leagueId = searchParams.get("id") || "";
   const leagueName = searchParams.get("name") || "Лига";
   const isOwner = searchParams.get("owner") === "true";
+  const isCommercial = searchParams.get("commercial") === "true";
+  const deadline = searchParams.get("deadline") || "";
+  const startTour = parseInt(searchParams.get("startTour") || "1");
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
 
   // Get user ID for invite link
   const profileData = localStorage.getItem("fantasyUserProfile");
   const userName = profileData ? JSON.parse(profileData).userName || "user" : "user";
+
+  // Check if user participates in this commercial league
+  const userCommercialLeagues = JSON.parse(localStorage.getItem("userCommercialLeagues") || "[]");
+  const isParticipating = userCommercialLeagues.includes(leagueId);
 
   const getInviteLink = () => {
     const baseUrl = window.location.origin;
@@ -55,6 +62,17 @@ const ViewLeague = () => {
 
   const handleInviteFriend = () => {
     setShowInviteDrawer(true);
+  };
+
+  const handleParticipate = () => {
+    const updatedLeagues = [...userCommercialLeagues, leagueId];
+    localStorage.setItem("userCommercialLeagues", JSON.stringify(updatedLeagues));
+    toast.success("Вы присоединились к лиге");
+    navigate("/league");
+  };
+
+  const handleClose = () => {
+    navigate("/league");
   };
 
   // Mock standings data
@@ -136,28 +154,60 @@ const ViewLeague = () => {
 
       {/* Fixed Bottom Buttons */}
       <div className="sticky bottom-0 left-0 right-0 bg-background px-4 pb-6 pt-2 space-y-3">
-        <Button
-          onClick={handleInviteFriend}
-          className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
-        >
-          Пригласить друга
-        </Button>
-        {isOwner ? (
-          <Button
-            onClick={handleDeleteLeague}
-            variant="outline"
-            className="w-full rounded-full py-6 font-semibold border-border text-foreground"
-          >
-            ✕ Удалить лигу
-          </Button>
+        {isCommercial ? (
+          // Commercial league buttons
+          isParticipating ? (
+            <Button
+              onClick={handleClose}
+              variant="outline"
+              className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+            >
+              Закрыть
+            </Button>
+          ) : (
+            <>
+              <Button
+                onClick={handleParticipate}
+                className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
+              >
+                Участвовать
+              </Button>
+              <Button
+                onClick={handleClose}
+                variant="outline"
+                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+              >
+                Закрыть
+              </Button>
+            </>
+          )
         ) : (
-          <Button
-            onClick={handleLeaveLeague}
-            variant="outline"
-            className="w-full rounded-full py-6 font-semibold border-border text-foreground"
-          >
-            Покинуть лигу
-          </Button>
+          // Personal league buttons
+          <>
+            <Button
+              onClick={handleInviteFriend}
+              className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
+            >
+              Пригласить друга
+            </Button>
+            {isOwner ? (
+              <Button
+                onClick={handleDeleteLeague}
+                variant="outline"
+                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+              >
+                ✕ Удалить лигу
+              </Button>
+            ) : (
+              <Button
+                onClick={handleLeaveLeague}
+                variant="outline"
+                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+              >
+                Покинуть лигу
+              </Button>
+            )}
+          </>
         )}
       </div>
 

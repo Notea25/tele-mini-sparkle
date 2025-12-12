@@ -110,18 +110,18 @@ const League = () => {
     { position: 9, change: "down", name: "Моя команда", tourPoints: 32, totalPoints: 3123, isUser: true },
   ];
 
-  // Commercial leagues data with end tour for blur logic
+  // Commercial leagues data with end tour for blur logic and deadlines
   const commercialLeagues = [
-    { id: "betera", name: "Betera", prize: "100 Freebet", period: "1-3 тур", endTour: 3 },
-    { id: "bnb", name: "BNB", prize: "1000 BYN", period: "4-6 тур", endTour: 6 },
-    { id: "atlant-m", name: "Atlant-M", prize: "iPhone 17", period: "7-9 тур", endTour: 9 },
-    { id: "abff", name: "ABFF", prize: "VIP-ложа", period: "10-12 тур", endTour: 12 },
-    { id: "bcs", name: "BCS", prize: "MacBook", period: "13-15 тур", endTour: 15 },
-    { id: "hc-dinamo", name: "HC Dinamo", prize: "Абонемент", period: "16-18 тур", endTour: 18 },
-    { id: "maxline", name: "Maxline", prize: "250 Free Spin", period: "19-21 тур", endTour: 21 },
-    { id: "papa-doner", name: "Papa Doner", prize: "100 BYN", period: "22-24 тур", endTour: 24 },
-    { id: "zubr", name: "Zubr", prize: "AirPods", period: "25-27 тур", endTour: 27 },
-    { id: "hello", name: "Hello", prize: "1000 минут", period: "28-30 тур", endTour: 30 },
+    { id: "betera", name: "Betera", prize: "100 Freebet", period: "1-3 тур", endTour: 3, startTour: 1, deadline: "01.03.2026" },
+    { id: "bnb", name: "BNB", prize: "1000 BYN", period: "4-6 тур", endTour: 6, startTour: 4, deadline: "15.04.2026" },
+    { id: "atlant-m", name: "Atlant-M", prize: "iPhone 17", period: "7-9 тур", endTour: 9, startTour: 7, deadline: "01.05.2026" },
+    { id: "abff", name: "ABFF", prize: "VIP-ложа", period: "10-12 тур", endTour: 12, startTour: 10, deadline: "20.05.2026" },
+    { id: "bcs", name: "BCS", prize: "MacBook", period: "13-15 тур", endTour: 15, startTour: 13, deadline: "10.06.2026" },
+    { id: "hc-dinamo", name: "HC Dinamo", prize: "Абонемент", period: "16-18 тур", endTour: 18, startTour: 16, deadline: "01.07.2026" },
+    { id: "maxline", name: "Maxline", prize: "250 Free Spin", period: "19-21 тур", endTour: 21, startTour: 19, deadline: "25.07.2026" },
+    { id: "papa-doner", name: "Papa Doner", prize: "100 BYN", period: "22-24 тур", endTour: 24, startTour: 22, deadline: "15.08.2026" },
+    { id: "zubr", name: "Zubr", prize: "AirPods", period: "25-27 тур", endTour: 27, startTour: 25, deadline: "10.09.2026" },
+    { id: "hello", name: "Hello", prize: "1000 минут", period: "28-30 тур", endTour: 30, startTour: 28, deadline: "01.11.2026" },
   ];
 
   // Determine which leagues to display based on showAll state
@@ -403,21 +403,25 @@ const League = () => {
               {displayedCommercialLeagues.map((league, idx) => {
                 const isFinished = currentTour > league.endTour;
                 return (
-                  <div
-                    key={idx}
-                    className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
-                      isFinished ? "opacity-40" : ""
-                    }`}
-                    onClick={() =>
-                      navigate(
-                        `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}`,
-                      )
-                    }
-                  >
-                    <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
-                    <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
-                    <span className="col-span-3 text-foreground text-sm">{league.period}</span>
-                    <span className="col-span-1 text-muted-foreground text-right">→</span>
+                  <div key={idx} className="space-y-1">
+                    <span className="text-xs text-muted-foreground ml-4">
+                      Дедлайн вступления: {league.deadline}
+                    </span>
+                    <div
+                      className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
+                        isFinished ? "opacity-40" : ""
+                      }`}
+                      onClick={() =>
+                        navigate(
+                          `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}`,
+                        )
+                      }
+                    >
+                      <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
+                      <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
+                      <span className="col-span-3 text-foreground text-sm">{league.period}</span>
+                      <span className="col-span-1 text-muted-foreground text-right">→</span>
+                    </div>
                   </div>
                 );
               })}
