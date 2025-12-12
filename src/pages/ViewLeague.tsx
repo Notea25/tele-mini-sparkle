@@ -15,6 +15,9 @@ import homeIcon from "@/assets/home-icon.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
+import prize3rdPlace from "@/assets/prize-3rd-place.png";
+import prize2ndPlace from "@/assets/prize-2nd-place.png";
+import prize1stPlace from "@/assets/prize-1st-place.png";
 
 const ViewLeague = () => {
   const navigate = useNavigate();
@@ -22,6 +25,8 @@ const ViewLeague = () => {
   const leagueId = searchParams.get("id") || "";
   const leagueName = searchParams.get("name") || "Лига";
   const isOwner = searchParams.get("owner") === "true";
+  const isCommercial = searchParams.get("commercial") === "true";
+  const prizeDescription = searchParams.get("prize") || "Спорт инвентарь";
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
 
@@ -132,6 +137,70 @@ const ViewLeague = () => {
             </div>
           ))}
         </div>
+
+        {/* Prizes Section - Only for commercial leagues */}
+        {isCommercial && (
+          <div className="mb-6">
+            <h2 
+              className="text-2xl font-bold text-foreground mb-3"
+              style={{ fontFamily: "Unbounded, sans-serif" }}
+            >
+              Получай призы
+            </h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              Пользователи, набравшие наибольшее количество очков, получат призы от{" "}
+              <span className="text-primary">Fantasy.sports.by</span>
+            </p>
+
+            {/* Prize Cards */}
+            <div className="space-y-4">
+              {/* 3rd Place */}
+              <div className="relative bg-secondary/30 rounded-2xl overflow-hidden">
+                <img 
+                  src={prize3rdPlace} 
+                  alt="3 место" 
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background/90 to-transparent">
+                  <div className="flex items-end justify-between">
+                    <span className="text-foreground font-semibold text-lg">{prizeDescription}</span>
+                    <span className="text-primary font-bold text-xl">3 место</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2nd Place */}
+              <div className="relative bg-secondary/30 rounded-2xl overflow-hidden">
+                <img 
+                  src={prize2ndPlace} 
+                  alt="2 место" 
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background/90 to-transparent">
+                  <div className="flex items-end justify-between">
+                    <span className="text-foreground font-semibold text-lg">{prizeDescription}</span>
+                    <span className="text-primary font-bold text-xl">2 место</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 1st Place */}
+              <div className="relative bg-secondary/30 rounded-2xl overflow-hidden">
+                <img 
+                  src={prize1stPlace} 
+                  alt="1 место" 
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background/90 to-transparent">
+                  <div className="flex items-end justify-between">
+                    <span className="text-foreground font-semibold text-lg">{prizeDescription}</span>
+                    <span className="text-primary font-bold text-xl">1 место</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Fixed Bottom Buttons */}

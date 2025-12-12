@@ -410,7 +410,7 @@ const League = () => {
                     }`}
                     onClick={() =>
                       navigate(
-                        `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}`,
+                        `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&prize=${encodeURIComponent(league.prize)}&finished=${isFinished}`,
                       )
                     }
                   >
