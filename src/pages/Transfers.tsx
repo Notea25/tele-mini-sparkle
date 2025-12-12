@@ -74,6 +74,12 @@ const Transfers = () => {
   };
 
   const applyBoost = (chipId: string) => {
+    // Check if another boost is already pending
+    const hasPendingBoost = specialChips.some(chip => chip.status === "pending");
+    if (hasPendingBoost) {
+      return; // Can only use one boost per tour
+    }
+    
     setSpecialChips(prev => 
       prev.map(chip => 
         chip.id === chipId ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" } : chip
@@ -611,12 +617,12 @@ const Transfers = () => {
             <div
               key={chip.id}
               onClick={() => openBoostDrawer(chip)}
-              className={`flex-1 flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all hover:bg-card/80 border ${
+              className={`flex-1 flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all hover:bg-card/80 ${
                 chip.status === "pending" 
-                  ? "bg-card ring-2 ring-primary border-primary" 
+                  ? "bg-card border-2 border-primary" 
                   : chip.status === "used" 
-                    ? "bg-card/50 border-border" 
-                    : "bg-card border-border"
+                    ? "bg-card/50 border border-border" 
+                    : "bg-card border border-border"
               }`}
             >
               <img 

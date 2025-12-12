@@ -76,6 +76,12 @@ const TeamManagement = () => {
   };
 
   const applyBoost = (chipId: string) => {
+    // Check if another boost is already pending
+    const hasPendingBoost = specialChips.some(chip => chip.status === "pending");
+    if (hasPendingBoost) {
+      return; // Can only use one boost per tour
+    }
+    
     setSpecialChips(prev => 
       prev.map(chip => 
         chip.id === chipId ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" } : chip
@@ -376,14 +382,14 @@ const TeamManagement = () => {
 
       {/* Special Chips */}
       <div className="px-4 mt-4">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
           {specialChips.map((chip) => (
             <div
               key={chip.id}
               onClick={() => openBoostDrawer(chip)}
               className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-2xl cursor-pointer transition-all hover:bg-card/80 ${
                 chip.status === "pending" 
-                  ? "bg-card ring-2 ring-primary" 
+                  ? "bg-card border-2 border-primary" 
                   : chip.status === "used" 
                     ? "bg-card/50" 
                     : "bg-card"
