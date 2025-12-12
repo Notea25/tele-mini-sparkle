@@ -283,6 +283,7 @@ const Index = () => {
               leagueIcon={leagueData.leagueIcon}
               league={leagueData.league}
               participants={leagueData.participants}
+              userRank={leagueData.id === "football-belarus" && hasTeam ? 21953 : undefined}
               date={leagueData.date}
               time={leagueData.time}
               glowColor={leagueData.glowColor}
@@ -292,6 +293,7 @@ const Index = () => {
               leagueId={leagueData.id}
               isFavorite={favorites.includes(leagueData.id)}
               onToggleFavorite={toggleFavorite}
+              hasTeam={leagueData.id === "football-belarus" && hasTeam}
             />
           </div>
         ))}

@@ -11,6 +11,7 @@ interface SportCardProps {
   date?: string;
   time?: string;
   participants?: number;
+  userRank?: number;
   comingSoon?: boolean;
   comingSoonYear?: string;
   glowColor?: string;
@@ -18,6 +19,7 @@ interface SportCardProps {
   leagueId?: string;
   isFavorite?: boolean;
   onToggleFavorite?: (leagueId: string) => void;
+  hasTeam?: boolean;
 }
 
 const SportCard = ({
@@ -29,6 +31,7 @@ const SportCard = ({
   date,
   time,
   participants,
+  userRank,
   comingSoon,
   comingSoonYear,
   glowColor = "88 85% 55%",
@@ -36,6 +39,7 @@ const SportCard = ({
   leagueId,
   isFavorite = false,
   onToggleFavorite,
+  hasTeam = false,
 }: SportCardProps) => {
   const navigate = useNavigate();
 
@@ -96,9 +100,24 @@ const SportCard = ({
           </div>
         ) : (
           <div className="relative p-6 flex items-center justify-between min-h-[180px]">
+            {/* Star in top-right corner */}
+            <button
+              onClick={handleStarClick}
+              className="absolute top-3 right-3 p-2 -m-2 touch-manipulation z-10"
+              aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
+            >
+              <Star 
+                className={`w-5 h-5 transition-colors ${
+                  isFavorite 
+                    ? "text-primary fill-primary" 
+                    : "text-muted-foreground hover:text-primary/70"
+                }`} 
+              />
+            </button>
+
             <div className="flex items-center gap-4">
               <div
-                className="w-20 h-20 rounded-full flex items-center justify-center text-3xl"
+                className={`w-20 h-20 rounded-full flex items-center justify-center text-3xl ${hasTeam ? 'ring-2 ring-primary' : ''}`}
                 style={{
                   background: `radial-gradient(circle, hsl(${glowColor} / 0.3), hsl(${glowColor} / 0.1))`,
                   boxShadow: `0 0 20px hsl(${glowColor} / 0.4)`,
@@ -113,8 +132,15 @@ const SportCard = ({
               <div>
                 <h4 className="text-foreground font-bold text-xl">{league}</h4>
                 {participants !== undefined && (
-                  <p className="text-muted-foreground text-base">
-                    {formatParticipants(participants)} участников
+                  <p className="text-base">
+                    {hasTeam && userRank !== undefined ? (
+                      <>
+                        <span className="text-primary font-semibold">{formatParticipants(userRank)}</span>
+                        <span className="text-muted-foreground"> из {formatParticipants(participants)} участников</span>
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground">{formatParticipants(participants)} участников</span>
+                    )}
                   </p>
                 )}
                 <p className="text-muted-foreground text-base">
@@ -122,22 +148,14 @@ const SportCard = ({
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleStarClick}
-                className="p-2 -m-2 touch-manipulation"
-                aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
-              >
-                <Star 
-                  className={`w-6 h-6 transition-colors ${
-                    isFavorite 
-                      ? "text-primary fill-primary" 
-                      : "text-muted-foreground hover:text-primary/70"
-                  }`} 
-                />
-              </button>
+            <div className="flex items-center">
               <ChevronRight className="w-6 h-6 text-muted-foreground" />
             </div>
+
+            {/* Green bottom line when user has team */}
+            {hasTeam && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-b-lg" />
+            )}
           </div>
         )}
       </Card>
