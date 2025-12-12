@@ -5,10 +5,8 @@ import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers } from "@/lib/teamData";
-import { getValidSwapOptions } from "@/lib/formationUtils";
-import FormationFieldManagement from "@/components/FormationFieldManagement";
+import FormationFieldTransfers from "@/components/FormationFieldTransfers";
 import PlayerCard from "@/components/PlayerCard";
-import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import BuyPlayerDrawer from "@/components/BuyPlayerDrawer";
 import ConfirmTransfersDrawer from "@/components/ConfirmTransfersDrawer";
@@ -64,8 +62,15 @@ interface PlayerDataExt extends PlayerData {
   slotIndex?: number;
   isCaptain?: boolean;
   isViceCaptain?: boolean;
-  isOnBench?: boolean;
 }
+
+// Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
+const TRANSFERS_FORMATION_SLOTS: Record<string, number> = {
+  "ВР": 2,
+  "ЗЩ": 5,
+  "ПЗ": 5,
+  "НП": 3,
+};
 
 const Transfers = () => {
   const navigate = useNavigate();
@@ -77,7 +82,7 @@ const Transfers = () => {
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(initialChips);
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
-  const currentTour = 1; // Current tour number
+  const currentTour = 1;
 
   const openBoostDrawer = (chip: BoostChip) => {
     setSelectedBoostChip(chip);
@@ -85,7 +90,6 @@ const Transfers = () => {
   };
 
   const applyBoost = (chipId: string) => {
-    // Check if another boost is already pending
     const hasPendingBoost = specialChips.some(chip => chip.status === "pending");
     if (hasPendingBoost) {
       toast.error("В одном туре можно использовать только 1 буст");
@@ -138,9 +142,8 @@ const Transfers = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Load saved team from localStorage
-  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerDataExt[]>([]);
-  const [benchPlayers, setBenchPlayers] = useState<PlayerDataExt[]>([]);
+  // All 15 players in one array
+  const [players, setPlayers] = useState<PlayerDataExt[]>([]);
   
   // Track initial state to detect changes
   const initialStateRef = useRef<string>("");
@@ -154,24 +157,33 @@ const Transfers = () => {
 
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
-    if (mainSquad.length > 0) {
-      setMainSquadPlayers(mainSquad);
-      setBenchPlayers(bench);
-      // Store initial state
-      initialStateRef.current = JSON.stringify([...mainSquad, ...bench].map(p => p.id).sort());
-      initialPlayersRef.current = [...mainSquad, ...bench];
+    // Merge all players and reassign slot indices based on position
+    const allLoadedPlayers = [...mainSquad, ...bench];
+    
+    // Reassign slot indices for the new formation (2-5-5-3)
+    const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
+    const reassignedPlayers = allLoadedPlayers.map(p => {
+      const slotIndex = positionCounters[p.position] || 0;
+      positionCounters[p.position] = slotIndex + 1;
+      return { ...p, slotIndex };
+    });
+    
+    if (reassignedPlayers.length > 0) {
+      setPlayers(reassignedPlayers);
+      initialStateRef.current = JSON.stringify(reassignedPlayers.map(p => p.id).sort());
+      initialPlayersRef.current = reassignedPlayers;
     }
   }, []);
 
   // Check for changes whenever players change
   useEffect(() => {
-    const currentState = JSON.stringify([...mainSquadPlayers, ...benchPlayers].map(p => p.id).sort());
+    const currentState = JSON.stringify(players.map(p => p.id).sort());
     if (initialStateRef.current && currentState !== initialStateRef.current) {
       setHasChanges(true);
     } else {
       setHasChanges(false);
     }
-  }, [mainSquadPlayers, benchPlayers]);
+  }, [players]);
 
   // Handle browser beforeunload (tab close, refresh)
   useEffect(() => {
@@ -187,20 +199,17 @@ const Transfers = () => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasChanges]);
 
-  // Swap drawer state
-  const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
-  const [playerToSwap, setPlayerToSwap] = useState<PlayerData | null>(null);
-  
   // Buy player drawer state
   const [buyDrawerOpen, setBuyDrawerOpen] = useState(false);
+  const [buyPositionFilter, setBuyPositionFilter] = useState<string | null>(null);
 
   // Calculate transfer records for confirmation
   const getTransferRecords = () => {
-    const currentPlayerIds = new Set([...mainSquadPlayers, ...benchPlayers].map(p => p.id));
+    const currentPlayerIds = new Set(players.map(p => p.id));
     const initialPlayerIds = new Set(initialPlayersRef.current.map(p => p.id));
     
     const playersOut = initialPlayersRef.current.filter(p => !currentPlayerIds.has(p.id));
-    const playersIn = [...mainSquadPlayers, ...benchPlayers].filter(p => !initialPlayerIds.has(p.id));
+    const playersIn = players.filter(p => !initialPlayerIds.has(p.id));
     
     const transfers: Array<{
       type: "swap" | "buy" | "sell";
@@ -208,7 +217,6 @@ const Transfers = () => {
       playerIn?: { id: number; name: string; points: number };
     }> = [];
     
-    // Match players out with players in as swaps
     const maxPairs = Math.max(playersOut.length, playersIn.length);
     for (let i = 0; i < maxPairs; i++) {
       const pOut = playersOut[i];
@@ -228,7 +236,7 @@ const Transfers = () => {
     if (hasChanges) {
       setPendingNavigation(targetPath);
       setShowExitDialog(true);
-      return true; // Prevent default navigation
+      return true;
     }
     navigate(targetPath);
     return false;
@@ -243,16 +251,16 @@ const Transfers = () => {
   };
 
   const handleSaveAndExit = () => {
-    const allPlayersList = [...mainSquadPlayers, ...benchPlayers];
-    if (allPlayersList.length < 15) {
-      toast.error(`Состав не сформирован. Выбрано ${allPlayersList.length} из 15 игроков`);
+    if (players.length < 15) {
+      toast.error(`Состав не сформирован. Выбрано ${players.length} из 15 игроков`);
       setShowExitDialog(false);
       return;
     }
-    // Save changes to localStorage
-    saveTeamTransfers(mainSquadPlayers, benchPlayers, captain, viceCaptain);
-    // Update initial state to reflect saved changes
-    initialStateRef.current = JSON.stringify(allPlayersList.map(p => p.id).sort());
+    // Save changes to localStorage - split into mainSquad (11) and bench (4)
+    const mainSquad = players.slice(0, 11);
+    const bench = players.slice(11, 15);
+    saveTeamTransfers(mainSquad, bench, captain, viceCaptain);
+    initialStateRef.current = JSON.stringify(players.map(p => p.id).sort());
     setHasChanges(false);
     toast.success("Изменения сохранены");
     setShowExitDialog(false);
@@ -271,115 +279,75 @@ const Transfers = () => {
     setPendingNavigation(null);
   };
 
-  const allPlayers = [...mainSquadPlayers, ...benchPlayers];
-
   // Calculate budget info
-  const totalPrice = allPlayers.reduce((sum, p) => sum + (p.price || 0), 0);
+  const totalPrice = players.reduce((sum, p) => sum + (p.price || 0), 0);
   const budget = 100 - totalPrice;
   const freeTransfers = 5;
   const MAX_PLAYERS_PER_CLUB = 3;
   const MAX_SQUAD_SIZE = 15;
 
   const getPlayersCountByClub = (clubName: string) => {
-    return allPlayers.filter(p => p.team === clubName).length;
+    return players.filter(p => p.team === clubName).length;
   };
 
-  const handleBuyPlayer = (player: PlayerData, targetPosition?: string, isOnBench?: boolean, targetSlotIndex?: number) => {
-    // Check if team is already full
-    if (allPlayers.length >= MAX_SQUAD_SIZE) {
+  const handleBuyPlayer = (player: PlayerData, targetPosition?: string, _isOnBench?: boolean, targetSlotIndex?: number) => {
+    if (players.length >= MAX_SQUAD_SIZE) {
       toast.error("Команда уже полная (15 игроков)");
       return;
     }
 
-    // Check budget
     if (player.price > budget) {
       toast.error("Недостаточно бюджета");
       return;
     }
 
-    // Check club limit
     if (getPlayersCountByClub(player.team) >= MAX_PLAYERS_PER_CLUB) {
       toast.error(`Нельзя добавить больше ${MAX_PLAYERS_PER_CLUB} игроков из одного клуба`);
       return;
     }
 
     // If specific slot is provided (from clicking empty slot)
-    if (targetPosition !== undefined && isOnBench !== undefined && targetSlotIndex !== undefined) {
-      if (isOnBench) {
-        const newPlayer: PlayerDataExt = {
-          ...player,
-          isOnBench: true,
-        };
-        setBenchPlayers(prev => [...prev, newPlayer]);
-      } else {
-        const newPlayer: PlayerDataExt = {
-          ...player,
-          slotIndex: targetSlotIndex,
-          isOnBench: false,
-        };
-        setMainSquadPlayers(prev => [...prev, newPlayer]);
-      }
+    if (targetPosition !== undefined && targetSlotIndex !== undefined) {
+      const newPlayer: PlayerDataExt = {
+        ...player,
+        slotIndex: targetSlotIndex,
+      };
+      setPlayers(prev => [...prev, newPlayer]);
       setBuyDrawerOpen(false);
+      setBuyPositionFilter(null);
       toast.success(`${player.name} добавлен в команду`);
       return;
     }
 
-    // Priority: fill main squad empty slots first, then bench
-    // Check for empty slots in main squad
-    const formationSlots = [
-      { position: "ВР", count: 1 },
-      { position: "ЗЩ", count: 4 },
-      { position: "ПЗ", count: 4 },
-      { position: "НП", count: 2 },
-    ];
-
-    let addedToMainSquad = false;
+    // Find empty slot for this position
+    const maxSlots = TRANSFERS_FORMATION_SLOTS[player.position] || 0;
+    const occupiedSlots = players
+      .filter(p => p.position === player.position)
+      .map(p => p.slotIndex);
     
-    for (const slot of formationSlots) {
-      if (slot.position === player.position) {
-        const occupiedSlots = mainSquadPlayers
-          .filter(p => p.position === slot.position)
-          .map(p => p.slotIndex);
-        
-        for (let i = 0; i < slot.count; i++) {
-          if (!occupiedSlots.includes(i)) {
-            const newPlayer: PlayerDataExt = {
-              ...player,
-              slotIndex: i,
-              isOnBench: false,
-            };
-            setMainSquadPlayers(prev => [...prev, newPlayer]);
-            addedToMainSquad = true;
-            break;
-          }
-        }
-        break;
-      }
-    }
-
-    // If no main squad slot available, add to bench
-    if (!addedToMainSquad) {
-      if (benchPlayers.length >= 4) {
-        toast.error("Скамейка запасных заполнена");
+    for (let i = 0; i < maxSlots; i++) {
+      if (!occupiedSlots.includes(i)) {
+        const newPlayer: PlayerDataExt = {
+          ...player,
+          slotIndex: i,
+        };
+        setPlayers(prev => [...prev, newPlayer]);
+        setBuyDrawerOpen(false);
+        setBuyPositionFilter(null);
+        toast.success(`${player.name} добавлен в команду`);
         return;
       }
-      const newPlayer: PlayerDataExt = {
-        ...player,
-        isOnBench: true,
-      };
-      setBenchPlayers(prev => [...prev, newPlayer]);
     }
 
-    setBuyDrawerOpen(false);
-    toast.success(`${player.name} добавлен в команду`);
+    toast.error(`Нет свободных позиций для ${player.position}`);
   };
 
   // Group players by position for list view
   const playersByPosition = {
-    "ВР": mainSquadPlayers.filter(p => p.position === "ВР"),
-    "ЗЩ": mainSquadPlayers.filter(p => p.position === "ЗЩ"),
-    "ПЗ": mainSquadPlayers.filter(p => p.position === "ПЗ"),
-    "НП": mainSquadPlayers.filter(p => p.position === "НП"),
+    "ВР": players.filter(p => p.position === "ВР"),
+    "ЗЩ": players.filter(p => p.position === "ЗЩ"),
+    "ПЗ": players.filter(p => p.position === "ПЗ"),
+    "НП": players.filter(p => p.position === "НП"),
   };
 
   const positionLabels: Record<string, string> = {
@@ -389,120 +357,23 @@ const Transfers = () => {
     "НП": "Нападение",
   };
 
-  const handlePlayerSwap = (playerId: number) => {
-    const player = allPlayers.find(p => p.id === playerId);
-    if (player) {
-      setPlayerToSwap(player);
-      setSwapDrawerOpen(true);
-    }
-  };
-
   const handleSellPlayer = (playerId: number) => {
-    const player = allPlayers.find(p => p.id === playerId);
-    if (!player) return;
-
-    if (player.isOnBench) {
-      setBenchPlayers(prev => prev.filter(p => p.id !== playerId));
-    } else {
-      setMainSquadPlayers(prev => prev.filter(p => p.id !== playerId));
-    }
-
-    // Close the player card drawer
+    setPlayers(prev => prev.filter(p => p.id !== playerId));
     setSelectedPlayerForCard(null);
   };
 
-  const handleSwapConfirm = (fromPlayerId: number, toPlayerId: number) => {
-    const fromPlayer = allPlayers.find(p => p.id === fromPlayerId);
-    const toPlayer = allPlayers.find(p => p.id === toPlayerId);
-    
-    if (!fromPlayer || !toPlayer) return;
-
-    const fromIsOnBench = fromPlayer.isOnBench;
-    const toIsOnBench = toPlayer.isOnBench;
-
-    // Helper function to reassign slot indices based on player positions
-    const reassignSlotIndices = (players: PlayerDataExt[]): PlayerDataExt[] => {
-      const positionCounters: Record<string, number> = {
-        "ВР": 0,
-        "ЗЩ": 0,
-        "ПЗ": 0,
-        "НП": 0,
-      };
-      
-      return players.map(player => {
-        const slotIndex = positionCounters[player.position] || 0;
-        positionCounters[player.position] = slotIndex + 1;
-        return { ...player, slotIndex };
-      });
-    };
-
-    if (fromIsOnBench && !toIsOnBench) {
-      // Bench player replacing field player
-      const newMainSquad = mainSquadPlayers.map(p => 
-        p.id === toPlayerId 
-          ? { ...fromPlayer, isOnBench: false } 
-          : p
-      );
-      
-      const newBench = benchPlayers.map(p => 
-        p.id === fromPlayerId 
-          ? { ...toPlayer, slotIndex: undefined, isOnBench: true } 
-          : p
-      );
-      
-      setMainSquadPlayers(reassignSlotIndices(newMainSquad));
-      setBenchPlayers(newBench);
-    } else if (!fromIsOnBench && toIsOnBench) {
-      // Field player replacing bench player
-      const newMainSquad = mainSquadPlayers.map(p => 
-        p.id === fromPlayerId 
-          ? { ...toPlayer, isOnBench: false } 
-          : p
-      );
-      
-      const newBench = benchPlayers.map(p => 
-        p.id === toPlayerId 
-          ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } 
-          : p
-      );
-      
-      setMainSquadPlayers(reassignSlotIndices(newMainSquad));
-      setBenchPlayers(newBench);
-    }
+  const handleEmptySlotClick = (position: string, slotIndex: number) => {
+    setBuyPositionFilter(position);
+    setBuyDrawerOpen(true);
   };
 
-  const getAvailableSwapPlayers = () => {
-    if (!playerToSwap) return [];
-    
-    if (playerToSwap.isOnBench) {
-      return mainSquadPlayers;
-    } else {
-      return benchPlayers;
-    }
-  };
-
-  // Get valid swap options based on formation rules
-  const getValidSwapOptionsForPlayer = () => {
-    if (!playerToSwap) return [];
-    return getValidSwapOptions(mainSquadPlayers, benchPlayers, playerToSwap);
-  };
-
-  // Slot counts per position for main squad (1-4-4-2 formation)
-  const positionSlotCounts: Record<string, number> = {
-    "ВР": 1,
-    "ЗЩ": 4,
-    "ПЗ": 4,
-    "НП": 2,
-  };
-
-  const renderListSection = (position: string, players: PlayerDataExt[]) => {
-    const slotCount = positionSlotCounts[position] || 0;
-    const occupiedSlots = players.map(p => p.slotIndex);
+  const renderListSection = (position: string, positionPlayers: PlayerDataExt[]) => {
+    const slotCount = TRANSFERS_FORMATION_SLOTS[position] || 0;
     
     // Create array of slots (filled and empty)
     const slots: (PlayerDataExt | { isEmpty: true; slotIndex: number })[] = [];
     for (let i = 0; i < slotCount; i++) {
-      const player = players.find(p => p.slotIndex === i);
+      const player = positionPlayers.find(p => p.slotIndex === i);
       if (player) {
         slots.push(player);
       } else {
@@ -525,12 +396,11 @@ const Transfers = () => {
         <div className="space-y-2">
           {slots.map((slot, idx) => {
             if ('isEmpty' in slot) {
-              // Empty slot
               return (
                 <div
                   key={`empty-${position}-${slot.slotIndex}`}
                   className="bg-card/50 rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
-                  onClick={() => setBuyDrawerOpen(true)}
+                  onClick={() => handleEmptySlotClick(position, slot.slotIndex)}
                 >
                   <div className="flex-1 flex items-center gap-2 min-w-0">
                     <span className="text-muted-foreground">Пустой слот</span>
@@ -548,7 +418,6 @@ const Transfers = () => {
               );
             }
 
-            // Player slot
             const player = slot;
             return (
               <div
@@ -646,7 +515,7 @@ const Transfers = () => {
         </div>
       </div>
 
-      {/* Special Chips - 3 chips as per reference */}
+      {/* Special Chips */}
       <div className="px-4 mt-4">
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {specialChips.map((chip) => (
@@ -714,104 +583,20 @@ const Transfers = () => {
       {/* Main content */}
       {activeTab === "formation" ? (
         <div className="mt-4">
-          <FormationFieldManagement 
-            mainSquadPlayers={mainSquadPlayers}
-            benchPlayers={benchPlayers}
-            maxBenchSize={4}
+          <FormationFieldTransfers 
+            players={players}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onRemovePlayer={handleSellPlayer}
-            onEmptySlotClick={() => setBuyDrawerOpen(true)}
+            onEmptySlotClick={handleEmptySlotClick}
           />
         </div>
       ) : (
         <div className="px-4 mt-6 pb-6">
-          <h2 className="text-foreground text-xl font-bold mb-4">Основной состав</h2>
+          <h2 className="text-foreground text-xl font-bold mb-4">Состав команды</h2>
           
-          {Object.entries(playersByPosition).map(([position, players]) => 
-            renderListSection(position, players)
+          {Object.entries(playersByPosition).map(([position, positionPlayers]) => 
+            renderListSection(position, positionPlayers)
           )}
-
-          <h2 className="text-foreground text-xl font-bold mb-4 mt-8">Замены</h2>
-          
-          <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
-            <span className="flex-1">Игрок</span>
-            <span className="w-14 text-center">Клуб</span>
-            <span className="w-12 text-center">Очки</span>
-            <span className="w-10 text-center">Цена</span>
-            <span className="w-10"></span>
-          </div>
-
-          <div className="space-y-2">
-            {/* Render 4 bench slots */}
-            {Array.from({ length: 4 }).map((_, idx) => {
-              const player = benchPlayers[idx];
-              
-              if (!player) {
-                // Empty bench slot
-                return (
-                  <div
-                    key={`empty-bench-${idx}`}
-                    className="bg-card/50 rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
-                    onClick={() => setBuyDrawerOpen(true)}
-                  >
-                    <div className="flex-1 flex items-center gap-2 min-w-0">
-                      <span className="text-muted-foreground">Пустой слот</span>
-                      <span className="text-muted-foreground text-xs">ЗАМ</span>
-                    </div>
-                    <div className="w-14 flex-shrink-0"></div>
-                    <div className="w-12 flex-shrink-0"></div>
-                    <span className="w-10 flex-shrink-0"></span>
-                    <button
-                      className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors flex-shrink-0"
-                    >
-                      <Plus className="w-4 h-4 text-primary" />
-                    </button>
-                  </div>
-                );
-              }
-
-              return (
-                <div
-                  key={player.id}
-                  className="bg-card rounded-full px-4 py-2 flex items-center"
-                >
-                  <div 
-                    className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-                    onClick={() => setSelectedPlayerForCard(player.id)}
-                  >
-                    <span className="text-foreground font-medium truncate">{player.name}</span>
-                    <span className="text-muted-foreground text-xs">{player.position}</span>
-                  </div>
-                  
-                  <div className="w-14 flex-shrink-0 flex justify-center">
-                    {clubIcons[player.team] && (
-                      <img 
-                        src={clubIcons[player.team]} 
-                        alt={player.team}
-                        className="w-5 h-5 object-contain"
-                      />
-                    )}
-                  </div>
-                  
-                  <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-                    {player.id % 2 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
-                    <span className="text-foreground text-sm">{player.points}</span>
-                  </div>
-                  
-                  <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-                    {player.price}
-                  </span>
-                  
-                  <button
-                    onClick={() => handleSellPlayer(player.id)}
-                    className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors flex-shrink-0"
-                  >
-                    <X className="w-4 h-4 text-foreground" />
-                  </button>
-                </div>
-              );
-            })}
-          </div>
         </div>
       )}
 
@@ -836,21 +621,24 @@ const Transfers = () => {
         {/* Buttons Row */}
         <div className="flex gap-3">
           <Button 
-            onClick={() => setBuyDrawerOpen(true)}
+            onClick={() => {
+              setBuyPositionFilter(null);
+              setBuyDrawerOpen(true);
+            }}
             className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full h-12"
           >
             + Добавить игрока
           </Button>
           <Button 
             onClick={() => {
-              if (allPlayers.length < 15) {
-                toast.error(`Состав не сформирован. Выбрано ${allPlayers.length} из 15 игроков`);
+              if (players.length < 15) {
+                toast.error(`Состав не сформирован. Выбрано ${players.length} из 15 игроков`);
                 return;
               }
               setShowConfirmDrawer(true);
             }}
             className={`flex-1 rounded-full h-12 font-semibold ${
-              allPlayers.length < 15 
+              players.length < 15 
                 ? "bg-[#4A5D23] text-muted-foreground cursor-not-allowed" 
                 : "bg-[#A8FF00] hover:bg-[#98EE00] text-black"
             }`}
@@ -863,7 +651,7 @@ const Transfers = () => {
       {/* Player Card Drawer */}
       {selectedPlayerForCard !== null && (
         <PlayerCard
-          player={allPlayers.find(p => p.id === selectedPlayerForCard) || null}
+          player={players.find(p => p.id === selectedPlayerForCard) || null}
           isOpen={selectedPlayerForCard !== null}
           onClose={() => setSelectedPlayerForCard(null)}
           isSelected={true}
@@ -874,28 +662,8 @@ const Transfers = () => {
           onSetViceCaptain={setViceCaptain}
           variant="transfers"
           onSell={handleSellPlayer}
-          onSwap={(playerId) => {
-            const player = allPlayers.find(p => p.id === playerId);
-            if (player) {
-              setPlayerToSwap(player);
-              setSwapDrawerOpen(true);
-            }
-          }}
         />
       )}
-
-      {/* Swap Player Drawer */}
-      <SwapPlayerDrawer
-        isOpen={swapDrawerOpen}
-        onClose={() => {
-          setSwapDrawerOpen(false);
-          setPlayerToSwap(null);
-        }}
-        selectedPlayer={playerToSwap}
-        availablePlayers={getAvailableSwapPlayers()}
-        validSwapOptions={getValidSwapOptionsForPlayer()}
-        onSwap={handleSwapConfirm}
-      />
 
       {/* Boost Drawer */}
       <BoostDrawer
@@ -910,9 +678,12 @@ const Transfers = () => {
       {/* Buy Player Drawer */}
       <BuyPlayerDrawer
         isOpen={buyDrawerOpen}
-        onClose={() => setBuyDrawerOpen(false)}
+        onClose={() => {
+          setBuyDrawerOpen(false);
+          setBuyPositionFilter(null);
+        }}
         onBuyPlayer={handleBuyPlayer}
-        currentTeamPlayerIds={allPlayers.map(p => p.id)}
+        currentTeamPlayerIds={players.map(p => p.id)}
         currentBudget={budget}
         getPlayersCountByClub={getPlayersCountByClub}
         maxPlayersPerClub={MAX_PLAYERS_PER_CLUB}
@@ -930,14 +701,14 @@ const Transfers = () => {
           <AlertDialogFooter className="flex flex-col gap-2 sm:flex-col">
             <AlertDialogAction 
               onClick={handleSaveAndExit}
-              disabled={allPlayers.length < 15}
+              disabled={players.length < 15}
               className={`${
-                allPlayers.length < 15 
+                players.length < 15 
                   ? "bg-[#4A5D23] text-muted-foreground cursor-not-allowed" 
                   : "bg-primary text-primary-foreground hover:bg-primary/90"
               }`}
             >
-              Сохранить {allPlayers.length < 15 && `(${allPlayers.length}/15)`}
+              Сохранить {players.length < 15 && `(${players.length}/15)`}
             </AlertDialogAction>
             <AlertDialogCancel 
               onClick={handleExitWithoutSaving}
@@ -960,9 +731,11 @@ const Transfers = () => {
         isOpen={showConfirmDrawer}
         onClose={() => setShowConfirmDrawer(false)}
         onConfirm={() => {
-          saveTeamTransfers(mainSquadPlayers, benchPlayers, captain, viceCaptain);
-          initialStateRef.current = JSON.stringify(allPlayers.map(p => p.id).sort());
-          initialPlayersRef.current = [...mainSquadPlayers, ...benchPlayers];
+          const mainSquad = players.slice(0, 11);
+          const bench = players.slice(11, 15);
+          saveTeamTransfers(mainSquad, bench, captain, viceCaptain);
+          initialStateRef.current = JSON.stringify(players.map(p => p.id).sort());
+          initialPlayersRef.current = [...players];
           setHasChanges(false);
           setShowConfirmDrawer(false);
           toast.success("Изменения сохранены");
@@ -973,7 +746,6 @@ const Transfers = () => {
         additionalTransfersUsed={Math.max(0, getTransferRecords().length - freeTransfers)}
         remainingBudget={Math.round(budget)}
         boosts={allBoostsTemplate.map(boost => {
-          // Find if this boost is pending in the current page's specialChips
           const currentChip = specialChips.find(c => c.id === boost.id);
           if (currentChip) {
             return currentChip;
