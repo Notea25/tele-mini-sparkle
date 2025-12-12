@@ -14,23 +14,23 @@ const slides: OnboardingSlide[] = [
     title: "Создавай свою команду",
     subtitle: (
       <>
-        Собери команду из <span className="text-primary">15-ти</span> перспективных игроков
+        Собери команду из <span className="text-primary">15</span> игроков чемпионата
       </>
     ),
   },
   {
     image: fieldWithPlayers,
-    title: "Определи основной состав на тур",
-    subtitle: "Делай замены, трансферы, выбирай капитанов",
+    title: "Определи основной состав",
+    subtitle: "Делай трансферы, замены, выбирай капитана и используй бусты",
   },
   {
     image: fieldWithPlayers,
     title: "Борись за ценные призы",
     subtitle: (
       <>
-        Побеждай в основной лиге 🏆
+        Участвуй в основной и коммерческой лигах
         <br />
-        Создавай приватные лиги
+        создавай частные
       </>
     ),
   },
@@ -64,23 +64,15 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
         {/* Image card */}
         <div className="w-full max-w-sm mb-8">
           <div className="relative rounded-2xl overflow-hidden border border-border/30 bg-card/50">
-            <img 
-              src={slide.image} 
-              alt={slide.title}
-              className="w-full h-auto object-cover"
-            />
+            <img src={slide.image} alt={slide.title} className="w-full h-auto object-cover" />
           </div>
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground italic mb-4 px-4">
-          {slide.title}
-        </h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground italic mb-4 px-4">{slide.title}</h1>
 
         {/* Subtitle */}
-        <p className="text-muted-foreground text-center text-base mb-8 px-4">
-          {slide.subtitle}
-        </p>
+        <p className="text-muted-foreground text-center text-base mb-8 px-4">{slide.subtitle}</p>
 
         {/* Progress indicators */}
         <div className="flex gap-2 mb-8">
@@ -97,13 +89,10 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
 
       {/* Buttons */}
       <div className="px-6 pb-8 space-y-3">
-        <Button 
-          onClick={handleNext}
-          className="w-full h-14 text-lg font-semibold"
-        >
+        <Button onClick={handleNext} className="w-full h-14 text-lg font-semibold">
           Далее
         </Button>
-        <Button 
+        <Button
           variant="secondary"
           onClick={handleSkip}
           className="w-full h-14 text-lg font-semibold bg-muted hover:bg-muted/80"
