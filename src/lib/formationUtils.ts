@@ -25,8 +25,8 @@ export const getFormationSlots = (formation: FormationKey) => {
   const config = FORMATIONS[formation];
   const slots: { position: string; row: number; col: number; slotIndex: number }[] = [];
   
-  // Goalkeeper always row 1, centered
-  slots.push({ position: "ВР", row: 1, col: 3, slotIndex: 0 });
+  // Goalkeeper always row 1, centered at 50%
+  slots.push({ position: "ВР", row: 1, col: 50, slotIndex: 0 });
   
   // Defenders - row 2
   const defCols = getColumnPositions(config.DEF);
