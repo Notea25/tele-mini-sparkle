@@ -140,7 +140,7 @@ const App = () => {
               <Route path="/your-team" element={<YourTeam />} />
               <Route path="/dream-team" element={<DreamTeam />} />
               <Route path="/transfers" element={<Transfers />} />
-              <Route path="/view-team/:teamId" element={<ViewTeam />} />
+              <Route path="/view-team" element={<ViewTeam />} />
               <Route path="/view-league" element={<ViewLeague />} />
               <Route path="/profile" element={<Profile />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

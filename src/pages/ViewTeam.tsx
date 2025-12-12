@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useMemo } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
@@ -51,12 +51,14 @@ interface PlayerData {
 
 const ViewTeam = () => {
   const navigate = useNavigate();
-  const { teamId } = useParams();
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [currentTour, setCurrentTour] = useState(29);
 
-  const teamIndex = parseInt(teamId || "1") - 1;
-  const teamName = teamNames[teamIndex % teamNames.length];
+  const teamId = searchParams.get("id") || "1";
+  const teamNameParam = searchParams.get("name");
+  const teamIndex = parseInt(teamId) - 1;
+  const teamName = teamNameParam || teamNames[teamIndex % teamNames.length];
 
   // Generate random players for this team
   const { mainSquadPlayers, benchPlayers, totalPoints } = useMemo(() => {
