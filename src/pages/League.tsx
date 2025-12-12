@@ -324,10 +324,17 @@ const League = () => {
               {tableData.map((row, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   <div
-                    className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
+                    className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full cursor-pointer transition-opacity hover:opacity-80 ${
                       row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                     }`}
                     style={{ width: "calc(100% - 24px)" }}
+                    onClick={() => {
+                      if (row.isUser) {
+                        navigate("/your-team");
+                      } else {
+                        navigate(`/view-team?id=${row.position}&name=${encodeURIComponent(row.name)}`);
+                      }
+                    }}
                   >
                     <div className="col-span-2 flex items-center gap-1">
                       {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
