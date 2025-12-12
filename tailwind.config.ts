@@ -58,6 +58,7 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         neon: "hsl(var(--neon-glow))",
+        aquamarine: "hsl(var(--aquamarine))",
       },
       boxShadow: {
         neon: "var(--shadow-neon)",
