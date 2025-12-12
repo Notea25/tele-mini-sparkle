@@ -687,6 +687,7 @@ const Transfers = () => {
         currentBudget={budget}
         getPlayersCountByClub={getPlayersCountByClub}
         maxPlayersPerClub={MAX_PLAYERS_PER_CLUB}
+        initialPositionFilter={buyPositionFilter}
       />
 
       {/* Exit Confirmation Dialog */}
