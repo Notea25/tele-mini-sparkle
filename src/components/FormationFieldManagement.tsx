@@ -116,7 +116,7 @@ const FormationFieldManagement = ({
           <span className="bg-[#B855E4] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
             {(player.price || 6.5).toFixed(1).replace('.', ',')}
           </span>
-          <span className="bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+          <span className="bg-aquamarine text-background text-[9px] font-bold px-1.5 py-0.5 rounded-full">
             {player.points}
           </span>
         </div>
@@ -136,7 +136,7 @@ const FormationFieldManagement = ({
       </div>
       
       {/* Club badge */}
-      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5">
+      <div className="bg-aquamarine text-background text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5">
         <span>(Д)</span>
         <span className="whitespace-nowrap">{player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
       </div>
