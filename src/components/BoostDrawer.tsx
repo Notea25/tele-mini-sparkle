@@ -1,12 +1,15 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
-interface BoostChip {
+export type BoostStatus = "available" | "pending" | "used";
+
+export interface BoostChip {
   id: string;
   icon: string;
   label: string;
   sublabel: string;
-  active: boolean;
+  status: BoostStatus;
+  usedInTour?: number;
 }
 
 interface BoostDrawerProps {
@@ -14,13 +17,14 @@ interface BoostDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onApply: (chipId: string) => void;
+  onCancel?: (chipId: string) => void;
+  currentTour?: number;
 }
 
-const boostDescriptions: Record<string, { title: string; description: string; usedText?: string }> = {
+const boostDescriptions: Record<string, { title: string; description: string }> = {
   bench: {
     title: "Скамейка+",
     description: "Очки, набранные игроками, оставленными на скамейке запасных в течение тура, будут добавлены к общему количеству очков. Отмена может быть произведена в любое время до окончания игровой недели.",
-    usedText: "Использовано 29 тур"
   },
   captain3x: {
     title: "3-х Капитан",
@@ -40,15 +44,31 @@ const boostDescriptions: Record<string, { title: string; description: string; us
   }
 };
 
-const BoostDrawer = ({ chip, isOpen, onClose, onApply }: BoostDrawerProps) => {
+const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1 }: BoostDrawerProps) => {
   if (!chip) return null;
 
   const boostInfo = boostDescriptions[chip.id];
-  const isApplied = !chip.active;
 
   const handleApply = () => {
     onApply(chip.id);
     onClose();
+  };
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel(chip.id);
+    }
+    onClose();
+  };
+
+  const getStatusText = () => {
+    if (chip.status === "pending") {
+      return `Используется в ${currentTour} туре`;
+    }
+    if (chip.status === "used" && chip.usedInTour) {
+      return `Использовано в ${chip.usedInTour} туре`;
+    }
+    return null;
   };
 
   return (
@@ -69,33 +89,44 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply }: BoostDrawerProps) => {
           <p className="text-gray-400 text-sm leading-relaxed whitespace-pre-line">
             {boostInfo?.description}
           </p>
-          {isApplied && boostInfo?.usedText && (
-            <p className="text-gray-500 text-sm mt-4">
-              {boostInfo.usedText}
+          {getStatusText() && (
+            <p className={`text-sm mt-4 ${chip.status === "pending" ? "text-primary" : "text-gray-500"}`}>
+              {getStatusText()}
             </p>
           )}
         </DrawerHeader>
-        <div className="px-6 pb-8">
-          {isApplied ? (
+        <div className="px-6 pb-8 space-y-3">
+          {chip.status === "available" && (
+            <Button
+              onClick={handleApply}
+              className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold"
+            >
+              Использовать
+            </Button>
+          )}
+          {chip.status === "pending" && onCancel && (
             <>
+              <Button
+                onClick={handleCancel}
+                variant="outline"
+                className="w-full h-14 rounded-full border-destructive text-destructive hover:bg-destructive/10 text-lg font-semibold"
+              >
+                Отменить
+              </Button>
               <Button
                 onClick={onClose}
                 className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
               >
                 Закрыть
               </Button>
-              {boostInfo?.usedText && (
-                <p className="text-gray-500 text-center text-sm mt-4">
-                  {boostInfo.usedText}
-                </p>
-              )}
             </>
-          ) : (
+          )}
+          {chip.status === "used" && (
             <Button
-              onClick={handleApply}
-              className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold"
+              onClick={onClose}
+              className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
             >
-              Использовать
+              Закрыть
             </Button>
           )}
         </div>
