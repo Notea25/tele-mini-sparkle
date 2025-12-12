@@ -738,13 +738,85 @@ const TeamBuilder = () => {
       )}
 
       {activeTab === "list" && (
-        <TeamListView
-          selectedPlayers={selectedPlayersData}
-          onRemovePlayer={(id) => togglePlayer(id)}
-          onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
-          onEmptySlotClick={handleEmptySlotClick}
-          clubIcons={clubIcons}
-        />
+        <>
+          <TeamListView
+            selectedPlayers={selectedPlayersData}
+            onRemovePlayer={(id) => togglePlayer(id)}
+            onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
+            onEmptySlotClick={handleEmptySlotClick}
+            clubIcons={clubIcons}
+          />
+
+          {/* Price Range for List View */}
+          <div className="px-4 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-foreground text-sm">Цена</span>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-sm transition-colors"
+                >
+                  Сбросить фильтры
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground text-sm">от</span>
+                <div className="bg-card border border-border rounded-full px-2 py-1.5 flex items-center gap-2">
+                  <button
+                    onClick={handlePriceFromDecrease}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                  >
+                    <Minus className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceFrom},0</span>
+                  <button
+                    onClick={handlePriceFromIncrease}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                  >
+                    <Plus className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground text-sm">до</span>
+                <div className="bg-card border border-border rounded-full px-2 py-1.5 flex items-center gap-2">
+                  <button
+                    onClick={handlePriceToDecrease}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                  >
+                    <Minus className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceTo},0</span>
+                  <button
+                    onClick={handlePriceToIncrease}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                  >
+                    <Plus className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Teams Filter for List View */}
+          <div className="px-4 mt-4 relative z-20">
+            <Select value={selectedTeam} onValueChange={handleTeamChange}>
+              <SelectTrigger className="w-full bg-card border-border text-foreground cursor-pointer">
+                <SelectValue placeholder="Команды" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border z-50">
+                {teams.map((team) => (
+                  <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
+                    {team === "Все команды" ? "Команды" : team}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </>
       )}
 
       {/* Position Filters */}
