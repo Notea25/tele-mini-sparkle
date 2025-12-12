@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil } from "lucide-react";
+import { Pencil, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import InviteFriendsDrawer from "@/components/InviteFriendsDrawer";
 import homeIcon from "@/assets/home-icon.png";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
@@ -25,6 +27,7 @@ const getDefaultProfile = (): ProfileData => ({
 const Profile = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [inviteDrawerOpen, setInviteDrawerOpen] = useState(false);
   
   const [profile, setProfile] = useState<ProfileData>(() => {
     const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
@@ -172,8 +175,23 @@ const Profile = () => {
               className="bg-secondary border-0 rounded-xl h-12 text-foreground placeholder:text-muted-foreground opacity-70 cursor-not-allowed"
             />
           </div>
+
+          {/* Invite Friends Button */}
+          <Button
+            onClick={() => setInviteDrawerOpen(true)}
+            className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-xl h-12 flex items-center justify-center gap-2"
+          >
+            <UserPlus className="w-5 h-5" />
+            Пригласить друзей
+          </Button>
         </div>
       </div>
+
+      {/* Invite Friends Drawer */}
+      <InviteFriendsDrawer 
+        open={inviteDrawerOpen} 
+        onOpenChange={setInviteDrawerOpen}
+      />
     </div>
   );
 };

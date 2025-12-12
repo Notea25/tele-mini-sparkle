@@ -30,17 +30,35 @@ const App = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showRegistration, setShowRegistration] = useState(false);
+  const [isReferral, setIsReferral] = useState(false);
+
+  useEffect(() => {
+    // Check if this is a referral link
+    const urlParams = new URLSearchParams(window.location.search);
+    const refParam = urlParams.get('ref');
+    if (refParam) {
+      setIsReferral(true);
+      // Store referral info if needed
+      localStorage.setItem('fantasyReferrer', refParam);
+    }
+  }, []);
 
   useEffect(() => {
     // Check screens after splash completes
     if (!showSplash) {
+      // If referral and user already registered, skip onboarding/registration
+      if (isReferral && !shouldShowRegistration()) {
+        // User already registered, will be redirected to /create-team via Index
+        return;
+      }
+      
       if (shouldShowOnboarding()) {
         setShowOnboarding(true);
       } else if (shouldShowRegistration()) {
         setShowRegistration(true);
       }
     }
-  }, [showSplash]);
+  }, [showSplash, isReferral]);
 
   const handleOnboardingComplete = () => {
     markOnboardingCompleted();
