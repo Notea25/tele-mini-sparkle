@@ -139,18 +139,13 @@ const FormationField = ({
                   </button>
                 )}
 
-                {/* Jersey with 3D effect */}
+                {/* Jersey */}
                 <div className="relative">
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16">
-                    <img
-                      src={playerJerseyTeam}
-                      alt={assignedPlayer.name}
-                      className="w-full h-full object-contain"
-                      style={{
-                        filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.35)) drop-shadow(0 4px 6px rgba(0,0,0,0.25)) drop-shadow(2px 2px 4px rgba(0,0,0,0.2))',
-                      }}
-                    />
-                  </div>
+                  <img
+                    src={playerJerseyTeam}
+                    alt={assignedPlayer.name}
+                    className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                  />
                   {/* Price tag */}
                   <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex items-center justify-center">
                     <div className="relative">
@@ -189,19 +184,10 @@ const FormationField = ({
                 className="relative cursor-pointer hover:opacity-80"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 relative">
-                  <img 
-                    src={playerJerseyWhite} 
-                    alt="Player" 
-                    className="w-full h-full object-contain"
-                    style={{
-                      filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.35)) drop-shadow(0 4px 6px rgba(0,0,0,0.25)) drop-shadow(2px 2px 4px rgba(0,0,0,0.2))',
-                    }}
-                  />
-                  <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium">
-                    {slot.position}
-                  </span>
-                </div>
+                <img src={playerJerseyWhite} alt="Player" className="w-8 h-8 sm:w-9 sm:h-9" />
+                <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium -translate-x-0.5">
+                  {slot.position}
+                </span>
               </div>
             )}
           </div>
