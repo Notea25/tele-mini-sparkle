@@ -58,7 +58,7 @@ const FormationField = ({
 
   const getPlayerStyle = (row: number, col: number) => {
     const topPositions: Record<number, string> = {
-      1: "4%",
+      1: "0%",
       2: "20%",
       3: "36%",
       4: "52%",
