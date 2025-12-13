@@ -4,7 +4,7 @@ import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
 import iconBench from "@/assets/icon-bench.png";
-import icon2x from "@/assets/icon-2x.png";
+import icon2x from "@/assets/icon-2x-new.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -70,7 +70,7 @@ const FormationFieldManagement = ({
     return (
       <div
         className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${
-          showDoublePowerBorder ? "border-[#22c55e]" : "border-white/60"
+          showDoublePowerBorder ? "border-primary" : "border-white/60"
         }`}
         onClick={() => onPlayerClick?.(player)}
       >
