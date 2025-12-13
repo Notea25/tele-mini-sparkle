@@ -1,6 +1,7 @@
 import footballFieldAll from "@/assets/field-all-positions.png";
-import playerJerseyWhite from "@/assets/player-jersey-white.png";
+import playerJerseyTeam from "@/assets/player-jersey-team.png";
 import { X } from "lucide-react";
+import tag from "@/assets/tag.webp";
 
 interface PlayerData {
   id: number;
@@ -76,31 +77,24 @@ const FormationField = ({
     };
   };
 
-  // Get position abbreviation for display
-  const getPositionAbbr = (position: string) => {
-    const map: Record<string, string> = {
-      "ВР": "Г",
-      "ЗЩ": "Д",
-      "ПЗ": "П",
-      "НП": "Н",
-    };
-    return map[position] || "Д";
+  // Map position abbreviations
+  const positionMap: Record<string, string> = {
+    ВР: "ВР",
+    ЗЩ: "ЗЩ",
+    ПЗ: "ПЗ",
+    НП: "НП",
   };
 
   // Get assigned player for a formation slot
-  const getAssignedPlayer = (formationPos: FormationPosition) => {
+  const getAssignedPlayer = (formationPos: FormationPosition, globalSlotIndex: number) => {
+    // Find the slot index within the position
     const slotsForPosition = formation.filter((f) => f.position === formationPos.position);
     const slotPositionIndex = slotsForPosition.findIndex(
       (s) => s.row === formationPos.row && s.col === formationPos.col,
     );
-    return selectedPlayers.find((p) => p.position === formationPos.position && p.slotIndex === slotPositionIndex);
-  };
 
-  const truncateText = (text: string, maxLength: number) => {
-    if (text.length > maxLength) {
-      return text.slice(0, maxLength - 1) + "...";
-    }
-    return text;
+    // Find player assigned to this specific slot
+    return selectedPlayers.find((p) => p.position === formationPos.position && p.slotIndex === slotPositionIndex);
   };
 
   return (
@@ -108,8 +102,15 @@ const FormationField = ({
       <img src={footballFieldAll} alt="Football field" className="w-full" />
       {formation.map((slot, idx) => {
         const style = getPlayerStyle(slot.row, slot.col);
-        const assignedPlayer = getAssignedPlayer(slot);
+        const assignedPlayer = getAssignedPlayer(slot, idx);
         const isOccupied = !!assignedPlayer;
+        const lengthCorrectFoo = (text: string, length: number, newLength) => {
+          if (text.length > length) {
+            return text.slice(0, newLength) + "...";
+          } else {
+            return text;
+          }
+        };
 
         return (
           <div
@@ -122,54 +123,64 @@ const FormationField = ({
             }}
           >
             {isOccupied ? (
-              // Occupied slot with player - matching reference design
-              <div 
-                className="relative flex flex-col items-center cursor-pointer"
-                onClick={() => onPlayerClick?.(assignedPlayer)}
-              >
-                {/* Price badge - top left */}
-                <div className="absolute -top-2 left-0 z-50 bg-primary rounded-full px-2 py-1 min-w-[40px] flex items-center justify-center">
-                  <span className="text-xs font-bold text-white whitespace-nowrap">
-                    $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
-                  </span>
-                </div>
-
-                {/* Delete button - top right */}
+              // Occupied slot with player
+              <div className="relative flex flex-col items-center">
+                {/* Delete button */}
                 {onRemovePlayer && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute -top-2 right-0 z-50 w-7 h-7 flex items-center justify-center bg-[#2d2d3a] rounded-full"
+                    className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
                   >
-                    <X className="w-4 h-4 text-[#6b7280]" />
+                    <X className="w-2.5 h-2.5 text-black/70" />
                   </button>
                 )}
 
-                {/* Jersey - larger size */}
-                <img
-                  src={playerJerseyWhite}
-                  alt={assignedPlayer.name}
-                  className="w-20 h-20 object-contain"
-                />
+                {/* Jersey */}
+                <div className="relative">
+                  <img
+                    src={playerJerseyTeam}
+                    alt={assignedPlayer.name}
+                    className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                  />
+                  {/* Price tag */}
+                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex items-center justify-center">
+                    <div className="relative">
+                      <img src={tag} alt="price tag" className="w-auto h-5 object-contain" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white text-[8px] font-bold">
+                          {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                {/* Player name - white text */}
-                <span className="text-white text-sm font-bold mt-1 text-center">
-                  {assignedPlayer.name}
-                </span>
+                <div
+                  className="mt-0.5 cursor-pointer hover:opacity-80 rounded-[4.52px] shadow-sm overflow-hidden"
+                  onClick={() => onPlayerClick?.(assignedPlayer)}
+                >
+                  <div className="flex items-center justify-center bg-white px-1.5 py-px w-[55px]">
+                    <span className="text-[8px] font-bold truncate" style={{ color: "#212121" }}>
+                      {assignedPlayer.name}
+                    </span>
+                  </div>
 
-                {/* Position and team badge - dark rounded background */}
-                <div className="bg-[#1a1a2e] rounded-full px-3 py-1 mt-1">
-                  <span className="text-sm font-medium">
-                    <span className="text-[#7D7A94]">({getPositionAbbr(assignedPlayer.position)})</span>{" "}
-                    <span className="text-white">{truncateText(assignedPlayer.team, 10)}</span>
-                  </span>
+                  <div className="bg-primary px-1.5 py-px flex items-center justify-center w-[55px]">
+                    <span className="text-white text-[8px] font-bold flex items-center gap-0.5">
+                      <span className="text-[7px]" style={{ color: "#7D7A94" }}>
+                        (Д)
+                      </span>
+                      <span style={{ color: "#212121" }}>{lengthCorrectFoo(assignedPlayer.team, 6, 5)}</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             ) : (
               <div
-                className="w-20 h-28 cursor-pointer"
+                className="w-12 h-16 cursor-pointer"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               />
             )}
