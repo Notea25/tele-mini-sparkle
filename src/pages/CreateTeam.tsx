@@ -121,7 +121,8 @@ const CreateTeam = () => {
       {/* Team Creation Form */}
       <div className="px-4 mt-6 space-y-3">
         <div className="font-unbounded font-normal not-italic text-2xl leading-[130%] tracking-normal text-white">
-          Создай свою команду {"\n"}в Высшей лиге {"\n"}Беларуси
+          Создай свою команду <br />в Высшей лиге <br />
+          Беларуси
         </div>
         {/* Team Name Input */}
         <div className="relative">
