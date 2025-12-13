@@ -163,10 +163,18 @@ const CreateTeam = () => {
         </Select>
 
         {/* Create Team Button */}
-        <Button
+        {/* <Button
           onClick={validateAndNavigate}
           disabled={!isFormValid}
           className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
+        >
+          Создать команду
+        </Button> */}
+        <Button
+          onClick={validateAndNavigate}
+          disabled={!isFormValid}
+          className="w-full h-[44px] text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed rounded-[24px]"
           style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
         >
           Создать команду
