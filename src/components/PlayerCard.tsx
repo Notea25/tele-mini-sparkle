@@ -168,22 +168,19 @@ const PlayerCard = ({
           {variant === "transfers" ? (
             <div className="flex gap-3 w-full">
               <Button
+                onClick={onClose}
+                className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
+              >
+                Закрыть
+              </Button>
+              <Button
                 onClick={() => {
                   onSell?.(player.id);
                   onClose();
                 }}
-                className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
-              >
-                Продать
-              </Button>
-              <Button
-                onClick={() => {
-                  onSwap?.(player.id);
-                  onClose();
-                }}
                 className="flex-1 rounded-full py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                Заменить
+                Продать
               </Button>
             </div>
           ) : variant === "management" ? (
