@@ -65,8 +65,6 @@ const CreateTeam = () => {
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState("");
   const [favoriteTeam, setFavoriteTeam] = useState("");
-  const [isInputFocused, setIsInputFocused] = useState(false);
-const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   const filter = useMemo(() => {
     const f = new Filter();
