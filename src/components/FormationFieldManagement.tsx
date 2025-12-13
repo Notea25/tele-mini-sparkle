@@ -3,7 +3,6 @@ import playerJerseyNew from "@/assets/player-jersey-new.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
-import icon3x from "@/assets/icon-3x.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -29,7 +28,6 @@ interface FormationFieldManagementProps {
   onEmptySlotClick?: (position: string, isOnBench: boolean, slotIndex: number) => void;
   captain?: number | null;
   viceCaptain?: number | null;
-  isCaptain3xActive?: boolean;
 }
 
 const truncateName = (text: string, maxLength: number) => {
@@ -48,8 +46,7 @@ const FormationFieldManagement = ({
   onSwapPlayer,
   onEmptySlotClick,
   captain,
-  viceCaptain,
-  isCaptain3xActive = false
+  viceCaptain
 }: FormationFieldManagementProps) => {
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -59,13 +56,9 @@ const FormationFieldManagement = ({
     return mainSquadPlayers.find(p => p.position === position && p.slotIndex === slotIndex);
   };
 
-  const isCaptainWith3x = (playerId: number) => captain === playerId && isCaptain3xActive;
-
   const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => (
     <div
-      className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${
-        isCaptainWith3x(player.id) ? "border-primary border-2" : "border-white/60"
-      }`}
+      className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       onClick={() => onPlayerClick?.(player)}
     >
       {/* Captain/Vice-Captain badge - absolute in left corner */}
@@ -76,23 +69,16 @@ const FormationFieldManagement = ({
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
 
-      {/* Swap button or 3x icon - same size as captain badges */}
+      {/* Swap button - same size as captain badges */}
       {showActionButton && onSwapPlayer && (
         <button
           onClick={(e) => {
             e.stopPropagation();
-            if (!isCaptainWith3x(player.id)) {
-              onSwapPlayer(player.id);
-            }
+            onSwapPlayer(player.id);
           }}
           className="absolute top-1 right-1 z-50"
-          disabled={isCaptainWith3x(player.id)}
         >
-          {isCaptainWith3x(player.id) ? (
-            <img src={icon3x} alt="3x" className="w-3 h-3" />
-          ) : (
-            <img src={swapArrows} alt="Swap" className="w-3 h-3" />
-          )}
+          <img src={swapArrows} alt="Swap" className="w-3 h-3" />
         </button>
       )}
 
