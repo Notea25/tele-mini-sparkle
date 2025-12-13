@@ -119,7 +119,7 @@ const CreateTeam = () => {
       </div>
 
       {/* Hero Banner */}
-      <div className="mx-4 mt-6 rounded-xl overflow-hidden border border-border">
+      <div className="mx-4 mt-6 rounded-xl overflow-hidden">
         <img src={bannerBg} alt="Banner" className="w-full h-full object-cover rounded-xl" />
       </div>
 
