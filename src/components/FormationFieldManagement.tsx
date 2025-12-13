@@ -127,7 +127,7 @@ const FormationFieldManagement = ({
 
   const renderEmptySlot = (position: string, isOnBench: boolean, slotIndex: number) => (
     <div
-      className="w-12 h-16 cursor-pointer"
+      className="w-10 h-14 cursor-pointer"
       onClick={() => onEmptySlotClick?.(position, isOnBench, slotIndex)}
     />
   );

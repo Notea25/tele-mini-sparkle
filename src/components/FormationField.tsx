@@ -179,8 +179,9 @@ const FormationField = ({
                 </div>
               </div>
             ) : (
+              // Empty slot - invisible clickable area over field design
               <div
-                className="w-12 h-16 cursor-pointer"
+                className="w-10 h-14 cursor-pointer"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               />
             )}
