@@ -115,38 +115,38 @@ const FormationField = ({
           >
             {isOccupied ? (
               // Occupied slot with player - matches empty slot size
-              <div className="w-[52px] h-[72px] relative flex flex-col items-center cursor-pointer" onClick={() => onPlayerClick?.(assignedPlayer)}>
-                {/* Price tag - top center */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-50 bg-[#1a1a2e] rounded-full px-2 py-0.5 border border-white whitespace-nowrap">
-                  <span className="text-white text-[9px] font-bold">
+              <div className="w-[52px] relative flex flex-col items-center cursor-pointer" onClick={() => onPlayerClick?.(assignedPlayer)}>
+                {/* Price tag - top, no background */}
+                <div className="mb-0.5">
+                  <span className="text-white text-[10px] font-bold drop-shadow-md">
                     $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
                   </span>
                 </div>
 
-                {/* Delete button - top right */}
+                {/* Delete button - top right, gray background */}
                 {onRemovePlayer && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute -top-1 -right-4 z-50 w-5 h-5 flex items-center justify-center bg-[#1a1a2e] rounded-full border border-white"
+                    className="absolute top-0 -right-3 z-50 w-5 h-5 flex items-center justify-center bg-[#4a4a5a] rounded-full"
                   >
                     <X className="w-3 h-3 text-white" />
                   </button>
                 )}
 
-                {/* Jersey - fits the slot size */}
+                {/* Jersey */}
                 <img
                   src={playerJerseyNew}
                   alt={assignedPlayer.name}
-                  className="w-11 h-11 object-contain mt-1"
+                  className="w-12 h-12 object-contain"
                 />
 
-                {/* Player name block - white background */}
-                <div className="rounded-[4px] overflow-hidden w-full mt-0.5">
+                {/* Player name and club blocks - overlapping jersey bottom */}
+                <div className="rounded-[4px] overflow-hidden w-full -mt-2 relative z-10">
                   <div className="flex items-center justify-center bg-white px-1 py-0.5">
-                    <span className="text-[8px] font-medium text-black truncate">
+                    <span className="text-[8px] font-semibold text-black truncate">
                       {truncateName(assignedPlayer.name, 10)}
                     </span>
                   </div>
