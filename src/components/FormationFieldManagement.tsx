@@ -35,6 +35,7 @@ interface FormationFieldManagementProps {
   isDoublePowerBoostActive?: boolean;
   isCaptain3xBoostActive?: boolean;
   showPrice?: boolean;
+  showPointsInsteadOfTeam?: boolean;
 }
 
 const truncateName = (text: string, maxLength: number) => {
@@ -57,7 +58,8 @@ const FormationFieldManagement = ({
   isBenchBoostActive = false,
   isDoublePowerBoostActive = false,
   isCaptain3xBoostActive = false,
-  showPrice = true
+  showPrice = true,
+  showPointsInsteadOfTeam = false
 }: FormationFieldManagementProps) => {
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -131,10 +133,18 @@ const FormationFieldManagement = ({
           </span>
         </div>
         <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
-          <span className="text-[clamp(4px,1.5vw,6px)] font-medium block truncate whitespace-nowrap text-center">
-            <span className="text-[#7D7A94]">(Д)</span>
-            <span className="text-white ml-[2%]">{truncateName(player.team, 7)}</span>
-          </span>
+          {showPointsInsteadOfTeam ? (
+            <span className={`text-[clamp(6px,2vw,10px)] font-bold block text-center ${
+              player.points > 0 ? 'text-primary' : player.points < 0 ? 'text-red-500' : 'text-white'
+            }`}>
+              {player.points > 0 ? `+${player.points}` : player.points}
+            </span>
+          ) : (
+            <span className="text-[clamp(4px,1.5vw,6px)] font-medium block truncate whitespace-nowrap text-center">
+              <span className="text-[#7D7A94]">(Д)</span>
+              <span className="text-white ml-[2%]">{truncateName(player.team, 7)}</span>
+            </span>
+          )}
         </div>
       </div>
     </div>

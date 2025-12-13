@@ -119,6 +119,7 @@ const YourTeam = () => {
             benchPlayers={benchPlayers}
             onPlayerClick={() => {}}
             showPrice={false}
+            showPointsInsteadOfTeam={true}
           />
         </div>
       )}
