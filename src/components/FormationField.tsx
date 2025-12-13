@@ -140,8 +140,8 @@ const FormationField = ({
                 {/* Jersey */}
                 <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[105%] aspect-square object-contain" />
 
-                {/* Player name and club blocks - positioned at bottom */}
-                <div className="w-full mt-auto">
+                {/* Player name and club blocks - overlapping jersey by 25% */}
+                <div className="w-full absolute bottom-0 left-0 -translate-y-[25%]">
                   <div className="bg-white px-[4%] py-[2%]">
                     <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
                       {truncateName(assignedPlayer.name, 9)}
