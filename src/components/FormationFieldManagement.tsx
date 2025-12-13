@@ -51,7 +51,7 @@ const FormationFieldManagement = ({
 
   const renderPlayer = (player: PlayerData, showActionButton = true) => (
     <div
-      className="w-[52px] aspect-[52/72] relative flex flex-col items-center cursor-pointer border border-white rounded-lg overflow-hidden"
+      className="w-[52px] aspect-[52/72] relative flex flex-col items-center cursor-pointer border border-white rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       onClick={() => onPlayerClick?.(player)}
     >
       {/* Price tag - top, no background */}
