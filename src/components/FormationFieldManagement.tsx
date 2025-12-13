@@ -4,6 +4,7 @@ import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
 import iconBench from "@/assets/icon-bench.png";
+import icon2x from "@/assets/icon-2x.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -30,6 +31,7 @@ interface FormationFieldManagementProps {
   captain?: number | null;
   viceCaptain?: number | null;
   isBenchBoostActive?: boolean;
+  isDoublePowerBoostActive?: boolean;
 }
 
 const truncateName = (text: string, maxLength: number) => {
@@ -49,7 +51,8 @@ const FormationFieldManagement = ({
   onEmptySlotClick,
   captain,
   viceCaptain,
-  isBenchBoostActive = false
+  isBenchBoostActive = false,
+  isDoublePowerBoostActive = false
 }: FormationFieldManagementProps) => {
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -59,33 +62,42 @@ const FormationFieldManagement = ({
     return mainSquadPlayers.find(p => p.position === position && p.slotIndex === slotIndex);
   };
 
-  const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => (
-    <div
-      className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
-      onClick={() => onPlayerClick?.(player)}
-    >
-      {/* Captain/Vice-Captain badge - absolute in left corner */}
-      {captain === player.id && (
-        <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />
-      )}
-      {viceCaptain === player.id && (
-        <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
-      )}
+  const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => {
+    const isCaptainOrVice = captain === player.id || viceCaptain === player.id;
+    const showDoublePowerBorder = isDoublePowerBoostActive && isCaptainOrVice;
+    const showDoublePowerIcon = isDoublePowerBoostActive && isCaptainOrVice && !isOnBench;
 
-      {/* Bench boost badge or Swap button - same size as captain badges */}
-      {showActionButton && isOnBench && isBenchBoostActive ? (
-        <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
-      ) : showActionButton && onSwapPlayer ? (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onSwapPlayer(player.id);
-          }}
-          className="absolute top-1 right-1 z-50"
-        >
-          <img src={swapArrows} alt="Swap" className="w-3 h-3" />
-        </button>
-      ) : null}
+    return (
+      <div
+        className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${
+          showDoublePowerBorder ? "border-[#22c55e]" : "border-white/60"
+        }`}
+        onClick={() => onPlayerClick?.(player)}
+      >
+        {/* Captain/Vice-Captain badge - absolute in left corner */}
+        {captain === player.id && (
+          <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />
+        )}
+        {viceCaptain === player.id && (
+          <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
+        )}
+
+        {/* Double Power boost badge for captain/vice-captain, or Bench boost badge, or Swap button */}
+        {showDoublePowerIcon ? (
+          <img src={icon2x} alt="2x" className="absolute top-1 right-1 z-50 w-3 h-3" />
+        ) : showActionButton && isOnBench && isBenchBoostActive ? (
+          <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
+        ) : showActionButton && onSwapPlayer ? (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onSwapPlayer(player.id);
+            }}
+            className="absolute top-1 right-1 z-50"
+          >
+            <img src={swapArrows} alt="Swap" className="w-3 h-3" />
+          </button>
+        ) : null}
 
       {/* Price centered */}
       <div className="w-full flex items-center justify-center pt-1 pb-0.5">
@@ -112,7 +124,8 @@ const FormationFieldManagement = ({
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   const renderEmptySlot = (position: string, isOnBench: boolean, slotIndex: number) => (
     <div
