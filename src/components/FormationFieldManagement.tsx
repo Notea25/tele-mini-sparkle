@@ -76,9 +76,9 @@ const FormationFieldManagement = ({
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
 
-      {/* 3x badge for captain with boost active */}
+      {/* 3x badge for captain with boost active - same size as captain badge */}
       {isCaptainWith3x(player.id) && (
-        <span className="absolute top-1 right-1 z-50 text-white font-bold text-[10px] leading-none">x3</span>
+        <img src={icon3x} alt="3x" className="absolute top-1 right-1 z-50 h-3 w-auto" />
       )}
 
       {/* Swap button - same size as captain badges */}
