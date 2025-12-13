@@ -100,7 +100,7 @@ const FormationFieldTransfers = ({
       </div>
 
       {/* Jersey - larger size, overlaps name/club below */}
-      <img src={playerJerseyNew} alt={player.name} className="w-[130%] h-auto object-contain mb-[-35%] z-0" />
+      <img src={playerJerseyNew} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
 
       {/* Player name and club blocks - jersey overlaps from above */}
       <div className="w-full relative z-10">
