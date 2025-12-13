@@ -177,8 +177,20 @@ const TeamManagement = () => {
     const fromIsOnBench = fromPlayer.isOnBench;
     const toIsOnBench = toPlayer.isOnBench;
 
+    // Track if captain/vice-captain is being moved to bench
+    let newCaptain = captain;
+    let newViceCaptain = viceCaptain;
+
     if (fromIsOnBench && !toIsOnBench) {
       // Bench player replacing field player
+      // If the field player being replaced is captain/vice-captain, transfer the role
+      if (captain === toPlayerId) {
+        newCaptain = fromPlayerId;
+      }
+      if (viceCaptain === toPlayerId) {
+        newViceCaptain = fromPlayerId;
+      }
+      
       // Create new main squad: replace field player with bench player
       const newMainSquad = mainSquadPlayers.map(p => 
         p.id === toPlayerId 
@@ -200,6 +212,14 @@ const TeamManagement = () => {
       setBenchPlayers(newBench);
     } else if (!fromIsOnBench && toIsOnBench) {
       // Field player replacing bench player
+      // If the field player being replaced is captain/vice-captain, transfer the role
+      if (captain === fromPlayerId) {
+        newCaptain = toPlayerId;
+      }
+      if (viceCaptain === fromPlayerId) {
+        newViceCaptain = toPlayerId;
+      }
+      
       // Create new main squad: replace field player with bench player
       const newMainSquad = mainSquadPlayers.map(p => 
         p.id === fromPlayerId 
@@ -219,6 +239,14 @@ const TeamManagement = () => {
       
       setMainSquadPlayers(reassignedMainSquad);
       setBenchPlayers(newBench);
+    }
+
+    // Update captain/vice-captain if they changed
+    if (newCaptain !== captain) {
+      setCaptain(newCaptain);
+    }
+    if (newViceCaptain !== viceCaptain) {
+      setViceCaptain(newViceCaptain);
     }
   };
 
