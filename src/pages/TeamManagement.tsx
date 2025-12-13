@@ -519,6 +519,7 @@ const TeamManagement = () => {
             onSwapPlayer={handlePlayerSwap}
             captain={captain}
             viceCaptain={viceCaptain}
+            isBenchBoostActive={specialChips.find(c => c.id === "bench")?.status === "pending"}
           />
         </div>
       ) : (

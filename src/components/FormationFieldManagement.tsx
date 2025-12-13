@@ -3,6 +3,7 @@ import playerJerseyNew from "@/assets/player-jersey-new.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
+import iconBench from "@/assets/icon-bench.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -28,6 +29,7 @@ interface FormationFieldManagementProps {
   onEmptySlotClick?: (position: string, isOnBench: boolean, slotIndex: number) => void;
   captain?: number | null;
   viceCaptain?: number | null;
+  isBenchBoostActive?: boolean;
 }
 
 const truncateName = (text: string, maxLength: number) => {
@@ -46,7 +48,8 @@ const FormationFieldManagement = ({
   onSwapPlayer,
   onEmptySlotClick,
   captain,
-  viceCaptain
+  viceCaptain,
+  isBenchBoostActive = false
 }: FormationFieldManagementProps) => {
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -69,8 +72,10 @@ const FormationFieldManagement = ({
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
 
-      {/* Swap button - same size as captain badges */}
-      {showActionButton && onSwapPlayer && (
+      {/* Bench boost badge or Swap button - same size as captain badges */}
+      {showActionButton && isOnBench && isBenchBoostActive ? (
+        <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
+      ) : showActionButton && onSwapPlayer ? (
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -80,7 +85,7 @@ const FormationFieldManagement = ({
         >
           <img src={swapArrows} alt="Swap" className="w-3 h-3" />
         </button>
-      )}
+      ) : null}
 
       {/* Price centered */}
       <div className="w-full flex items-center justify-center pt-1 pb-0.5">
