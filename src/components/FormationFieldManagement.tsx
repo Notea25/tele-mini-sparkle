@@ -92,7 +92,7 @@ const FormationFieldManagement = ({
 
         {/* Boost badges for captain/vice-captain, or Bench boost badge, or Swap button */}
         {showCaptain3xIcon ? (
-          <img src={icon3x} alt="3x" className="absolute top-[3px] right-1 z-50 w-1.5 h-1.5" />
+          <img src={icon3x} alt="3x" className="absolute top-[3px] right-1 z-50 w-3 h-3" />
         ) : showDoublePowerIcon ? (
           <img src={icon2x} alt="2x" className="absolute top-[3px] right-1 z-50 w-3 h-3" />
         ) : showActionButton && isOnBench && isBenchBoostActive ? (
