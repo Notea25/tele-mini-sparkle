@@ -125,34 +125,13 @@ const CreateTeam = () => {
           Беларуси
         </div>
         {/* Team Name Input */}
-        {/* <div className="relative">
-          <Input
-            placeholder="Название команды"
-            value={teamName}
-            onChange={(e) => handleNameChange(e.target.value)}
-            maxLength={MAX_NAME_LENGTH}
-            className="w-full h-14 bg-card/80 border-border text-foreground placeholder:text-muted-foreground rounded-xl"
-          />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xs pointer-events-none">
-            {teamName.length}/{MAX_NAME_LENGTH}
-          </div>
-        </div> */}
         <div className="relative">
           <Input
             placeholder="Название команды"
             value={teamName}
             onChange={(e) => handleNameChange(e.target.value)}
             maxLength={MAX_NAME_LENGTH}
-            className={`w-full h-14 text-[12px] pl-4 transition-colors duration-200 ${
-              isActive ? "text-white placeholder:text-white/70" : "text-foreground placeholder:text-[#4B485F]"
-            }`}
-            style={{
-              backgroundColor: "#1A1924",
-              borderColor: isActive ? "rgba(255, 255, 255, 0.2)" : "#2D2B3E",
-              borderRadius: "12px",
-            }}
-            onFocus={() => setIsActive(true)}
-            onBlur={() => setIsActive(false)}
+            className="w-full h-14 bg-card/80 border-border text-foreground placeholder:text-muted-foreground rounded-xl"
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xs pointer-events-none">
             {teamName.length}/{MAX_NAME_LENGTH}
