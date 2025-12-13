@@ -109,11 +109,7 @@ const CreateTeam = () => {
       {/* Breadcrumbs */}
       <div className="px-4 mt-4">
         <Breadcrumbs
-          items={[
-            { label: "Футбол", path: "/" },
-            { label: "Беларусь", path: "/" },
-            { label: "Создание команды" },
-          ]}
+          items={[{ label: "Футбол", path: "/" }, { label: "Беларусь", path: "/" }, { label: "Создание команды" }]}
         />
       </div>
 
@@ -124,6 +120,7 @@ const CreateTeam = () => {
 
       {/* Team Creation Form */}
       <div className="px-4 mt-6 space-y-3">
+        <div>Создай</div>
         {/* Team Name Input */}
         <div className="relative">
           <Input
