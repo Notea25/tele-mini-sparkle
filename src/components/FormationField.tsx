@@ -1,4 +1,4 @@
-import footballField from "@/assets/football-field.png";
+import footballFieldAll from "@/assets/field-all-positions.png";
 import playerJerseyWhite from "@/assets/player-jersey-white.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
 import { X } from "lucide-react";
@@ -100,7 +100,7 @@ const FormationField = ({
 
   return (
     <div className="relative w-full">
-      <img src={footballField} alt="Football field" className="w-full rounded-2xl" />
+      <img src={footballFieldAll} alt="Football field" className="w-full" />
       {formation.map((slot, idx) => {
         const style = getPlayerStyle(slot.row, slot.col);
         const assignedPlayer = getAssignedPlayer(slot, idx);
