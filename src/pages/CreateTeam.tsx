@@ -142,7 +142,7 @@ const CreateTeam = () => {
           <SelectTrigger className="w-full h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal text-[#4B485F] placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546]">
             <SelectValue placeholder="За какую команду болеешь?" />
           </SelectTrigger>
-          <SelectContent className="absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal not-italic text-[12px] tracking-normal text-[#4B485F] pointer-events-none">
+          <SelectContent className="bg-card border-border">
             <SelectItem value="arsenal">Арсенал</SelectItem>
             <SelectItem value="baranovichi">Барановичи</SelectItem>
             <SelectItem value="bate">БАТЭ</SelectItem>
