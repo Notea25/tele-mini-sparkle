@@ -116,11 +116,11 @@ const FormationField = ({
             {isOccupied ? (
               // Occupied slot with player
               <div
-                className="w-[60px] aspect-[60/82] relative flex flex-col items-center cursor-pointer border border-white rounded-lg overflow-hidden bg-[#3a5a28]"
+                className="w-[60px] relative flex flex-col items-center cursor-pointer border border-white rounded-lg overflow-hidden bg-[#3a5a28]"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Price tag - top, no background */}
-                <span className="text-white text-[clamp(7px,2vw,11px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
+                <span className="text-white text-[clamp(7px,2vw,11px)] font-bold drop-shadow-md whitespace-nowrap leading-tight pt-0.5">
                   $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
                 </span>
 
@@ -137,11 +137,11 @@ const FormationField = ({
                   </button>
                 )}
 
-                {/* Jersey */}
-                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[105%] aspect-square object-contain" />
+                {/* Jersey - with negative margin to overlap name/club below */}
+                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[105%] aspect-square object-contain mb-[-30%] z-0" />
 
-                {/* Player name and club blocks - overlapping jersey by 25% */}
-                <div className="w-full absolute bottom-0 left-0 -translate-y-[25%]">
+                {/* Player name and club blocks - jersey overlaps from above */}
+                <div className="w-full relative z-10">
                   <div className="bg-white px-[4%] py-[2%]">
                     <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
                       {truncateName(assignedPlayer.name, 9)}
