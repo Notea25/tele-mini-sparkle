@@ -116,7 +116,7 @@ const FormationField = ({
             {isOccupied ? (
               // Occupied slot with player
               <div
-                className="w-[14%] aspect-[52/72] relative flex flex-col items-center cursor-pointer"
+                className="w-[52px] aspect-[52/72] relative flex flex-col items-center cursor-pointer"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Price tag - top, no background */}
@@ -158,7 +158,7 @@ const FormationField = ({
             ) : (
               // Empty slot - dashed border, position label, + button
               <div
-                className="w-[14%] aspect-[3/4] rounded-lg border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+                className="w-[52px] aspect-[3/4] rounded-lg border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
                 <span className="text-white font-bold text-[clamp(10px,3vw,16px)]">
