@@ -60,27 +60,18 @@ const FormationFieldManagement = ({
     return mainSquadPlayers.find(p => p.position === position && p.slotIndex === slotIndex);
   };
 
-  const truncateName = (text: string, maxLen: number) => {
-    return text.length > maxLen ? text.slice(0, maxLen - 1) + "..." : text;
-  };
-
   const renderPlayer = (player: PlayerData, showActionButton = true) => (
     <div className="relative flex flex-col items-center">
-      {/* Price badge - top left */}
-      <div className="absolute -top-1 -left-2 z-30 bg-[#00C853] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-        $ {(player.price || 6.5).toFixed(1).replace('.', ',')}
-      </div>
-      
-      {/* Action button - Delete if onRemovePlayer provided, otherwise Swap - top right */}
+      {/* Action button - Delete if onRemovePlayer provided, otherwise Swap */}
       {showActionButton && onRemovePlayer && (
         <button
           onClick={(e) => {
             e.stopPropagation();
             onRemovePlayer(player.id);
           }}
-          className="absolute -top-1 -right-2 z-50 w-5 h-5 flex items-center justify-center bg-[#00C853] rounded-full"
+          className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
         >
-          <X className="w-3 h-3 text-white" />
+          <X className="w-2.5 h-2.5 text-black/70" />
         </button>
       )}
       {showActionButton && !onRemovePlayer && onSwapPlayer && (
@@ -89,38 +80,47 @@ const FormationFieldManagement = ({
             e.stopPropagation();
             onSwapPlayer(player.id);
           }}
-          className="absolute -top-1 -right-2 z-50 w-5 h-5 flex items-center justify-center bg-[#00C853] rounded-full"
+          className="absolute -top-1 -right-1 z-50 w-5 h-5 flex items-center justify-center bg-card rounded-md"
         >
-          <ArrowLeftRight className="w-3 h-3 text-white" />
+          <ArrowLeftRight className="w-3 h-3 text-muted-foreground" />
         </button>
       )}
-
+      
       {/* Jersey */}
-      <img
-        src={playerJerseyTeam}
-        alt={player.name}
-        className="w-14 h-14 sm:w-16 sm:h-16 object-contain mt-2"
-        onClick={() => onPlayerClick?.(player)}
-      />
-
-      {/* Player name */}
+      <div className="relative">
+        <img
+          src={playerJerseyTeam}
+          alt={player.name}
+          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+        />
+        {/* Price and points tag */}
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-0.5">
+          <span className="bg-[#B855E4] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+            {(player.price || 6.5).toFixed(1).replace('.', ',')}
+          </span>
+          <span className="bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+            {player.points}
+          </span>
+        </div>
+      </div>
+      
+      {/* Position and name */}
       <div 
-        className="mt-1 cursor-pointer hover:opacity-80"
+        className="flex items-center gap-0.5 mt-1.5 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5 min-w-max"
         onClick={() => onPlayerClick?.(player)}
       >
-        <span className="text-white text-[11px] font-bold">
+        <span className="text-black/60 text-[9px] font-medium">
+          {player.position}
+        </span>
+        <span className="text-black text-[9px] font-medium whitespace-nowrap">
           {player.name}
         </span>
       </div>
       
-      {/* Position and team - bottom badge */}
-      <div className="bg-[#1A1A2E] px-2 py-0.5 rounded-full flex items-center justify-center gap-1 mt-0.5">
-        <span className="text-[#7D7A94] text-[9px] font-medium">
-          (Д)
-        </span>
-        <span className="text-white text-[9px] font-medium">
-          {truncateName(player.team, 10)}
-        </span>
+      {/* Club badge */}
+      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5">
+        <span>(Д)</span>
+        <span className="whitespace-nowrap">{player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
       </div>
     </div>
   );
