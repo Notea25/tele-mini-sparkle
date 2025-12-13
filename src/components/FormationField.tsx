@@ -64,7 +64,7 @@ const FormationField = ({
 
     // Uniform spacing based on player count per row
     const leftPositions: Record<number, Record<number, string>> = {
-      1: { 2: "57%", 4: "63%" }, // 2 players: symmetric around center
+      1: { 2: "37%", 4: "63%" }, // 2 players: symmetric around center
       2: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" }, // 5 players
       3: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" }, // 5 players
       4: { 2: "25%", 3: "50%", 4: "75%" }, // 3 players: equal thirds
