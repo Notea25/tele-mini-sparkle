@@ -4,6 +4,7 @@ import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
 import icon3x from "@/assets/icon-3x.png";
+import icon2x from "@/assets/icon-2x.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -30,6 +31,7 @@ interface FormationFieldManagementProps {
   captain?: number | null;
   viceCaptain?: number | null;
   isCaptain3xActive?: boolean;
+  isDoublePowerActive?: boolean;
 }
 
 const truncateName = (text: string, maxLength: number) => {
@@ -49,7 +51,8 @@ const FormationFieldManagement = ({
   onEmptySlotClick,
   captain,
   viceCaptain,
-  isCaptain3xActive = false
+  isCaptain3xActive = false,
+  isDoublePowerActive = false
 }: FormationFieldManagementProps) => {
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -60,11 +63,13 @@ const FormationFieldManagement = ({
   };
 
   const isCaptainWith3x = (playerId: number) => captain === playerId && isCaptain3xActive;
+  const isCaptainOrViceWithDoublePower = (playerId: number) => 
+    (captain === playerId || viceCaptain === playerId) && isDoublePowerActive;
 
   const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => (
     <div
       className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${
-        isCaptainWith3x(player.id) ? "border-primary border-2" : "border-white/60"
+        isCaptainWith3x(player.id) || isCaptainOrViceWithDoublePower(player.id) ? "border-primary border-2" : "border-white/60"
       }`}
       onClick={() => onPlayerClick?.(player)}
     >
@@ -81,8 +86,13 @@ const FormationFieldManagement = ({
         <img src={icon3x} alt="3x" className="absolute top-[6px] right-1 z-50 h-[6px] w-auto" />
       )}
 
+      {/* 2x badge for captain/vice-captain with double power boost active */}
+      {isCaptainOrViceWithDoublePower(player.id) && !isCaptainWith3x(player.id) && (
+        <img src={icon2x} alt="2x" className="absolute top-[6px] right-1 z-50 h-[6px] w-auto" />
+      )}
+
       {/* Swap button - same size as captain badges */}
-      {showActionButton && onSwapPlayer && !isCaptainWith3x(player.id) && (
+      {showActionButton && onSwapPlayer && !isCaptainWith3x(player.id) && !isCaptainOrViceWithDoublePower(player.id) && (
         <button
           onClick={(e) => {
             e.stopPropagation();
