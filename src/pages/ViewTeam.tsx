@@ -181,6 +181,7 @@ const ViewTeam = () => {
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={() => {}}
+            showPrice={false}
           />
         </div>
       )}
