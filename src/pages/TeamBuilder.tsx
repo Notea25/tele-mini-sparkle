@@ -662,6 +662,8 @@ const TeamBuilder = () => {
               onRemovePlayer={(id) => togglePlayer(id)}
               onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
               onEmptySlotClick={handleEmptySlotClick}
+              captain={captain}
+              viceCaptain={viceCaptain}
             />
           </div>
 

@@ -1,5 +1,7 @@
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
+import captainBadge from "@/assets/captain-badge.png";
+import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
 
 interface PlayerData {
@@ -19,6 +21,8 @@ interface FormationFieldTransfersProps {
   onPlayerClick?: (player: PlayerData) => void;
   onRemovePlayer?: (playerId: number) => void;
   onEmptySlotClick?: (position: string, slotIndex: number) => void;
+  captain?: number | null;
+  viceCaptain?: number | null;
 }
 
 // Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
@@ -67,7 +71,9 @@ const FormationFieldTransfers = ({
   players,
   onPlayerClick, 
   onRemovePlayer,
-  onEmptySlotClick
+  onEmptySlotClick,
+  captain,
+  viceCaptain
 }: FormationFieldTransfersProps) => {
   
   const getPlayerForSlot = (position: string, slotIndex: number) => {
@@ -79,6 +85,14 @@ const FormationFieldTransfers = ({
       className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       onClick={() => onPlayerClick?.(player)}
     >
+      {/* Captain/Vice-Captain badge - absolute in left corner */}
+      {captain === player.id && (
+        <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />
+      )}
+      {viceCaptain === player.id && (
+        <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
+      )}
+
       {/* Delete button - absolute in corner */}
       {onRemovePlayer && (
         <button
