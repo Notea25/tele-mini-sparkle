@@ -141,6 +141,8 @@ const DreamTeam = () => {
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={() => {}}
+            showPrice={false}
+            showPointsInsteadOfTeam={true}
           />
         </div>
       )}
