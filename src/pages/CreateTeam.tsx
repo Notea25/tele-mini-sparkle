@@ -9,7 +9,7 @@ import InfinitePlayerCarousel from "@/components/InfinitePlayerCarousel";
 import { useState, useMemo } from "react";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
-import bannerBg from "@/assets/beterra-banner-bg.png";
+import bannerBg from "@/assets/beterra-banner-bg-2.webp";
 import scoringExample from "@/assets/scoring-example.png";
 import leaderboardExample from "@/assets/leaderboard-example.png";
 import prize3rdPlace from "@/assets/prize-3rd-place.png";
