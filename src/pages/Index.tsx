@@ -47,10 +47,8 @@ const Index = () => {
   }, []);
 
   const toggleFavorite = useCallback((leagueId: string) => {
-    setFavorites(prev => {
-      const newFavorites = prev.includes(leagueId)
-        ? prev.filter(id => id !== leagueId)
-        : [...prev, leagueId];
+    setFavorites((prev) => {
+      const newFavorites = prev.includes(leagueId) ? prev.filter((id) => id !== leagueId) : [...prev, leagueId];
       localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(newFavorites));
       return newFavorites;
     });
@@ -61,17 +59,17 @@ const Index = () => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const headerOffset = 200; // Account for header height
-      
+
       // Check sections from bottom to top to find the first visible one
-      const sectionsToCheck = categories.filter(c => c.scrollTo).reverse();
-      
+      const sectionsToCheck = categories.filter((c) => c.scrollTo).reverse();
+
       for (const category of sectionsToCheck) {
         if (category.scrollTo) {
           const element = document.getElementById(category.scrollTo);
           if (element) {
             const rect = element.getBoundingClientRect();
             const elementTop = rect.top + scrollY - headerOffset;
-            
+
             if (scrollY >= elementTop) {
               setActiveCategory(category.id);
               return;
@@ -79,7 +77,7 @@ const Index = () => {
           }
         }
       }
-      
+
       // If we're at the top, set to "all"
       setActiveCategory("all");
     };
@@ -103,14 +101,14 @@ const Index = () => {
 
   // Check for league invite
   useEffect(() => {
-    const storedInvite = localStorage.getItem('fantasyLeagueInvite');
+    const storedInvite = localStorage.getItem("fantasyLeagueInvite");
     if (storedInvite) {
       try {
         const invite = JSON.parse(storedInvite);
         setLeagueInviteData(invite);
         setShowLeagueInvite(true);
         // Clear the stored invite
-        localStorage.removeItem('fantasyLeagueInvite');
+        localStorage.removeItem("fantasyLeagueInvite");
       } catch {
         // Invalid data
       }
@@ -119,7 +117,7 @@ const Index = () => {
 
   // Check if this is a referral link and user is already registered
   useEffect(() => {
-    const refParam = searchParams.get('ref');
+    const refParam = searchParams.get("ref");
     if (refParam) {
       // Check if user is already registered
       const profileData = localStorage.getItem(PROFILE_STORAGE_KEY);
@@ -128,7 +126,7 @@ const Index = () => {
           const profile = JSON.parse(profileData);
           if (profile.userName && profile.birthDate) {
             // User is registered, redirect to /create-team
-            navigate('/create-team', { replace: true });
+            navigate("/create-team", { replace: true });
           }
         } catch {
           // Invalid profile data, continue normally
@@ -145,17 +143,17 @@ const Index = () => {
   const handleJoinLeague = () => {
     if (leagueInviteData) {
       // Add user to league
-      const userLeagues = JSON.parse(localStorage.getItem('userJoinedLeagues') || '[]');
+      const userLeagues = JSON.parse(localStorage.getItem("userJoinedLeagues") || "[]");
       if (!userLeagues.find((l: { id: string }) => l.id === leagueInviteData.leagueId)) {
         userLeagues.push({
           id: leagueInviteData.leagueId,
           name: leagueInviteData.leagueName,
-          joinedAt: new Date().toISOString()
+          joinedAt: new Date().toISOString(),
         });
-        localStorage.setItem('userJoinedLeagues', JSON.stringify(userLeagues));
+        localStorage.setItem("userJoinedLeagues", JSON.stringify(userLeagues));
       }
       toast.success(`Вы вступили в лигу "${leagueInviteData.leagueName}"`);
-      navigate('/league');
+      navigate("/league");
     }
   };
 
@@ -167,16 +165,53 @@ const Index = () => {
 
   // Define all leagues data for sorting
   const allLeagues = [
-    { id: "football-belarus", title: "Футбол", section: "section-football", iconImage: iconFootball, leagueIcon: leagueLogo, league: "Беларусь", participants: 26130, date: "04.04", time: "19.00", glowColor: "120 85% 55%", href: "/create-team", comingSoon: false },
-    { id: "basketball", title: "Баскетбол", section: "section-basketball", iconImage: iconBasketball, glowColor: "35 85% 55%", comingSoon: true, comingSoonYear: "2026" },
-    { id: "hockey", title: "Хоккей", section: "section-hockey", iconImage: iconHockey, glowColor: "200 85% 55%", comingSoon: true, comingSoonYear: "2028" },
-    { id: "cs2", title: "Counter-Strike 2", section: "section-cs2", iconImage: iconCs2, glowColor: "0 85% 55%", comingSoon: true, comingSoonYear: "2029" },
+    {
+      id: "football-belarus",
+      title: "Футбол",
+      section: "section-football",
+      iconImage: iconFootball,
+      leagueIcon: leagueLogo,
+      league: "Беларусь",
+      participants: 26130,
+      date: "04.04",
+      time: "19.00",
+      glowColor: "120 85% 55%",
+      href: "/create-team",
+      comingSoon: false,
+    },
+    {
+      id: "basketball",
+      title: "Баскетбол",
+      section: "section-basketball",
+      iconImage: iconBasketball,
+      glowColor: "35 85% 55%",
+      comingSoon: true,
+      comingSoonYear: "2026",
+    },
+    {
+      id: "hockey",
+      title: "Хоккей",
+      section: "section-hockey",
+      iconImage: iconHockey,
+      glowColor: "200 85% 55%",
+      comingSoon: true,
+      comingSoonYear: "2028",
+    },
+    {
+      id: "cs2",
+      title: "Counter-Strike 2",
+      section: "section-cs2",
+      iconImage: iconCs2,
+      glowColor: "0 85% 55%",
+      comingSoon: true,
+      comingSoonYear: "2029",
+    },
   ];
 
   // Sort leagues based on selected option
   const getSortedLeagues = () => {
     const leagues = [...allLeagues];
-    
+
     switch (selectedSort) {
       case "Избранные":
         return leagues.sort((a, b) => {
@@ -198,7 +233,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SportHeader />
-      <PromoBanner />
+      {/* <PromoBanner /> */}
 
       <div className="px-4 mt-6">
         <h2
