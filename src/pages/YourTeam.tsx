@@ -118,6 +118,7 @@ const YourTeam = () => {
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={() => {}}
+            showPrice={false}
           />
         </div>
       )}
