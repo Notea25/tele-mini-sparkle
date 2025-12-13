@@ -7,7 +7,7 @@ import field1523 from "@/assets/field-1-5-2-3.png";
 import field1532 from "@/assets/field-1-5-3-2.png";
 import field1541 from "@/assets/field-1-5-4-1.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
-import { X, ArrowLeftRight, Plus } from "lucide-react";
+import { X, ArrowLeftRight } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation, FormationKey } from "@/lib/formationUtils";
 
 const FIELD_IMAGES: Record<string, string> = {
@@ -127,16 +127,9 @@ const FormationFieldManagement = ({
 
   const renderEmptySlot = (position: string, isOnBench: boolean, slotIndex: number) => (
     <div
-      className="flex flex-col items-center cursor-pointer hover:opacity-90"
+      className="w-12 h-16 cursor-pointer"
       onClick={() => onEmptySlotClick?.(position, isOnBench, slotIndex)}
-    >
-      <span className="text-white/80 text-[11px] font-medium mb-1">
-        {position}
-      </span>
-      <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
-        <Plus className="w-4 h-4 text-black/70" />
-      </div>
-    </div>
+    />
   );
 
   return (
