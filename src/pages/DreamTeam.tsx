@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
-import homeIcon from "@/assets/home-icon.png";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface PlayerData {
   id: number;
@@ -65,20 +65,14 @@ const DreamTeam = () => {
 
       {/* Breadcrumb */}
       <div className="px-4 mt-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <img 
-            src={homeIcon} 
-            alt="Home" 
-            className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity" 
-            onClick={() => navigate("/")}
-          />
-          <ChevronRight className="w-3 h-3" />
-          <span>Футбол</span>
-          <ChevronRight className="w-3 h-3" />
-          <span>Беларусь</span>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-primary">{teamName}</span>
-        </div>
+        <Breadcrumbs
+          items={[
+            { label: "Футбол", path: "/" },
+            { label: "Беларусь", path: "/" },
+            { label: "Лига", path: "/league" },
+            { label: teamName },
+          ]}
+        />
       </div>
 
       {/* Team Name */}

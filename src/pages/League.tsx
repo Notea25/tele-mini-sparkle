@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, ChevronRight, ChevronDown, ChevronUp, User, ArrowRight } from "lucide-react";
+import { Pencil, ChevronDown, ChevronUp, User, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
-import homeIcon from "@/assets/home-icon.png";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import btnTeam from "@/assets/btn-team.png";
 import btnTransfers from "@/assets/btn-transfers.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -177,17 +177,13 @@ const League = () => {
 
       <main className="flex-1 px-4 pb-6 overflow-x-hidden">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
-          <img
-            src={homeIcon}
-            alt="Home"
-            className="w-4 h-4 cursor-pointer hover:opacity-80"
-            onClick={() => navigate("/")}
+        <div className="py-4">
+          <Breadcrumbs
+            items={[
+              { label: "Футбол", path: "/" },
+              { label: "Беларусь" },
+            ]}
           />
-          <ChevronRight className="w-3 h-3" />
-          <span>Футбол</span>
-          <ChevronRight className="w-3 h-3" />
-          <span>Беларусь</span>
         </div>
 
         {/* Tabs */}

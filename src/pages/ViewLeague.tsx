@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronRight, Copy, User } from "lucide-react";
+import { Copy, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import homeIcon from "@/assets/home-icon.png";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
@@ -114,19 +114,15 @@ const ViewLeague = () => {
       
       <main className="flex-1 px-4 pb-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
-          <img
-            src={homeIcon}
-            alt="Home"
-            className="w-4 h-4 cursor-pointer hover:opacity-80"
-            onClick={() => navigate("/")}
+        <div className="py-4">
+          <Breadcrumbs
+            items={[
+              { label: "Футбол", path: "/" },
+              { label: "Беларусь", path: "/" },
+              { label: "Лига", path: "/league" },
+              { label: leagueName },
+            ]}
           />
-          <ChevronRight className="w-3 h-3" />
-          <span>Футбол</span>
-          <ChevronRight className="w-3 h-3" />
-          <span>Беларусь</span>
-          <ChevronRight className="w-3 h-3" />
-          <span>{leagueName}</span>
         </div>
 
         {/* League Title with Owner Badge */}
