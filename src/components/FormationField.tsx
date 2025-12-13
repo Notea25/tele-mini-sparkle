@@ -1,6 +1,6 @@
 import footballFieldAll from "@/assets/field-all-positions.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
-import { X, Plus } from "lucide-react";
+import { X } from "lucide-react";
 import tag from "@/assets/tag.webp";
 
 interface PlayerData {
@@ -180,16 +180,9 @@ const FormationField = ({
               </div>
             ) : (
               <div
-                className="flex flex-col items-center cursor-pointer hover:opacity-90"
+                className="w-12 h-16 cursor-pointer"
                 onClick={() => onEmptySlotClick?.(slot.position)}
-              >
-                <span className="text-white/80 text-[11px] font-medium mb-1">
-                  {slot.position}
-                </span>
-                <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
-                  <Plus className="w-4 h-4 text-black/70" />
-                </div>
-              </div>
+              />
             )}
           </div>
         );
