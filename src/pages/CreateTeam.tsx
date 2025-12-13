@@ -119,7 +119,7 @@ const CreateTeam = () => {
       </div>
 
       {/* Team Creation Form */}
-      {/* <div className="px-4 mt-6 space-y-3">
+      <div className="px-4 mt-6 space-y-3">
         <div className="font-unbounded font-normal not-italic text-2xl leading-[130%] tracking-normal text-white">
           Создай свою команду <br />в Высшей лиге <br />
           Беларуси
@@ -136,37 +136,7 @@ const CreateTeam = () => {
           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xs pointer-events-none">
             {teamName.length}/{MAX_NAME_LENGTH}
           </div>
-        </div> */}
-      <div className="px-4 mt-6 space-y-3">
-  <div className="font-unbounded font-normal not-italic text-2xl leading-[130%] tracking-normal text-white">
-    Создай свою команду <br />в Высшей лиге <br />
-    Беларуси
-  </div>
-  {/* Team Name Input */}
-  <div className="relative">
-    <Input
-      placeholder="Название команды"
-      value={teamName}
-      onChange={(e) => handleNameChange(e.target.value)}
-      maxLength={MAX_NAME_LENGTH}
-      className={`w-full h-14 text-[12px] pl-4 transition-colors duration-200 ${
-        isActive 
-          ? "text-white placeholder:text-white/70" 
-          : "text-foreground placeholder:text-[#4B485F]"
-      }`}
-      style={{
-        backgroundColor: "#1A1924",
-        borderColor: isActive ? "rgba(255, 255, 255, 0.2)" : "#2D2B3E",
-        borderRadius: "12px",
-      }}
-      onFocus={() => setIsActive(true)}
-      onBlur={() => setIsActive(false)}
-    />
-    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xs pointer-events-none">
-      {teamName.length}/{MAX_NAME_LENGTH}
-    </div>
-  </div>
-</div>
+        </div>
 
         {/* Favorite Team Select */}
         <Select value={favoriteTeam} onValueChange={setFavoriteTeam}>
