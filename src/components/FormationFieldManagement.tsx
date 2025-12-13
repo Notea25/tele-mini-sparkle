@@ -93,34 +93,25 @@ const FormationFieldManagement = ({
           alt={player.name}
           className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
         />
-        {/* Price and points tag */}
-        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-0.5">
-          <span className="bg-[#B855E4] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-            {(player.price || 6.5).toFixed(1).replace('.', ',')}
-          </span>
-          <span className="bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-            {player.points}
-          </span>
-        </div>
       </div>
       
-      {/* Position and name */}
+      {/* Player info card */}
       <div 
-        className="flex items-center gap-0.5 mt-1.5 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5 min-w-max"
+        className="mt-0.5 cursor-pointer hover:opacity-80 rounded-md shadow-sm overflow-hidden"
         onClick={() => onPlayerClick?.(player)}
       >
-        <span className="text-black/60 text-[9px] font-medium">
-          {player.position}
-        </span>
-        <span className="text-black text-[9px] font-medium whitespace-nowrap">
-          {player.name}
-        </span>
-      </div>
-      
-      {/* Club badge */}
-      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5">
-        <span>(Д)</span>
-        <span className="whitespace-nowrap">{player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
+        <div className="flex items-center justify-center bg-white px-2 py-1 min-w-[60px]">
+          <span className="text-[9px] font-bold truncate text-[#212121]">
+            {player.name}
+          </span>
+        </div>
+
+        <div className="bg-secondary px-2 py-1 flex items-center justify-center min-w-[60px]">
+          <span className="text-[8px] font-bold flex items-center gap-0.5">
+            <span className="text-muted-foreground">(Д)</span>
+            <span className="text-foreground">{player.team.length > 9 ? player.team.substring(0, 8) + "..." : player.team}</span>
+          </span>
+        </div>
       </div>
     </div>
   );
