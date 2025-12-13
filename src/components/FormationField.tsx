@@ -181,13 +181,15 @@ const FormationField = ({
               </div>
             ) : (
               <div
-                className="relative cursor-pointer hover:opacity-80"
+                className="cursor-pointer hover:opacity-80 w-[60px] h-[80px] sm:w-[70px] sm:h-[95px] flex flex-col items-center justify-center"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
-                <img src={playerJerseyWhite} alt="Player" className="w-8 h-8 sm:w-9 sm:h-9" />
-                <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium -translate-x-0.5">
+                <span className="text-white/90 text-sm sm:text-base font-medium mb-1">
                   {slot.position}
                 </span>
+                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/90 flex items-center justify-center">
+                  <span className="text-[#3d5a1f] text-lg font-bold">+</span>
+                </div>
               </div>
             )}
           </div>
