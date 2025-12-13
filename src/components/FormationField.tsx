@@ -137,11 +137,13 @@ const FormationField = ({
                   </button>
                 )}
 
-                {/* Jersey */}
-                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[105%] aspect-square object-contain" />
+                {/* Jersey - grows to fill space */}
+                <div className="flex-1 flex items-center justify-center w-full">
+                  <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[105%] object-contain" />
+                </div>
 
-                {/* Player name and club blocks - overlapping jersey bottom */}
-                <div className="rounded-[3px] overflow-hidden w-full -mt-[32%] relative z-10">
+                {/* Player name and club blocks - absolute bottom */}
+                <div className="w-full">
                   <div className="bg-white px-[4%] py-[2%]">
                     <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
                       {truncateName(assignedPlayer.name, 9)}
