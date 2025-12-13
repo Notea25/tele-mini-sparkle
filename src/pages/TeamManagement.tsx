@@ -16,7 +16,7 @@ import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
 import flameIcon from "@/assets/flame-icon.png";
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
-import icon3x from "@/assets/icon-3x.png";
+import icon3xBoost from "@/assets/icon-3x-boost.png";
 import iconStar from "@/assets/icon-star.png";
 import iconFree from "@/assets/icon-free.png";
 import icon2x from "@/assets/icon-2x.png";
@@ -37,7 +37,7 @@ import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
 // Special chips data with icons
 const initialChips: BoostChip[] = [
   { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Подробнее", status: "available" },
-  { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
+  { id: "captain3x", icon: icon3xBoost, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
   { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
   { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
   { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
