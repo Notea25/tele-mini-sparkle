@@ -34,6 +34,7 @@ interface FormationFieldManagementProps {
   isBenchBoostActive?: boolean;
   isDoublePowerBoostActive?: boolean;
   isCaptain3xBoostActive?: boolean;
+  showPrice?: boolean;
 }
 
 const truncateName = (text: string, maxLength: number) => {
@@ -55,7 +56,8 @@ const FormationFieldManagement = ({
   viceCaptain,
   isBenchBoostActive = false,
   isDoublePowerBoostActive = false,
-  isCaptain3xBoostActive = false
+  isCaptain3xBoostActive = false,
+  showPrice = true
 }: FormationFieldManagementProps) => {
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -110,11 +112,13 @@ const FormationFieldManagement = ({
         ) : null}
 
       {/* Price centered */}
-      <div className="w-full flex items-center justify-center pt-1 pb-0.5">
-        <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
-          ${(player.price || 9).toFixed(1)}
-        </span>
-      </div>
+      {showPrice && (
+        <div className="w-full flex items-center justify-center pt-1 pb-0.5">
+          <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
+            ${(player.price || 9).toFixed(1)}
+          </span>
+        </div>
+      )}
 
       {/* Jersey - larger size, overlaps name/club below */}
       <img src={playerJerseyNew} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
