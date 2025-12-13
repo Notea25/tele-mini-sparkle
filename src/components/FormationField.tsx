@@ -159,19 +159,19 @@ const FormationField = ({
                 </div>
 
                 <div
-                  className="mt-0.5 cursor-pointer hover:opacity-80 rounded-md shadow-sm overflow-hidden"
+                  className="mt-0.5 cursor-pointer hover:opacity-80 rounded-lg overflow-hidden"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <div className="flex items-center justify-center bg-white px-2 py-1 min-w-[60px]">
-                    <span className="text-[9px] font-bold truncate text-[#212121]">
+                  <div className="flex items-center justify-center bg-white px-3 py-1.5 min-w-[70px]">
+                    <span className="text-[10px] font-bold truncate text-[#1a1a1a]">
                       {assignedPlayer.name}
                     </span>
                   </div>
 
-                  <div className="bg-primary px-2 py-1 flex items-center justify-center min-w-[60px]">
-                    <span className="text-[8px] font-bold flex items-center gap-0.5">
-                      <span className="text-muted-foreground">(Д)</span>
-                      <span className="text-[#212121]">{lengthCorrectFoo(assignedPlayer.team, 9, 8)}</span>
+                  <div className="bg-[#2a2a2e] px-3 py-1.5 flex items-center justify-center min-w-[70px]">
+                    <span className="text-[9px] font-semibold flex items-center gap-1">
+                      <span className="text-[#7a7a7a]">(Д)</span>
+                      <span className="text-white">{lengthCorrectFoo(assignedPlayer.team, 10, 9)}</span>
                     </span>
                   </div>
                 </div>

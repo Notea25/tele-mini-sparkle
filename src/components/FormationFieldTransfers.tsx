@@ -93,19 +93,19 @@ const FormationFieldTransfers = ({
       
       {/* Player info card */}
       <div 
-        className="mt-0.5 cursor-pointer hover:opacity-80 rounded-md shadow-sm overflow-hidden"
+        className="mt-0.5 cursor-pointer hover:opacity-80 rounded-lg overflow-hidden"
         onClick={() => onPlayerClick?.(player)}
       >
-        <div className="flex items-center justify-center bg-white px-2 py-1 min-w-[60px]">
-          <span className="text-[9px] font-bold truncate text-[#212121]">
+        <div className="flex items-center justify-center bg-white px-3 py-1.5 min-w-[70px]">
+          <span className="text-[10px] font-bold truncate text-[#1a1a1a]">
             {player.name}
           </span>
         </div>
 
-        <div className="bg-secondary px-2 py-1 flex items-center justify-center min-w-[60px]">
-          <span className="text-[8px] font-bold flex items-center gap-0.5">
-            <span className="text-muted-foreground">(Д)</span>
-            <span className="text-foreground">{player.team.length > 9 ? player.team.substring(0, 8) + "..." : player.team}</span>
+        <div className="bg-[#2a2a2e] px-3 py-1.5 flex items-center justify-center min-w-[70px]">
+          <span className="text-[9px] font-semibold flex items-center gap-1">
+            <span className="text-[#7a7a7a]">(Д)</span>
+            <span className="text-white">{player.team.length > 10 ? player.team.substring(0, 9) + "..." : player.team}</span>
           </span>
         </div>
       </div>
