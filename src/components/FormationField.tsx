@@ -114,14 +114,12 @@ const FormationField = ({
             }}
           >
             {isOccupied ? (
-              // Occupied slot with player - matches empty slot size
-              <div className="w-[52px] relative flex flex-col items-center cursor-pointer" onClick={() => onPlayerClick?.(assignedPlayer)}>
+              // Occupied slot with player - same size as empty slot
+              <div className="w-[52px] h-[72px] relative flex flex-col items-center cursor-pointer" onClick={() => onPlayerClick?.(assignedPlayer)}>
                 {/* Price tag - top, no background */}
-                <div className="mb-0.5">
-                  <span className="text-white text-[10px] font-bold drop-shadow-md">
-                    $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
-                  </span>
-                </div>
+                <span className="text-white text-[10px] font-bold drop-shadow-md whitespace-nowrap">
+                  $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
+                </span>
 
                 {/* Delete button - top right, gray background */}
                 {onRemovePlayer && (
@@ -130,9 +128,9 @@ const FormationField = ({
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute top-0 -right-3 z-50 w-5 h-5 flex items-center justify-center bg-[#4a4a5a] rounded-full"
+                    className="absolute top-0 -right-2 z-50 w-4 h-4 flex items-center justify-center bg-[#4a4a5a] rounded-full"
                   >
-                    <X className="w-3 h-3 text-white" />
+                    <X className="w-2.5 h-2.5 text-white" />
                   </button>
                 )}
 
@@ -140,22 +138,20 @@ const FormationField = ({
                 <img
                   src={playerJerseyNew}
                   alt={assignedPlayer.name}
-                  className="w-12 h-12 object-contain"
+                  className="w-10 h-10 object-contain"
                 />
 
                 {/* Player name and club blocks - overlapping jersey bottom */}
-                <div className="rounded-[4px] overflow-hidden w-full -mt-2 relative z-10">
-                  <div className="flex items-center justify-center bg-white px-1 py-0.5">
-                    <span className="text-[8px] font-semibold text-black truncate">
-                      {truncateName(assignedPlayer.name, 10)}
+                <div className="rounded-[3px] overflow-hidden w-full -mt-1.5 relative z-10">
+                  <div className="bg-white px-0.5 py-px">
+                    <span className="text-[7px] font-semibold text-black block truncate whitespace-nowrap text-center">
+                      {truncateName(assignedPlayer.name, 9)}
                     </span>
                   </div>
-
-                  {/* Club name block - dark background */}
-                  <div className="bg-[#1a1a2e] px-1 py-0.5 flex items-center justify-center">
-                    <span className="text-[7px] font-medium flex items-center gap-0.5">
+                  <div className="bg-[#1a1a2e] px-0.5 py-px">
+                    <span className="text-[6px] font-medium block truncate whitespace-nowrap text-center">
                       <span className="text-[#7D7A94]">(Д)</span>
-                      <span className="text-white">{truncateName(assignedPlayer.team, 8)}</span>
+                      <span className="text-white ml-0.5">{truncateName(assignedPlayer.team, 7)}</span>
                     </span>
                   </div>
                 </div>
