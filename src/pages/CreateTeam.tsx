@@ -126,7 +126,7 @@ const [isSelectOpen, setIsSelectOpen] = useState(false);
           Создай свою команду <br />в Высшей лиге <br />
           Беларуси
         </div>
-        {/* <div className="relative">
+        <div className="relative">
           <Input
             placeholder="Название команды"
             value={teamName}
@@ -163,55 +163,7 @@ const [isSelectOpen, setIsSelectOpen] = useState(false);
             <SelectItem value="torpedo">Торпедо-БелАЗ</SelectItem>
           </SelectContent>
         </Select> */}
-        <div className="relative">
-  <Input
-    placeholder="Название команды"
-    value={teamName}
-    onChange={(e) => handleNameChange(e.target.value)}
-    maxLength={MAX_NAME_LENGTH}
-    onFocus={() => setIsInputFocused(true)}
-    onBlur={() => setIsInputFocused(false)}
-    className={`w-full h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546] transition-colors duration-200 ${
-      isInputFocused || teamName ? 'text-white' : 'text-[#4B485F]'
-    }`}
-  />
-  <div className={`absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal not-italic text-[12px] tracking-normal pointer-events-none transition-colors duration-200 ${
-    isInputFocused || teamName ? 'text-white' : 'text-[#4B485F]'
-  }`}>
-    {teamName.length}/{MAX_NAME_LENGTH}
-  </div>
-</div>
-
-{/* Favorite Team Select */}
-<Select 
-  value={favoriteTeam} 
-  onValueChange={setFavoriteTeam}
-  onOpenChange={setIsSelectOpen}
->
-  <SelectTrigger className={`w-full h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546] transition-colors duration-200 ${
-    isSelectOpen || favoriteTeam ? 'text-white' : 'text-[#4B485F]'
-  }`}>
-    <SelectValue placeholder="За какую команду болеешь?" />
-  </SelectTrigger>
-  <SelectContent className="bg-card border-border">
-    <SelectItem value="arsenal">Арсенал</SelectItem>
-    <SelectItem value="baranovichi">Барановичи</SelectItem>
-    <SelectItem value="bate">БАТЭ</SelectItem>
-    <SelectItem value="belshina">Белшина</SelectItem>
-    <SelectItem value="vitebsk">Витебск</SelectItem>
-    <SelectItem value="gomel">Гомель</SelectItem>
-    <SelectItem value="dinamo-brest">Динамо-Брест</SelectItem>
-    <SelectItem value="dinamo-minsk">Динамо-Минск</SelectItem>
-    <SelectItem value="dnepr-mogilev">Днепр-Могилев</SelectItem>
-    <SelectItem value="isloch">Ислочь</SelectItem>
-    <SelectItem value="minsk">Минск</SelectItem>
-    <SelectItem value="ml">МЛ Витебск</SelectItem>
-    <SelectItem value="naftan-novopolotsk">Нафтан-Новополоцк</SelectItem>
-    <SelectItem value="neman">Неман</SelectItem>
-    <SelectItem value="slavia">Славия-Мозырь</SelectItem>
-    <SelectItem value="torpedo">Торпедо-БелАЗ</SelectItem>
-  </SelectContent>
-</Select>
+        
 
         {/* Create Team Button */}
         <Button
