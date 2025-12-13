@@ -81,7 +81,7 @@ const FormationFieldTransfers = ({
     >
       {/* Price tag - top, no background */}
       <span className="text-white text-[clamp(6px,2vw,10px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
-        $ {(player.price || 9).toFixed(1).replace(".", ",")}
+        ${(player.price || 9).toFixed(1)}
       </span>
 
       {/* Delete button - top right, gray background */}

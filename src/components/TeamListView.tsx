@@ -95,7 +95,7 @@ const TeamListView = ({
                 
                 {/* Price - fixed width */}
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">
-                  {slot.player.price?.toFixed(1).replace('.', ',')}
+                  {slot.player.price?.toFixed(1)}
                 </span>
                 
                 {/* Remove button - fixed width */}
