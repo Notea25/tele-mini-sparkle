@@ -1,8 +1,26 @@
-import footballField from "@/assets/football-field.png";
+import field1343 from "@/assets/field-1-3-4-3.png";
+import field1352 from "@/assets/field-1-3-5-2.png";
+import field1433 from "@/assets/field-1-4-3-3.png";
+import field1442 from "@/assets/field-1-4-4-2.png";
+import field1451 from "@/assets/field-1-4-5-1.png";
+import field1523 from "@/assets/field-1-5-2-3.png";
+import field1532 from "@/assets/field-1-5-3-2.png";
+import field1541 from "@/assets/field-1-5-4-1.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
 import playerJerseyWhite from "@/assets/player-jersey-white.png";
 import { X, ArrowLeftRight } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation, FormationKey } from "@/lib/formationUtils";
+
+const FIELD_IMAGES: Record<string, string> = {
+  "1-3-4-3": field1343,
+  "1-3-5-2": field1352,
+  "1-4-3-3": field1433,
+  "1-4-4-2": field1442,
+  "1-4-5-1": field1451,
+  "1-5-2-3": field1523,
+  "1-5-3-2": field1532,
+  "1-5-4-1": field1541,
+};
 
 interface PlayerData {
   id: number;
@@ -125,9 +143,9 @@ const FormationFieldManagement = ({
       {/* Football Field */}
       <div className="relative w-full">
         <img
-          src={footballField}
+          src={FIELD_IMAGES[currentFormation] || field1442}
           alt="Football field"
-          className="w-full rounded-2xl"
+          className="w-full"
         />
         
         {formation.map((slot, idx) => {
