@@ -125,7 +125,7 @@ const CreateTeam = () => {
           Беларуси
         </div>
         {/* Team Name Input */}
-        <div className="relative">
+        {/* <div className="relative">
           <Input
             placeholder="Название команды"
             value={teamName}
@@ -136,7 +136,7 @@ const CreateTeam = () => {
           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xs pointer-events-none">
             {teamName.length}/{MAX_NAME_LENGTH}
           </div>
-        </div>
+        </div> */}
 
         {/* Favorite Team Select */}
         <Select value={favoriteTeam} onValueChange={setFavoriteTeam}>
