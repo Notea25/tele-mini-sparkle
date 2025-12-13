@@ -520,7 +520,6 @@ const TeamManagement = () => {
             captain={captain}
             viceCaptain={viceCaptain}
             isCaptain3xActive={specialChips.find(c => c.id === "captain3x")?.status === "pending"}
-            isDoublePowerActive={specialChips.find(c => c.id === "double")?.status === "pending"}
           />
         </div>
       ) : (
