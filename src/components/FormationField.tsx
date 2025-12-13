@@ -116,11 +116,11 @@ const FormationField = ({
             {isOccupied ? (
               // Occupied slot with player
               <div
-                className="w-[52px] aspect-[52/72] relative flex flex-col items-center cursor-pointer border border-white rounded-lg overflow-hidden"
+                className="w-[60px] aspect-[60/82] relative flex flex-col items-center cursor-pointer border border-white rounded-lg overflow-hidden"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Price tag - top, no background */}
-                <span className="text-white text-[clamp(6px,2vw,10px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
+                <span className="text-white text-[clamp(7px,2vw,11px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
                   $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
                 </span>
 
@@ -131,17 +131,17 @@ const FormationField = ({
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#4a4a5a] rounded-full"
+                    className="absolute top-1 right-1 z-50 w-3.5 h-3.5 flex items-center justify-center bg-[#4a4a5a] rounded-full"
                   >
-                    <X className="w-2 h-2 text-white" />
+                    <X className="w-2.5 h-2.5 text-white" />
                   </button>
                 )}
 
                 {/* Jersey */}
-                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[90%] aspect-square object-contain" />
+                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[105%] aspect-square object-contain" />
 
                 {/* Player name and club blocks - overlapping jersey bottom */}
-                <div className="rounded-[3px] overflow-hidden w-full -mt-[20%] relative z-10">
+                <div className="rounded-[3px] overflow-hidden w-full -mt-[32%] relative z-10">
                   <div className="bg-white px-[4%] py-[2%]">
                     <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
                       {truncateName(assignedPlayer.name, 9)}
@@ -158,10 +158,10 @@ const FormationField = ({
             ) : (
               // Empty slot - dashed border, position label, + button
               <div
-                className="w-[52px] aspect-[3/4] rounded-lg border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+                className="w-[60px] aspect-[3/4] rounded-lg border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
-                <span className="text-white font-bold text-[clamp(10px,3vw,16px)]">
+                <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">
                   {slot.position}
                 </span>
                 <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
