@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
-import homeIcon from "@/assets/home-icon.png";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import flameIcon from "@/assets/flame-icon.png";
 import icon2x from "@/assets/icon-2x.png";
 import iconStar from "@/assets/icon-star.png";
@@ -474,24 +474,20 @@ const Transfers = () => {
         onDiscardChanges={handleExitWithoutSaving}
       />
 
+      {/* Breadcrumb */}
+      <div className="px-4 mt-4">
+        <Breadcrumbs
+          items={[
+            { label: "Футбол", path: "/" },
+            { label: "Беларусь", path: "/" },
+            { label: "Лига", path: "/league" },
+            { label: "Трансферы" },
+          ]}
+        />
+      </div>
+
       {/* Team Header */}
-      <div className="px-4 mt-6">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <img 
-              src={homeIcon} 
-              alt="Home" 
-              className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity" 
-              onClick={handleHomeClick}
-            />
-            <span>▸</span>
-            <span>Футбол</span>
-            <span>▸</span>
-            <span>Беларусь</span>
-            <span>▸</span>
-            <span className="text-muted-foreground">Трансферы</span>
-          </div>
-        </div>
+      <div className="px-4 mt-4">
         
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>

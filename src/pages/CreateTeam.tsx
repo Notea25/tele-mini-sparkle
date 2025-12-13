@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
@@ -105,17 +106,15 @@ const CreateTeam = () => {
       {/* Header */}
       <SportHeader />
 
-      {/* Back Button */}
+      {/* Breadcrumbs */}
       <div className="px-4 mt-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-foreground hover:text-primary"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Назад</span>
-        </Button>
+        <Breadcrumbs
+          items={[
+            { label: "Футбол", path: "/" },
+            { label: "Беларусь", path: "/" },
+            { label: "Создание команды" },
+          ]}
+        />
       </div>
 
       {/* Hero Banner */}

@@ -12,11 +12,11 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
-  ArrowLeft,
   Pencil,
   ChevronsUpDown,
   ChevronUp,
 } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
@@ -569,36 +569,20 @@ const TeamBuilder = () => {
         onDiscardChanges={handleDiscardChanges}
       />
 
-      {/* Back Button */}
+      {/* Breadcrumbs */}
       <div className="px-4 mt-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate("/create-team")}
-          className="flex items-center gap-2 text-foreground hover:text-primary"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Назад</span>
-        </Button>
+        <Breadcrumbs
+          items={[
+            { label: "Футбол", path: "/" },
+            { label: "Беларусь", path: "/" },
+            { label: "Создание команды", path: "/create-team" },
+            { label: teamName },
+          ]}
+        />
       </div>
 
       {/* Team Header */}
       <div className="px-4 mt-6">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <img
-              src={homeIcon}
-              alt="Home"
-              className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => navigate("/")}
-            />
-            <span>Футбол</span>
-            <span>•</span>
-            <span>Беларусь</span>
-            <span>•</span>
-            <span className="text-primary">{teamName}</span>
-          </div>
-        </div>
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
           <Button
