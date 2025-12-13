@@ -501,18 +501,20 @@ const TeamBuilder = () => {
 
       if (slotsToFill <= 0) return;
 
-      // Get available players for this position (not already selected), shuffled randomly
-      const availablePlayers = shuffleArray(
-        players.filter((p) => p.position === position && !selectedIdsSet.has(p.id)),
+      // Get available players for this position (not already selected)
+      const availablePlayersForPosition = players.filter(
+        (p) => p.position === position && !selectedIdsSet.has(p.id)
       );
 
+      // Shuffle first for randomness, then we'll pick smartly
+      const shuffledPlayers = shuffleArray(availablePlayersForPosition);
+
       let added = 0;
-      for (const player of availablePlayers) {
+      for (const player of shuffledPlayers) {
         if (added >= slotsToFill) break;
 
         const currentClubCount = clubCounts[player.team] || 0;
         if (totalCost + player.price <= BUDGET && currentClubCount < MAX_PLAYERS_PER_CLUB) {
-          // Find next available slot for this position
           let slotIndex = 0;
           while (usedSlotsByPosition[position].includes(slotIndex)) {
             slotIndex++;
@@ -523,6 +525,32 @@ const TeamBuilder = () => {
           totalCost += player.price;
           clubCounts[player.team] = currentClubCount + 1;
           added++;
+        }
+      }
+
+      // If we couldn't fill all slots due to budget, try again with cheapest players
+      if (added < slotsToFill) {
+        const remainingSlots = slotsToFill - added;
+        const cheapestPlayers = availablePlayersForPosition
+          .filter((p) => !selectedIdsSet.has(p.id))
+          .sort((a, b) => a.price - b.price);
+
+        for (const player of cheapestPlayers) {
+          if (added >= slotsToFill) break;
+
+          const currentClubCount = clubCounts[player.team] || 0;
+          if (totalCost + player.price <= BUDGET && currentClubCount < MAX_PLAYERS_PER_CLUB) {
+            let slotIndex = 0;
+            while (usedSlotsByPosition[position].includes(slotIndex)) {
+              slotIndex++;
+            }
+            newSelectedPlayers.push({ id: player.id, slotIndex });
+            usedSlotsByPosition[position].push(slotIndex);
+            selectedIdsSet.add(player.id);
+            totalCost += player.price;
+            clubCounts[player.team] = currentClubCount + 1;
+            added++;
+          }
         }
       }
     });
