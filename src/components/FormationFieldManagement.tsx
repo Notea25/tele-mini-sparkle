@@ -5,6 +5,7 @@ import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
 import iconBench from "@/assets/icon-bench.png";
 import icon2x from "@/assets/icon-2x-new.png";
+import icon3x from "@/assets/icon-3x-new.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -32,6 +33,7 @@ interface FormationFieldManagementProps {
   viceCaptain?: number | null;
   isBenchBoostActive?: boolean;
   isDoublePowerBoostActive?: boolean;
+  isCaptain3xBoostActive?: boolean;
 }
 
 const truncateName = (text: string, maxLength: number) => {
@@ -52,7 +54,8 @@ const FormationFieldManagement = ({
   captain,
   viceCaptain,
   isBenchBoostActive = false,
-  isDoublePowerBoostActive = false
+  isDoublePowerBoostActive = false,
+  isCaptain3xBoostActive = false
 }: FormationFieldManagementProps) => {
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -63,14 +66,19 @@ const FormationFieldManagement = ({
   };
 
   const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => {
-    const isCaptainOrVice = captain === player.id || viceCaptain === player.id;
+    const isCaptain = captain === player.id;
+    const isViceCaptain = viceCaptain === player.id;
+    const isCaptainOrVice = isCaptain || isViceCaptain;
     const showDoublePowerBorder = isDoublePowerBoostActive && isCaptainOrVice;
     const showDoublePowerIcon = isDoublePowerBoostActive && isCaptainOrVice && !isOnBench;
+    const showCaptain3xBorder = isCaptain3xBoostActive && isCaptain;
+    const showCaptain3xIcon = isCaptain3xBoostActive && isCaptain && !isOnBench;
+    const hasGreenBorder = showDoublePowerBorder || showCaptain3xBorder;
 
     return (
       <div
         className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${
-          showDoublePowerBorder ? "border-primary" : "border-white/60"
+          hasGreenBorder ? "border-primary" : "border-white/60"
         }`}
         onClick={() => onPlayerClick?.(player)}
       >
@@ -82,8 +90,10 @@ const FormationFieldManagement = ({
           <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
         )}
 
-        {/* Double Power boost badge for captain/vice-captain, or Bench boost badge, or Swap button */}
-        {showDoublePowerIcon ? (
+        {/* Boost badges for captain/vice-captain, or Bench boost badge, or Swap button */}
+        {showCaptain3xIcon ? (
+          <img src={icon3x} alt="3x" className="absolute top-[3px] right-1 z-50 w-3 h-3" />
+        ) : showDoublePowerIcon ? (
           <img src={icon2x} alt="2x" className="absolute top-[3px] right-1 z-50 w-3 h-3" />
         ) : showActionButton && isOnBench && isBenchBoostActive ? (
           <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
