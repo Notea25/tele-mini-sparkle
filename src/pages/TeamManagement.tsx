@@ -621,6 +621,11 @@ const TeamManagement = () => {
           isViceCaptain={viceCaptain === selectedPlayerForCard}
           onSetCaptain={setCaptain}
           onSetViceCaptain={setViceCaptain}
+          variant="management"
+          onSwap={(playerId) => {
+            setSelectedPlayerForCard(null);
+            handlePlayerSwap(playerId);
+          }}
         />
       )}
 
