@@ -3,8 +3,8 @@ import playerJerseyNew from "@/assets/player-jersey-new.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
-import icon3xGreen from "@/assets/icon-2x.png"; // Using green coin style for 3x badge
-import icon2xWhite from "@/assets/icon-2x-white.png";
+import icon3x from "@/assets/icon-3x.png";
+import icon2x from "@/assets/icon-2x.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -83,12 +83,12 @@ const FormationFieldManagement = ({
 
       {/* 3x badge for captain with boost active - same size as captain badge */}
       {isCaptainWith3x(player.id) && (
-        <img src={icon3xGreen} alt="3x" className="absolute top-[6px] right-1 z-50 h-[6px] w-auto" />
+        <img src={icon3x} alt="3x" className="absolute top-[6px] right-1 z-50 h-[6px] w-auto" />
       )}
 
       {/* 2x badge for captain/vice-captain with double power boost active */}
       {isCaptainOrViceWithDoublePower(player.id) && !isCaptainWith3x(player.id) && (
-        <img src={icon2xWhite} alt="2x" className="absolute top-[6px] right-1 z-50 h-[6px] w-auto" />
+        <img src={icon2x} alt="2x" className="absolute top-[6px] right-1 z-50 h-[6px] w-auto" />
       )}
 
       {/* Swap button - same size as captain badges */}
