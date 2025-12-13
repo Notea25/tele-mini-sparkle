@@ -932,7 +932,7 @@ const TeamBuilder = () => {
 
               {/* Price - fixed width */}
               <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">
-                {player.price.toFixed(1).replace(".", ",")}
+                {player.price.toFixed(1)}
               </span>
 
               {/* Add/Remove button */}

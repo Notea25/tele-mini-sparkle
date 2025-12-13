@@ -135,7 +135,7 @@ const FormationField = ({
                 {/* Price centered */}
                 <div className="w-full flex items-center justify-center pt-1 pb-0.5">
                   <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
-                    $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
+                    ${(assignedPlayer.price || 9).toFixed(1)}
                   </span>
                 </div>
 
