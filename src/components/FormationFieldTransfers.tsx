@@ -1,7 +1,6 @@
 import footballFieldAll from "@/assets/field-all-positions.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
-import playerJerseyWhite from "@/assets/player-jersey-white.png";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
 
 interface PlayerData {
   id: number;
@@ -124,13 +123,15 @@ const FormationFieldTransfers = ({
 
   const renderEmptySlot = (position: string, slotIndex: number) => (
     <div
-      className="relative cursor-pointer hover:opacity-80"
+      className="flex flex-col items-center cursor-pointer hover:opacity-90"
       onClick={() => onEmptySlotClick?.(position, slotIndex)}
     >
-      <img src={playerJerseyWhite} alt="Empty slot" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-      <span className="absolute inset-0 flex items-center justify-center text-[#8B8B8B] text-[11px] font-medium">
+      <span className="text-white/80 text-[11px] font-medium mb-1">
         {position}
       </span>
+      <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
+        <Plus className="w-4 h-4 text-black/70" />
+      </div>
     </div>
   );
 
