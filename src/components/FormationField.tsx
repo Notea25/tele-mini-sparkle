@@ -116,7 +116,7 @@ const FormationField = ({
             {isOccupied ? (
               // Occupied slot with player
               <div
-                className="w-[52px] aspect-[52/72] relative flex flex-col items-center cursor-pointer border-2 border-white rounded-lg overflow-hidden"
+                className="w-[52px] aspect-[52/72] relative flex flex-col items-center cursor-pointer border border-white rounded-lg overflow-hidden"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Price tag - top, no background */}
