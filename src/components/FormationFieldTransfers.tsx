@@ -76,32 +76,34 @@ const FormationFieldTransfers = ({
 
   const renderPlayer = (player: PlayerData) => (
     <div
-      className="w-[52px] aspect-[52/72] relative flex flex-col items-center cursor-pointer border border-white rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
+      className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       onClick={() => onPlayerClick?.(player)}
     >
-      {/* Price tag - top, no background */}
-      <span className="text-white text-[clamp(6px,2vw,10px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
-        ${(player.price || 9).toFixed(1)}
-      </span>
-
-      {/* Delete button - top right, gray background */}
+      {/* Delete button - absolute in corner */}
       {onRemovePlayer && (
         <button
           onClick={(e) => {
             e.stopPropagation();
             onRemovePlayer(player.id);
           }}
-          className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#4a4a5a] rounded-full"
+          className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#5a7a4a] rounded-full"
         >
-          <X className="w-2 h-2 text-white" />
+          <X className="w-2 h-2 text-[#1a2e1a]" />
         </button>
       )}
 
-      {/* Jersey */}
-      <img src={playerJerseyNew} alt={player.name} className="w-[80%] aspect-square object-contain" />
+      {/* Price centered */}
+      <div className="w-full flex items-center justify-center pt-1 pb-0.5">
+        <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
+          ${(player.price || 9).toFixed(1)}
+        </span>
+      </div>
 
-      {/* Player name and club blocks - overlapping jersey bottom */}
-      <div className="rounded-[3px] overflow-hidden w-full -mt-[12%] relative z-10">
+      {/* Jersey - larger size, overlaps name/club below */}
+      <img src={playerJerseyNew} alt={player.name} className="w-[130%] h-auto object-contain mb-[-35%] z-0" />
+
+      {/* Player name and club blocks - jersey overlaps from above */}
+      <div className="w-full relative z-10">
         <div className="bg-white px-[4%] py-[2%]">
           <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
             {truncateName(player.name, 9)}
@@ -119,10 +121,10 @@ const FormationFieldTransfers = ({
 
   const renderEmptySlot = (position: string, slotIndex: number) => (
     <div
-      className="w-[52px] aspect-[3/4] rounded-lg border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+      className="w-[62px] h-[85px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
       onClick={() => onEmptySlotClick?.(position, slotIndex)}
     >
-      <span className="text-white font-bold text-[clamp(10px,3vw,16px)]">
+      <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">
         {position}
       </span>
       <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
