@@ -116,7 +116,7 @@ const FormationField = ({
             {isOccupied ? (
               // Occupied slot with player
               <div
-                className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-white/10 backdrop-blur-sm"
+                className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Delete button - absolute in corner */}
