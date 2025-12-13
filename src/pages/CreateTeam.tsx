@@ -160,8 +160,7 @@ const CreateTeam = () => {
             <SelectItem value="slavia">Славия-Мозырь</SelectItem>
             <SelectItem value="torpedo">Торпедо-БелАЗ</SelectItem>
           </SelectContent>
-        </Select> */}
-        
+        </Select>
 
         {/* Create Team Button */}
         <Button
