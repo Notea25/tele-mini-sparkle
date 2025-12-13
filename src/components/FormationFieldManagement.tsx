@@ -76,21 +76,23 @@ const FormationFieldManagement = ({
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
 
-      {/* 3x icon for captain with boost active */}
-      {isCaptainWith3x(player.id) && (
-        <img src={icon3x} alt="3x" className="absolute top-1 right-1 z-50 w-3 h-3" />
-      )}
-
-      {/* Swap button - same size as captain badges */}
-      {showActionButton && onSwapPlayer && !isCaptainWith3x(player.id) && (
+      {/* Swap button or 3x icon - same size as captain badges */}
+      {showActionButton && onSwapPlayer && (
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onSwapPlayer(player.id);
+            if (!isCaptainWith3x(player.id)) {
+              onSwapPlayer(player.id);
+            }
           }}
           className="absolute top-1 right-1 z-50"
+          disabled={isCaptainWith3x(player.id)}
         >
-          <img src={swapArrows} alt="Swap" className="w-3 h-3" />
+          {isCaptainWith3x(player.id) ? (
+            <img src={icon3x} alt="3x" className="w-3 h-3" />
+          ) : (
+            <img src={swapArrows} alt="Swap" className="w-3 h-3" />
+          )}
         </button>
       )}
 
