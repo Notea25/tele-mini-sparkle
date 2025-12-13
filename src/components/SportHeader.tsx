@@ -168,7 +168,7 @@ const SportHeader = ({
         </div>
       </header>
 
-      {/* <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
+      <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
         <AlertDialogContent className="bg-background border-border">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground">Несохраненные изменения</AlertDialogTitle>
@@ -177,27 +177,24 @@ const SportHeader = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleSave}
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
             >
               Сохранить
             </AlertDialogAction>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleDiscard}
               className="w-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Не сохранять
             </AlertDialogAction>
-            <AlertDialogCancel 
-              onClick={handleContinueEditing}
-              className="w-full border-border text-foreground"
-            >
+            <AlertDialogCancel onClick={handleContinueEditing} className="w-full border-border text-foreground">
               Продолжить редактирование
             </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog> */}
+      </AlertDialog>
     </>
   );
 };
