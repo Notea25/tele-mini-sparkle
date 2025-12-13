@@ -143,9 +143,17 @@ const CreateTeam = () => {
             value={teamName}
             onChange={(e) => handleNameChange(e.target.value)}
             maxLength={MAX_NAME_LENGTH}
-            className="h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal text-[#4B485F] placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546]"
+            onFocus={() => setIsInputActive(true)}
+            onBlur={() => setIsInputActive(false)}
+            className={`w-[350px] h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal rounded-xl bg-[#1A1924] border border-[#363546] placeholder:text-[#4B485F] transition-colors duration-200 ${
+              isInputActive ? "text-white" : "text-[#4B485F]"
+            }`}
           />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal not-italic text-[12px] tracking-normal text-[#4B485F] pointer-events-none">
+          <div
+            className={`absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal not-italic text-[12px] tracking-normal pointer-events-none transition-colors duration-200 ${
+              isInputActive ? "text-white" : "text-[#4B485F]"
+            }`}
+          >
             {teamName.length}/{MAX_NAME_LENGTH}
           </div>
         </div>
