@@ -143,9 +143,9 @@ const CreateTeam = () => {
             value={teamName}
             onChange={(e) => handleNameChange(e.target.value)}
             maxLength={MAX_NAME_LENGTH}
-            className="w-full h-14 font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal text-[#4B485F] placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546]"
+            className="w-[350px] h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal text-[#4B485F] placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546]"
           />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 font-rubik font-normal not-italic text-[12px] tracking-normal text-[#4B485F] pointer-events-none">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal not-italic text-[12px] tracking-normal text-[#4B485F] pointer-events-none">
             {teamName.length}/{MAX_NAME_LENGTH}
           </div>
         </div>
