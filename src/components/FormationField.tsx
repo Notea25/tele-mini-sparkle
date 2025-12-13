@@ -64,7 +64,7 @@ const FormationField = ({
 
     // Uniform spacing based on player count per row
     const leftPositions: Record<number, Record<number, string>> = {
-      1: { 2: "37%", 4: "63%" }, // 2 players: symmetric around center
+      1: { 2: "57%", 4: "63%" }, // 2 players: symmetric around center
       2: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" }, // 5 players
       3: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" }, // 5 players
       4: { 2: "25%", 3: "50%", 4: "75%" }, // 3 players: equal thirds
@@ -115,7 +115,10 @@ const FormationField = ({
           >
             {isOccupied ? (
               // Occupied slot with player - adaptive size matching empty slot
-              <div className="w-[14%] aspect-[52/72] relative flex flex-col items-center cursor-pointer" onClick={() => onPlayerClick?.(assignedPlayer)}>
+              <div
+                className="w-[14%] aspect-[52/72] relative flex flex-col items-center cursor-pointer"
+                onClick={() => onPlayerClick?.(assignedPlayer)}
+              >
                 {/* Price tag - top, no background */}
                 <span className="text-white text-[clamp(6px,2vw,10px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
                   $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
@@ -135,11 +138,7 @@ const FormationField = ({
                 )}
 
                 {/* Jersey */}
-                <img
-                  src={playerJerseyNew}
-                  alt={assignedPlayer.name}
-                  className="w-[80%] aspect-square object-contain"
-                />
+                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[80%] aspect-square object-contain" />
 
                 {/* Player name and club blocks - overlapping jersey bottom */}
                 <div className="rounded-[3px] overflow-hidden w-full -mt-[12%] relative z-10">
