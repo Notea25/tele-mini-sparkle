@@ -119,21 +119,23 @@ const FormationField = ({
                 className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white rounded-md overflow-hidden bg-[#3a5a28]"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
-                {/* Price centered, delete button absolute */}
-                <span className="text-white text-[clamp(7px,2vw,11px)] font-bold drop-shadow-md whitespace-nowrap leading-tight pt-0.5">
-                  $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
-                </span>
-                {onRemovePlayer && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRemovePlayer(assignedPlayer.id);
-                    }}
-                    className="absolute top-0.5 right-1 z-50 w-3.5 h-3.5 flex items-center justify-center bg-[#4a4a5a] rounded-full"
-                  >
-                    <X className="w-2.5 h-2.5 text-white" />
-                  </button>
-                )}
+                {/* Price and delete button row */}
+                <div className="w-full flex items-center justify-center relative pt-0.5 pb-0.5">
+                  <span className="text-white text-[clamp(7px,2vw,11px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
+                    $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
+                  </span>
+                  {onRemovePlayer && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemovePlayer(assignedPlayer.id);
+                      }}
+                      className="absolute right-1 z-50 w-3.5 h-3.5 flex items-center justify-center bg-[#4a4a5a] rounded-full"
+                    >
+                      <X className="w-2.5 h-2.5 text-white" />
+                    </button>
+                  )}
+                </div>
 
                 {/* Jersey - larger size, overlaps name/club below */}
                 <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[130%] h-auto object-contain mb-[-35%] z-0" />
