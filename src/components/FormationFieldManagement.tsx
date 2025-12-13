@@ -3,7 +3,7 @@ import playerJerseyNew from "@/assets/player-jersey-new.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
-import icon3xGreen from "@/assets/icon-3x-green.png";
+import icon3xGreen from "@/assets/icon-2x.png"; // Using green coin style for 3x badge
 import icon2xWhite from "@/assets/icon-2x-white.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
