@@ -2,7 +2,8 @@ import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
-import { X, ArrowLeftRight, Plus } from "lucide-react";
+import swapArrows from "@/assets/swap-arrows.png";
+import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
 interface PlayerData {
@@ -68,27 +69,16 @@ const FormationFieldManagement = ({
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
 
-      {/* Action button - Delete if onRemovePlayer provided, otherwise Swap */}
-      {showActionButton && onRemovePlayer && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemovePlayer(player.id);
-          }}
-          className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#5a7a4a] rounded-full"
-        >
-          <X className="w-2 h-2 text-[#1a2e1a]" />
-        </button>
-      )}
-      {showActionButton && !onRemovePlayer && onSwapPlayer && (
+      {/* Swap button - same size as captain badges */}
+      {showActionButton && onSwapPlayer && (
         <button
           onClick={(e) => {
             e.stopPropagation();
             onSwapPlayer(player.id);
           }}
-          className="absolute top-1 right-1 z-50 w-4 h-4 flex items-center justify-center bg-card rounded-md"
+          className="absolute top-1 right-1 z-50"
         >
-          <ArrowLeftRight className="w-2.5 h-2.5 text-muted-foreground" />
+          <img src={swapArrows} alt="Swap" className="w-3 h-3" />
         </button>
       )}
 
