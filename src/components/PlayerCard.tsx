@@ -27,7 +27,7 @@ interface PlayerCardProps {
   isViceCaptain: boolean;
   onSetCaptain: (playerId: number) => void;
   onSetViceCaptain: (playerId: number) => void;
-  variant?: "default" | "transfers";
+  variant?: "default" | "transfers" | "management";
   onSell?: (playerId: number) => void;
   onSwap?: (playerId: number) => void;
 }
@@ -175,6 +175,24 @@ const PlayerCard = ({
                 className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
               >
                 Продать
+              </Button>
+              <Button
+                onClick={() => {
+                  onSwap?.(player.id);
+                  onClose();
+                }}
+                className="flex-1 rounded-full py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                Заменить
+              </Button>
+            </div>
+          ) : variant === "management" ? (
+            <div className="flex gap-3 w-full">
+              <Button
+                onClick={onClose}
+                className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
+              >
+                Закрыть
               </Button>
               <Button
                 onClick={() => {
