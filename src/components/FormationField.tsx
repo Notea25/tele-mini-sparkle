@@ -67,7 +67,7 @@ const FormationField = ({
       1: { 2: "35%", 4: "65%" }, // 2 players: symmetric around center
       2: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" }, // 5 players
       3: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" }, // 5 players
-      4: { 2: "25%", 3: "50%", 4: "75%" }, // 3 players: equal thirds
+      4: { 2: "30%", 3: "50%", 4: "70%" }, // 3 players: aligned with columns 2,3,4
     };
 
     return {
