@@ -131,9 +131,9 @@ const FormationField = ({
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute top-0 -right-[15%] z-50 w-[30%] max-w-4 aspect-square flex items-center justify-center bg-[#4a4a5a] rounded-full"
+                    className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#4a4a5a] rounded-full"
                   >
-                    <X className="w-[60%] h-[60%] text-white" />
+                    <X className="w-2 h-2 text-white" />
                   </button>
                 )}
 
