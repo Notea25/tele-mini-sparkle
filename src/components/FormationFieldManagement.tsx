@@ -81,14 +81,14 @@ const FormationFieldManagement = ({
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
 
-      {/* 3x badge for captain with boost active */}
+      {/* 3x badge for captain with boost active - same size as captain badge */}
       {isCaptainWith3x(player.id) && (
-        <img src={icon3x} alt="3x" className="absolute top-[5px] right-1 z-50 h-[10px] w-auto" />
+        <img src={icon3x} alt="3x" className="absolute top-[6px] right-1 z-50 h-[6px] w-auto" />
       )}
 
       {/* 2x badge for captain/vice-captain with double power boost active */}
       {isCaptainOrViceWithDoublePower(player.id) && !isCaptainWith3x(player.id) && (
-        <img src={icon2xWhite} alt="2x" className="absolute top-[5px] right-1 z-50 h-[10px] w-auto" />
+        <img src={icon2xWhite} alt="2x" className="absolute top-[6px] right-1 z-50 h-[6px] w-auto" />
       )}
 
       {/* Swap button - same size as captain badges */}
