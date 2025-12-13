@@ -56,15 +56,15 @@ const FormationField = ({
 
   const getPlayerStyle = (row: number, col: number) => {
     const topPositions: Record<number, string> = {
-      1: "2%",
-      2: "25%",
+      1: "4%",
+      2: "26%",
       3: "48%",
-      4: "71%",
+      4: "70%",
     };
 
     // Uniform spacing based on player count per row
     const leftPositions: Record<number, Record<number, string>> = {
-      1: { 2: "37%", 4: "63%" }, // 2 players: symmetric around center
+      1: { 2: "35%", 4: "65%" }, // 2 players: symmetric around center
       2: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" }, // 5 players
       3: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" }, // 5 players
       4: { 2: "25%", 3: "50%", 4: "75%" }, // 3 players: equal thirds
@@ -116,7 +116,7 @@ const FormationField = ({
             {isOccupied ? (
               // Occupied slot with player
               <div
-                className="w-[66px] relative flex flex-col items-center cursor-pointer border border-white rounded-md overflow-hidden bg-[#3a5a28]"
+                className="w-[58px] relative flex flex-col items-center cursor-pointer border border-white rounded-md overflow-hidden bg-[#3a5a28]"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Price tag - top, no background */}
@@ -158,7 +158,7 @@ const FormationField = ({
             ) : (
               // Empty slot - dashed border, position label, + button
               <div
-                className="w-[66px] aspect-[3/4] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+                className="w-[58px] aspect-[3/4] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
                 <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">
