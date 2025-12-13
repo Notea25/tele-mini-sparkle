@@ -233,7 +233,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SportHeader />
-      {/* <PromoBanner /> */}
+      <PromoBanner />
 
       <div className="px-4 mt-6">
         <h2
