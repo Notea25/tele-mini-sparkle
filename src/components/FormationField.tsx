@@ -136,7 +136,7 @@ const FormationField = ({
                 )}
 
                 {/* Jersey - with negative margin to overlap name/club below */}
-                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[100%] aspect-[1/0.9] object-contain mb-[-30%] z-0" />
+                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[120%] aspect-[1/0.9] object-contain mb-[-30%] z-0" />
 
                 {/* Player name and club blocks - jersey overlaps from above */}
                 <div className="w-full relative z-10">
