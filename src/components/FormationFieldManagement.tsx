@@ -1,25 +1,7 @@
-import field1343 from "@/assets/field-1-3-4-3.png";
-import field1352 from "@/assets/field-1-3-5-2.png";
-import field1433 from "@/assets/field-1-4-3-3.png";
-import field1442 from "@/assets/field-1-4-4-2.png";
-import field1451 from "@/assets/field-1-4-5-1.png";
-import field1523 from "@/assets/field-1-5-2-3.png";
-import field1532 from "@/assets/field-1-5-3-2.png";
-import field1541 from "@/assets/field-1-5-4-1.png";
-import playerJerseyTeam from "@/assets/player-jersey-team.png";
-import { X, ArrowLeftRight } from "lucide-react";
-import { getFormationSlots, getPlayerPosition, detectFormation, FormationKey } from "@/lib/formationUtils";
-
-const FIELD_IMAGES: Record<string, string> = {
-  "1-3-4-3": field1343,
-  "1-3-5-2": field1352,
-  "1-4-3-3": field1433,
-  "1-4-4-2": field1442,
-  "1-4-5-1": field1451,
-  "1-5-2-3": field1523,
-  "1-5-3-2": field1532,
-  "1-5-4-1": field1541,
-};
+import footballFieldNew from "@/assets/football-field-new.png";
+import playerJerseyNew from "@/assets/player-jersey-new.png";
+import { X, ArrowLeftRight, Plus } from "lucide-react";
+import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
 interface PlayerData {
   id: number;
@@ -43,6 +25,13 @@ interface FormationFieldManagementProps {
   onEmptySlotClick?: (position: string, isOnBench: boolean, slotIndex: number) => void;
 }
 
+const truncateName = (text: string, maxLength: number) => {
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + "...";
+  }
+  return text;
+};
+
 const FormationFieldManagement = ({ 
   mainSquadPlayers, 
   benchPlayers,
@@ -61,7 +50,15 @@ const FormationFieldManagement = ({
   };
 
   const renderPlayer = (player: PlayerData, showActionButton = true) => (
-    <div className="relative flex flex-col items-center">
+    <div
+      className="w-[52px] aspect-[52/72] relative flex flex-col items-center cursor-pointer border border-white rounded-lg overflow-hidden"
+      onClick={() => onPlayerClick?.(player)}
+    >
+      {/* Price tag - top, no background */}
+      <span className="text-white text-[clamp(6px,2vw,10px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
+        $ {(player.price || 9).toFixed(1).replace(".", ",")}
+      </span>
+
       {/* Action button - Delete if onRemovePlayer provided, otherwise Swap */}
       {showActionButton && onRemovePlayer && (
         <button
@@ -69,9 +66,9 @@ const FormationFieldManagement = ({
             e.stopPropagation();
             onRemovePlayer(player.id);
           }}
-          className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
+          className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#4a4a5a] rounded-full"
         >
-          <X className="w-2.5 h-2.5 text-black/70" />
+          <X className="w-2 h-2 text-white" />
         </button>
       )}
       {showActionButton && !onRemovePlayer && onSwapPlayer && (
@@ -80,56 +77,44 @@ const FormationFieldManagement = ({
             e.stopPropagation();
             onSwapPlayer(player.id);
           }}
-          className="absolute -top-1 -right-1 z-50 w-5 h-5 flex items-center justify-center bg-card rounded-md"
+          className="absolute top-1 right-1 z-50 w-4 h-4 flex items-center justify-center bg-card rounded-md"
         >
-          <ArrowLeftRight className="w-3 h-3 text-muted-foreground" />
+          <ArrowLeftRight className="w-2.5 h-2.5 text-muted-foreground" />
         </button>
       )}
-      
+
       {/* Jersey */}
-      <div className="relative">
-        <img
-          src={playerJerseyTeam}
-          alt={player.name}
-          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-        />
-        {/* Price and points tag */}
-        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-0.5">
-          <span className="bg-[#B855E4] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-            {(player.price || 6.5).toFixed(1).replace('.', ',')}
-          </span>
-          <span className="bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-            {player.points}
+      <img src={playerJerseyNew} alt={player.name} className="w-[80%] aspect-square object-contain" />
+
+      {/* Player name and club blocks - overlapping jersey bottom */}
+      <div className="rounded-[3px] overflow-hidden w-full -mt-[12%] relative z-10">
+        <div className="bg-white px-[4%] py-[2%]">
+          <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
+            {truncateName(player.name, 9)}
           </span>
         </div>
-      </div>
-      
-      {/* Position and name */}
-      <div 
-        className="flex items-center gap-0.5 mt-1.5 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5 min-w-max"
-        onClick={() => onPlayerClick?.(player)}
-      >
-        <span className="text-black/60 text-[9px] font-medium">
-          {player.position}
-        </span>
-        <span className="text-black text-[9px] font-medium whitespace-nowrap">
-          {player.name}
-        </span>
-      </div>
-      
-      {/* Club badge */}
-      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5">
-        <span>(Д)</span>
-        <span className="whitespace-nowrap">{player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
+        <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
+          <span className="text-[clamp(4px,1.5vw,6px)] font-medium block truncate whitespace-nowrap text-center">
+            <span className="text-[#7D7A94]">(Д)</span>
+            <span className="text-white ml-[2%]">{truncateName(player.team, 7)}</span>
+          </span>
+        </div>
       </div>
     </div>
   );
 
   const renderEmptySlot = (position: string, isOnBench: boolean, slotIndex: number) => (
     <div
-      className="w-10 h-14 cursor-pointer"
+      className="w-[52px] aspect-[3/4] rounded-lg border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
       onClick={() => onEmptySlotClick?.(position, isOnBench, slotIndex)}
-    />
+    >
+      <span className="text-white font-bold text-[clamp(10px,3vw,16px)]">
+        {position}
+      </span>
+      <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
+        <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
+      </div>
+    </div>
   );
 
   return (
@@ -137,7 +122,7 @@ const FormationFieldManagement = ({
       {/* Football Field */}
       <div className="relative w-full">
         <img
-          src={FIELD_IMAGES[currentFormation] || field1442}
+          src={footballFieldNew}
           alt="Football field"
           className="w-full"
         />
@@ -145,11 +130,12 @@ const FormationFieldManagement = ({
         {formation.map((slot, idx) => {
           const style = getPlayerPosition(slot.row, slot.col);
           const player = getPlayerForSlot(slot.position, slot.slotIndex);
+          const isOccupied = !!player;
 
           return (
             <div
               key={idx}
-              className="absolute flex flex-col items-center z-20"
+              className={`absolute flex flex-col items-center ${isOccupied ? "z-20" : "z-10"}`}
               style={{
                 top: style.top,
                 left: style.left,
