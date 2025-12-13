@@ -154,9 +154,9 @@ const FormationField = ({
                 </div>
               </div>
             ) : (
-              // Empty slot - dashed border, position label, + button
+              // Empty slot - dashed border, position label, + button (same size as filled card ~85px height)
               <div
-                className="w-[62px] aspect-[4/5] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+                className="w-[62px] h-[85px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
                 <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">
