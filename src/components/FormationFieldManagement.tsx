@@ -56,7 +56,7 @@ const FormationFieldManagement = ({
     return mainSquadPlayers.find(p => p.position === position && p.slotIndex === slotIndex);
   };
 
-  const renderPlayer = (player: PlayerData, showActionButton = true) => (
+  const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => (
     <div
       className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       onClick={() => onPlayerClick?.(player)}
@@ -96,7 +96,7 @@ const FormationFieldManagement = ({
       <div className="w-full relative z-10">
         <div className="bg-white px-[4%] py-[2%]">
           <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
-            {truncateName(player.name, 9)}
+            {isOnBench ? `(${player.position}) ` : ""}{truncateName(player.name, isOnBench ? 6 : 9)}
           </span>
         </div>
         <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
@@ -162,7 +162,7 @@ const FormationFieldManagement = ({
               const player = benchPlayers[idx];
               return (
                 <div key={idx} className="flex flex-col items-center flex-1">
-                  {player ? renderPlayer(player) : renderEmptySlot("ЗАМ", true, idx)}
+                  {player ? renderPlayer(player, true, true) : renderEmptySlot("ЗАМ", true, idx)}
                 </div>
               );
             })}
