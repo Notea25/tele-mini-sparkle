@@ -24,12 +24,12 @@ interface SportHeaderProps {
   onDiscardChanges?: () => void;
 }
 
-const SportHeader = ({ 
-  backTo, 
-  onBackClick, 
+const SportHeader = ({
+  backTo,
+  onBackClick,
   hasUnsavedChanges = false,
   onSaveChanges,
-  onDiscardChanges
+  onDiscardChanges,
 }: SportHeaderProps = {}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
@@ -37,7 +37,7 @@ const SportHeader = ({
   const { user } = useTelegram();
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const isHomePage = location.pathname === "/";
 
   // Get profile image from localStorage
@@ -83,7 +83,7 @@ const SportHeader = ({
 
   const handleLogoClick = () => {
     if (isHomePage) return;
-    
+
     if (hasUnsavedChanges) {
       setPendingNavigation("home");
       setShowUnsavedDialog(true);
@@ -97,7 +97,7 @@ const SportHeader = ({
     if (onBackClick && onBackClick() === true) {
       return;
     }
-    
+
     if (hasUnsavedChanges) {
       setPendingNavigation("back");
       setShowUnsavedDialog(true);
@@ -145,7 +145,7 @@ const SportHeader = ({
         <div className="flex justify-between items-center px-4 pt-3 pb-4">
           <div className="flex items-center gap-2">
             {!isHomePage && (
-              <button 
+              <button
                 onClick={handleBack}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-muted/50 hover:bg-muted transition-colors"
               >
@@ -168,7 +168,7 @@ const SportHeader = ({
         </div>
       </header>
 
-      <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
+      {/* <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
         <AlertDialogContent className="bg-background border-border">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground">Несохраненные изменения</AlertDialogTitle>
@@ -197,7 +197,7 @@ const SportHeader = ({
             </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog> */}
     </>
   );
 };
