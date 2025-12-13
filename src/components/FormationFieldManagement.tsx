@@ -62,62 +62,65 @@ const FormationFieldManagement = ({
 
   const renderPlayer = (player: PlayerData, showActionButton = true) => (
     <div className="relative flex flex-col items-center">
-      {/* Top row: Price + Action button */}
-      <div className="flex items-center gap-1 mb-1">
-        {/* Price tag */}
-        <span className="bg-[#E855B0] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-          $ {(player.price || 6.5).toFixed(1).replace(".", ",")}
-        </span>
-        
-        {/* Action button - Delete if onRemovePlayer provided, otherwise Swap */}
-        {showActionButton && onRemovePlayer && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onRemovePlayer(player.id);
-            }}
-            className="w-5 h-5 flex items-center justify-center bg-primary rounded-full"
-          >
-            <X className="w-3 h-3 text-primary-foreground" />
-          </button>
-        )}
-        {showActionButton && !onRemovePlayer && onSwapPlayer && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onSwapPlayer(player.id);
-            }}
-            className="w-5 h-5 flex items-center justify-center bg-card rounded-full"
-          >
-            <ArrowLeftRight className="w-3 h-3 text-muted-foreground" />
-          </button>
-        )}
-      </div>
+      {/* Action button - Delete if onRemovePlayer provided, otherwise Swap */}
+      {showActionButton && onRemovePlayer && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemovePlayer(player.id);
+          }}
+          className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
+        >
+          <X className="w-2.5 h-2.5 text-black/70" />
+        </button>
+      )}
+      {showActionButton && !onRemovePlayer && onSwapPlayer && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onSwapPlayer(player.id);
+          }}
+          className="absolute -top-1 -right-1 z-50 w-5 h-5 flex items-center justify-center bg-card rounded-md"
+        >
+          <ArrowLeftRight className="w-3 h-3 text-muted-foreground" />
+        </button>
+      )}
       
       {/* Jersey */}
-      <img
-        src={playerJerseyTeam}
-        alt={player.name}
-        className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
-      />
+      <div className="relative">
+        <img
+          src={playerJerseyTeam}
+          alt={player.name}
+          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+        />
+        {/* Price and points tag */}
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-0.5">
+          <span className="bg-[#B855E4] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+            {(player.price || 6.5).toFixed(1).replace('.', ',')}
+          </span>
+          <span className="bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+            {player.points}
+          </span>
+        </div>
+      </div>
       
-      {/* Player info card */}
+      {/* Position and name */}
       <div 
-        className="mt-1 cursor-pointer hover:opacity-80 rounded-lg overflow-hidden"
+        className="flex items-center gap-0.5 mt-1.5 cursor-pointer hover:opacity-80 bg-white rounded-full px-2 py-0.5 min-w-max"
         onClick={() => onPlayerClick?.(player)}
       >
-        <div className="flex items-center justify-center bg-white px-3 py-1 min-w-[70px]">
-          <span className="text-[10px] font-bold truncate text-[#1a1a1a]">
-            {player.name}
-          </span>
-        </div>
-
-        <div className="bg-[#2a2a2e] px-3 py-1 flex items-center justify-center min-w-[70px]">
-          <span className="text-[9px] font-semibold flex items-center gap-1">
-            <span className="text-[#7a7a7a]">(Д)</span>
-            <span className="text-white">{player.team.length > 10 ? player.team.substring(0, 9) + "..." : player.team}</span>
-          </span>
-        </div>
+        <span className="text-black/60 text-[9px] font-medium">
+          {player.position}
+        </span>
+        <span className="text-black text-[9px] font-medium whitespace-nowrap">
+          {player.name}
+        </span>
+      </div>
+      
+      {/* Club badge */}
+      <div className="bg-primary text-primary-foreground text-[8px] font-medium px-1.5 py-0.5 rounded-full flex items-center justify-center gap-0.5 mt-0.5">
+        <span>(Д)</span>
+        <span className="whitespace-nowrap">{player.team.length > 8 ? player.team.substring(0, 8) : player.team}</span>
       </div>
     </div>
   );

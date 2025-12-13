@@ -1,6 +1,7 @@
 import footballFieldAll from "@/assets/field-all-positions.png";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
 import { X } from "lucide-react";
+import tag from "@/assets/tag.webp";
 
 interface PlayerData {
   id: number;
@@ -124,49 +125,55 @@ const FormationField = ({
             {isOccupied ? (
               // Occupied slot with player
               <div className="relative flex flex-col items-center">
-                {/* Top row: Price + Delete button */}
-                <div className="flex items-center gap-1 mb-1">
-                  {/* Price tag */}
-                  <span className="bg-[#E855B0] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                    $ {(assignedPlayer.price || 6.5).toFixed(1).replace(".", ",")}
-                  </span>
-                  
-                  {/* Delete button */}
-                  {onRemovePlayer && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onRemovePlayer(assignedPlayer.id);
-                      }}
-                      className="w-5 h-5 flex items-center justify-center bg-primary rounded-full"
-                    >
-                      <X className="w-3 h-3 text-primary-foreground" />
-                    </button>
-                  )}
-                </div>
+                {/* Delete button */}
+                {onRemovePlayer && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemovePlayer(assignedPlayer.id);
+                    }}
+                    className="absolute -top-1 -right-1 z-50 w-4 h-4 flex items-center justify-center bg-white/60 rounded-full"
+                  >
+                    <X className="w-2.5 h-2.5 text-black/70" />
+                  </button>
+                )}
 
                 {/* Jersey */}
-                <img
-                  src={playerJerseyTeam}
-                  alt={assignedPlayer.name}
-                  className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
-                />
+                <div className="relative">
+                  <img
+                    src={playerJerseyTeam}
+                    alt={assignedPlayer.name}
+                    className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                  />
+                  {/* Price tag */}
+                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex items-center justify-center">
+                    <div className="relative">
+                      <img src={tag} alt="price tag" className="w-auto h-5 object-contain" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white text-[8px] font-bold">
+                          {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                {/* Player info card */}
                 <div
-                  className="mt-1 cursor-pointer hover:opacity-80 rounded-lg overflow-hidden"
+                  className="mt-0.5 cursor-pointer hover:opacity-80 rounded-[4.52px] shadow-sm overflow-hidden"
                   onClick={() => onPlayerClick?.(assignedPlayer)}
                 >
-                  <div className="flex items-center justify-center bg-white px-3 py-1 min-w-[70px]">
-                    <span className="text-[10px] font-bold truncate text-[#1a1a1a]">
+                  <div className="flex items-center justify-center bg-white px-1.5 py-px w-[55px]">
+                    <span className="text-[8px] font-bold truncate" style={{ color: "#212121" }}>
                       {assignedPlayer.name}
                     </span>
                   </div>
 
-                  <div className="bg-[#2a2a2e] px-3 py-1 flex items-center justify-center min-w-[70px]">
-                    <span className="text-[9px] font-semibold flex items-center gap-1">
-                      <span className="text-[#7a7a7a]">(Д)</span>
-                      <span className="text-white">{lengthCorrectFoo(assignedPlayer.team, 10, 9)}</span>
+                  <div className="bg-primary px-1.5 py-px flex items-center justify-center w-[55px]">
+                    <span className="text-white text-[8px] font-bold flex items-center gap-0.5">
+                      <span className="text-[7px]" style={{ color: "#7D7A94" }}>
+                        (Д)
+                      </span>
+                      <span style={{ color: "#212121" }}>{lengthCorrectFoo(assignedPlayer.team, 6, 5)}</span>
                     </span>
                   </div>
                 </div>
