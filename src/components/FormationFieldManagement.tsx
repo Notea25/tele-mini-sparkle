@@ -90,10 +90,8 @@ const FormationFieldManagement = ({
           <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
         )}
 
-        {/* Boost badges for captain/vice-captain, or Bench boost badge, or Swap button */}
-        {showCaptain3xIcon ? (
-          <img src={icon3x} alt="3x" className="absolute top-[3px] right-1 z-50 w-3 h-3" />
-        ) : showDoublePowerIcon ? (
+        {/* Boost badges for bench or Swap button */}
+        {showDoublePowerIcon ? (
           <img src={icon2x} alt="2x" className="absolute top-[3px] right-1 z-50 w-3 h-3" />
         ) : showActionButton && isOnBench && isBenchBoostActive ? (
           <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
@@ -109,12 +107,15 @@ const FormationFieldManagement = ({
           </button>
         ) : null}
 
-      {/* Price centered */}
-      <div className="w-full flex items-center justify-center pt-1 pb-0.5">
-        <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
-          ${(player.price || 9).toFixed(1)}
-        </span>
-      </div>
+        {/* Price row with optional 3x icon */}
+        <div className="w-full flex items-center justify-center pt-1 pb-0.5 gap-0.5">
+          {showCaptain3xIcon && (
+            <img src={icon3x} alt="3x" className="w-1.5 h-1.5" />
+          )}
+          <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
+            ${(player.price || 9).toFixed(1)}
+          </span>
+        </div>
 
       {/* Jersey - larger size, overlaps name/club below */}
       <img src={playerJerseyNew} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
