@@ -114,11 +114,11 @@ const FormationField = ({
             }}
           >
             {isOccupied ? (
-              // Occupied slot with player - new design
-              <div className="relative flex flex-col items-center">
-                {/* Price tag - top left */}
-                <div className="absolute -top-1 -left-2 z-50 bg-[#1a1a2e] rounded-full px-1.5 py-0.5 border border-white">
-                  <span className="text-white text-[8px] font-bold">
+              // Occupied slot with player - same size as empty slot
+              <div className="w-10 h-14 relative flex flex-col items-center cursor-pointer" onClick={() => onPlayerClick?.(assignedPlayer)}>
+                {/* Price tag - top center */}
+                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-50 bg-[#1a1a2e] rounded-full px-1 py-0.5 border border-white whitespace-nowrap">
+                  <span className="text-white text-[6px] font-bold">
                     $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
                   </span>
                 </div>
@@ -130,36 +130,32 @@ const FormationField = ({
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute -top-1 -right-2 z-50 w-5 h-5 flex items-center justify-center bg-[#1a1a2e] rounded-full border border-white"
+                    className="absolute -top-1 -right-3 z-50 w-4 h-4 flex items-center justify-center bg-[#1a1a2e] rounded-full border border-white"
                   >
-                    <X className="w-3 h-3 text-white" />
+                    <X className="w-2 h-2 text-white" />
                   </button>
                 )}
 
-                {/* Jersey */}
+                {/* Jersey - fits the slot size */}
                 <img
                   src={playerJerseyNew}
                   alt={assignedPlayer.name}
-                  className="w-12 h-12 object-contain cursor-pointer"
-                  onClick={() => onPlayerClick?.(assignedPlayer)}
+                  className="w-8 h-8 object-contain"
                 />
 
                 {/* Player name block - white background */}
-                <div
-                  className="mt-1 cursor-pointer hover:opacity-80 rounded-[4px] overflow-hidden"
-                  onClick={() => onPlayerClick?.(assignedPlayer)}
-                >
-                  <div className="flex items-center justify-center bg-white px-2 py-0.5 min-w-[60px]">
-                    <span className="text-[9px] font-medium text-black truncate">
-                      {truncateName(assignedPlayer.name, 10)}
+                <div className="rounded-[3px] overflow-hidden w-full">
+                  <div className="flex items-center justify-center bg-white px-0.5 py-px">
+                    <span className="text-[6px] font-medium text-black truncate">
+                      {truncateName(assignedPlayer.name, 8)}
                     </span>
                   </div>
 
                   {/* Club name block - dark background */}
-                  <div className="bg-[#1a1a2e] px-2 py-0.5 flex items-center justify-center min-w-[60px]">
-                    <span className="text-[8px] font-medium flex items-center gap-0.5">
+                  <div className="bg-[#1a1a2e] px-0.5 py-px flex items-center justify-center">
+                    <span className="text-[5px] font-medium flex items-center gap-0.5">
                       <span className="text-[#7D7A94]">(Д)</span>
-                      <span className="text-white">{truncateName(assignedPlayer.team, 8)}</span>
+                      <span className="text-white">{truncateName(assignedPlayer.team, 6)}</span>
                     </span>
                   </div>
                 </div>
