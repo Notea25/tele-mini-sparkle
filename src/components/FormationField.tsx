@@ -1,5 +1,7 @@
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
+import captainBadge from "@/assets/captain-badge.png";
+import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
 
 interface PlayerData {
@@ -10,6 +12,8 @@ interface PlayerData {
   points: number;
   price?: number;
   slotIndex?: number;
+  isCaptain?: boolean;
+  isViceCaptain?: boolean;
 }
 
 interface FormationPosition {
@@ -23,6 +27,8 @@ interface FormationFieldProps {
   onRemovePlayer?: (playerId: number) => void;
   onPlayerClick?: (player: PlayerData) => void;
   onEmptySlotClick?: (position: string) => void;
+  captain?: number | null;
+  viceCaptain?: number | null;
 }
 
 const FormationField = ({
@@ -30,6 +36,8 @@ const FormationField = ({
   onRemovePlayer,
   onPlayerClick,
   onEmptySlotClick,
+  captain,
+  viceCaptain,
 }: FormationFieldProps) => {
   // Formation: 2 ВР (goalkeepers), 5 ЗЩ (defenders), 5 ПЗ (midfielders), 3 НП (forwards)
   const formation: FormationPosition[] = [
@@ -119,6 +127,14 @@ const FormationField = ({
                 className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
+                {/* Captain/Vice-Captain badge - absolute in left corner */}
+                {captain === assignedPlayer.id && (
+                  <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />
+                )}
+                {viceCaptain === assignedPlayer.id && (
+                  <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
+                )}
+
                 {/* Delete button - absolute in corner */}
                 {onRemovePlayer && (
                   <button

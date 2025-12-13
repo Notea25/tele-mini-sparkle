@@ -588,6 +588,8 @@ const Transfers = () => {
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onRemovePlayer={handleSellPlayer}
             onEmptySlotClick={handleEmptySlotClick}
+            captain={captain}
+            viceCaptain={viceCaptain}
           />
         </div>
       ) : (

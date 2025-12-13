@@ -489,6 +489,8 @@ const TeamManagement = () => {
             benchPlayers={benchPlayers}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onSwapPlayer={handlePlayerSwap}
+            captain={captain}
+            viceCaptain={viceCaptain}
           />
         </div>
       ) : (
