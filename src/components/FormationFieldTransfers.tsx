@@ -45,9 +45,9 @@ function getColumnPositions(count: number): number[] {
 const getPlayerPosition = (row: number, col: number) => {
   const topPositions: Record<number, string> = {
     1: "2%",
-    2: "20%",
-    3: "36%",
-    4: "52%",
+    2: "22%",
+    3: "44%",
+    4: "66%",
   };
 
   return {
