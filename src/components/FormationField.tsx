@@ -95,73 +95,66 @@ const FormationField = ({
     return text;
   };
 
+  // Filter only occupied slots
+  const occupiedSlots = formation.filter((slot) => getAssignedPlayer(slot));
+
   return (
     <div className="relative w-full">
       <img src={footballFieldAll} alt="Football field" className="w-full" />
-      {formation.map((slot, idx) => {
+      {occupiedSlots.map((slot, idx) => {
         const style = getPlayerStyle(slot.row, slot.col);
-        const assignedPlayer = getAssignedPlayer(slot);
-        const isOccupied = !!assignedPlayer;
+        const assignedPlayer = getAssignedPlayer(slot)!;
 
         return (
           <div
             key={idx}
-            className={`absolute flex flex-col items-center ${isOccupied ? "z-20" : "z-10"}`}
+            className="absolute flex flex-col items-center z-20"
             style={{
               top: style.top,
               left: style.left,
               transform: "translateX(-50%)",
             }}
           >
-            {isOccupied ? (
-              // Occupied slot with player - adaptive size matching empty slot
-              <div
-                className="w-[14%] aspect-[52/72] relative flex flex-col items-center cursor-pointer"
-                onClick={() => onPlayerClick?.(assignedPlayer)}
-              >
-                {/* Price tag - top, no background */}
-                <span className="text-white text-[clamp(6px,2vw,10px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
-                  $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
-                </span>
+            <div
+              className="w-[14%] aspect-[52/72] relative flex flex-col items-center cursor-pointer"
+              onClick={() => onPlayerClick?.(assignedPlayer)}
+            >
+              {/* Price tag - top, no background */}
+              <span className="text-white text-[clamp(6px,2vw,10px)] font-bold drop-shadow-md whitespace-nowrap leading-tight">
+                $ {(assignedPlayer.price || 9).toFixed(1).replace(".", ",")}
+              </span>
 
-                {/* Delete button - top right, gray background */}
-                {onRemovePlayer && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRemovePlayer(assignedPlayer.id);
-                    }}
-                    className="absolute top-0 -right-[15%] z-50 w-[30%] max-w-4 aspect-square flex items-center justify-center bg-[#4a4a5a] rounded-full"
-                  >
-                    <X className="w-[60%] h-[60%] text-white" />
-                  </button>
-                )}
+              {/* Delete button - top right, gray background */}
+              {onRemovePlayer && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemovePlayer(assignedPlayer.id);
+                  }}
+                  className="absolute top-0 -right-[15%] z-50 w-[30%] max-w-4 aspect-square flex items-center justify-center bg-[#4a4a5a] rounded-full"
+                >
+                  <X className="w-[60%] h-[60%] text-white" />
+                </button>
+              )}
 
-                {/* Jersey */}
-                <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[80%] aspect-square object-contain" />
+              {/* Jersey */}
+              <img src={playerJerseyNew} alt={assignedPlayer.name} className="w-[80%] aspect-square object-contain" />
 
-                {/* Player name and club blocks - overlapping jersey bottom */}
-                <div className="rounded-[3px] overflow-hidden w-full -mt-[12%] relative z-10">
-                  <div className="bg-white px-[4%] py-[2%]">
-                    <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
-                      {truncateName(assignedPlayer.name, 9)}
-                    </span>
-                  </div>
-                  <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
-                    <span className="text-[clamp(4px,1.5vw,6px)] font-medium block truncate whitespace-nowrap text-center">
-                      <span className="text-[#7D7A94]">(Д)</span>
-                      <span className="text-white ml-[2%]">{truncateName(assignedPlayer.team, 7)}</span>
-                    </span>
-                  </div>
+              {/* Player name and club blocks - overlapping jersey bottom */}
+              <div className="rounded-[3px] overflow-hidden w-full -mt-[12%] relative z-10">
+                <div className="bg-white px-[4%] py-[2%]">
+                  <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
+                    {truncateName(assignedPlayer.name, 9)}
+                  </span>
+                </div>
+                <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
+                  <span className="text-[clamp(4px,1.5vw,6px)] font-medium block truncate whitespace-nowrap text-center">
+                    <span className="text-[#7D7A94]">(Д)</span>
+                    <span className="text-white ml-[2%]">{truncateName(assignedPlayer.team, 7)}</span>
+                  </span>
                 </div>
               </div>
-            ) : (
-              // Empty slot - adaptive clickable area over field design
-              <div
-                className="w-[14%] aspect-[52/72] cursor-pointer"
-                onClick={() => onEmptySlotClick?.(slot.position)}
-              />
-            )}
+            </div>
           </div>
         );
       })}
