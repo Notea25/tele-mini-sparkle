@@ -130,7 +130,7 @@ const CreateTeam = () => {
             value={teamName}
             onChange={(e) => handleNameChange(e.target.value)}
             maxLength={MAX_NAME_LENGTH}
-            className="h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal text-[#4B485F] placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546]"
+            className="w-full h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal text-[#4B485F] placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546]"
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal not-italic text-[12px] tracking-normal text-[#4B485F] pointer-events-none">
             {teamName.length}/{MAX_NAME_LENGTH}
@@ -139,10 +139,10 @@ const CreateTeam = () => {
 
         {/* Favorite Team Select */}
         <Select value={favoriteTeam} onValueChange={setFavoriteTeam}>
-          <SelectTrigger className="w-full h-14 bg-card/80 border-border text-foreground rounded-xl">
+          <SelectTrigger className="w-full h-[40px] font-rubik font-normal not-italic text-[12px] leading-[130%] tracking-normal text-[#4B485F] placeholder:text-[#4B485F] rounded-xl bg-[#1A1924] border border-[#363546]">
             <SelectValue placeholder="За какую команду болеешь?" />
           </SelectTrigger>
-          <SelectContent className="bg-card border-border">
+          <SelectContent className="absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal not-italic text-[12px] tracking-normal text-[#4B485F] pointer-events-none">
             <SelectItem value="arsenal">Арсенал</SelectItem>
             <SelectItem value="baranovichi">Барановичи</SelectItem>
             <SelectItem value="bate">БАТЭ</SelectItem>
