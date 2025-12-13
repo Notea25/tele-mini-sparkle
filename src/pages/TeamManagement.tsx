@@ -512,12 +512,13 @@ const TeamManagement = () => {
       {/* Main content */}
       {activeTab === "formation" ? (
         <div className="mt-4">
-          <FormationFieldManagement 
+        <FormationFieldManagement 
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onSwapPlayer={handlePlayerSwap}
             captain={captain}
+            showPrice={false}
             viceCaptain={viceCaptain}
             isBenchBoostActive={specialChips.find(c => c.id === "bench")?.status === "pending"}
             isDoublePowerBoostActive={specialChips.find(c => c.id === "double")?.status === "pending"}
