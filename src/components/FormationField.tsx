@@ -126,14 +126,14 @@ const FormationField = ({
                       e.stopPropagation();
                       onRemovePlayer(assignedPlayer.id);
                     }}
-                    className="absolute top-1.5 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#5a7a4a] rounded-full"
+                    className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#5a7a4a] rounded-full"
                   >
                     <X className="w-2 h-2 text-[#1a2e1a]" />
                   </button>
                 )}
 
-                {/* Price centered - aligned with delete button */}
-                <div className="w-full h-6 flex items-center justify-center">
+                {/* Price centered */}
+                <div className="w-full flex items-center justify-center pt-1 pb-0.5">
                   <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
                     ${(assignedPlayer.price || 9).toFixed(1)}
                   </span>
