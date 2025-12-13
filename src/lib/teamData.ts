@@ -31,7 +31,7 @@ export const allPlayers = [
   { id: 62, name: "Медведев", team: "Славия", position: "ЗЩ", points: 58, price: 4.9 },
   { id: 63, name: "Никитин", team: "Торпедо", position: "ЗЩ", points: 54, price: 4.0 },
   { id: 64, name: "Овчинников", team: "Шахтер", position: "ЗЩ", points: 65, price: 6.2 },
-  { id: 65, name: "Прохоров", team: "Неман", position: "ЗЩ", points: 52, price: 3.8 },
+  { id: 65, name: "Прохоров", team: "Неман", position: "ЗЩ", points: 0, price: 3.8 },
   // Полузащитники (ПЗ)
   { id: 12, name: "Козлов", team: "БАТЭ", position: "ПЗ", points: 81, price: 11.9 },
   { id: 13, name: "Новиков", team: "Шахтер", position: "ПЗ", points: 75, price: 9.6 },
@@ -50,7 +50,7 @@ export const allPlayers = [
   { id: 46, name: "Савельев", team: "Динамо Минск", position: "ПЗ", points: 78, price: 10.5 },
   { id: 47, name: "Титов", team: "БАТЭ", position: "ПЗ", points: 70, price: 7.9 },
   { id: 48, name: "Ушаков", team: "Шахтер", position: "ПЗ", points: 73, price: 8.8 },
-  { id: 49, name: "Филиппов", team: "Неман", position: "ПЗ", points: 56, price: 4.3 },
+  { id: 49, name: "Филиппов", team: "Неман", position: "ПЗ", points: -3, price: 4.3 },
   { id: 50, name: "Харитонов", team: "Славия", position: "ПЗ", points: 65, price: 6.4 },
   { id: 51, name: "Цветков", team: "Торпедо", position: "ПЗ", points: 68, price: 7.1 },
   { id: 66, name: "Рябов", team: "Динамо Минск", position: "ПЗ", points: 76, price: 9.9 },
