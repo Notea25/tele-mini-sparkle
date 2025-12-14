@@ -1,14 +1,24 @@
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
 import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
+import jerseyBate from "@/assets/jersey-bate.png";
+import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
+import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
+import jerseySlavia from "@/assets/jersey-slaviya.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
 
 // Helper function to get jersey based on team
 const getJerseyForTeam = (team: string) => {
-  if (team === "Динамо-Минск") return jerseyDinamoMinsk;
-  return playerJerseyNew;
+  switch (team) {
+    case "Динамо-Минск": return jerseyDinamoMinsk;
+    case "БАТЭ": return jerseyBate;
+    case "Динамо-Брест": return jerseyDinamoBrest;
+    case "МЛ Витебск": return jerseyMlVitebsk;
+    case "Славия-Мозырь": return jerseySlavia;
+    default: return playerJerseyNew;
+  }
 };
 
 interface PlayerData {

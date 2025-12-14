@@ -3,12 +3,22 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
 import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
+import jerseyBate from "@/assets/jersey-bate.png";
+import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
+import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
+import jerseySlavia from "@/assets/jersey-slaviya.png";
 import { BoostChip } from "@/components/BoostDrawer";
 
 // Helper function to get jersey based on team
 const getJerseyForTeam = (team: string) => {
-  if (team === "Динамо-Минск") return jerseyDinamoMinsk;
-  return playerJerseyTeam;
+  switch (team) {
+    case "Динамо-Минск": return jerseyDinamoMinsk;
+    case "БАТЭ": return jerseyBate;
+    case "Динамо-Брест": return jerseyDinamoBrest;
+    case "МЛ Витебск": return jerseyMlVitebsk;
+    case "Славия-Мозырь": return jerseySlavia;
+    default: return playerJerseyTeam;
+  }
 };
 
 interface TransferRecord {
