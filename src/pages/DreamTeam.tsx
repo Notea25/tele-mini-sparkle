@@ -5,6 +5,7 @@ import { useState } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PlayerCard from "@/components/PlayerCard";
 
 interface PlayerData {
   id: number;
@@ -23,6 +24,8 @@ const DreamTeam = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [currentTour, setCurrentTour] = useState(29);
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | null>(null);
+  const [isPlayerCardOpen, setIsPlayerCardOpen] = useState(false);
 
   const teamName = "Dream team";
 
@@ -57,6 +60,11 @@ const DreamTeam = () => {
     } else if (direction === "next" && currentTour < 38) {
       setCurrentTour(currentTour + 1);
     }
+  };
+
+  const handlePlayerClick = (player: PlayerData) => {
+    setSelectedPlayer(player);
+    setIsPlayerCardOpen(true);
   };
 
   return (
@@ -140,7 +148,7 @@ const DreamTeam = () => {
           <FormationFieldManagement
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
-            onPlayerClick={() => {}}
+            onPlayerClick={handlePlayerClick}
             showPrice={false}
             showPointsInsteadOfTeam={true}
           />
@@ -163,7 +171,8 @@ const DreamTeam = () => {
             {mainSquadPlayers.map((player) => (
               <div
                 key={player.id}
-                className="bg-card rounded-full px-4 py-2 flex items-center"
+                onClick={() => handlePlayerClick(player)}
+                className="bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors"
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
                   <span className="text-foreground font-medium truncate">{player.name}</span>
@@ -187,7 +196,8 @@ const DreamTeam = () => {
             {benchPlayers.map((player) => (
               <div
                 key={player.id}
-                className="bg-card rounded-full px-4 py-2 flex items-center opacity-70"
+                onClick={() => handlePlayerClick(player)}
+                className="bg-card rounded-full px-4 py-2 flex items-center opacity-70 cursor-pointer hover:bg-card/80 transition-colors"
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
                   <span className="text-foreground font-medium truncate">{player.name}</span>
@@ -203,6 +213,14 @@ const DreamTeam = () => {
           </div>
         </div>
       )}
+
+      {/* Player Card Drawer */}
+      <PlayerCard
+        player={selectedPlayer}
+        isOpen={isPlayerCardOpen}
+        onClose={() => setIsPlayerCardOpen(false)}
+        variant="view"
+      />
     </div>
   );
 };
