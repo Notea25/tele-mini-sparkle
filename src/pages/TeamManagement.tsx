@@ -218,7 +218,7 @@ const TeamManagement = () => {
 
     if (fromIsOnBench && !toIsOnBench) {
       // Bench player replacing field player
-      // If the field player being replaced is captain/vice-captain, transfer the role
+      // If the field player being replaced is captain/vice-captain, transfer the role to incoming player
       if (captain === toPlayerId) {
         newCaptain = fromPlayerId;
       }
@@ -246,8 +246,8 @@ const TeamManagement = () => {
       setMainSquadPlayers(reassignedMainSquad);
       setBenchPlayers(newBench);
     } else if (!fromIsOnBench && toIsOnBench) {
-      // Field player replacing bench player
-      // If the field player being replaced is captain/vice-captain, transfer the role
+      // Field player going to bench, bench player coming to field
+      // If the field player being moved to bench is captain/vice-captain, transfer the role to incoming player
       if (captain === fromPlayerId) {
         newCaptain = toPlayerId;
       }
@@ -276,12 +276,20 @@ const TeamManagement = () => {
       setBenchPlayers(newBench);
     }
 
+    // Ensure same player is not both captain and vice-captain after swap
+    if (newCaptain === newViceCaptain && newCaptain !== null) {
+      // This shouldn't happen with current logic, but safeguard
+      newViceCaptain = null;
+    }
+
     // Update captain/vice-captain if they changed
     if (newCaptain !== captain) {
       setCaptain(newCaptain);
+      localStorage.setItem('fantasyTeamCaptain', JSON.stringify(newCaptain));
     }
     if (newViceCaptain !== viceCaptain) {
       setViceCaptain(newViceCaptain);
+      localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(newViceCaptain));
     }
   };
 
