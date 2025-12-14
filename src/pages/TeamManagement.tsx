@@ -61,8 +61,8 @@ const TeamManagement = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [selectedFormation, setSelectedFormation] = useState("1-4-4-2");
-  const [captain, setCaptain] = useState<number | null>(null);
-  const [viceCaptain, setViceCaptain] = useState<number | null>(null);
+  const [captain, setCaptain] = useState<number | null>(() => getSavedTeam().captain);
+  const [viceCaptain, setViceCaptain] = useState<number | null>(() => getSavedTeam().viceCaptain);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName] = useState(() => getSavedTeam().teamName);
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(initialChips);
@@ -134,6 +134,8 @@ const TeamManagement = () => {
 
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
+    const savedTeam = getSavedTeam();
+    
     if (mainSquad.length > 0) {
       // Add red card to Степанов and injury to Макаров for testing
       const updatedMainSquad = mainSquad.map(p => {
@@ -148,6 +150,24 @@ const TeamManagement = () => {
       });
       setMainSquadPlayers(updatedMainSquad);
       setBenchPlayers(updatedBench);
+      
+      // Auto-assign captain and vice-captain if not set
+      if (!savedTeam.captain || !savedTeam.viceCaptain) {
+        // Sort main squad by price (descending) to get most expensive players
+        const sortedByPrice = [...updatedMainSquad].sort((a, b) => (b.price || 0) - (a.price || 0));
+        
+        if (sortedByPrice.length >= 2) {
+          const newCaptain = savedTeam.captain || sortedByPrice[0].id;
+          const newViceCaptain = savedTeam.viceCaptain || sortedByPrice[1].id;
+          
+          setCaptain(newCaptain);
+          setViceCaptain(newViceCaptain);
+          
+          // Save to localStorage
+          localStorage.setItem('fantasyTeamCaptain', JSON.stringify(newCaptain));
+          localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(newViceCaptain));
+        }
+      }
     }
   }, []);
 
