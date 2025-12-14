@@ -1,7 +1,14 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
+import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
 import { FormationKey, FORMATION_LABELS } from "@/lib/formationUtils";
+
+// Helper function to get jersey based on team
+const getJerseyForTeam = (team: string) => {
+  if (team === "Динамо-Минск") return jerseyDinamoMinsk;
+  return playerJerseyTeam;
+};
 
 interface PlayerData {
   id: number;
@@ -70,7 +77,7 @@ const SwapPlayerDrawer = ({
           {/* Current player */}
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="flex flex-col items-center">
-              <img src={playerJerseyTeam} alt={selectedPlayer.name} className="w-12 h-12 object-contain" />
+              <img src={getJerseyForTeam(selectedPlayer.team)} alt={selectedPlayer.name} className="w-12 h-12 object-contain" />
               <span className="text-foreground text-sm mt-1">{selectedPlayer.name}</span>
               <span className="text-muted-foreground text-xs">{selectedPlayer.position}</span>
             </div>
@@ -109,7 +116,7 @@ const SwapPlayerDrawer = ({
                     className="w-full bg-secondary rounded-2xl px-4 py-3 flex flex-col gap-1 hover:bg-secondary/80 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <img src={playerJerseyTeam} alt={player.name} className="w-8 h-8 object-contain" />
+                      <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-8 h-8 object-contain" />
                       <div className="flex-1 text-left">
                         <span className="text-foreground font-medium">{player.name}</span>
                         <span className="text-muted-foreground text-xs ml-2">{player.position}</span>
@@ -140,7 +147,7 @@ const SwapPlayerDrawer = ({
                     key={player.id}
                     className="w-full bg-secondary/30 rounded-2xl px-4 py-3 flex items-center gap-3 opacity-50"
                   >
-                    <img src={playerJerseyTeam} alt={player.name} className="w-8 h-8 object-contain grayscale" />
+                    <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-8 h-8 object-contain grayscale" />
                     <div className="flex-1 text-left">
                       <span className="text-muted-foreground font-medium">{player.name}</span>
                       <span className="text-muted-foreground text-xs ml-2">{player.position}</span>

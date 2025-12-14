@@ -1,5 +1,6 @@
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
+import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
@@ -8,6 +9,12 @@ import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
+
+// Helper function to get jersey based on team
+const getJerseyForTeam = (team: string) => {
+  if (team === "Динамо-Минск") return jerseyDinamoMinsk;
+  return playerJerseyNew;
+};
 
 interface PlayerData {
   id: number;
@@ -123,7 +130,7 @@ const FormationFieldManagement = ({
       )}
 
       {/* Jersey - larger size, overlaps name/club below */}
-      <img src={playerJerseyNew} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
+      <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
 
       {/* Player name and club blocks - jersey overlaps from above */}
       <div className="w-full relative z-10">

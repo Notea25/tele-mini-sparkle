@@ -2,7 +2,14 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
+import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
 import { BoostChip } from "@/components/BoostDrawer";
+
+// Helper function to get jersey based on team
+const getJerseyForTeam = (team: string) => {
+  if (team === "Динамо-Минск") return jerseyDinamoMinsk;
+  return playerJerseyTeam;
+};
 
 interface TransferRecord {
   type: "swap" | "buy" | "sell";
@@ -10,11 +17,13 @@ interface TransferRecord {
     id: number;
     name: string;
     points: number;
+    team?: string;
   };
   playerIn?: {
     id: number;
     name: string;
     points: number;
+    team?: string;
   };
 }
 
@@ -70,7 +79,7 @@ const ConfirmTransfersDrawer = ({
                   {/* Player Out */}
                   <div className="flex-1 bg-secondary rounded-xl p-3 flex items-center gap-3">
                     <img 
-                      src={playerJerseyTeam} 
+                      src={getJerseyForTeam(transfer.playerOut?.team || "")} 
                       alt={transfer.playerOut?.name || "Player"} 
                       className="w-10 h-10 object-contain rounded-lg"
                     />
@@ -90,7 +99,7 @@ const ConfirmTransfersDrawer = ({
                   {/* Player In */}
                   <div className="flex-1 bg-secondary rounded-xl p-3 flex items-center gap-3">
                     <img 
-                      src={playerJerseyTeam} 
+                      src={getJerseyForTeam(transfer.playerIn?.team || "")} 
                       alt={transfer.playerIn?.name || "Player"} 
                       className="w-10 h-10 object-contain rounded-lg"
                     />
