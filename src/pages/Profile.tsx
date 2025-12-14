@@ -29,7 +29,8 @@ const Profile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [inviteDrawerOpen, setInviteDrawerOpen] = useState(false);
   
-  const [profile, setProfile] = useState<ProfileData>(() => {
+  // Load saved profile
+  const [savedProfile, setSavedProfile] = useState<ProfileData>(() => {
     const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
     if (saved) {
       try {
@@ -41,14 +42,24 @@ const Profile = () => {
     return getDefaultProfile();
   });
 
-  // Save to localStorage whenever profile changes
-  useEffect(() => {
-    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
-  }, [profile]);
+  // Current editable profile state
+  const [profile, setProfile] = useState<ProfileData>(savedProfile);
 
-  const handleBackClick = () => {
-    // Let SportHeader handle navigation with fallback
-    return false;
+  // Check if there are unsaved changes
+  const hasUnsavedChanges = 
+    profile.userName !== savedProfile.userName || 
+    profile.profileImage !== savedProfile.profileImage;
+
+  // Save changes to localStorage
+  const handleSaveChanges = () => {
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+    setSavedProfile(profile);
+    toast.success("Изменения сохранены");
+  };
+
+  // Discard changes
+  const handleDiscardChanges = () => {
+    setProfile(savedProfile);
   };
 
   const handleHomeClick = () => {
@@ -79,7 +90,6 @@ const Profile = () => {
     reader.onload = (event) => {
       const base64 = event.target?.result as string;
       setProfile(prev => ({ ...prev, profileImage: base64 }));
-      toast.success("Фото профиля обновлено");
     };
     reader.onerror = () => {
       toast.error("Ошибка при загрузке изображения");
@@ -91,14 +101,12 @@ const Profile = () => {
     setProfile(prev => ({ ...prev, userName: value }));
   };
 
-  const handleBirthDateChange = (value: string) => {
-    setProfile(prev => ({ ...prev, birthDate: value }));
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <SportHeader 
-        onBackClick={handleBackClick}
+        hasUnsavedChanges={hasUnsavedChanges}
+        onSaveChanges={handleSaveChanges}
+        onDiscardChanges={handleDiscardChanges}
       />
 
       {/* Hidden file input */}
@@ -176,10 +184,25 @@ const Profile = () => {
             />
           </div>
 
+          {/* Save Changes Button - only visible when there are changes */}
+          {hasUnsavedChanges && (
+            <Button
+              onClick={handleSaveChanges}
+              className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-xl h-12"
+            >
+              Сохранить изменения
+            </Button>
+          )}
+
           {/* Invite Friends Button */}
           <Button
             onClick={() => setInviteDrawerOpen(true)}
-            className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-xl h-12 flex items-center justify-center gap-2"
+            variant={hasUnsavedChanges ? "outline" : "default"}
+            className={`w-full font-semibold rounded-xl h-12 flex items-center justify-center gap-2 ${
+              hasUnsavedChanges 
+                ? "border-border text-foreground hover:bg-secondary" 
+                : "bg-[#A8FF00] hover:bg-[#98EE00] text-black"
+            }`}
           >
             <UserPlus className="w-5 h-5" />
             Пригласить друзей
