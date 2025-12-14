@@ -54,6 +54,7 @@ interface PlayerDataExt extends PlayerData {
   isViceCaptain?: boolean;
   isOnBench?: boolean;
   hasRedCard?: boolean;
+  isInjured?: boolean;
 }
 
 const TeamManagement = () => {
@@ -134,13 +135,17 @@ const TeamManagement = () => {
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
     if (mainSquad.length > 0) {
-      // Add red card to Степанов for testing
-      const updatedMainSquad = mainSquad.map(p => 
-        p.name === "Степанов" ? { ...p, hasRedCard: true } : p
-      );
-      const updatedBench = bench.map(p => 
-        p.name === "Степанов" ? { ...p, hasRedCard: true } : p
-      );
+      // Add red card to Степанов and injury to Макаров for testing
+      const updatedMainSquad = mainSquad.map(p => {
+        if (p.name === "Степанов") return { ...p, hasRedCard: true };
+        if (p.name === "Макаров") return { ...p, isInjured: true };
+        return p;
+      });
+      const updatedBench = bench.map(p => {
+        if (p.name === "Степанов") return { ...p, hasRedCard: true };
+        if (p.name === "Макаров") return { ...p, isInjured: true };
+        return p;
+      });
       setMainSquadPlayers(updatedMainSquad);
       setBenchPlayers(updatedBench);
     }
