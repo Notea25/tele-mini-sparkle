@@ -116,11 +116,11 @@ const FormationFieldManagement = ({
         className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${borderClass}`}
         onClick={() => onPlayerClick?.(player)}
       >
-        {/* Captain/Vice-Captain badge - absolute in left corner */}
-        {captain === player.id && (
+        {/* Captain/Vice-Captain badge - absolute in left corner, only for main squad */}
+        {captain === player.id && !isOnBench && (
           <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />
         )}
-        {viceCaptain === player.id && (
+        {viceCaptain === player.id && !isOnBench && (
           <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
         )}
 
