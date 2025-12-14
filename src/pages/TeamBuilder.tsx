@@ -90,13 +90,13 @@ const TeamBuilder = () => {
 
   const handleSort = (field: "name" | "points" | "price") => {
     if (sortField !== field) {
-      // New field: start with asc for name, desc for points/price
+      // New field: start with desc for points/price, asc for name
       setSortField(field);
       setSortDirection(field === "name" ? "asc" : "desc");
-    } else if (sortDirection === "asc") {
-      // Second click: switch direction
-      setSortDirection("desc");
     } else if (sortDirection === "desc") {
+      // Second click: switch to ascending
+      setSortDirection("asc");
+    } else if (sortDirection === "asc") {
       // Third click: clear sort
       setSortField(null);
       setSortDirection(null);
