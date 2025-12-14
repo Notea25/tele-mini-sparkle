@@ -17,7 +17,6 @@ interface PlayerData {
   isCaptain?: boolean;
   isViceCaptain?: boolean;
   isOnBench?: boolean;
-  hasRedCard?: boolean;
 }
 
 const DreamTeam = () => {
@@ -32,7 +31,7 @@ const DreamTeam = () => {
     { id: 0, name: "Плотников", team: "Динамо Минск", position: "ВР", points: 32, price: 6.5, slotIndex: 0 },
     { id: 4, name: "Плотников", team: "Белшина", position: "ЗЩ", points: 28, price: 6.5, slotIndex: 0 },
     { id: 5, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 30, price: 6.5, slotIndex: 1, isCaptain: true },
-    { id: 6, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 27, price: 6.5, slotIndex: 2, hasRedCard: true },
+    { id: 6, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 27, price: 6.5, slotIndex: 2 },
     { id: 7, name: "Плотников", team: "БАТЭ", position: "ЗЩ", points: 29, price: 6.5, slotIndex: 3 },
     { id: 12, name: "Плотников", team: "Белшина", position: "ПЗ", points: 35, price: 6.5, slotIndex: 0 },
     { id: 13, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 33, price: 6.5, slotIndex: 1 },

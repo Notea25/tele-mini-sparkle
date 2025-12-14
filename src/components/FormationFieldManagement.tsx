@@ -11,7 +11,6 @@ import swapArrows from "@/assets/swap-arrows.png";
 import iconBench from "@/assets/icon-bench.png";
 import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
-import redCardIcon from "@/assets/red-card.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -37,7 +36,6 @@ interface PlayerData {
   slotIndex?: number;
   isCaptain?: boolean;
   isViceCaptain?: boolean;
-  hasRedCard?: boolean;
 }
 
 interface FormationFieldManagementProps {
@@ -97,12 +95,11 @@ const FormationFieldManagement = ({
     const showCaptain3xBorder = isCaptain3xBoostActive && isCaptain;
     const showCaptain3xIcon = isCaptain3xBoostActive && isCaptain && !isOnBench;
     const hasGreenBorder = showDoublePowerBorder || showCaptain3xBorder;
-    const hasRedCard = player.hasRedCard;
 
     return (
       <div
         className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${
-          hasRedCard ? "border-red-500" : hasGreenBorder ? "border-primary" : "border-white/60"
+          hasGreenBorder ? "border-primary" : "border-white/60"
         }`}
         onClick={() => onPlayerClick?.(player)}
       >
@@ -143,13 +140,7 @@ const FormationFieldManagement = ({
       )}
 
       {/* Jersey - larger size, overlaps name/club below */}
-      <div className="relative w-full flex justify-center">
-        <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
-        {/* Red card indicator */}
-        {hasRedCard && (
-          <img src={redCardIcon} alt="Red Card" className="absolute bottom-[35%] right-0 w-4 h-5 z-10" />
-        )}
-      </div>
+      <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
 
       {/* Player name and club blocks - jersey overlaps from above */}
       <div className="w-full relative z-10">
