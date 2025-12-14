@@ -82,9 +82,11 @@ const BuyPlayerDrawer = ({
     if (sortField !== field) {
       setSortField(field);
       setSortDirection(field === "name" ? "asc" : "desc");
-    } else if (sortDirection === "asc") {
-      setSortDirection("desc");
     } else if (sortDirection === "desc") {
+      // Second click: switch to ascending
+      setSortDirection("asc");
+    } else if (sortDirection === "asc") {
+      // Third click: clear sort
       setSortField(null);
       setSortDirection(null);
     }
