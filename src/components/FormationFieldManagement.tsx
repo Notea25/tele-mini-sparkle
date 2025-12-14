@@ -11,6 +11,7 @@ import swapArrows from "@/assets/swap-arrows.png";
 import iconBench from "@/assets/icon-bench.png";
 import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
+import redCardBadge from "@/assets/red-card-badge.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -36,6 +37,7 @@ interface PlayerData {
   slotIndex?: number;
   isCaptain?: boolean;
   isViceCaptain?: boolean;
+  hasRedCard?: boolean;
 }
 
 interface FormationFieldManagementProps {
@@ -95,12 +97,18 @@ const FormationFieldManagement = ({
     const showCaptain3xBorder = isCaptain3xBoostActive && isCaptain;
     const showCaptain3xIcon = isCaptain3xBoostActive && isCaptain && !isOnBench;
     const hasGreenBorder = showDoublePowerBorder || showCaptain3xBorder;
+    const hasRedCard = player.hasRedCard;
+
+    // Border color priority: red card > green boost > default white
+    const borderClass = hasRedCard 
+      ? "border-red-500" 
+      : hasGreenBorder 
+        ? "border-primary" 
+        : "border-white/60";
 
     return (
       <div
-        className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${
-          hasGreenBorder ? "border-primary" : "border-white/60"
-        }`}
+        className={`w-[62px] relative flex flex-col items-center cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${borderClass}`}
         onClick={() => onPlayerClick?.(player)}
       >
         {/* Captain/Vice-Captain badge - absolute in left corner */}
@@ -140,7 +148,14 @@ const FormationFieldManagement = ({
       )}
 
       {/* Jersey - larger size, overlaps name/club below */}
-      <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
+      <div className="relative">
+        <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
+        
+        {/* Red card badge - positioned at bottom right of jersey */}
+        {hasRedCard && (
+          <img src={redCardBadge} alt="Red card" className="absolute bottom-1 right-1 z-50 w-3 h-3" />
+        )}
+      </div>
 
       {/* Player name and club blocks - jersey overlaps from above */}
       <div className="w-full relative z-10">
