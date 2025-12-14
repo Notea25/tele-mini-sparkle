@@ -137,6 +137,45 @@ const PlayerCard = ({
               ))}
             </div>
           </div>
+
+          {/* Captain/Vice-Captain Selection - only for management variant */}
+          {variant === "management" && (
+            <div className="mt-6 space-y-3">
+              <h3 className="text-foreground text-lg font-bold text-center mb-3">Назначить роль</h3>
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => {
+                    if (!isCaptain && onSetCaptain) {
+                      onSetCaptain(player.id);
+                    }
+                  }}
+                  disabled={isCaptain}
+                  className={`flex-1 rounded-full py-4 font-semibold ${
+                    isCaptain 
+                      ? "bg-primary text-primary-foreground" 
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                  }`}
+                >
+                  {isCaptain ? "✓ Капитан" : "Капитан"}
+                </Button>
+                <Button
+                  onClick={() => {
+                    if (!isViceCaptain && onSetViceCaptain) {
+                      onSetViceCaptain(player.id);
+                    }
+                  }}
+                  disabled={isViceCaptain}
+                  className={`flex-1 rounded-full py-4 font-semibold ${
+                    isViceCaptain 
+                      ? "bg-primary text-primary-foreground" 
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                  }`}
+                >
+                  {isViceCaptain ? "✓ Вице-капитан" : "Вице-капитан"}
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         <DrawerFooter className="px-6 pb-6">
