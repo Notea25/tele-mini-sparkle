@@ -373,6 +373,16 @@ const TeamBuilder = () => {
     const formation: Record<string, number> = { ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3 };
     const TOTAL_PLAYERS = 15;
 
+    // Shuffle function for randomness
+    const shuffleArray = <T,>(array: T[]): T[] => {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    };
+
     // Start with currently selected players
     let newSelectedPlayers = [...selectedPlayers];
     let totalCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
@@ -440,12 +450,10 @@ const TeamBuilder = () => {
     // Calculate minimum cost to fill all remaining slots
     let minCostToFillAll = 0;
     const tempClubCounts = { ...clubCounts };
-    const minPlayersPerPosition: Record<string, typeof players> = {};
     
     Object.entries(slotsNeeded).forEach(([position, needed]) => {
       if (needed <= 0) return;
       const cheapest = getCheapestPlayersForPosition(position, needed, tempClubCounts, selectedIdsSet);
-      minPlayersPerPosition[position] = cheapest;
       cheapest.forEach(p => {
         minCostToFillAll += p.price;
         tempClubCounts[p.team] = (tempClubCounts[p.team] || 0) + 1;
@@ -457,15 +465,17 @@ const TeamBuilder = () => {
       return;
     }
 
-    // Smart fill: maximize budget usage while guaranteeing all 15 slots
-    // Strategy: for each position, try to pick more expensive players 
-    // while ensuring remaining positions can still be filled
+    // Randomized fill with guaranteed 15 players
+    // Strategy: shuffle positions order, then for each position shuffle and try players randomly
+    // while ensuring we can still fill remaining positions
 
-    const positionsToFill = Object.entries(slotsNeeded)
-      .filter(([_, needed]) => needed > 0)
-      .map(([pos]) => pos);
+    const positionsToFill = shuffleArray(
+      Object.entries(slotsNeeded)
+        .filter(([_, needed]) => needed > 0)
+        .map(([pos]) => pos)
+    );
 
-    // Recursive function to calculate min cost for remaining positions
+    // Function to calculate min cost for remaining positions
     const getMinCostForRemaining = (
       remainingPositions: string[],
       currentClubCounts: Record<string, number>,
@@ -473,14 +483,15 @@ const TeamBuilder = () => {
     ): number => {
       let cost = 0;
       const tempCounts = { ...currentClubCounts };
+      const tempExclude = new Set(excludeIds);
       
       for (const pos of remainingPositions) {
         const needed = slotsNeeded[pos];
-        const cheapest = getCheapestPlayersForPosition(pos, needed, tempCounts, excludeIds);
+        const cheapest = getCheapestPlayersForPosition(pos, needed, tempCounts, tempExclude);
         cheapest.forEach(p => {
           cost += p.price;
           tempCounts[p.team] = (tempCounts[p.team] || 0) + 1;
-          excludeIds.add(p.id);
+          tempExclude.add(p.id);
         });
       }
       return cost;
@@ -492,10 +503,10 @@ const TeamBuilder = () => {
       const needed = slotsNeeded[position];
       const remainingPositions = positionsToFill.slice(posIndex + 1);
       
-      // Get all available players for this position sorted by price (expensive first for max budget use)
-      const availablePlayers = players
-        .filter((p) => p.position === position && !selectedIdsSet.has(p.id))
-        .sort((a, b) => b.price - a.price); // Expensive first
+      // Get all available players for this position and SHUFFLE them
+      const availablePlayers = shuffleArray(
+        players.filter((p) => p.position === position && !selectedIdsSet.has(p.id))
+      );
       
       let added = 0;
       for (const player of availablePlayers) {
@@ -548,7 +559,7 @@ const TeamBuilder = () => {
         }
       }
       
-      // If we couldn't add enough players for this position, fill with cheapest
+      // Fallback: if we couldn't add enough players, fill with cheapest available
       if (added < needed) {
         const cheapestPlayers = players
           .filter((p) => p.position === position && !selectedIdsSet.has(p.id))
