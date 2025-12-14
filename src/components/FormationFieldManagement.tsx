@@ -12,6 +12,7 @@ import iconBench from "@/assets/icon-bench.png";
 import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
 import redCardBadge from "@/assets/red-card-badge.png";
+import injuryBadge from "@/assets/injury-badge.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -38,6 +39,7 @@ interface PlayerData {
   isCaptain?: boolean;
   isViceCaptain?: boolean;
   hasRedCard?: boolean;
+  isInjured?: boolean;
 }
 
 interface FormationFieldManagementProps {
@@ -98,9 +100,10 @@ const FormationFieldManagement = ({
     const showCaptain3xIcon = isCaptain3xBoostActive && isCaptain && !isOnBench;
     const hasGreenBorder = showDoublePowerBorder || showCaptain3xBorder;
     const hasRedCard = player.hasRedCard;
+    const isInjured = player.isInjured;
 
-    // Border color priority: red card > green boost > default white
-    const borderClass = hasRedCard 
+    // Border color priority: red card/injury > green boost > default white
+    const borderClass = (hasRedCard || isInjured)
       ? "border-red-500" 
       : hasGreenBorder 
         ? "border-primary" 
@@ -154,6 +157,11 @@ const FormationFieldManagement = ({
         {/* Red card badge - positioned at bottom right of jersey */}
         {hasRedCard && (
           <img src={redCardBadge} alt="Red card" className="absolute bottom-[2px] right-1 z-50 w-2.5 h-2.5" />
+        )}
+        
+        {/* Injury badge - positioned at bottom right of jersey */}
+        {isInjured && !hasRedCard && (
+          <img src={injuryBadge} alt="Injury" className="absolute bottom-[2px] right-1 z-50 w-2.5 h-2.5" />
         )}
       </div>
 
