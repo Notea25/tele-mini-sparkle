@@ -374,7 +374,7 @@ const TeamBuilder = () => {
     const TOTAL_PLAYERS = 15;
 
     // Start with currently selected players
-    const newSelectedPlayers = [...selectedPlayers];
+    let newSelectedPlayers = [...selectedPlayers];
     let totalCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
 
     // Count existing club selections
@@ -393,104 +393,95 @@ const TeamBuilder = () => {
       }
     });
 
-    // Shuffle function for randomness
-    const shuffleArray = <T,>(array: T[]): T[] => {
-      const shuffled = [...array];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    };
-
     const selectedIdsSet = new Set(newSelectedPlayers.map((sp) => sp.id));
 
-    // Helper to add a player
-    const addPlayer = (player: typeof players[0], position: string): boolean => {
-      const currentClubCount = clubCounts[player.team] || 0;
-      if (totalCost + player.price <= BUDGET && currentClubCount < MAX_PLAYERS_PER_CLUB) {
+    // Calculate slots needed per position
+    const slotsNeeded: Record<string, number> = {};
+    Object.entries(formation).forEach(([position, maxCount]) => {
+      const currentCount = positionCounts[position] || 0;
+      slotsNeeded[position] = maxCount - currentCount;
+    });
+
+    const totalSlotsNeeded = Object.values(slotsNeeded).reduce((sum, n) => sum + n, 0);
+    
+    if (totalSlotsNeeded === 0) {
+      toast.info("Команда уже полностью укомплектована");
+      return;
+    }
+
+    // Get available budget
+    const availableBudget = BUDGET - totalCost;
+
+    // First, check if it's even possible to fill all slots with cheapest players
+    let minCostToFillAll = 0;
+    const cheapestPerPosition: Record<string, typeof players> = {};
+    
+    Object.entries(slotsNeeded).forEach(([position, needed]) => {
+      if (needed <= 0) return;
+      
+      // Get cheapest available players for this position (respecting club limit)
+      const availableForPosition = players
+        .filter((p) => p.position === position && !selectedIdsSet.has(p.id))
+        .sort((a, b) => a.price - b.price);
+      
+      cheapestPerPosition[position] = availableForPosition;
+      
+      // Calculate min cost considering club limits
+      let tempClubCounts = { ...clubCounts };
+      let addedCount = 0;
+      
+      for (const player of availableForPosition) {
+        if (addedCount >= needed) break;
+        const clubCount = tempClubCounts[player.team] || 0;
+        if (clubCount < MAX_PLAYERS_PER_CLUB) {
+          minCostToFillAll += player.price;
+          tempClubCounts[player.team] = clubCount + 1;
+          addedCount++;
+        }
+      }
+    });
+
+    // If not enough budget, show error but still try to fill what we can
+    if (minCostToFillAll > availableBudget) {
+      toast.error(`Недостаточно бюджета. Требуется минимум ${minCostToFillAll.toFixed(1)}, доступно ${availableBudget.toFixed(1)}`);
+      return;
+    }
+
+    // Now fill all slots - prioritize cheapest players
+    Object.entries(slotsNeeded).forEach(([position, needed]) => {
+      if (needed <= 0) return;
+
+      const availableForPosition = players
+        .filter((p) => p.position === position && !selectedIdsSet.has(p.id))
+        .sort((a, b) => a.price - b.price);
+
+      let added = 0;
+      for (const player of availableForPosition) {
+        if (added >= needed) break;
+
+        const currentClubCount = clubCounts[player.team] || 0;
+        if (currentClubCount >= MAX_PLAYERS_PER_CLUB) continue;
+        if (totalCost + player.price > BUDGET) continue;
+
+        // Find next available slot
         let slotIndex = 0;
         while (usedSlotsByPosition[position].includes(slotIndex)) {
           slotIndex++;
         }
+
         newSelectedPlayers.push({ id: player.id, slotIndex });
         usedSlotsByPosition[position].push(slotIndex);
         selectedIdsSet.add(player.id);
         totalCost += player.price;
         clubCounts[player.team] = currentClubCount + 1;
         positionCounts[position] = (positionCounts[position] || 0) + 1;
-        return true;
-      }
-      return false;
-    };
-
-    // First pass: try to fill with random players
-    Object.entries(formation).forEach(([position, maxCount]) => {
-      const currentCount = positionCounts[position] || 0;
-      const slotsToFill = maxCount - currentCount;
-
-      if (slotsToFill <= 0) return;
-
-      const availablePlayersForPosition = players.filter(
-        (p) => p.position === position && !selectedIdsSet.has(p.id)
-      );
-
-      const shuffledPlayers = shuffleArray(availablePlayersForPosition);
-
-      let added = 0;
-      for (const player of shuffledPlayers) {
-        if (added >= slotsToFill) break;
-        if (addPlayer(player, position)) {
-          added++;
-        }
+        added++;
       }
     });
 
-    // Second pass: fill remaining slots with cheapest available players
-    Object.entries(formation).forEach(([position, maxCount]) => {
-      const currentCount = positionCounts[position] || 0;
-      const slotsToFill = maxCount - currentCount;
-
-      if (slotsToFill <= 0) return;
-
-      const availablePlayersForPosition = players
-        .filter((p) => p.position === position && !selectedIdsSet.has(p.id))
-        .sort((a, b) => a.price - b.price);
-
-      let added = 0;
-      for (const player of availablePlayersForPosition) {
-        if (added >= slotsToFill) break;
-        if (addPlayer(player, position)) {
-          added++;
-        }
-      }
-    });
-
-    // Final check: count total players and check if we have 15
-    const totalSelected = newSelectedPlayers.length;
-    
-    if (totalSelected < TOTAL_PLAYERS) {
-      // Calculate minimum cost needed to fill remaining slots
-      const remainingSlots = TOTAL_PLAYERS - totalSelected;
-      const remainingBudget = BUDGET - totalCost;
-      
-      // Find cheapest available players for unfilled positions
-      let minCostToFill = 0;
-      Object.entries(formation).forEach(([position, maxCount]) => {
-        const currentCount = positionCounts[position] || 0;
-        const slotsToFill = maxCount - currentCount;
-        
-        if (slotsToFill > 0) {
-          const cheapestForPosition = players
-            .filter((p) => p.position === position && !selectedIdsSet.has(p.id))
-            .sort((a, b) => a.price - b.price)
-            .slice(0, slotsToFill);
-          
-          minCostToFill += cheapestForPosition.reduce((sum, p) => sum + p.price, 0);
-        }
-      });
-      
-      toast.error(`Недостаточно бюджета для заполнения всех позиций. Требуется ещё ${minCostToFill.toFixed(1)}, доступно ${remainingBudget.toFixed(1)}`);
+    // Final verification
+    if (newSelectedPlayers.length < TOTAL_PLAYERS) {
+      toast.error("Не удалось заполнить все позиции из-за ограничений клуба или бюджета");
     }
 
     setSelectedPlayers(newSelectedPlayers);
