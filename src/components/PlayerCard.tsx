@@ -21,13 +21,13 @@ interface PlayerCardProps {
   player: PlayerData | null;
   isOpen: boolean;
   onClose: () => void;
-  isSelected: boolean;
-  onToggleSelect: (playerId: number) => void;
-  isCaptain: boolean;
-  isViceCaptain: boolean;
-  onSetCaptain: (playerId: number) => void;
-  onSetViceCaptain: (playerId: number) => void;
-  variant?: "default" | "transfers" | "management";
+  isSelected?: boolean;
+  onToggleSelect?: (playerId: number) => void;
+  isCaptain?: boolean;
+  isViceCaptain?: boolean;
+  onSetCaptain?: (playerId: number) => void;
+  onSetViceCaptain?: (playerId: number) => void;
+  variant?: "default" | "transfers" | "management" | "view";
   onSell?: (playerId: number) => void;
   onSwap?: (playerId: number) => void;
 }
@@ -36,10 +36,10 @@ const PlayerCard = ({
   player,
   isOpen,
   onClose,
-  isSelected,
+  isSelected = false,
   onToggleSelect,
-  isCaptain,
-  isViceCaptain,
+  isCaptain = false,
+  isViceCaptain = false,
   onSetCaptain,
   onSetViceCaptain,
   variant = "default",
@@ -140,7 +140,14 @@ const PlayerCard = ({
         </div>
 
         <DrawerFooter className="px-6 pb-6">
-          {variant === "transfers" ? (
+          {variant === "view" ? (
+            <Button
+              onClick={onClose}
+              className="w-full rounded-full py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              Закрыть
+            </Button>
+          ) : variant === "transfers" ? (
             <div className="flex gap-3 w-full">
               <Button
                 onClick={onClose}
@@ -179,7 +186,7 @@ const PlayerCard = ({
           ) : (
             <Button
               onClick={() => {
-                onToggleSelect(player.id);
+                onToggleSelect?.(player.id);
                 onClose();
               }}
               className={`w-full rounded-full py-6 font-semibold text-lg ${

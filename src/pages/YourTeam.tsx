@@ -6,6 +6,7 @@ import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PlayerCard from "@/components/PlayerCard";
 
 const YourTeam = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const YourTeam = () => {
   // Load saved team
   const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerData[]>([]);
   const [benchPlayers, setBenchPlayers] = useState<PlayerData[]>([]);
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | null>(null);
+  const [isPlayerCardOpen, setIsPlayerCardOpen] = useState(false);
 
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
@@ -24,6 +27,11 @@ const YourTeam = () => {
       setBenchPlayers(bench);
     }
   }, []);
+
+  const handlePlayerClick = (player: PlayerData) => {
+    setSelectedPlayer(player);
+    setIsPlayerCardOpen(true);
+  };
 
   // Calculate total points
   const totalPoints = mainSquadPlayers.reduce((sum, p) => sum + p.points, 0);
@@ -117,7 +125,7 @@ const YourTeam = () => {
           <FormationFieldManagement
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
-            onPlayerClick={() => {}}
+            onPlayerClick={handlePlayerClick}
             showPrice={false}
             showPointsInsteadOfTeam={true}
           />
@@ -140,7 +148,8 @@ const YourTeam = () => {
             {mainSquadPlayers.map((player) => (
               <div
                 key={player.id}
-                className="bg-card rounded-full px-4 py-2 flex items-center"
+                onClick={() => handlePlayerClick(player)}
+                className="bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors"
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
                   <span className="text-foreground font-medium truncate">{player.name}</span>
@@ -164,7 +173,8 @@ const YourTeam = () => {
             {benchPlayers.map((player) => (
               <div
                 key={player.id}
-                className="bg-card rounded-full px-4 py-2 flex items-center opacity-70"
+                onClick={() => handlePlayerClick(player)}
+                className="bg-card rounded-full px-4 py-2 flex items-center opacity-70 cursor-pointer hover:bg-card/80 transition-colors"
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
                   <span className="text-foreground font-medium truncate">{player.name}</span>
@@ -180,6 +190,14 @@ const YourTeam = () => {
           </div>
         </div>
       )}
+
+      {/* Player Card Drawer */}
+      <PlayerCard
+        player={selectedPlayer}
+        isOpen={isPlayerCardOpen}
+        onClose={() => setIsPlayerCardOpen(false)}
+        variant="view"
+      />
     </div>
   );
 };
