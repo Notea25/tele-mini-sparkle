@@ -153,22 +153,33 @@ const TeamManagement = () => {
       setMainSquadPlayers(updatedMainSquad);
       setBenchPlayers(updatedBench);
       
-      // Auto-assign captain and vice-captain if not set
-      if (!savedTeam.captain || !savedTeam.viceCaptain) {
-        // Sort main squad by price (descending) to get most expensive players
-        const sortedByPrice = [...updatedMainSquad].sort((a, b) => (b.price || 0) - (a.price || 0));
+      // Get main squad player IDs for validation
+      const mainSquadIds = updatedMainSquad.map(p => p.id);
+      
+      // Validate saved captain/vice-captain are in main squad (not on bench)
+      const savedCaptainValid = savedTeam.captain && mainSquadIds.includes(savedTeam.captain);
+      const savedViceCaptainValid = savedTeam.viceCaptain && mainSquadIds.includes(savedTeam.viceCaptain);
+      
+      // Sort main squad by price (descending) to get most expensive players for auto-assign
+      const sortedByPrice = [...updatedMainSquad].sort((a, b) => (b.price || 0) - (a.price || 0));
+      
+      if (sortedByPrice.length >= 2) {
+        // Use saved values only if they're valid (player is in main squad)
+        let newCaptain = savedCaptainValid ? savedTeam.captain : sortedByPrice[0].id;
+        let newViceCaptain = savedViceCaptainValid ? savedTeam.viceCaptain : null;
         
-        if (sortedByPrice.length >= 2) {
-          const newCaptain = savedTeam.captain || sortedByPrice[0].id;
-          const newViceCaptain = savedTeam.viceCaptain || sortedByPrice[1].id;
-          
-          setCaptain(newCaptain);
-          setViceCaptain(newViceCaptain);
-          
-          // Save to localStorage
-          localStorage.setItem('fantasyTeamCaptain', JSON.stringify(newCaptain));
-          localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(newViceCaptain));
+        // If vice-captain not valid or equals captain, pick next best player
+        if (!newViceCaptain || newViceCaptain === newCaptain) {
+          const nextBest = sortedByPrice.find(p => p.id !== newCaptain);
+          newViceCaptain = nextBest?.id || null;
         }
+        
+        setCaptain(newCaptain!);
+        setViceCaptain(newViceCaptain);
+        
+        // Save to localStorage
+        localStorage.setItem('fantasyTeamCaptain', JSON.stringify(newCaptain));
+        localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(newViceCaptain));
       }
     }
   }, []);
