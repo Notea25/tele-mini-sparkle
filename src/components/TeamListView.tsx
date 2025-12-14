@@ -67,6 +67,11 @@ const TeamListView = ({
           >
             {isOccupied && slot.player ? (
               <>
+                {/* Position badge */}
+                <span className="w-8 flex-shrink-0 text-xs text-muted-foreground font-medium">
+                  ({slot.position})
+                </span>
+                
                 {/* Player name - flexible */}
                 <div 
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
