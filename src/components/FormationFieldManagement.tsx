@@ -221,12 +221,12 @@ const FormationFieldManagement = ({
         <img 
           src={bannerLeft} 
           alt="Advertisement" 
-          className="absolute top-1 left-1 w-[22%] h-auto z-30"
+          className="absolute top-1 left-[9px] w-[22%] h-auto z-30"
         />
         <img 
           src={bannerRight} 
           alt="Advertisement" 
-          className="absolute top-1 right-1 w-[22%] h-auto z-30"
+          className="absolute top-1 right-[9px] w-[22%] h-auto z-30"
         />
         
         {formation.map((slot, idx) => {
