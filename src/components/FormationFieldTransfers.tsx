@@ -99,7 +99,7 @@ const FormationFieldTransfers = ({
 
   const renderPlayer = (player: PlayerData) => (
     <div
-      className="w-[62px] h-[77px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
+      className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       onClick={() => onPlayerClick?.(player)}
     >
       {/* Captain/Vice-Captain badge - absolute in left corner */}
@@ -152,7 +152,7 @@ const FormationFieldTransfers = ({
 
   const renderEmptySlot = (position: string, slotIndex: number) => (
     <div
-      className="w-[62px] h-[77px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+      className="w-[62px] h-[85px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
       onClick={() => onEmptySlotClick?.(position, slotIndex)}
     >
       <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">
