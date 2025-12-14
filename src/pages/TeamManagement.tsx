@@ -11,6 +11,7 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
+import ConfirmBoostDrawer from "@/components/ConfirmBoostDrawer";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
@@ -68,6 +69,7 @@ const TeamManagement = () => {
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(initialChips);
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
+  const [isConfirmBoostOpen, setIsConfirmBoostOpen] = useState(false);
   const currentTour = 1; // Current tour number
 
   const openBoostDrawer = (chip: BoostChip) => {
@@ -633,8 +635,13 @@ const TeamManagement = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
         <Button 
           onClick={() => {
-            toast.success("Изменения сохранены");
-            navigate("/league");
+            const pendingBoost = specialChips.find(c => c.status === "pending");
+            if (pendingBoost) {
+              setIsConfirmBoostOpen(true);
+            } else {
+              toast.success("Изменения сохранены");
+              navigate("/league");
+            }
           }}
           className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-full h-12"
         >
@@ -686,6 +693,26 @@ const TeamManagement = () => {
         onApply={applyBoost}
         onCancel={cancelBoost}
         currentTour={currentTour}
+      />
+
+      {/* Confirm Boost Drawer */}
+      <ConfirmBoostDrawer
+        isOpen={isConfirmBoostOpen}
+        onClose={() => setIsConfirmBoostOpen(false)}
+        pendingBoost={specialChips.find(c => c.status === "pending") || null}
+        onConfirm={() => {
+          setIsConfirmBoostOpen(false);
+          toast.success("Изменения сохранены");
+          navigate("/league");
+        }}
+        onChangeBoost={() => {
+          setIsConfirmBoostOpen(false);
+          const pendingBoost = specialChips.find(c => c.status === "pending");
+          if (pendingBoost) {
+            setSelectedBoostChip(pendingBoost);
+            setIsBoostDrawerOpen(true);
+          }
+        }}
       />
     </div>
   );
