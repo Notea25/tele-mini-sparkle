@@ -153,7 +153,7 @@ const FormationFieldManagement = ({
         
         {/* Red card badge - positioned at bottom right of jersey */}
         {hasRedCard && (
-          <img src={redCardBadge} alt="Red card" className="absolute bottom-1 right-1 z-50 w-3 h-3" />
+          <img src={redCardBadge} alt="Red card" className="absolute bottom-[2px] right-1 z-50 w-2.5 h-2.5" />
         )}
       </div>
 
