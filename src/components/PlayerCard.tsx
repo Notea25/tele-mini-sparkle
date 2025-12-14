@@ -90,31 +90,6 @@ const PlayerCard = ({
                 <span className="text-primary">{player.team}</span>
               </div>
               
-              {/* Captain selection */}
-              {isSelected && (
-                <div className="flex items-center gap-4 mt-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name={`captain-${player.id}`}
-                      checked={isCaptain}
-                      onChange={() => onSetCaptain(player.id)}
-                      className="w-4 h-4 accent-primary"
-                    />
-                    <span className="text-muted-foreground text-sm">Капитан</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name={`captain-${player.id}`}
-                      checked={isViceCaptain}
-                      onChange={() => onSetViceCaptain(player.id)}
-                      className="w-4 h-4 accent-primary"
-                    />
-                    <span className="text-muted-foreground text-sm">Вице Капитан</span>
-                  </label>
-                </div>
-              )}
             </div>
           </div>
 
