@@ -715,11 +715,6 @@ const TeamManagement = () => {
         }}
         onChangeBoost={() => {
           setIsConfirmBoostOpen(false);
-          const pendingBoost = specialChips.find(c => c.status === "pending");
-          if (pendingBoost) {
-            setSelectedBoostChip(pendingBoost);
-            setIsBoostDrawerOpen(true);
-          }
         }}
       />
     </div>
