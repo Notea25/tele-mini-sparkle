@@ -110,21 +110,21 @@ const FormationFieldTransfers = ({
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
 
-      {/* Delete button - absolute in corner */}
+      {/* Delete button - absolute in corner, 3px lower */}
       {onRemovePlayer && (
         <button
           onClick={(e) => {
             e.stopPropagation();
             onRemovePlayer(player.id);
           }}
-          className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#5a7a4a] rounded-full"
+          className="absolute top-[7px] right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#5a7a4a] rounded-full"
         >
           <X className="w-2 h-2 text-[#1a2e1a]" />
         </button>
       )}
 
-      {/* Price centered */}
-      <div className="w-full flex items-center justify-center pt-1 pb-0.5">
+      {/* Price centered, 3px lower */}
+      <div className="w-full flex items-center justify-center pt-[7px] pb-0.5">
         <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
           ${(player.price || 9).toFixed(1)}
         </span>
