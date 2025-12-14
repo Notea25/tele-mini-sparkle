@@ -97,7 +97,7 @@ const PlayerCard = ({
           <div className="grid grid-cols-4 gap-2 mt-6 bg-secondary/50 rounded-xl p-4">
             <div className="text-center">
               <span className="text-muted-foreground text-xs block">Цена</span>
-              <span className="text-foreground text-xl font-bold">{player.price}</span>
+              <span className="text-foreground text-xl font-bold">{typeof player.price === 'number' ? player.price.toFixed(1) : player.price}</span>
               <span className="text-muted-foreground text-xs block">{Math.floor(Math.random() * 10) + 1} из 82</span>
             </div>
             <div className="text-center">
