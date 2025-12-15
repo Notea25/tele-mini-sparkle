@@ -5,7 +5,10 @@ import jerseyBate from "@/assets/jersey-bate.png";
 import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
 import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
 import jerseySlavia from "@/assets/jersey-slaviya.png";
+import jerseySlaviaGk from "@/assets/jersey-slaviya-gk.png";
 import jerseyNeman from "@/assets/jersey-neman.png";
+import jerseyMinsk from "@/assets/jersey-minsk.png";
+import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
@@ -19,15 +22,17 @@ import bannerRight from "@/assets/banner-right.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
-// Helper function to get jersey based on team
-const getJerseyForTeam = (team: string) => {
+// Helper function to get jersey based on team and position
+const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
     case "Динамо-Минск": return jerseyDinamoMinsk;
     case "БАТЭ": return jerseyBate;
     case "Динамо-Брест": return jerseyDinamoBrest;
     case "МЛ Витебск": return jerseyMlVitebsk;
-    case "Славия-Мозырь": return jerseySlavia;
+    case "Славия-Мозырь": return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
     case "Неман": return jerseyNeman;
+    case "Минск": return jerseyMinsk;
+    case "Торпедо-БелАЗ": return jerseyTorpedo;
     default: return playerJerseyNew;
   }
 };
@@ -156,7 +161,7 @@ const FormationFieldManagement = ({
 
       {/* Jersey - larger size, overlaps name/club below */}
       <div className="relative">
-        <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
+        <img src={getJerseyForTeam(player.team, player.position)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
         
         {/* Red card badge - positioned at bottom right of jersey */}
         {hasRedCard && (
