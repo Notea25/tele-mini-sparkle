@@ -138,7 +138,7 @@ const CreateTeam = () => {
       </div>
 
       {/* Team Creation Form */}
-      <div className="px-4 mt-2 space-y-3">
+      <div className="px-4 mt-20 space-y-3">
         <div className="relative">
           <Input
             placeholder="Название команды"
