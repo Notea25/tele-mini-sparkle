@@ -20,7 +20,7 @@ import playerBykov from "@/assets/player-bykov.png";
 import playerKozlov from "@/assets/player-kozlov.png";
 import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
 import clubNeman from "@/assets/club-neman.png";
-import bgImage2 from "@/assets/bg-image.png";
+import bgImage from "@/assets/bg_image.png";
 
 const MAX_NAME_LENGTH = 15;
 
@@ -123,7 +123,7 @@ const CreateTeam = () => {
       <div className="relative">
         {/* Подложка */}
         <div className="absolute inset-0 z-0">
-          <img src={bgImage2} alt="Background" className="w-full h-full object-cover rounded-xl" />
+          <img src={bgImage} alt="Background" className="w-full h-full object-cover rounded-xl" />
         </div>
 
         {/* Контент поверх подложки */}
