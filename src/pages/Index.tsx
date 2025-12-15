@@ -45,6 +45,7 @@ const Index = () => {
       }
     }
   }, []);
+  //fhfgdiokfpd
 
   const toggleFavorite = useCallback((leagueId: string) => {
     setFavorites((prev) => {
