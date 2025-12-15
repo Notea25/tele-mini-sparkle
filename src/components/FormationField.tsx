@@ -17,16 +17,26 @@ import { X, Plus } from "lucide-react";
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
-    case "Динамо-Минск": return jerseyDinamoMinsk;
-    case "БАТЭ": return jerseyBate;
-    case "Динамо-Брест": return jerseyDinamoBrest;
-    case "МЛ Витебск": return jerseyMlVitebsk;
-    case "Славия-Мозырь": return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
-    case "Неман": return jerseyNeman;
-    case "Минск": return jerseyMinsk;
-    case "Торпедо-БелАЗ": return jerseyTorpedo;
-    case "Витебск": return jerseyVitebsk;
-    default: return playerJerseyNew;
+    case "Динамо-Минск":
+      return jerseyDinamoMinsk;
+    case "БАТЭ":
+      return jerseyBate;
+    case "Динамо-Брест":
+      return jerseyDinamoBrest;
+    case "МЛ Витебск":
+      return jerseyMlVitebsk;
+    case "Славия-Мозырь":
+      return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
+    case "Неман":
+      return jerseyNeman;
+    case "Минск":
+      return jerseyMinsk;
+    case "Торпедо-БелАЗ":
+      return jerseyTorpedo;
+    case "Витебск":
+      return jerseyVitebsk;
+    default:
+      return playerJerseyNew;
   }
 };
 
@@ -182,7 +192,11 @@ const FormationField = ({
                 </div>
 
                 {/* Jersey - larger size, overlaps name/club below */}
-                <img src={getJerseyForTeam(assignedPlayer.team, assignedPlayer.position)} alt={assignedPlayer.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
+                <img
+                  src={getJerseyForTeam(assignedPlayer.team, assignedPlayer.position)}
+                  alt={assignedPlayer.name}
+                  className="w-[156%] h-auto object-contain mb-[-35%] z-0"
+                />
 
                 {/* Player name and club blocks - jersey overlaps from above */}
                 <div className="w-full relative z-10">
@@ -202,12 +216,10 @@ const FormationField = ({
             ) : (
               // Empty slot - dashed border, position label, + button (same size as filled card ~85px height)
               <div
-                className="w-[62px] h-[85px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+                className="w-[162px] h-[185px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
                 onClick={() => onEmptySlotClick?.(slot.position)}
               >
-                <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">
-                  {slot.position}
-                </span>
+                <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">{slot.position}</span>
                 <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
                   <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
                 </div>
