@@ -161,8 +161,7 @@ const CreateTeam = () => {
             <SelectItem value="arsenal">Арсенал</SelectItem>
             <SelectItem value="baranovichi">Барановичи</SelectItem>
             <SelectItem value="bate">БАТЭ</SelectItem>
-            <SelectItem value="belshina">Белшина</SelectItem>
-            <SelectItem value="vitebsk">Витебск</SelectItem>
+            <SelectItem value="belshina">Белшина</SelectItem>ф<SelectItem value="vitebsk">Витебск</SelectItem>
             <SelectItem value="gomel">Гомель</SelectItem>
             <SelectItem value="dinamo-brest">Динамо-Брест</SelectItem>
             <SelectItem value="dinamo-minsk">Динамо-Минск</SelectItem>
@@ -178,14 +177,68 @@ const CreateTeam = () => {
         </Select>
 
         {/* Create Team Button */}
-        <Button
+        {/* <Button
           onClick={validateAndNavigate}
           disabled={!isFormValid}
           className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-[24px]"
           style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
         >
           Создать команду
+        </Button> */}
+        <Button
+          onClick={validateAndNavigate}
+          disabled={!isFormValid}
+          className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-[24px] mb-6"
+          style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
+        >
+          Создать команду
         </Button>
+
+        {/* Team Badges Auto-Slider */}
+        <div className="overflow-hidden">
+          <div className="flex animate-infinite-scroll space-x-[6.67px]">
+            {/* 12 одинаковых элементов для бесконечного слайдера */}
+            {[...Array(12)].map((_, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 flex items-center justify-center"
+                style={{
+                  width: "61.33px",
+                  height: "45.33px",
+                  background: "#1A1924",
+                  border: "0.67px solid #363546",
+                  borderRadius: "12px",
+                  padding: "2.67px 10.67px",
+                }}
+              >
+                {/* Заглушка для изображения */}
+                <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 rounded-[8px] flex items-center justify-center">
+                  <span className="text-white text-[10px] font-medium">Team {index + 1}</span>
+                </div>
+              </div>
+            ))}
+
+            {/* Дублируем элементы для бесшовной анимации */}
+            {[...Array(12)].map((_, index) => (
+              <div
+                key={`duplicate-${index}`}
+                className="flex-shrink-0 flex items-center justify-center"
+                style={{
+                  width: "61.33px",
+                  height: "45.33px",
+                  background: "#1A1924",
+                  border: "0.67px solid #363546",
+                  borderRadius: "12px",
+                  padding: "2.67px 10.67px",
+                }}
+              >
+                <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 rounded-[8px] flex items-center justify-center">
+                  <span className="text-white text-[10px] font-medium">Team {index + 1}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Collect Team Section */}
