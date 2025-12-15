@@ -5,7 +5,6 @@ import jerseyBate from "@/assets/jersey-bate.png";
 import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
 import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
 import jerseySlavia from "@/assets/jersey-slaviya.png";
-import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
@@ -18,7 +17,6 @@ const getJerseyForTeam = (team: string) => {
     case "Динамо-Брест": return jerseyDinamoBrest;
     case "МЛ Витебск": return jerseyMlVitebsk;
     case "Славия-Мозырь": return jerseySlavia;
-    case "Витебск": return jerseyVitebsk;
     default: return playerJerseyNew;
   }
 };
