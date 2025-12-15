@@ -6,18 +6,23 @@ import jerseyBate from "@/assets/jersey-bate.png";
 import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
 import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
 import jerseySlavia from "@/assets/jersey-slaviya.png";
+import jerseySlaviaGk from "@/assets/jersey-slaviya-gk.png";
 import jerseyNeman from "@/assets/jersey-neman.png";
+import jerseyMinsk from "@/assets/jersey-minsk.png";
+import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import { FormationKey, FORMATION_LABELS } from "@/lib/formationUtils";
 
-// Helper function to get jersey based on team
-const getJerseyForTeam = (team: string) => {
+// Helper function to get jersey based on team and position
+const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
     case "Динамо-Минск": return jerseyDinamoMinsk;
     case "БАТЭ": return jerseyBate;
     case "Динамо-Брест": return jerseyDinamoBrest;
     case "МЛ Витебск": return jerseyMlVitebsk;
-    case "Славия-Мозырь": return jerseySlavia;
+    case "Славия-Мозырь": return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
     case "Неман": return jerseyNeman;
+    case "Минск": return jerseyMinsk;
+    case "Торпедо-БелАЗ": return jerseyTorpedo;
     default: return playerJerseyTeam;
   }
 };
@@ -89,7 +94,7 @@ const SwapPlayerDrawer = ({
           {/* Current player */}
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="flex flex-col items-center">
-              <img src={getJerseyForTeam(selectedPlayer.team)} alt={selectedPlayer.name} className="w-12 h-12 object-contain" />
+              <img src={getJerseyForTeam(selectedPlayer.team, selectedPlayer.position)} alt={selectedPlayer.name} className="w-12 h-12 object-contain" />
               <span className="text-foreground text-sm mt-1">{selectedPlayer.name}</span>
               <span className="text-muted-foreground text-xs">{selectedPlayer.position}</span>
             </div>
@@ -128,7 +133,7 @@ const SwapPlayerDrawer = ({
                     className="w-full bg-secondary rounded-2xl px-4 py-3 flex flex-col gap-1 hover:bg-secondary/80 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-8 h-8 object-contain" />
+                      <img src={getJerseyForTeam(player.team, player.position)} alt={player.name} className="w-8 h-8 object-contain" />
                       <div className="flex-1 text-left">
                         <span className="text-foreground font-medium">{player.name}</span>
                         <span className="text-muted-foreground text-xs ml-2">{player.position}</span>
@@ -159,7 +164,7 @@ const SwapPlayerDrawer = ({
                     key={player.id}
                     className="w-full bg-secondary/30 rounded-2xl px-4 py-3 flex items-center gap-3 opacity-50"
                   >
-                    <img src={getJerseyForTeam(player.team)} alt={player.name} className="w-8 h-8 object-contain grayscale" />
+                    <img src={getJerseyForTeam(player.team, player.position)} alt={player.name} className="w-8 h-8 object-contain grayscale" />
                     <div className="flex-1 text-left">
                       <span className="text-muted-foreground font-medium">{player.name}</span>
                       <span className="text-muted-foreground text-xs ml-2">{player.position}</span>
