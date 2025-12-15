@@ -108,11 +108,11 @@ const CreateTeam = () => {
       <SportHeader />
 
       {/* Breadcrumbs */}
-      <div className="px-4 mt-4">
+      {/* <div className="px-4 mt-4">
         <Breadcrumbs
           items={[{ label: "Футбол", path: "/" }, { label: "Беларусь", path: "/" }, { label: "Создание команды" }]}
         />
-      </div>
+      </div> */}
 
       {/* Hero Banner */}
 
@@ -121,12 +121,18 @@ const CreateTeam = () => {
       </div> */}
       {/* Hero Banner */}
       <div className="relative">
-        {/* Подложка */}
-        <div className="absolute inset-0 z-0">
-          <img src={bgImage} alt="Background" className="w-full h-full object-cover rounded-xl" />
+        {/* <div className="absolute inset-0 z-0"> */}
+        <img src={bgImage} alt="Background" className="w-full h-full object-cover rounded-xl" />
+        {/* </div> */}
+        <div className="px-4 mt-4">
+          <Breadcrumbs
+            items={[
+              { label: "Футбол", path: "/" },
+              { label: "Беларусь", path: "/" },
+            ]}
+          />
         </div>
 
-        {/* Контент поверх подложки */}
         <div className="relative z-10 mx-4 mt-6">
           <img
             src={bannerBg}
