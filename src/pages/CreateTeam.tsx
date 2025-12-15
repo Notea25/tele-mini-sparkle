@@ -115,10 +115,25 @@ const CreateTeam = () => {
       </div>
 
       {/* Hero Banner */}
-      <div>
-        <img src={bgImage} alt="BgImage" className="w-full h-full object-cover rounded-xl" />
-        <div className="mx-4 mt-6 rounded-xl overflow-hidden">
-          <img src={bannerBg} alt="Banner" className="w-full h-full object-cover rounded-xl" />
+
+      {/* <div className="mx-4 mt-6 rounded-xl overflow-hidden">
+        <img src={bannerBg} alt="Banner" className="w-full h-full object-cover rounded-xl" />
+      </div> */}
+      {/* Hero Banner */}
+      <div className="relative">
+        {/* Подложка */}
+        <div className="absolute inset-0 z-0">
+          <img src={bgImage} alt="Background" className="w-full h-full object-cover rounded-xl" />
+        </div>
+
+        {/* Контент поверх подложки */}
+        <div className="relative z-10 mx-4 mt-6">
+          <img
+            src={bannerBg}
+            alt="Banner"
+            className="w-full rounded-xl"
+            style={{ maxHeight: "200px", objectFit: "cover" }}
+          />
         </div>
       </div>
 
