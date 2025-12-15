@@ -186,7 +186,9 @@ const CreateTeam = () => {
           Создать команду
         </Button>
 
-      
+        {/* Team Badges Auto-Slider */}
+        <div className="overflow-hidden">
+          
 
       {/* Collect Team Section */}
       <div className="mt-8 text-center">
