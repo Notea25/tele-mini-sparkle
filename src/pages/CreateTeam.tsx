@@ -116,14 +116,14 @@ const CreateTeam = () => {
 
       {/* Hero Banner */}
 
-      {/* <div className="mx-4 mt-6 rounded-xl overflow-hidden">
+      <div className="mx-4 mt-6 rounded-xl overflow-hidden">
         <img src={bannerBg} alt="Banner" className="w-full h-full object-cover rounded-xl" />
-      </div> */}
+      </div>
       {/* Hero Banner */}
       <div className="relative">
-        {/* <div className="absolute inset-0 z-0"> */}
+       <div className="absolute inset-0 z-0">
         <img src={bgImage} alt="Background" className="w-full h-full object-cover rounded-xl" />
-        {/* </div> */}
+        </div>
         
         </div>
 
@@ -183,14 +183,6 @@ const CreateTeam = () => {
         </Select>
 
         {/* Create Team Button */}
-        {/* <Button
-          onClick={validateAndNavigate}
-          disabled={!isFormValid}
-          className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
-        >
-          Создать команду
-        </Button> */}
         <Button
           onClick={validateAndNavigate}
           disabled={!isFormValid}
