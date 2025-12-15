@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
 import InfinitePlayerCarousel from "@/components/InfinitePlayerCarousel";
+import InfiniteClubCarousel from "@/components/InfiniteClubCarousel";
 import { useState, useMemo } from "react";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
