@@ -20,6 +20,7 @@ import playerBykov from "@/assets/player-bykov.png";
 import playerKozlov from "@/assets/player-kozlov.png";
 import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
 import clubNeman from "@/assets/club-neman.png";
+import bgImage from "@/assets/bg-image.png";
 
 const MAX_NAME_LENGTH = 15;
 
@@ -114,8 +115,11 @@ const CreateTeam = () => {
       </div>
 
       {/* Hero Banner */}
-      <div className="mx-4 mt-6 rounded-xl overflow-hidden">
-        <img src={bannerBg} alt="Banner" className="w-full h-full object-cover rounded-xl" />
+      <div>
+        <img src={bgImage} alt="BgImage" className="w-full h-full object-cover rounded-xl" />
+        <div className="mx-4 mt-6 rounded-xl overflow-hidden">
+          <img src={bannerBg} alt="Banner" className="w-full h-full object-cover rounded-xl" />
+        </div>
       </div>
 
       {/* Team Creation Form */}
