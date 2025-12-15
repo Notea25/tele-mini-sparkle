@@ -6,6 +6,7 @@ import jerseyBate from "@/assets/jersey-bate.png";
 import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
 import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
 import jerseySlavia from "@/assets/jersey-slaviya.png";
+import jerseyNeman from "@/assets/jersey-neman.png";
 import { FormationKey, FORMATION_LABELS } from "@/lib/formationUtils";
 
 // Helper function to get jersey based on team
@@ -16,6 +17,7 @@ const getJerseyForTeam = (team: string) => {
     case "Динамо-Брест": return jerseyDinamoBrest;
     case "МЛ Витебск": return jerseyMlVitebsk;
     case "Славия-Мозырь": return jerseySlavia;
+    case "Неман": return jerseyNeman;
     default: return playerJerseyTeam;
   }
 };
