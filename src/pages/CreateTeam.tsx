@@ -170,10 +170,10 @@ const CreateTeam = () => {
             maxLength={MAX_NAME_LENGTH}
             onFocus={() => setIsNameFocused(true)}
             onBlur={() => setIsNameFocused(false)}
-            className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F]"
             style={{
               borderColor: isNameFocused ? "rgba(255, 255, 255, 0.2)" : "#363546",
-              // color: isNameFocused ? "#FFFFFF" : teamName ? "#FFFFFF" : "#4B485F",
+              color: isNameFocused ? "#FFFFFF" : teamName ? "#FFFFFF" : "#4B485F",
               borderWidth: "1px",
               borderStyle: "solid",
             }}
