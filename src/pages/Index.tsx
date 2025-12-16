@@ -33,7 +33,7 @@ const Index = () => {
   const [hasTeam, setHasTeam] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
   const [favorites, setFavorites] = useState<string[]>([]);
-
+  //
   // Load favorites from localStorage
   useEffect(() => {
     const storedFavorites = localStorage.getItem(FAVORITES_STORAGE_KEY);
