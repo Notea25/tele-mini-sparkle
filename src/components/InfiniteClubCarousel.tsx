@@ -1,21 +1,21 @@
 import { useRef, useEffect, useState } from "react";
 
-import arsenal from "@/assets/dinamoMinsk.png";
-import baranovichi from "@/assets/dinamoMinsk.png";
-import bate from "@/assets/dinamoMinsk.png";
-import belshina from "@/assets/dinamoMinsk.png";
-import vitebsk from "@/assets/dinamoMinsk.png";
-import gomel from "@/assets/dinamoMinsk.png";
-import dinamoBrest from "@/assets/dinamoMinsk.png";
-import dinamoMinsk from "@/assets/dinamoMinsk.png";
-import dnepr from  "@/assets/dinamoMinsk.png";
-import isloch from  "@/assets/dinamoMinsk.png";
-import minsk from  "@/assets/dinamoMinsk.png";
-import mlVitebsk from"@/assets/dinamoMinsk.png";
-import naftan from "@/assets/dinamoMinsk.png";
-import neman from "@/assets/dinamoMinsk.png";
-import slavia from "@/assets/dinamoMinsk.png";
-import torpedo from "@/assets/dinamoMinsk.png";
+import arsenal from "@/assets/arsenalLogo.png";
+import baranovichi from "@/assets/dinamoLogo.png";
+import bate from "@/assets/bateLogo.png";
+import belshina from "@/assets/dinamoLogo.png";
+import vitebsk from "@/assets/vitebskLogo.png";
+import gomel from "@/assets/gomelLogo.png";
+import dinamoBrest from "@/assets/brestLogo.png";
+import dinamoMinsk from "@/assets/dinamoLogo.png";
+import dnepr from "@/assets/dinamoLogo.png";
+import isloch from "@/assets/islochLogo.png";
+import minsk from "@/assets/minskLogo.png";
+import mlVitebsk from "@/assets/mlLogo.png";
+import naftan from "@/assets/naftanLogo.png";
+import neman from "@/assets/nemanLogo.png";
+import slavia from "@/assets/slaviyaLogo.png";
+import torpedo from "@/assets/torpedoLogo.png";
 
 // Конфигурация
 const CONFIG = {
@@ -106,13 +106,13 @@ const InfiniteClubCarousel = () => {
     const x = clientX;
     const walk = startX - x;
     let newPos = scrollLeft + walk;
-    
+
     if (newPos < 0) {
       newPos = singleSetWidth + newPos;
     } else if (newPos >= singleSetWidth) {
       newPos = newPos - singleSetWidth;
     }
-    
+
     setScrollPosition(newPos);
   };
 
@@ -120,18 +120,20 @@ const InfiniteClubCarousel = () => {
     setIsDragging(false);
     lastTimeRef.current = 0;
   };
-  
+
   const onMouseDown = (e: React.MouseEvent) => handleDragStart(e.clientX);
   const onMouseMove = (e: React.MouseEvent) => handleDragMove(e.clientX);
   const onMouseUp = () => handleDragEnd();
-  const onMouseLeave = () => { if (isDragging) handleDragEnd(); };
+  const onMouseLeave = () => {
+    if (isDragging) handleDragEnd();
+  };
 
   const onTouchStart = (e: React.TouchEvent) => handleDragStart(e.touches[0].clientX);
   const onTouchMove = (e: React.TouchEvent) => handleDragMove(e.touches[0].clientX);
   const onTouchEnd = () => handleDragEnd();
 
   return (
-    <div 
+    <div
       className="overflow-hidden cursor-grab active:cursor-grabbing select-none py-4"
       ref={containerRef}
       onMouseDown={onMouseDown}
@@ -165,11 +167,7 @@ const InfiniteClubCarousel = () => {
           >
             <div className="w-full h-full flex items-center justify-center">
               {club.logo ? (
-                <img 
-                  src={club.logo} 
-                  alt={club.name} 
-                  className="max-w-full max-h-full object-contain" 
-                />
+                <img src={club.logo} alt={club.name} className="max-w-full max-h-full object-contain" />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 rounded-[8px] flex items-center justify-center">
                   <span className="text-white text-[10px] font-medium">{club.shortName}</span>
