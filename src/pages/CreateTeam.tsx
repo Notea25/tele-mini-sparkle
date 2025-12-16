@@ -137,7 +137,7 @@ const CreateTeam = () => {
       </div>
 
       {/* Hero Banner с подложкой для bannerBg и текста */}
-      <div className="relative mx-4 mt-6 rounded-xl overflow-hidden">
+      {/* <div className="relative mx-4 mt-6 rounded-xl overflow-hidden">
         {/* Подложка bgImage */}
         <img src={bgImage} alt="Background" className="absolute inset-0 w-full h-full object-cover" />
 
@@ -157,7 +157,28 @@ const CreateTeam = () => {
             Беларуси
           </div>
         </div>
-      </div>
+      </div> */}
+    <div className="relative mt-6">
+  {/* Подложка bgImage - на всю ширину экрана */}
+  <img src={bgImage} alt="Background" className="absolute inset-0 w-full h-full object-cover" />
+
+  {/* Контент поверх подложки с отступами */}
+  <div className="relative z-10 px-4 py-6">
+    {/* Баннер bannerBg с отступами */}
+    <img
+      src={bannerBg}
+      alt="Banner"
+      className="w-full rounded-xl mb-6"
+      style={{ maxHeight: "200px", objectFit: "cover" }}
+    />
+
+    {/* Текст с отступами */}
+    <div className="text-white font-unbounded font-normal not-italic text-[28px] leading-[130%] tracking-[0%]">
+      Создавай свою команду <br />в Высшей лиге <br />
+      Беларуси
+    </div>
+  </div>
+</div>
 
       {/* Team Creation Form */}
       <div className="px-4 mt-0 space-y-3">
