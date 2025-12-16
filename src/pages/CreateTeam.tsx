@@ -152,9 +152,13 @@ const CreateTeam = () => {
           />
 
           {/* Текст на подложке */}
-          <div className="font-unbounded font-normal not-italic text-2xl leading-[130%] tracking-normal text-white">
-            Создай свою команду <br />в Высшей лиге <br />
+          {/* <div className="font-unbounded font-normal not-italic text-2xl leading-[130%] tracking-normal text-white">
+            Создавай свою команду <br />в Высшей лиге <br />
             Беларуси
+          </div> */}
+          <div className="font-unbounded font-normal not-italic text-2xl leading-[130%] tracking-normal text-white">
+            Создай команду <br />
+            Мы выделим тебе бюджет в 100 миллионов, <br />а ты соберешь команду своей мечты!
           </div>
         </div>
       </div>
