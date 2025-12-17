@@ -8,7 +8,7 @@ import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
 import InfinitePlayerCarousel from "@/components/InfinitePlayerCarousel";
 import InfiniteClubCarousel from "@/components/InfiniteClubCarousel";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg-2.webp";
@@ -88,8 +88,13 @@ const CreateTeam = () => {
   const [favoriteTeam, setFavoriteTeam] = useState("");
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [isSelectFocused, setIsSelectFocused] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const isKeyboardOpen = isNameFocused || isSelectFocused;
+  const scrollToButton = () => {
+    setTimeout(() => {
+      buttonRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 300);
+  };
 
   const filter = useMemo(() => {
     const f = new Filter();
@@ -170,7 +175,7 @@ const CreateTeam = () => {
             value={teamName}
             onChange={handleNameChange}
             maxLength={MAX_NAME_LENGTH}
-            onFocus={() => setIsNameFocused(true)}
+            onFocus={() => { setIsNameFocused(true); scrollToButton(); }}
             onBlur={() => setTimeout(() => setIsNameFocused(false), 150)}
             className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F]"
             style={{
@@ -217,30 +222,9 @@ const CreateTeam = () => {
           </SelectContent>
         </Select>
 
-        {/* Actions */}
-        {!isKeyboardOpen && (
-          <>
-            {/* Create Team Button */}
-            <Button
-              onClick={validateAndNavigate}
-              disabled={!isFormValid}
-              className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-[24px]"
-              style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
-            >
-              Создать команду
-            </Button>
-            <InfiniteClubCarousel />
-          </>
-        )}
-      </div>
-
-      {/* Sticky CTA when keyboard is open */}
-      <div
-        className={`fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 backdrop-blur px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] transition-all duration-200 ${
-          isKeyboardOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
-        }`}
-      >
+        {/* Create Team Button */}
         <Button
+          ref={buttonRef}
           onClick={validateAndNavigate}
           disabled={!isFormValid}
           className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-[24px]"
@@ -248,6 +232,7 @@ const CreateTeam = () => {
         >
           Создать команду
         </Button>
+        <InfiniteClubCarousel />
       </div>
 
       {/* Collect Team Section */}
@@ -389,7 +374,7 @@ const CreateTeam = () => {
         </div>
       </div>
 
-      {!isKeyboardOpen && <FooterNav />}
+      <FooterNav />
     </div>
   );
 };
