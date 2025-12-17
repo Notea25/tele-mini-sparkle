@@ -573,7 +573,7 @@ const League = () => {
 
             {/* Club league table header - same as Мои лиги */}
             <div className="grid grid-cols-12 gap-2 items-center px-4 py-2 text-xs text-muted-foreground">
-              <span className="col-span-4">Место в лиге</span>
+              <span className="col-span-4">Место</span>
               <span className="col-span-4">Название</span>
               <span className="col-span-2 text-center">Тур</span>
               <span className="col-span-2 text-right pr-5">Всего очков</span>
