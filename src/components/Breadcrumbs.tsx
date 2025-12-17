@@ -23,16 +23,16 @@ const Breadcrumbs = ({ items, className = "" }: BreadcrumbsProps) => {
   };
 
   return (
-    <div className={`flex items-center gap-2 text-sm text-muted-foreground ${className}`}>
+    <div className={`flex items-center justify-center gap-1.5 text-xs text-muted-foreground ${className}`}>
       <img
         src={homeIcon}
         alt="Home"
-        className="w-4 h-4 cursor-pointer hover:opacity-80 transition-opacity"
+        className="w-3.5 h-3.5 cursor-pointer hover:opacity-80 transition-opacity"
         onClick={() => navigate("/")}
       />
       {items.map((item, index) => (
-        <div key={index} className="flex items-center gap-2">
-          <ChevronRight className="w-3 h-3" />
+        <div key={index} className="flex items-center gap-1.5">
+          <ChevronRight className="w-2.5 h-2.5" />
           {item.path ? (
             <span
               className="cursor-pointer hover:text-primary transition-colors"
@@ -41,7 +41,7 @@ const Breadcrumbs = ({ items, className = "" }: BreadcrumbsProps) => {
               {item.label}
             </span>
           ) : (
-            <span className="text-primary">{item.label}</span>
+            <span className="text-muted-foreground/60">{item.label}</span>
           )}
         </div>
       ))}
