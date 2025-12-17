@@ -1025,14 +1025,14 @@ const TeamBuilder = () => {
             } else {
               // Always show first page
               pages.push(1);
-              
+
               // Calculate window around current page
               if (currentPage <= 3) {
-                pages.push(2, 3);
+                pages.push(2, 3, 4);
                 pages.push("...", totalPages);
               } else if (currentPage >= totalPages - 2) {
                 pages.push("...");
-                pages.push(totalPages - 2, totalPages - 1, totalPages);
+                pages.push(totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
               } else {
                 pages.push("...");
                 pages.push(currentPage - 1, currentPage, currentPage + 1);
