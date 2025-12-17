@@ -36,7 +36,7 @@ const ITEMS_PER_PAGE = 8;
 
 // Club icons mapping - default logo for all teams
 const clubIcons: Record<string, string> = Object.fromEntries(
-  allTeams.map(team => [team, team === "Белшина" ? clubBelshina : clubLogo])
+  allTeams.map((team) => [team, team === "Белшина" ? clubBelshina : clubLogo]),
 );
 
 const TeamBuilder = () => {
@@ -45,10 +45,10 @@ const TeamBuilder = () => {
   const playerListRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
-  
+
   // Track initial state for unsaved changes detection
   const initialPlayersRef = useRef<string>("");
-  
+
   const [selectedPlayers, setSelectedPlayers] = useState<{ id: number; slotIndex: number }[]>(() => {
     const saved = localStorage.getItem("fantasyTeamPlayers");
     const parsed = saved ? JSON.parse(saved) : [];
@@ -268,7 +268,6 @@ const TeamBuilder = () => {
     setCurrentPage(1);
   };
 
-
   const positionToFilter: Record<string, string> = {
     ВР: "Вратари",
     ЗЩ: "Защитники",
@@ -413,7 +412,7 @@ const TeamBuilder = () => {
     });
 
     const totalSlotsNeeded = Object.values(slotsNeeded).reduce((sum, n) => sum + n, 0);
-    
+
     if (totalSlotsNeeded === 0) {
       toast.info("Команда уже полностью укомплектована");
       return;
@@ -424,18 +423,18 @@ const TeamBuilder = () => {
 
     // Build list of cheapest available players per position (respecting club limits)
     const getCheapestPlayersForPosition = (
-      position: string, 
-      needed: number, 
+      position: string,
+      needed: number,
       currentClubCounts: Record<string, number>,
-      excludeIds: Set<number>
+      excludeIds: Set<number>,
     ): typeof players => {
       const available = players
         .filter((p) => p.position === position && !excludeIds.has(p.id))
         .sort((a, b) => a.price - b.price);
-      
+
       const result: typeof players = [];
       const tempClubCounts = { ...currentClubCounts };
-      
+
       for (const player of available) {
         if (result.length >= needed) break;
         const clubCount = tempClubCounts[player.team] || 0;
@@ -450,18 +449,20 @@ const TeamBuilder = () => {
     // Calculate minimum cost to fill all remaining slots
     let minCostToFillAll = 0;
     const tempClubCounts = { ...clubCounts };
-    
+
     Object.entries(slotsNeeded).forEach(([position, needed]) => {
       if (needed <= 0) return;
       const cheapest = getCheapestPlayersForPosition(position, needed, tempClubCounts, selectedIdsSet);
-      cheapest.forEach(p => {
+      cheapest.forEach((p) => {
         minCostToFillAll += p.price;
         tempClubCounts[p.team] = (tempClubCounts[p.team] || 0) + 1;
       });
     });
 
     if (minCostToFillAll > availableBudget) {
-      toast.error(`Недостаточно бюджета. Требуется минимум ${minCostToFillAll.toFixed(1)}, доступно ${availableBudget.toFixed(1)}`);
+      toast.error(
+        `Недостаточно бюджета. Требуется минимум ${minCostToFillAll.toFixed(1)}, доступно ${availableBudget.toFixed(1)}`,
+      );
       return;
     }
 
@@ -472,23 +473,23 @@ const TeamBuilder = () => {
     const positionsToFill = shuffleArray(
       Object.entries(slotsNeeded)
         .filter(([_, needed]) => needed > 0)
-        .map(([pos]) => pos)
+        .map(([pos]) => pos),
     );
 
     // Function to calculate min cost for remaining positions
     const getMinCostForRemaining = (
       remainingPositions: string[],
       currentClubCounts: Record<string, number>,
-      excludeIds: Set<number>
+      excludeIds: Set<number>,
     ): number => {
       let cost = 0;
       const tempCounts = { ...currentClubCounts };
       const tempExclude = new Set(excludeIds);
-      
+
       for (const pos of remainingPositions) {
         const needed = slotsNeeded[pos];
         const cheapest = getCheapestPlayersForPosition(pos, needed, tempCounts, tempExclude);
-        cheapest.forEach(p => {
+        cheapest.forEach((p) => {
           cost += p.price;
           tempCounts[p.team] = (tempCounts[p.team] || 0) + 1;
           tempExclude.add(p.id);
@@ -502,46 +503,49 @@ const TeamBuilder = () => {
       const position = positionsToFill[posIndex];
       const needed = slotsNeeded[position];
       const remainingPositions = positionsToFill.slice(posIndex + 1);
-      
+
       // Get all available players for this position and SHUFFLE them
       const availablePlayers = shuffleArray(
-        players.filter((p) => p.position === position && !selectedIdsSet.has(p.id))
+        players.filter((p) => p.position === position && !selectedIdsSet.has(p.id)),
       );
-      
+
       let added = 0;
       for (const player of availablePlayers) {
         if (added >= needed) break;
-        
+
         const currentClubCount = clubCounts[player.team] || 0;
         if (currentClubCount >= MAX_PLAYERS_PER_CLUB) continue;
-        
+
         // Calculate if we can afford this player AND still fill remaining positions
         const potentialCost = totalCost + player.price;
         const remainingBudget = BUDGET - potentialCost;
-        
+
         // Simulate adding this player
         const testClubCounts = { ...clubCounts };
         testClubCounts[player.team] = currentClubCount + 1;
         const testExcludeIds = new Set(selectedIdsSet);
         testExcludeIds.add(player.id);
-        
+
         // Calculate min cost for remaining slots in this position + other positions
         const remainingSlotsInPosition = needed - added - 1;
         let minCostRemaining = 0;
-        
+
         if (remainingSlotsInPosition > 0) {
           const cheapestRemaining = getCheapestPlayersForPosition(
-            position, remainingSlotsInPosition, testClubCounts, testExcludeIds
+            position,
+            remainingSlotsInPosition,
+            testClubCounts,
+            testExcludeIds,
           );
-          cheapestRemaining.forEach(p => {
+          cheapestRemaining.forEach((p) => {
             minCostRemaining += p.price;
             testClubCounts[p.team] = (testClubCounts[p.team] || 0) + 1;
             testExcludeIds.add(p.id);
           });
         }
-        
+
         minCostRemaining += getMinCostForRemaining(remainingPositions, testClubCounts, testExcludeIds);
-        
+
         // Check if we can afford
         if (minCostRemaining <= remainingBudget) {
           // Add this player
@@ -549,7 +553,7 @@ const TeamBuilder = () => {
           while (usedSlotsByPosition[position].includes(slotIndex)) {
             slotIndex++;
           }
-          
+
           newSelectedPlayers.push({ id: player.id, slotIndex });
           usedSlotsByPosition[position].push(slotIndex);
           selectedIdsSet.add(player.id);
@@ -558,25 +562,25 @@ const TeamBuilder = () => {
           added++;
         }
       }
-      
+
       // Fallback: if we couldn't add enough players, fill with cheapest available
       if (added < needed) {
         const cheapestPlayers = players
           .filter((p) => p.position === position && !selectedIdsSet.has(p.id))
           .sort((a, b) => a.price - b.price);
-        
+
         for (const player of cheapestPlayers) {
           if (added >= needed) break;
-          
+
           const currentClubCount = clubCounts[player.team] || 0;
           if (currentClubCount >= MAX_PLAYERS_PER_CLUB) continue;
           if (totalCost + player.price > BUDGET) continue;
-          
+
           let slotIndex = 0;
           while (usedSlotsByPosition[position].includes(slotIndex)) {
             slotIndex++;
           }
-          
+
           newSelectedPlayers.push({ id: player.id, slotIndex });
           usedSlotsByPosition[position].push(slotIndex);
           selectedIdsSet.add(player.id);
@@ -628,7 +632,7 @@ const TeamBuilder = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <SportHeader 
+      <SportHeader
         hasUnsavedChanges={hasUnsavedChanges}
         onSaveChanges={handleSaveChanges}
         onDiscardChanges={handleDiscardChanges}
@@ -981,9 +985,7 @@ const TeamBuilder = () => {
               </div>
 
               {/* Price - fixed width */}
-              <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">
-                {player.price.toFixed(1)}
-              </span>
+              <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">{player.price.toFixed(1)}</span>
 
               {/* Add/Remove button */}
               <button
@@ -1056,7 +1058,6 @@ const TeamBuilder = () => {
         </div>
       )}
 
-
       {/* Warning */}
       <div className="px-4 mt-4">
         <div className="flex items-center gap-3">
@@ -1064,7 +1065,7 @@ const TeamBuilder = () => {
             <span className="text-white text-sm font-bold">!</span>
           </div>
           <p className="text-muted-foreground text-sm">
-            Вы не можете добавить больше 3-ёх игроков из одного клуба в свою команду
+            Вы не можете добавить более трёх игроков из одного клуба в свою команду
           </p>
         </div>
       </div>
