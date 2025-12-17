@@ -277,7 +277,7 @@ const BuyPlayerDrawer = ({
                 >
                   <Minus className="w-3 h-3 text-primary-foreground" />
                 </button>
-                <span className="text-foreground text-xs w-8 text-center">{priceFrom},0</span>
+                <span className="text-foreground text-xs w-8 text-center">{priceFrom.toFixed(1)}</span>
                 <button 
                   onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }} 
                   className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
@@ -293,7 +293,7 @@ const BuyPlayerDrawer = ({
                 >
                   <Minus className="w-3 h-3 text-primary-foreground" />
                 </button>
-                <span className="text-foreground text-xs w-8 text-center">{priceTo},0</span>
+                <span className="text-foreground text-xs w-8 text-center">{priceTo.toFixed(1)}</span>
                 <button 
                   onClick={() => { setPriceTo(Math.min(15, priceTo + 1)); setCurrentPage(1); }} 
                   className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
