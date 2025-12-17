@@ -674,17 +674,19 @@ const TeamBuilder = () => {
       </div>
 
       {/* Team Header */}
-      <div className="px-4 mt-6">
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-primary"
-            onClick={() => setIsEditTeamNameModalOpen(true)}
-          >
-            <Pencil className="w-4 h-4" />
-          </Button>
+      <div className="px-4 mt-2">
+        <div className="flex items-center justify-center mb-2">
+          <div className="inline-flex items-center gap-2">
+            <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-primary"
+              onClick={() => setIsEditTeamNameModalOpen(true)}
+            >
+              <Pencil className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Дедлайн: 14.12.2025 в 19:00</span>
