@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import {
-  Drawer,
-  DrawerContent,
-} from "@/components/ui/drawer";
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Filter } from "bad-words";
@@ -88,54 +89,54 @@ const EditTeamNameModal = ({
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className="bg-card border-t border-border max-h-[85vh]">
-        <div className="px-4 pt-4 pb-8">
-          {/* Title */}
-          <h2 className="text-foreground text-xl font-bold text-center mb-4">
-            Изменить название команды
-          </h2>
-          
-          {/* Input field - positioned prominently at top */}
-          <div className="relative mb-3">
-            <Input
-              value={name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              className={`bg-secondary border-border text-foreground h-14 text-lg pr-16 ${
-                error ? "border-destructive" : ""
-              }`}
-              placeholder="Название команды"
-              autoFocus
-              maxLength={MAX_NAME_LENGTH}
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-              {name.length}/{MAX_NAME_LENGTH}
-            </span>
-          </div>
-          
-          {error && (
-            <p className="text-destructive text-sm mb-3">{error}</p>
-          )}
-          
-          {/* Buttons */}
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              className="flex-1 h-12 text-base border-border bg-secondary text-foreground hover:bg-secondary/80"
-              onClick={handleCancel}
-            >
-              Отменить
-            </Button>
-            <Button
-              className="flex-1 h-12 text-base bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={handleSave}
-            >
-              Сохранить
-            </Button>
-          </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent 
+        className="bg-card border-border w-[calc(100%-32px)] max-w-md top-[20%] translate-y-0 rounded-xl"
+        onPointerDownOutside={(e) => e.preventDefault()}
+      >
+        <DialogTitle className="text-foreground text-xl font-bold text-center">
+          Изменить название команды
+        </DialogTitle>
+        
+        {/* Input field */}
+        <div className="relative mt-2">
+          <Input
+            value={name}
+            onChange={(e) => handleNameChange(e.target.value)}
+            className={`bg-secondary border-border text-foreground h-14 text-lg pr-16 ${
+              error ? "border-destructive" : ""
+            }`}
+            placeholder="Название команды"
+            autoFocus
+            maxLength={MAX_NAME_LENGTH}
+          />
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+            {name.length}/{MAX_NAME_LENGTH}
+          </span>
         </div>
-      </DrawerContent>
-    </Drawer>
+        
+        {error && (
+          <p className="text-destructive text-sm">{error}</p>
+        )}
+        
+        {/* Buttons */}
+        <div className="flex gap-3 mt-2">
+          <Button
+            variant="outline"
+            className="flex-1 h-12 text-base border-border bg-secondary text-foreground hover:bg-secondary/80"
+            onClick={handleCancel}
+          >
+            Отменить
+          </Button>
+          <Button
+            className="flex-1 h-12 text-base bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={handleSave}
+          >
+            Сохранить
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
