@@ -53,6 +53,8 @@ const TeamBuilder = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const playerListRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
 
@@ -158,6 +160,19 @@ const TeamBuilder = () => {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const update = () => setHeaderHeight(el.getBoundingClientRect().height);
+    update();
+
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+
+    return () => ro.disconnect();
   }, []);
 
   const teams = ["Все команды", ...allTeams];
@@ -657,11 +672,13 @@ const TeamBuilder = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <SportHeader
-        hasUnsavedChanges={hasUnsavedChanges}
-        onSaveChanges={handleSaveChanges}
-        onDiscardChanges={handleDiscardChanges}
-      />
+      <div ref={headerRef}>
+        <SportHeader
+          hasUnsavedChanges={hasUnsavedChanges}
+          onSaveChanges={handleSaveChanges}
+          onDiscardChanges={handleDiscardChanges}
+        />
+      </div>
 
       {/* Breadcrumbs */}
       <div className="px-4 mt-4">
@@ -927,8 +944,10 @@ const TeamBuilder = () => {
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onFocus={(e) => {
+              const el = e.target as HTMLElement;
               setTimeout(() => {
-                e.target.scrollIntoView({ behavior: "smooth", block: "start" });
+                const top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
+                window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
               }, 350);
             }}
             className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
