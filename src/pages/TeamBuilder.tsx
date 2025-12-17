@@ -3,6 +3,16 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   X,
   ChevronDown,
   Search,
@@ -81,6 +91,7 @@ const TeamBuilder = () => {
   });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showSquadError, setShowSquadError] = useState(false);
+  const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
   // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
@@ -1144,12 +1155,7 @@ const TeamBuilder = () => {
             if (selectedPlayers.length < 15) {
               setShowSquadError(true);
             } else {
-              // Save to localStorage before navigating
-              localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
-              localStorage.setItem("fantasyTeamName", teamName);
-              localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
-              localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
-              navigate("/league");
+              setShowSaveConfirmation(true);
             }
           }}
           className={`w-full rounded-full py-3 font-semibold text-black ${
@@ -1159,6 +1165,37 @@ const TeamBuilder = () => {
           Сохранить
         </Button>
       </div>
+
+      {/* Save Confirmation Dialog */}
+      <AlertDialog open={showSaveConfirmation} onOpenChange={setShowSaveConfirmation}>
+        <AlertDialogContent className="bg-[#1A1A2E] border-border rounded-2xl max-w-[320px]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground text-center">
+              Сохранить команду?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground text-center">
+              Ваша команда "{teamName}" будет сохранена и вы перейдете к лиге
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row gap-3 sm:justify-center">
+            <AlertDialogCancel className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-foreground border-none rounded-full">
+              Отмена
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
+                localStorage.setItem("fantasyTeamName", teamName);
+                localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
+                localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
+                navigate("/league");
+              }}
+              className="flex-1 bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-full"
+            >
+              Сохранить
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Player Card Drawer */}
       <PlayerCard
