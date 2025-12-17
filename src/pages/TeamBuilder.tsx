@@ -1059,7 +1059,7 @@ const TeamBuilder = () => {
       )}
 
       {/* Warning */}
-      <div className="px-4 mt-4">
+      <div className="px-4 mt-4 mb-4">
         <div className="flex items-center gap-3">
           <div className="w-6 h-6 rounded-full bg-[#6B6B8D] flex items-center justify-center flex-shrink-0">
             <span className="text-white text-sm font-bold">!</span>
