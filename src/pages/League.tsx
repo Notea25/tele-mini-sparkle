@@ -367,7 +367,7 @@ const League = () => {
                 className="w-full h-12 bg-[#AAFF03] rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => navigate("/team-management")}
               >
-                <span className="text-black font-bold text-lg">Команда</span>
+                <span className="text-black font-bold text-lg">Моя команда</span>
               </div>
               <div
                 className="w-full h-12 bg-[#AAFF03] rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
