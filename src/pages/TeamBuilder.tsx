@@ -1174,12 +1174,12 @@ const TeamBuilder = () => {
               Сохранить команду?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground text-center">
-              Ваша команда "{teamName}" будет сохранена и вы перейдете к лиге
+              Ваша команда "{teamName}" будет сохранена. Именно с этим составом ты входишь в сезон.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row gap-3 sm:justify-center">
-            <AlertDialogCancel className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-foreground border-none rounded-full">
-              Отмена
+          <AlertDialogFooter className="flex flex-row gap-3 justify-center mt-2">
+            <AlertDialogCancel className="flex-1 m-0 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-foreground border-none rounded-full h-11">
+              Вернуться
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
@@ -1189,9 +1189,9 @@ const TeamBuilder = () => {
                 localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
                 navigate("/league");
               }}
-              className="flex-1 bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-full"
+              className="flex-1 m-0 bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-full h-11"
             >
-              Сохранить
+              Подтвердить
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
