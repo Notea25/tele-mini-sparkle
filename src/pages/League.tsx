@@ -225,9 +225,14 @@ const League = () => {
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
             </div>
 
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center justify-center mb-6" style={{ perspective: "800px" }}>
               <div
-                className="flex-1 bg-secondary/50 rounded-2xl px-2 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-colors"
+                className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[100px]"
+                style={{ 
+                  transform: "rotateY(15deg) translateX(8px)", 
+                  transformOrigin: "right center",
+                  zIndex: 1 
+                }}
                 onClick={() => navigate("/tournament-table")}
               >
                 <span className="text-xl font-bold text-foreground">{isTournamentStarted ? "40" : "0"}</span>
@@ -235,7 +240,11 @@ const League = () => {
                 <span className="text-muted-foreground text-xs">→</span>
               </div>
               <div
-                className="flex-[1.3] bg-secondary/50 rounded-2xl px-3 py-4 flex flex-col items-center border-2 border-primary cursor-pointer hover:bg-secondary/70 transition-colors shadow-[0_0_20px_hsl(88_85%_55%/0.4)]"
+                className="bg-secondary/50 rounded-2xl px-4 py-4 flex flex-col items-center border-2 border-primary cursor-pointer hover:bg-secondary/70 transition-all shadow-[0_0_20px_hsl(88_85%_55%/0.4)] w-[120px]"
+                style={{ 
+                  transform: "translateZ(20px)", 
+                  zIndex: 10 
+                }}
                 onClick={() => navigate("/your-team")}
               >
                 <span className="text-3xl font-bold text-foreground">{isTournamentStarted ? "55" : "0"}</span>
@@ -243,7 +252,12 @@ const League = () => {
                 <span className="text-primary text-sm">→</span>
               </div>
               <div
-                className="flex-1 bg-secondary/50 rounded-2xl px-2 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-colors"
+                className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[100px]"
+                style={{ 
+                  transform: "rotateY(-15deg) translateX(-8px)", 
+                  transformOrigin: "left center",
+                  zIndex: 1 
+                }}
                 onClick={() => navigate("/dream-team")}
               >
                 <span className="text-xl font-bold text-foreground">{isTournamentStarted ? "129" : "0"}</span>
