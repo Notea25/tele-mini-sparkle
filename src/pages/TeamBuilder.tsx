@@ -740,7 +740,7 @@ const TeamBuilder = () => {
                   >
                     <Minus className="w-4 h-4 text-primary-foreground" />
                   </button>
-                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceFrom},0</span>
+                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceFrom.toFixed(1)}</span>
                   <button
                     onClick={handlePriceFromIncrease}
                     className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
@@ -758,7 +758,7 @@ const TeamBuilder = () => {
                   >
                     <Minus className="w-4 h-4 text-primary-foreground" />
                   </button>
-                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceTo},0</span>
+                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceTo.toFixed(1)}</span>
                   <button
                     onClick={handlePriceToIncrease}
                     className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
@@ -822,7 +822,7 @@ const TeamBuilder = () => {
                   >
                     <Minus className="w-4 h-4 text-primary-foreground" />
                   </button>
-                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceFrom},0</span>
+                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceFrom.toFixed(1)}</span>
                   <button
                     onClick={handlePriceFromIncrease}
                     className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
@@ -840,7 +840,7 @@ const TeamBuilder = () => {
                   >
                     <Minus className="w-4 h-4 text-primary-foreground" />
                   </button>
-                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceTo},0</span>
+                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceTo.toFixed(1)}</span>
                   <button
                     onClick={handlePriceToIncrease}
                     className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
