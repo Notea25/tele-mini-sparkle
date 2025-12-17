@@ -258,9 +258,8 @@ const Index = () => {
             }}
           >
             <span
-              className="font-medium"
+              className="font-medium text-[12px]"
               style={{
-                fontSize: "14px",
                 color: isDropdownOpen ? "#FFFFFF" : "#4B485F",
               }}
             >
