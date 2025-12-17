@@ -96,6 +96,8 @@ const TeamBuilder = () => {
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
 
+  const [keyboardInset, setKeyboardInset] = useState(0);
+
   // Check for unsaved changes
   const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
 
@@ -157,6 +159,27 @@ const TeamBuilder = () => {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const update = () => {
+      const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      setKeyboardInset(inset);
+    };
+
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    window.addEventListener("orientationchange", update);
+
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+      window.removeEventListener("orientationchange", update);
+    };
   }, []);
 
   const teams = ["Все команды", ...allTeams];
@@ -926,10 +949,12 @@ const TeamBuilder = () => {
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onFocus={(e) => {
+              const el = e.target;
               setTimeout(() => {
-                e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }, 300);
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+              }, 450);
             }}
+            style={keyboardInset ? { scrollMarginBottom: `calc(${keyboardInset}px + 220px)` } : undefined}
             className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
           />
         </div>
@@ -1112,7 +1137,10 @@ const TeamBuilder = () => {
       </div>
 
       {/* Team Cost & Balance - Sticky */}
-      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-2 z-40">
+      <div
+        className="sticky left-0 right-0 bg-background border-t border-border px-4 py-2 z-40"
+        style={{ bottom: `calc(env(safe-area-inset-bottom, 0px) + ${keyboardInset}px)` }}
+      >
         <div className="flex justify-between mb-2">
           <div>
             <span className="text-muted-foreground text-xs">Стоимость команды</span>
