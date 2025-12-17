@@ -1,9 +1,23 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
-const SearchBar = () => {
+interface SearchBarProps {
+  value?: string;
+  onChange?: (value: string) => void;
+}
+
+const SearchBar = ({ value, onChange }: SearchBarProps) => {
   const [isActive, setIsActive] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFocus = () => {
+    setIsActive(true);
+    // Scroll input into view when keyboard appears
+    setTimeout(() => {
+      inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+  };
 
   return (
     <div className="px-4 mt-4">
@@ -14,7 +28,10 @@ const SearchBar = () => {
           }`}
         />
         <Input
+          ref={inputRef}
           placeholder="Поиск"
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
           className={`pl-11 text-[12px] h-10 transition-colors duration-200 ${
             isActive ? "text-white placeholder:text-white/70" : "text-foreground placeholder:text-[#4B485F]"
           }`}
@@ -22,7 +39,7 @@ const SearchBar = () => {
             backgroundColor: "#1A1924",
             borderColor: isActive ? "rgba(255, 255, 255, 0.2)" : "#2D2B3E",
           }}
-          onFocus={() => setIsActive(true)}
+          onFocus={handleFocus}
           onBlur={() => setIsActive(false)}
         />
       </div>
