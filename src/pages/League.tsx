@@ -225,7 +225,7 @@ const League = () => {
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
             </div>
 
-            <div className="flex items-center justify-center mb-6" style={{ perspective: "600px" }}>
+            <div className="flex items-center justify-center gap-3 mb-6" style={{ perspective: "600px" }}>
               <div
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
                 style={{ 
