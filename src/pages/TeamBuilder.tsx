@@ -925,6 +925,11 @@ const TeamBuilder = () => {
             placeholder="Поиск"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={(e) => {
+              setTimeout(() => {
+                e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 300);
+            }}
             className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
           />
         </div>
