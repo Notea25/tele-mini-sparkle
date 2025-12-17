@@ -96,10 +96,6 @@ const TeamBuilder = () => {
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
 
-  const [keyboardInset, setKeyboardInset] = useState(0);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const bottomBarRef = useRef<HTMLDivElement>(null);
-  const [bottomBarHeight, setBottomBarHeight] = useState(0);
 
   // Check for unsaved changes
   const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
@@ -162,40 +158,6 @@ const TeamBuilder = () => {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    const update = () => {
-      const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      setKeyboardInset(inset);
-    };
-
-    update();
-    vv.addEventListener("resize", update);
-    vv.addEventListener("scroll", update);
-    window.addEventListener("orientationchange", update);
-
-    return () => {
-      vv.removeEventListener("resize", update);
-      vv.removeEventListener("scroll", update);
-      window.removeEventListener("orientationchange", update);
-    };
-  }, []);
-
-  useEffect(() => {
-    const el = bottomBarRef.current;
-    if (!el || typeof ResizeObserver === "undefined") return;
-
-    const update = () => setBottomBarHeight(el.getBoundingClientRect().height);
-
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-
-    return () => ro.disconnect();
   }, []);
 
   const teams = ["Все команды", ...allTeams];
@@ -958,23 +920,17 @@ const TeamBuilder = () => {
 
       {/* Search */}
       <div className="px-4 mt-4">
-        <div
-          className={`relative ${isSearchFocused && keyboardInset > 0 ? "fixed left-0 right-0 z-50 px-4 py-2 bg-background/80 backdrop-blur-md" : ""}`}
-          style={
-            isSearchFocused && keyboardInset > 0
-              ? {
-                  bottom: `calc(env(safe-area-inset-bottom, 0px) + ${keyboardInset}px + ${bottomBarHeight}px + 8px)`,
-                }
-              : undefined
-          }
-        >
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Поиск"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-            onFocus={() => setIsSearchFocused(true)}
-            onBlur={() => setIsSearchFocused(false)}
+            onFocus={(e) => {
+              setTimeout(() => {
+                e.target.scrollIntoView({ behavior: "smooth", block: "start" });
+              }, 350);
+            }}
             className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
           />
         </div>
@@ -1158,9 +1114,8 @@ const TeamBuilder = () => {
 
       {/* Team Cost & Balance - Sticky */}
       <div
-        ref={bottomBarRef}
         className="sticky left-0 right-0 bg-background border-t border-border px-4 py-2 z-40"
-        style={{ bottom: `calc(env(safe-area-inset-bottom, 0px) + ${keyboardInset}px)` }}
+        style={{ bottom: 0 }}
       >
         <div className="flex justify-between mb-2">
           <div>
