@@ -161,7 +161,7 @@ const Index = () => {
     setActiveCategory(categoryId);
   }, []);
 
-  const sortOptions = ["Избранные", "Сначала ТОП-лиги", "От А до Я", "От Я до А"];
+  const sortOptions = ["Избранные", "ТОП-лиги", "От А до Я", "От Я до А"];
 
   // Define all leagues data for sorting
   const allLeagues = [
