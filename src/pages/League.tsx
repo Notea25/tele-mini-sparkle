@@ -314,11 +314,9 @@ const League = () => {
             <h2 className="text-2xl font-bold text-foreground mb-4">Турнирная таблица</h2>
 
             {/* Table header */}
-            <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
-              <span className="col-span-3">Место в лиге</span>
-              <span className="col-span-4">Название</span>
-              <span className="col-span-2 text-center">Тур</span>
-              <span className="col-span-3 text-right">Всего</span>
+            <div className="flex px-4 py-2 text-xs text-muted-foreground">
+              <span className="w-[120px]">Место в лиге</span>
+              <span className="flex-1">Название</span>
             </div>
 
             {/* Table rows */}
@@ -326,7 +324,7 @@ const League = () => {
               {tableData.map((row, idx) => (
                 <div
                   key={idx}
-                  className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full cursor-pointer transition-opacity hover:opacity-80 ${
+                  className={`flex items-center px-4 py-3 rounded-full cursor-pointer transition-opacity hover:opacity-80 ${
                     row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                   }`}
                   onClick={() => {
@@ -337,33 +335,20 @@ const League = () => {
                     }
                   }}
                 >
-                  <div className="col-span-3 flex items-center gap-1">
-                    {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                  <div className="w-[120px] flex items-center gap-1.5">
+                    {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-2.5 h-2.5 rotate-180" />}
                     {row.change === "down" && (
-                      <img src={row.isUser ? arrowDownBlack : arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
+                      <img src={row.isUser ? arrowDownBlack : arrowUpRed} alt="down" className="w-2.5 h-2.5 rotate-180" />
                     )}
-                    {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                    <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                      {row.position}
+                    {row.change === "same" && <img src={arrowSame} alt="same" className="w-2.5 h-2.5" />}
+                    <span className={`text-sm font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                      {row.position} / 100
                     </span>
-                    {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
-                    {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
-                    {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
                   </div>
                   <span
-                    className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                    className={`flex-1 text-sm font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                   >
                     {row.name}
-                  </span>
-                  <span
-                    className={`col-span-2 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
-                  >
-                    {row.tourPoints}
-                  </span>
-                  <span
-                    className={`col-span-3 text-right font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
-                  >
-                    {row.totalPoints.toLocaleString().replace(",", " ")}
                   </span>
                 </div>
               ))}
