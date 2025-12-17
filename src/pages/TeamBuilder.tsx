@@ -1174,7 +1174,7 @@ const TeamBuilder = () => {
               Сохранить команду?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground text-center">
-              Ваша команда "{teamName}" будет сохранена. Именно с этим составом ты входишь в сезон.
+              Твоя команда "{teamName}" будет сохранена. Именно с этим составом ты входишь в сезон.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-row gap-3 justify-center mt-2">
