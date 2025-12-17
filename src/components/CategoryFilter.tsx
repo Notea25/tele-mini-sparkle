@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import iconCup from "@/assets/icon-cup.png";
 import iconFootball from "@/assets/icon-football.png";
@@ -19,6 +20,15 @@ interface CategoryFilterProps {
 }
 
 const CategoryFilter = ({ activeCategory = "all", onCategoryClick }: CategoryFilterProps) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const handleClick = (categoryId: string, scrollTo: string | null) => {
     if (onCategoryClick) {
       onCategoryClick(categoryId);
@@ -36,7 +46,9 @@ const CategoryFilter = ({ activeCategory = "all", onCategoryClick }: CategoryFil
 
   return (
     <div
-      className="px-4 mt-4 flex gap-2 overflow-x-auto pb-2"
+      className={`px-4 py-2 flex gap-2 overflow-x-auto pb-2 sticky top-[48px] z-40 transition-all duration-300 ${
+        isScrolled ? "bg-background/70 backdrop-blur-md" : "bg-background"
+      }`}
       style={{
         scrollbarWidth: "none",
         msOverflowStyle: "none",
