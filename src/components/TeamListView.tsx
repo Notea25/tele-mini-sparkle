@@ -57,6 +57,16 @@ const TeamListView = ({
 
   return (
     <div className="px-4 mt-4 space-y-2">
+      {/* Column Headers */}
+      <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
+        <span className="w-8 flex-shrink-0"></span>
+        <span className="flex-1">Игрок</span>
+        <span className="w-6 flex-shrink-0"></span>
+        <span className="w-12 flex-shrink-0 text-right">Очки</span>
+        <span className="w-10 flex-shrink-0 text-right">Цена</span>
+        <span className="w-6 ml-2 flex-shrink-0"></span>
+      </div>
+      
       {allSlots.map((slot, idx) => {
         const isOccupied = !!slot.player;
         
