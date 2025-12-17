@@ -89,6 +89,8 @@ const CreateTeam = () => {
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [isSelectFocused, setIsSelectFocused] = useState(false);
 
+  const isKeyboardOpen = isNameFocused || isSelectFocused;
+
   const filter = useMemo(() => {
     const f = new Filter();
     f.addWords(...russianBadWords);
@@ -169,7 +171,7 @@ const CreateTeam = () => {
             onChange={handleNameChange}
             maxLength={MAX_NAME_LENGTH}
             onFocus={() => setIsNameFocused(true)}
-            onBlur={() => setIsNameFocused(false)}
+            onBlur={() => setTimeout(() => setIsNameFocused(false), 150)}
             className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F]"
             style={{
               borderColor: isNameFocused ? "rgba(255, 255, 255, 0.2)" : "#363546",
@@ -215,7 +217,29 @@ const CreateTeam = () => {
           </SelectContent>
         </Select>
 
-        {/* Create Team Button */}
+        {/* Actions */}
+        {!isKeyboardOpen && (
+          <>
+            {/* Create Team Button */}
+            <Button
+              onClick={validateAndNavigate}
+              disabled={!isFormValid}
+              className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-[24px]"
+              style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
+            >
+              Создать команду
+            </Button>
+            <InfiniteClubCarousel />
+          </>
+        )}
+      </div>
+
+      {/* Sticky CTA when keyboard is open */}
+      <div
+        className={`fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 backdrop-blur px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] transition-all duration-200 ${
+          isKeyboardOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+      >
         <Button
           onClick={validateAndNavigate}
           disabled={!isFormValid}
@@ -224,7 +248,6 @@ const CreateTeam = () => {
         >
           Создать команду
         </Button>
-        <InfiniteClubCarousel />
       </div>
 
       {/* Collect Team Section */}
@@ -366,7 +389,7 @@ const CreateTeam = () => {
         </div>
       </div>
 
-      <FooterNav />
+      {!isKeyboardOpen && <FooterNav />}
     </div>
   );
 };
