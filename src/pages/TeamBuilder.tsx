@@ -688,7 +688,7 @@ const TeamBuilder = () => {
           </Button>
         </div>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Дедлайн 1 тура: 14.12.2025 в 19:00</span>
+          <span className="text-muted-foreground">Дедлайн: 14.12.2025 в 19:00</span>
           <span className="text-foreground">
             {timeLeft.days} дн. {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
             {String(timeLeft.seconds).padStart(2, "0")}
