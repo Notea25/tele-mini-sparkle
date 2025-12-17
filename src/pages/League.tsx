@@ -315,8 +315,9 @@ const League = () => {
 
             {/* Table header */}
             <div className="flex px-4 py-2 text-xs text-muted-foreground">
-              <span className="w-[120px]">Место в лиге</span>
+              <span className="w-[100px]">Место в лиге</span>
               <span className="flex-1">Название</span>
+              <span className="text-right">Всего</span>
             </div>
 
             {/* Table rows */}
@@ -335,20 +336,25 @@ const League = () => {
                     }
                   }}
                 >
-                  <div className="w-[120px] flex items-center gap-1.5">
+                  <div className="w-[100px] flex items-center gap-1.5">
                     {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-2.5 h-2.5 rotate-180" />}
                     {row.change === "down" && (
                       <img src={row.isUser ? arrowDownBlack : arrowUpRed} alt="down" className="w-2.5 h-2.5 rotate-180" />
                     )}
                     {row.change === "same" && <img src={arrowSame} alt="same" className="w-2.5 h-2.5" />}
                     <span className={`text-sm font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                      {row.position} / 100
+                      {row.position}
                     </span>
                   </div>
                   <span
                     className={`flex-1 text-sm font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                   >
                     {row.name}
+                  </span>
+                  <span
+                    className={`text-sm font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                  >
+                    {row.totalPoints.toLocaleString().replace(",", " ")}
                   </span>
                 </div>
               ))}
