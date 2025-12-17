@@ -282,20 +282,18 @@ const League = () => {
 
             {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mb-8">
-              <button
-                className="bg-primary rounded-2xl px-4 py-4 flex items-center justify-center gap-3 cursor-pointer hover:bg-primary/90 transition-colors"
+              <img
+                src={btnTeam}
+                alt="Команда"
+                className="w-full cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => navigate("/team-management")}
-              >
-                <span className="text-xl font-bold text-primary-foreground">Команда</span>
-                <img src={btnTeam} alt="" className="w-8 h-8 object-contain" />
-              </button>
-              <button
-                className="bg-primary rounded-2xl px-4 py-4 flex items-center justify-center gap-3 cursor-pointer hover:bg-primary/90 transition-colors"
+              />
+              <img
+                src={btnTransfers}
+                alt="Трансферы"
+                className="w-full cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => navigate("/transfers")}
-              >
-                <span className="text-xl font-bold text-primary-foreground">Трансферы</span>
-                <img src={btnTransfers} alt="" className="w-8 h-8 object-contain" />
-              </button>
+              />
             </div>
 
             {/* Tournament Table */}
