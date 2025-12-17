@@ -98,7 +98,8 @@ const TeamBuilder = () => {
 
   const [keyboardInset, setKeyboardInset] = useState(0);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const bottomBarRef = useRef<HTMLDivElement>(null);
+  const [bottomBarHeight, setBottomBarHeight] = useState(0);
 
   // Check for unsaved changes
   const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
@@ -182,6 +183,19 @@ const TeamBuilder = () => {
       vv.removeEventListener("scroll", update);
       window.removeEventListener("orientationchange", update);
     };
+  }, []);
+
+  useEffect(() => {
+    const el = bottomBarRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const update = () => setBottomBarHeight(el.getBoundingClientRect().height);
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+
+    return () => ro.disconnect();
   }, []);
 
   const teams = ["Все команды", ...allTeams];
@@ -942,12 +956,20 @@ const TeamBuilder = () => {
         ))}
       </div>
 
-      {/* Search - placeholder when focused to maintain layout */}
+      {/* Search */}
       <div className="px-4 mt-4">
-        <div className={`relative ${isSearchFocused && keyboardInset > 0 ? 'invisible' : ''}`}>
+        <div
+          className={`relative ${isSearchFocused && keyboardInset > 0 ? "fixed left-0 right-0 z-50 px-4 py-2 bg-background/80 backdrop-blur-md" : ""}`}
+          style={
+            isSearchFocused && keyboardInset > 0
+              ? {
+                  bottom: `calc(env(safe-area-inset-bottom, 0px) + ${keyboardInset}px + ${bottomBarHeight}px + 8px)`,
+                }
+              : undefined
+          }
+        >
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            ref={searchInputRef}
             placeholder="Поиск"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
@@ -1136,24 +1158,10 @@ const TeamBuilder = () => {
 
       {/* Team Cost & Balance - Sticky */}
       <div
+        ref={bottomBarRef}
         className="sticky left-0 right-0 bg-background border-t border-border px-4 py-2 z-40"
         style={{ bottom: `calc(env(safe-area-inset-bottom, 0px) + ${keyboardInset}px)` }}
       >
-        {/* Search input fixed above buttons when keyboard is open */}
-        {isSearchFocused && keyboardInset > 0 && (
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              autoFocus
-              placeholder="Поиск"
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-              className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
-            />
-          </div>
-        )}
         <div className="flex justify-between mb-2">
           <div>
             <span className="text-muted-foreground text-xs">Стоимость команды</span>
