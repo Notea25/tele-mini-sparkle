@@ -93,13 +93,25 @@ const TeamBuilder = () => {
       // New field: start with desc for points/price, asc for name
       setSortField(field);
       setSortDirection(field === "name" ? "asc" : "desc");
-    } else if (sortDirection === "desc") {
-      // Second click: switch to ascending
-      setSortDirection("asc");
-    } else if (sortDirection === "asc") {
-      // Third click: clear sort
-      setSortField(null);
-      setSortDirection(null);
+    } else {
+      // Same field: cycle through directions
+      if (field === "name") {
+        // name: asc → desc → clear
+        if (sortDirection === "asc") {
+          setSortDirection("desc");
+        } else {
+          setSortField(null);
+          setSortDirection(null);
+        }
+      } else {
+        // points/price: desc → asc → clear
+        if (sortDirection === "desc") {
+          setSortDirection("asc");
+        } else {
+          setSortField(null);
+          setSortDirection(null);
+        }
+      }
     }
     setCurrentPage(1);
   };
