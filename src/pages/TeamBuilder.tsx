@@ -912,7 +912,15 @@ const TeamBuilder = () => {
           className={`flex-1 flex items-center gap-1 transition-colors ${sortField === "name" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Игрок</span>
-          <ChevronsUpDown className={`w-3 h-3 ${sortField === "name" ? "opacity-100" : "opacity-50"}`} />
+          {sortField === "name" ? (
+            sortDirection === "asc" ? (
+              <ChevronDown className="w-3 h-3 text-primary" />
+            ) : (
+              <ChevronUp className="w-3 h-3 text-primary" />
+            )
+          ) : (
+            <ChevronsUpDown className="w-3 h-3 opacity-50" />
+          )}
         </button>
         <span className="w-8"></span>
         <span className="w-6"></span>
@@ -921,14 +929,30 @@ const TeamBuilder = () => {
           className={`w-14 flex items-center justify-end gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Очки</span>
-          <ChevronsUpDown className={`w-3 h-3 ${sortField === "points" ? "opacity-100" : "opacity-50"}`} />
+          {sortField === "points" ? (
+            sortDirection === "desc" ? (
+              <ChevronDown className="w-3 h-3 text-primary" />
+            ) : (
+              <ChevronUp className="w-3 h-3 text-primary" />
+            )
+          ) : (
+            <ChevronsUpDown className="w-3 h-3 opacity-50" />
+          )}
         </button>
         <button
           onClick={() => handleSort("price")}
           className={`w-12 flex items-center justify-end gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Цена</span>
-          <ChevronsUpDown className={`w-3 h-3 ${sortField === "price" ? "opacity-100" : "opacity-50"}`} />
+          {sortField === "price" ? (
+            sortDirection === "desc" ? (
+              <ChevronDown className="w-3 h-3 text-primary" />
+            ) : (
+              <ChevronUp className="w-3 h-3 text-primary" />
+            )
+          ) : (
+            <ChevronsUpDown className="w-3 h-3 opacity-50" />
+          )}
         </button>
         <span className="w-8"></span>
       </div>
