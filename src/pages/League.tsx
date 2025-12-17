@@ -229,7 +229,7 @@ const League = () => {
               <div
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
                 style={{ 
-                  transform: "rotateY(25deg) translateX(20px) translateZ(-30px)", 
+                  transform: "rotateY(20deg) translateX(5px) translateZ(-15px)", 
                   transformOrigin: "right center",
                   zIndex: 1 
                 }}
@@ -242,7 +242,7 @@ const League = () => {
               <div
                 className="bg-[hsl(220_15%_12%)] rounded-2xl px-4 py-4 flex flex-col items-center border-2 border-primary cursor-pointer hover:bg-secondary/70 transition-all shadow-[0_0_25px_hsl(88_85%_55%/0.5)] w-[125px]"
                 style={{ 
-                  transform: "translateZ(30px)", 
+                  transform: "translateZ(20px)", 
                   zIndex: 10 
                 }}
                 onClick={() => navigate("/your-team")}
@@ -254,7 +254,7 @@ const League = () => {
               <div
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
                 style={{ 
-                  transform: "rotateY(-25deg) translateX(-20px) translateZ(-30px)", 
+                  transform: "rotateY(-20deg) translateX(-5px) translateZ(-15px)", 
                   transformOrigin: "left center",
                   zIndex: 1 
                 }}
