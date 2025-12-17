@@ -516,7 +516,7 @@ const League = () => {
 
             {/* My leagues table header */}
             <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
-              <span className="col-span-4">Место в лиге</span>
+              <span className="col-span-4">Место</span>
               <span className="col-span-8">Название</span>
             </div>
 
