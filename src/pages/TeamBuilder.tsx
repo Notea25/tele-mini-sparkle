@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Search,
   Plus,
+  Check,
   ChevronLeft,
   ChevronRight,
   TrendingUp,
@@ -28,7 +29,7 @@ import {
 } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
@@ -54,7 +55,9 @@ const TeamBuilder = () => {
   const location = useLocation();
   const playerListRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [activeFilter, setActiveFilter] = useState("Все");
 
@@ -174,6 +177,56 @@ const TeamBuilder = () => {
 
     return () => ro.disconnect();
   }, []);
+
+  const scrollSearchIntoView = useCallback(
+    (behavior: ScrollBehavior = "smooth") => {
+      const el = searchInputRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
+      window.scrollTo({ top: Math.max(0, top), behavior });
+    },
+    [headerHeight],
+  );
+
+  const ensureSearchVisible = useCallback(
+    (behavior: ScrollBehavior = "auto") => {
+      // Some mobile webviews auto-adjust scroll after focus/caret placement.
+      // A few quick re-applies keeps the input above the keyboard reliably.
+      scrollSearchIntoView(behavior);
+      window.setTimeout(() => scrollSearchIntoView("auto"), 120);
+      window.setTimeout(() => scrollSearchIntoView("auto"), 360);
+    },
+    [scrollSearchIntoView],
+  );
+
+  // Keep the search visible when keyboard opens / viewport changes
+  useEffect(() => {
+    if (!isSearchFocused) return;
+
+    const vv = window.visualViewport;
+
+    const onViewportChange = () => {
+      ensureSearchVisible("auto");
+    };
+
+    vv?.addEventListener("resize", onViewportChange);
+    vv?.addEventListener("scroll", onViewportChange);
+    window.addEventListener("resize", onViewportChange);
+
+    return () => {
+      vv?.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("scroll", onViewportChange);
+      window.removeEventListener("resize", onViewportChange);
+    };
+  }, [isSearchFocused, ensureSearchVisible]);
+
+  useEffect(() => {
+    if (!isSearchFocused) return;
+
+    // After filtering re-renders, ensure input is still above keyboard
+    const t = window.setTimeout(() => ensureSearchVisible("auto"), 0);
+    return () => window.clearTimeout(t);
+  }, [searchQuery, isSearchFocused, ensureSearchVisible]);
 
   const teams = ["Все команды", ...allTeams];
   const pointsOptions = [
@@ -940,18 +993,33 @@ const TeamBuilder = () => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
+            ref={searchInputRef}
             placeholder="Поиск"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-            onFocus={(e) => {
-              const el = e.target as HTMLElement;
-              setTimeout(() => {
-                const top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
-                window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+            onFocus={() => {
+              setIsSearchFocused(true);
+              window.setTimeout(() => {
+                ensureSearchVisible("smooth");
               }, 350);
             }}
-            className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
+            onBlur={() => setIsSearchFocused(false)}
+            className="pl-10 pr-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
           />
+
+          <button
+            type="button"
+            aria-label="Скрыть клавиатуру"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              searchInputRef.current?.blur();
+            }}
+            className={`absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full border border-border bg-card flex items-center justify-center transition-opacity ${
+              isSearchFocused ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+          >
+            <Check className="w-4 h-4 text-primary" />
+          </button>
         </div>
       </div>
 
