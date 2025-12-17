@@ -1023,10 +1023,21 @@ const TeamBuilder = () => {
             if (totalPages <= 5) {
               for (let i = 1; i <= totalPages; i++) pages.push(i);
             } else {
-              // Always show 1, 2, 3
-              pages.push(1, 2, 3);
-              // Add ellipsis and last page
-              pages.push("...", totalPages);
+              // Always show first page
+              pages.push(1);
+              
+              // Calculate window around current page
+              if (currentPage <= 3) {
+                pages.push(2, 3);
+                pages.push("...", totalPages);
+              } else if (currentPage >= totalPages - 2) {
+                pages.push("...");
+                pages.push(totalPages - 2, totalPages - 1, totalPages);
+              } else {
+                pages.push("...");
+                pages.push(currentPage - 1, currentPage, currentPage + 1);
+                pages.push("...", totalPages);
+              }
             }
 
             return pages.map((page, idx) =>
