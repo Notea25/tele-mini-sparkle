@@ -235,7 +235,7 @@ const League = () => {
                 <span className="text-muted-foreground text-xs">→</span>
               </div>
               <div
-                className="flex-[1.3] bg-secondary/50 rounded-2xl px-3 py-4 flex flex-col items-center border-2 border-primary cursor-pointer hover:bg-secondary/70 transition-colors"
+                className="flex-[1.3] bg-secondary/50 rounded-2xl px-3 py-4 flex flex-col items-center border-2 border-primary cursor-pointer hover:bg-secondary/70 transition-colors shadow-[0_0_20px_hsl(88_85%_55%/0.4)]"
                 onClick={() => navigate("/your-team")}
               >
                 <span className="text-3xl font-bold text-foreground">{isTournamentStarted ? "55" : "0"}</span>
