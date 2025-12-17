@@ -740,6 +740,7 @@ const TeamBuilder = () => {
               onEmptySlotClick={handleEmptySlotClick}
               captain={captain}
               viceCaptain={viceCaptain}
+              showCaptainBadges={false}
             />
           </div>
 

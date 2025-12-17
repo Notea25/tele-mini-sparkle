@@ -65,6 +65,7 @@ interface FormationFieldProps {
   onEmptySlotClick?: (position: string) => void;
   captain?: number | null;
   viceCaptain?: number | null;
+  showCaptainBadges?: boolean;
 }
 
 const FormationField = ({
@@ -74,6 +75,7 @@ const FormationField = ({
   onEmptySlotClick,
   captain,
   viceCaptain,
+  showCaptainBadges = true,
 }: FormationFieldProps) => {
   // Formation: 2 ВР (goalkeepers), 5 ЗЩ (defenders), 5 ПЗ (midfielders), 3 НП (forwards)
   const formation: FormationPosition[] = [
@@ -164,10 +166,10 @@ const FormationField = ({
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Captain/Vice-Captain badge - absolute in left corner */}
-                {captain === assignedPlayer.id && (
+                {showCaptainBadges && captain === assignedPlayer.id && (
                   <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />
                 )}
-                {viceCaptain === assignedPlayer.id && (
+                {showCaptainBadges && viceCaptain === assignedPlayer.id && (
                   <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
                 )}
 
