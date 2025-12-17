@@ -426,7 +426,7 @@ const TeamManagement = () => {
         </div>
         
         {/* Team name */}
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center justify-center mb-2">
           <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
         </div>
         
