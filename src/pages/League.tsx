@@ -384,7 +384,7 @@ const League = () => {
 
             {/* Table header */}
             <div className="flex px-4 py-2 text-xs text-muted-foreground">
-              <span className="w-[100px]">Место в лиге</span>
+              <span className="w-[100px]">Место</span>
               <span className="flex-1">Название</span>
               <span className="text-right">Всего</span>
             </div>
