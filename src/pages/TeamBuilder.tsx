@@ -675,7 +675,7 @@ const TeamBuilder = () => {
 
       {/* Team Header */}
       <div className="px-4 mt-6">
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center justify-center gap-3 mb-2">
           <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
           <Button
             variant="ghost"
