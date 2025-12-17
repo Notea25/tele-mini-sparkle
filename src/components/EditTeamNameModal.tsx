@@ -2,8 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import {
   Drawer,
   DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -91,18 +89,19 @@ const EditTeamNameModal = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className="bg-card border-t border-border">
-        <DrawerHeader className="text-center">
-          <DrawerTitle className="text-foreground text-xl font-bold">
+      <DrawerContent className="bg-card border-t border-border max-h-[85vh]">
+        <div className="px-4 pt-4 pb-8">
+          {/* Title */}
+          <h2 className="text-foreground text-xl font-bold text-center mb-4">
             Изменить название команды
-          </DrawerTitle>
-        </DrawerHeader>
-        <div className="px-4 pb-6">
-          <div className="relative">
+          </h2>
+          
+          {/* Input field - positioned prominently at top */}
+          <div className="relative mb-3">
             <Input
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
-              className={`bg-secondary border-border text-foreground h-12 text-base pr-16 ${
+              className={`bg-secondary border-border text-foreground h-14 text-lg pr-16 ${
                 error ? "border-destructive" : ""
               }`}
               placeholder="Название команды"
@@ -113,10 +112,13 @@ const EditTeamNameModal = ({
               {name.length}/{MAX_NAME_LENGTH}
             </span>
           </div>
+          
           {error && (
-            <p className="text-destructive text-sm mt-2">{error}</p>
+            <p className="text-destructive text-sm mb-3">{error}</p>
           )}
-          <div className="flex gap-3 mt-6">
+          
+          {/* Buttons */}
+          <div className="flex gap-3">
             <Button
               variant="outline"
               className="flex-1 h-12 text-base border-border bg-secondary text-foreground hover:bg-secondary/80"
