@@ -926,9 +926,9 @@ const TeamBuilder = () => {
           <span>Игрок</span>
           {sortField === "name" ? (
             sortDirection === "asc" ? (
-              <ChevronDown className="w-3 h-3 text-primary" />
-            ) : (
               <ChevronUp className="w-3 h-3 text-primary" />
+            ) : (
+              <ChevronDown className="w-3 h-3 text-primary" />
             )
           ) : (
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
