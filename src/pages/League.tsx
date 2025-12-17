@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import btnTeam from "@/assets/btn-team.png";
-import btnTransfers from "@/assets/btn-transfers.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowSame from "@/assets/arrow-same.png";
@@ -365,18 +363,18 @@ const League = () => {
 
             {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mb-8">
-              <img
-                src={btnTeam}
-                alt="Команда"
-                className="w-full cursor-pointer hover:opacity-90 transition-opacity"
+              <div
+                className="w-full h-12 bg-[#AAFF03] rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => navigate("/team-management")}
-              />
-              <img
-                src={btnTransfers}
-                alt="Трансферы"
-                className="w-full cursor-pointer hover:opacity-90 transition-opacity"
+              >
+                <span className="text-black font-bold text-lg">Команда</span>
+              </div>
+              <div
+                className="w-full h-12 bg-[#AAFF03] rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => navigate("/transfers")}
-              />
+              >
+                <span className="text-black font-bold text-lg">Трансферы</span>
+              </div>
             </div>
 
             {/* Tournament Table */}
