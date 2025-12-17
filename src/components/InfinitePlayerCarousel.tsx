@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import playerPlotnikov from "@/assets/player-plotnikov.png";
 import clubSlavia from "@/assets/club-slavia.png";
 import playerKozlov from "@/assets/player-kozlov.png";
@@ -8,7 +8,6 @@ import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
 
 // Configurable settings
 const CONFIG = {
-  autoScrollSpeed: 0.5, // pixels per frame
   itemGap: 16, // gap between items in pixels
   itemWidth: 160, // card width in pixels
   itemHeight: 200, // card height in pixels
@@ -36,79 +35,28 @@ const players: Player[] = [
 
 const InfinitePlayerCarousel = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const animationRef = useRef<number>();
-  const lastTimeRef = useRef<number>(0);
-
-  // Triple the items for seamless looping
-  const extendedPlayers = [...players, ...players, ...players];
-  const singleSetWidth = players.length * (CONFIG.itemWidth + CONFIG.itemGap);
-
-  // Auto-scroll animation
-  useEffect(() => {
-    if (isDragging) return;
-
-    const animate = (currentTime: number) => {
-      if (lastTimeRef.current === 0) {
-        lastTimeRef.current = currentTime;
-      }
-
-      const deltaTime = currentTime - lastTimeRef.current;
-      lastTimeRef.current = currentTime;
-
-      setScrollPosition((prev) => {
-        let newPos = prev + (CONFIG.autoScrollSpeed * deltaTime) / 16;
-        // Reset position when we've scrolled past one full set
-        if (newPos >= singleSetWidth) {
-          newPos = newPos - singleSetWidth;
-        }
-        return newPos;
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isDragging, singleSetWidth]);
+  const [scrollLeftStart, setScrollLeftStart] = useState(0);
 
   // Handle touch/mouse start
   const handleDragStart = (clientX: number) => {
+    if (!containerRef.current) return;
     setIsDragging(true);
     setStartX(clientX);
-    setScrollLeft(scrollPosition);
-    lastTimeRef.current = 0;
+    setScrollLeftStart(containerRef.current.scrollLeft);
   };
 
   // Handle touch/mouse move
   const handleDragMove = (clientX: number) => {
-    if (!isDragging) return;
-    const x = clientX;
-    const walk = startX - x;
-    let newPos = scrollLeft + walk;
-    
-    // Handle wrapping
-    if (newPos < 0) {
-      newPos = singleSetWidth + newPos;
-    } else if (newPos >= singleSetWidth) {
-      newPos = newPos - singleSetWidth;
-    }
-    
-    setScrollPosition(newPos);
+    if (!isDragging || !containerRef.current) return;
+    const walk = startX - clientX;
+    containerRef.current.scrollLeft = scrollLeftStart + walk;
   };
 
   // Handle touch/mouse end
   const handleDragEnd = () => {
     setIsDragging(false);
-    lastTimeRef.current = 0;
   };
 
   // Mouse events
@@ -143,7 +91,7 @@ const InfinitePlayerCarousel = () => {
 
   return (
     <div 
-      className="overflow-hidden cursor-grab active:cursor-grabbing select-none"
+      className="overflow-x-auto cursor-grab active:cursor-grabbing select-none scrollbar-hide"
       ref={containerRef}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
@@ -152,18 +100,17 @@ const InfinitePlayerCarousel = () => {
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
+      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
     >
       <div
         className="flex"
         style={{
-          transform: `translateX(-${scrollPosition}px)`,
           gap: `${CONFIG.itemGap}px`,
-          transition: isDragging ? "none" : undefined,
         }}
       >
-        {extendedPlayers.map((player, index) => (
+        {players.map((player) => (
           <div
-            key={`${player.id}-${index}`}
+            key={player.id}
             className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
             style={{
               width: `${CONFIG.itemWidth}px`,
