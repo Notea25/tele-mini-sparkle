@@ -7,7 +7,7 @@ import { Search, Plus, Minus, ChevronLeft, ChevronRight, ChevronsUpDown, Chevron
 import { PlayerData, allPlayers, allTeams } from "@/lib/teamData";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
-import flameIcon from "@/assets/flame-icon.png";
+
 
 const ITEMS_PER_PAGE = 6;
 
@@ -353,7 +353,6 @@ const BuyPlayerDrawer = ({
                   </div>
                   
                   <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-                    {player.id % 3 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
                     <span className="text-foreground text-sm">{player.points}</span>
                   </div>
                   

@@ -15,7 +15,7 @@ import ConfirmBoostDrawer from "@/components/ConfirmBoostDrawer";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
-import flameIcon from "@/assets/flame-icon.png";
+
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon3x from "@/assets/icon-3x.png";
 import iconStar from "@/assets/icon-star.png";
@@ -380,9 +380,8 @@ const TeamManagement = () => {
               )}
             </div>
             
-            {/* Points - some have fire icon */}
+            {/* Points */}
             <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-              {player.id % 3 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
               <span className="text-foreground text-sm">{player.points}</span>
             </div>
             
@@ -628,7 +627,6 @@ const TeamManagement = () => {
                 
                 {/* Points */}
                 <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-                  {player.id % 2 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
                   <span className="text-foreground text-sm">{player.points}</span>
                 </div>
                 

@@ -1,5 +1,5 @@
 import { X, Plus } from "lucide-react";
-import flameIcon from "@/assets/flame-icon.png";
+
 
 interface PlayerData {
   id: number;
@@ -94,7 +94,6 @@ const TeamListView = ({
                 
                 {/* Points - fixed width */}
                 <div className="w-12 flex-shrink-0 flex items-center justify-end gap-1 text-primary">
-                  <img src={flameIcon} alt="points" className="w-4 h-4 object-contain" />
                   <span className="text-sm font-medium">{slot.player.points}</span>
                 </div>
                 

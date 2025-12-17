@@ -23,7 +23,7 @@ import {
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import flameIcon from "@/assets/flame-icon.png";
+
 import icon2x from "@/assets/icon-2x.png";
 import iconStar from "@/assets/icon-star.png";
 import iconFree from "@/assets/icon-free.png";
@@ -443,7 +443,6 @@ const Transfers = () => {
                 </div>
                 
                 <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-                  {player.id % 3 === 0 && <img src={flameIcon} alt="fire" className="w-3 h-3" />}
                   <span className="text-foreground text-sm">{player.points}</span>
                 </div>
                 

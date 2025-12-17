@@ -29,7 +29,7 @@ import EditTeamNameModal from "@/components/EditTeamNameModal";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
-import flameIcon from "@/assets/flame-icon.png";
+
 import { allPlayers, allTeams } from "@/lib/teamData";
 
 const ITEMS_PER_PAGE = 8;
@@ -977,7 +977,6 @@ const TeamBuilder = () => {
 
               {/* Points - fixed width */}
               <div className="w-12 flex-shrink-0 flex items-center justify-end gap-1 text-primary">
-                <img src={flameIcon} alt="points" className="w-4 h-4 object-contain" />
                 <span className="text-sm font-medium">{player.points}</span>
               </div>
 
