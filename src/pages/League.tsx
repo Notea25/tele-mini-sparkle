@@ -45,22 +45,22 @@ const League = () => {
 
   // Club to league name mapping
   const clubToLeagueName: Record<string, string> = {
-    "arsenal": "Лига «Арсенала»",
-    "baranovichi": "Лига «Барановичи»",
-    "bate": "Лига «БАТЭ»",
-    "belshina": "Лига «Белшина»",
-    "vitebsk": "Лига «Витебск»",
-    "gomel": "Лига «Гомель»",
+    arsenal: "Лига «Арсенала»",
+    baranovichi: "Лига «Барановичи»",
+    bate: "Лига «БАТЭ»",
+    belshina: "Лига «Белшина»",
+    vitebsk: "Лига «Витебск»",
+    gomel: "Лига «Гомель»",
     "dinamo-brest": "Лига «Динамо-Брест»",
     "dinamo-minsk": "Лига «Динамо-Минск»",
     "dnepr-mogilev": "Лига «Днепр-Могилев»",
-    "isloch": "Лига «Ислочь»",
-    "minsk": "Лига «Минск»",
-    "ml": "Лига «МЛ Витебск»",
+    isloch: "Лига «Ислочь»",
+    minsk: "Лига «Минск»",
+    ml: "Лига «МЛ Витебск»",
     "naftan-novopolotsk": "Лига «Нафтан-Новополоцк»",
-    "neman": "Лига «Неман»",
-    "slavia": "Лига «Славия-Мозырь»",
-    "torpedo": "Лига «Торпедо-БелАЗ»",
+    neman: "Лига «Неман»",
+    slavia: "Лига «Славия-Мозырь»",
+    torpedo: "Лига «Торпедо-БелАЗ»",
   };
 
   // Get user's favorite team from localStorage
@@ -108,16 +108,88 @@ const League = () => {
 
   // Commercial leagues data with end tour for blur logic and deadlines
   const commercialLeagues = [
-    { id: "betera", name: "Betera", prize: "100 Freebet", period: "1-3 тур", endTour: 3, startTour: 1, deadline: "01.03.2026" },
+    {
+      id: "betera",
+      name: "Betera",
+      prize: "100 Freebet",
+      period: "1-3 тур",
+      endTour: 3,
+      startTour: 1,
+      deadline: "01.03.2026",
+    },
     { id: "bnb", name: "BNB", prize: "1000 BYN", period: "4-6 тур", endTour: 6, startTour: 4, deadline: "15.04.2026" },
-    { id: "atlant-m", name: "Atlant-M", prize: "iPhone 17", period: "7-9 тур", endTour: 9, startTour: 7, deadline: "01.05.2026" },
-    { id: "abff", name: "ABFF", prize: "VIP-ложа", period: "10-12 тур", endTour: 12, startTour: 10, deadline: "20.05.2026" },
-    { id: "bcs", name: "BCS", prize: "MacBook", period: "13-15 тур", endTour: 15, startTour: 13, deadline: "10.06.2026" },
-    { id: "hc-dinamo", name: "HC Dinamo", prize: "Абонемент", period: "16-18 тур", endTour: 18, startTour: 16, deadline: "01.07.2026" },
-    { id: "maxline", name: "Maxline", prize: "250 Free Spin", period: "19-21 тур", endTour: 21, startTour: 19, deadline: "25.07.2026" },
-    { id: "papa-doner", name: "Papa Doner", prize: "100 BYN", period: "22-24 тур", endTour: 24, startTour: 22, deadline: "15.08.2026" },
-    { id: "zubr", name: "Zubr", prize: "AirPods", period: "25-27 тур", endTour: 27, startTour: 25, deadline: "10.09.2026" },
-    { id: "hello", name: "Hello", prize: "1000 минут", period: "28-30 тур", endTour: 30, startTour: 28, deadline: "01.11.2026" },
+    {
+      id: "atlant-m",
+      name: "Atlant-M",
+      prize: "iPhone 17",
+      period: "7-9 тур",
+      endTour: 9,
+      startTour: 7,
+      deadline: "01.05.2026",
+    },
+    {
+      id: "abff",
+      name: "ABFF",
+      prize: "VIP-ложа",
+      period: "10-12 тур",
+      endTour: 12,
+      startTour: 10,
+      deadline: "20.05.2026",
+    },
+    {
+      id: "bcs",
+      name: "BCS",
+      prize: "MacBook",
+      period: "13-15 тур",
+      endTour: 15,
+      startTour: 13,
+      deadline: "10.06.2026",
+    },
+    {
+      id: "hc-dinamo",
+      name: "HC Dinamo",
+      prize: "Абонемент",
+      period: "16-18 тур",
+      endTour: 18,
+      startTour: 16,
+      deadline: "01.07.2026",
+    },
+    {
+      id: "maxline",
+      name: "Maxline",
+      prize: "250 Free Spin",
+      period: "19-21 тур",
+      endTour: 21,
+      startTour: 19,
+      deadline: "25.07.2026",
+    },
+    {
+      id: "papa-doner",
+      name: "Papa Doner",
+      prize: "100 BYN",
+      period: "22-24 тур",
+      endTour: 24,
+      startTour: 22,
+      deadline: "15.08.2026",
+    },
+    {
+      id: "zubr",
+      name: "Zubr",
+      prize: "AirPods",
+      period: "25-27 тур",
+      endTour: 27,
+      startTour: 25,
+      deadline: "10.09.2026",
+    },
+    {
+      id: "hello",
+      name: "Hello",
+      prize: "1000 минут",
+      period: "28-30 тур",
+      endTour: 30,
+      startTour: 28,
+      deadline: "01.11.2026",
+    },
   ];
 
   // Determine which leagues to display based on showAll state
@@ -178,12 +250,7 @@ const League = () => {
       <main className="flex-1 px-4 pb-6 overflow-x-hidden">
         {/* Breadcrumb */}
         <div className="py-4">
-          <Breadcrumbs
-            items={[
-              { label: "Футбол", path: "/" },
-              { label: "Беларусь" },
-            ]}
-          />
+          <Breadcrumbs items={[{ label: "Футбол", path: "/" }, { label: "Беларусь" }]} />
         </div>
 
         {/* Tabs */}
@@ -221,17 +288,19 @@ const League = () => {
             {/* Current/First Tour Stats */}
             <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
-              <span className="text-muted-foreground text-sm whitespace-nowrap">{isTournamentStarted ? "29 тур" : "1 тур"}</span>
+              <span className="text-muted-foreground text-sm whitespace-nowrap">
+                {isTournamentStarted ? "29 тур" : "1 тур"}
+              </span>
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
             </div>
 
             <div className="flex items-center justify-center gap-3 mb-6" style={{ perspective: "600px" }}>
               <div
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
-                style={{ 
-                  transform: "rotateY(20deg) translateX(5px) translateZ(-15px)", 
+                style={{
+                  transform: "rotateY(20deg) translateX(5px) translateZ(-15px)",
                   transformOrigin: "right center",
-                  zIndex: 1 
+                  zIndex: 1,
                 }}
                 onClick={() => navigate("/tournament-table")}
               >
@@ -241,9 +310,9 @@ const League = () => {
               </div>
               <div
                 className="bg-[hsl(220_15%_12%)] rounded-2xl px-4 py-4 flex flex-col items-center border-2 border-primary cursor-pointer hover:bg-secondary/70 transition-all shadow-[0_0_25px_hsl(88_85%_55%/0.5)] w-[125px]"
-                style={{ 
-                  transform: "translateZ(20px)", 
-                  zIndex: 10 
+                style={{
+                  transform: "translateZ(20px)",
+                  zIndex: 10,
                 }}
                 onClick={() => navigate("/your-team")}
               >
@@ -253,10 +322,10 @@ const League = () => {
               </div>
               <div
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
-                style={{ 
-                  transform: "rotateY(-20deg) translateX(-5px) translateZ(-15px)", 
+                style={{
+                  transform: "rotateY(-20deg) translateX(-5px) translateZ(-15px)",
                   transformOrigin: "left center",
-                  zIndex: 1 
+                  zIndex: 1,
                 }}
                 onClick={() => navigate("/dream-team")}
               >
@@ -339,10 +408,16 @@ const League = () => {
                   <div className="w-[100px] flex items-center gap-1.5">
                     {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-2.5 h-2.5 rotate-180" />}
                     {row.change === "down" && (
-                      <img src={row.isUser ? arrowDownBlack : arrowUpRed} alt="down" className="w-2.5 h-2.5 rotate-180" />
+                      <img
+                        src={row.isUser ? arrowDownBlack : arrowUpRed}
+                        alt="down"
+                        className="w-2.5 h-2.5 rotate-180"
+                      />
                     )}
                     {row.change === "same" && <img src={arrowSame} alt="same" className="w-2.5 h-2.5" />}
-                    <span className={`text-sm font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                    <span
+                      className={`text-sm font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                    >
                       {row.position}
                     </span>
                   </div>
@@ -351,9 +426,7 @@ const League = () => {
                   >
                     {row.name}
                   </span>
-                  <span
-                    className={`text-sm font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
-                  >
+                  <span className={`text-sm font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
                     {row.totalPoints.toLocaleString().replace(",", " ")}
                   </span>
                 </div>
@@ -375,9 +448,7 @@ const League = () => {
           <>
             {/* Commercial Leagues */}
             <h2 className="text-2xl font-bold text-foreground mb-2">Коммерческие лиги</h2>
-            <p className="text-muted-foreground text-sm mb-4">
-              Соревнуйся за призы в коммерческих лигах
-            </p>
+            <p className="text-muted-foreground text-sm mb-4">Соревнуйся за призы в коммерческих лигах</p>
 
             {/* Commercial leagues table header */}
             <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
@@ -394,9 +465,7 @@ const League = () => {
                 const isParticipating = userCommercialLeagues.includes(league.id);
                 return (
                   <div key={idx} className="space-y-1">
-                    <span className="text-xs text-muted-foreground ml-4">
-                      Дедлайн вступления: {league.deadline}
-                    </span>
+                    <span className="text-xs text-muted-foreground ml-4">Дедлайн вступления: {league.deadline}</span>
                     <div
                       className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
                         isFinished ? "opacity-40" : ""
@@ -410,7 +479,11 @@ const League = () => {
                       <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
                       <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
                       <span className="col-span-3 text-foreground text-sm">{league.period}</span>
-                      <span className={`col-span-1 text-right ${isParticipating ? "text-primary" : "text-muted-foreground"}`}>→</span>
+                      <span
+                        className={`col-span-1 text-right ${isParticipating ? "text-primary" : "text-muted-foreground"}`}
+                      >
+                        →
+                      </span>
                     </div>
                   </div>
                 );
@@ -503,7 +576,7 @@ const League = () => {
               <span className="col-span-4">Место в лиге</span>
               <span className="col-span-4">Название</span>
               <span className="col-span-2 text-center">Тур</span>
-              <span className="col-span-2 text-right pr-5">Всего</span>
+              <span className="col-span-2 text-right pr-5">Всего очков</span>
             </div>
 
             {/* Club league data - full 100 users with user at position 9 */}
