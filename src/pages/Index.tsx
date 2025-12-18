@@ -14,7 +14,7 @@ import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
 import iconHockey from "@/assets/icon-hockey.png";
 import iconCs2 from "@/assets/icon-cs2.png";
-import championsLeagueLogo from "@/assets/champions-league-logo.png";
+import championsLeagueLogo from "@/assets/champions-league-logo-white.png";
 import europaLeagueLogo from "@/assets/europa-league-logo.svg";
 import { Card } from "@/components/ui/card";
 
@@ -345,7 +345,7 @@ const Index = () => {
                   {/* Blurred league cards container */}
                   <div className="relative p-4 flex flex-col gap-4 min-h-[200px]">
                     {/* Blurred league cards - stacked like Belarus card */}
-                    <div className="opacity-20 blur-[3px] flex flex-col gap-4">
+                    <div className="opacity-25 blur-[4px] flex flex-col gap-4">
                       {/* Champions League card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
@@ -355,12 +355,12 @@ const Index = () => {
                             className="w-16 h-16 object-contain"
                           />
                         </div>
-                        <div>
-                          <h4 className="text-foreground font-bold text-lg">Лига Чемпионов</h4>
-                          <p className="text-muted-foreground text-sm">54 230 участников</p>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">Лига Чемпионов</h4>
+                          <p className="text-white/50 text-sm">54 230 участников</p>
                           <p className="text-sm">
-                            <span className="text-muted-foreground">Дедлайн: </span>
-                            <span className="text-foreground">17.09 в 22.00</span>
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">17.09 в 22.00</span>
                           </p>
                         </div>
                       </div>
@@ -374,12 +374,12 @@ const Index = () => {
                             className="w-16 h-16 object-contain"
                           />
                         </div>
-                        <div>
-                          <h4 className="text-foreground font-bold text-lg">Лига Европы</h4>
-                          <p className="text-muted-foreground text-sm">32 450 участников</p>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">Лига Европы</h4>
+                          <p className="text-white/50 text-sm">32 450 участников</p>
                           <p className="text-sm">
-                            <span className="text-muted-foreground">Дедлайн: </span>
-                            <span className="text-foreground">17.09 в 19.00</span>
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">17.09 в 19.00</span>
                           </p>
                         </div>
                       </div>
