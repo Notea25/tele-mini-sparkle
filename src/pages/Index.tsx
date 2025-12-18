@@ -20,6 +20,9 @@ import vtbLeagueLogo from "@/assets/vtb-league-logo.png";
 import nbaLogo from "@/assets/nba-logo.png";
 import khlLogo from "@/assets/khl-logo.png";
 import nhlLogo from "@/assets/nhl-logo.png";
+import pglLogo from "@/assets/pgl-logo.png";
+import fastcupLogo from "@/assets/fastcup-logo.png";
+import eslLogo from "@/assets/esl-logo.png";
 import { Card } from "@/components/ui/card";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
@@ -214,6 +217,7 @@ const Index = () => {
       glowColor: "0 85% 55%",
       comingSoon: true,
       comingSoonYear: "2029",
+      hideCard: true,
     },
   ];
 
@@ -520,6 +524,84 @@ const Index = () => {
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
                       <p className="text-primary text-2xl font-black">2028</p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            )}
+            
+            {/* CS2 Leagues Coming Soon - shown after CS2 */}
+            {leagueData.id === "cs2" && (
+              <div className="px-4 mb-4">
+                <Card
+                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50"
+                >
+                  {/* Blurred league cards container */}
+                  <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[220px]">
+                    {/* Blurred league cards */}
+                    <div className="opacity-25 blur-[4px] flex flex-col gap-5">
+                      {/* PGL card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={pglLogo} 
+                            alt="PGL" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">PGL</h4>
+                          <p className="text-white/50 text-sm">15 420 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">05.03 в 18.00</span>
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* FASTCUP card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={fastcupLogo} 
+                            alt="FASTCUP" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">FASTCUP</h4>
+                          <p className="text-white/50 text-sm">28 910 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">12.03 в 21.00</span>
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* ESL card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={eslLogo} 
+                            alt="ESL" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">ESL</h4>
+                          <p className="text-white/50 text-sm">42 650 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">20.03 в 20.00</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Overlay text */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
+                      <p className="text-primary text-2xl font-black">2029</p>
                     </div>
                   </div>
                 </Card>
