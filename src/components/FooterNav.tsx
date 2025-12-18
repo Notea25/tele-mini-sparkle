@@ -7,13 +7,13 @@ const socialLinks = [
   {
     name: "Instagram",
     icon: instagramIcon,
-    href: "https://www.onliner.by/",
+    href: "https://www.instagram.com/fantasysports.world/?utm_source=ig_web_button_share_sheet",
     ariaLabel: "Перейти в наш Instagram",
   },
   {
     name: "Telegram",
     icon: telegramIcon,
-    href: "https://www.onliner.by/",
+    href: "https://t.me/fantasysportsmain",
     ariaLabel: "Перейти в наш Telegram",
   },
   {
@@ -56,7 +56,7 @@ const FooterNav = () => {
             aria-label={social.ariaLabel}
             className="hover:opacity-80 transition-opacity"
           >
-            <img src={social.icon} alt={social.name} className="w-10 h-10" />
+            <img src={social.icon} alt={social.name} className="w-[30px] h-[30px]" />
           </a>
         ))}
       </div>
