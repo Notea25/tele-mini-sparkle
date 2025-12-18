@@ -10,6 +10,7 @@ import jerseyNeman from "@/assets/jersey-neman.png";
 import jerseyMinsk from "@/assets/jersey-minsk.png";
 import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
+import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
@@ -34,7 +35,7 @@ const getJerseyForTeam = (team: string, position?: string) => {
     case "Торпедо-БелАЗ":
       return jerseyTorpedo;
     case "Витебск":
-      return jerseyVitebsk;
+      return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
     default:
       return playerJerseyNew;
   }

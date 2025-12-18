@@ -11,6 +11,7 @@ import jerseyNeman from "@/assets/jersey-neman.png";
 import jerseyMinsk from "@/assets/jersey-minsk.png";
 import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
+import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
 import { FormationKey, FORMATION_LABELS } from "@/lib/formationUtils";
 
 // Helper function to get jersey based on team and position
@@ -24,7 +25,7 @@ const getJerseyForTeam = (team: string, position?: string) => {
     case "Неман": return jerseyNeman;
     case "Минск": return jerseyMinsk;
     case "Торпедо-БелАЗ": return jerseyTorpedo;
-    case "Витебск": return jerseyVitebsk;
+    case "Витебск": return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
     default: return playerJerseyTeam;
   }
 };
