@@ -337,10 +337,7 @@ const Index = () => {
             {leagueData.id === "football-belarus" && (
               <div className="px-4 mb-4">
                 <Card
-                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 shadow-card"
-                  style={{
-                    boxShadow: `0 8px 32px hsl(240 85% 55% / 0.15)`,
-                  }}
+                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50"
                 >
                   {/* Blurred league cards container */}
                   <div className="relative p-4 pb-3 flex flex-col gap-4 min-h-[180px]">

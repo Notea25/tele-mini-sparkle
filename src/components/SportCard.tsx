@@ -72,27 +72,12 @@ const SportCard = ({
       </div>
 
       <Card
-        className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 shadow-card transition-all duration-300 cursor-pointer group"
-        style={{
-          boxShadow: `0 8px 32px hsl(${glowColor} / 0.15)`,
-        }}
+        className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 transition-all duration-300 cursor-pointer group"
         onClick={handleClick}
       >
-        <div
-          className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity"
-          style={{
-            background: `radial-gradient(circle at 50% 120%, hsl(${glowColor} / 0.4), transparent 70%)`,
-          }}
-        />
 
         {comingSoon ? (
           <div className="relative p-6 flex flex-col items-center justify-center min-h-[180px]">
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                background: `radial-gradient(circle at center, hsl(${glowColor} / 0.3), transparent)`,
-              }}
-            />
             <div className="relative text-center">
               <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
               <p className="text-primary text-2xl font-black">{comingSoonYear}</p>
