@@ -67,7 +67,7 @@ const PlayerCard = ({
           {/* Header with position and player info */}
           <div className="flex items-start gap-4">
             {/* Player photo */}
-            <div className="w-24 h-28 rounded-lg overflow-hidden relative top-[-12px]">
+            <div className="w-24 h-28 rounded-lg overflow-hidden">
               <img src={playerPhoto} alt={player.name} className="w-full h-full object-cover" />
             </div>
 
