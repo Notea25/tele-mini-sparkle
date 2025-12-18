@@ -172,7 +172,7 @@ const Index = () => {
       iconImage: iconFootball,
       leagueIcon: leagueLogo,
       league: "Беларусь",
-      participants: 26.13,
+      participants: 26130,
       date: "04.04",
       time: "19.00",
       glowColor: "120 85% 55%",
@@ -317,7 +317,7 @@ const Index = () => {
               leagueIcon={leagueData.leagueIcon}
               league={leagueData.league}
               participants={leagueData.participants}
-              userRank={leagueData.id === "football-belarus" && hasTeam ? 21.953 : undefined}
+              userRank={leagueData.id === "football-belarus" && hasTeam ? 21953 : undefined}
               date={leagueData.date}
               time={leagueData.time}
               glowColor={leagueData.glowColor}
