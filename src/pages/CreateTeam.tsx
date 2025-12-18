@@ -12,6 +12,7 @@ import { useState, useMemo, useRef } from "react";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg-2.webp";
+import createTeamBannerLogo from "@/assets/create-team-banner-logo.png";
 import scoringExample from "@/assets/scoring-example.png";
 import leaderboardExample from "@/assets/leaderboard-example.png";
 import prize3rdPlace from "@/assets/prize-3rd-place.png";
@@ -152,10 +153,10 @@ const CreateTeam = () => {
         <div className="relative z-10 px-4 py-6">
           {/* Баннер bannerBg с отступами */}
           <img
-            src={bannerBg}
+            src={createTeamBannerLogo}
             alt="Banner"
             className="w-full rounded-xl mb-6"
-            style={{ maxHeight: "200px", objectFit: "cover" }}
+            style={{ maxHeight: "200px", objectFit: "contain" }}
           />
 
           {/* Текст с отступами */}
