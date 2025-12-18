@@ -117,22 +117,18 @@ const SportCard = ({
 
             <div className="flex items-center gap-4">
               <div
-                className={`w-20 h-20 rounded-full flex items-center justify-center text-3xl ${hasTeam ? 'ring-2 ring-primary' : ''}`}
-                style={{
-                  background: `radial-gradient(circle, hsl(${glowColor} / 0.3), hsl(${glowColor} / 0.1))`,
-                  boxShadow: `0 0 20px hsl(${glowColor} / 0.4)`,
-                }}
+                className={`w-20 h-20 rounded-full flex items-center justify-center ${hasTeam ? 'ring-2 ring-primary' : ''}`}
               >
                 {leagueIcon ? (
-                  <img src={leagueIcon} alt={league} className="w-14 h-14 object-contain" />
+                  <img src={leagueIcon} alt={league} className="w-20 h-20 object-contain" />
                 ) : (
-                  icon
+                  <span className="text-3xl">{icon}</span>
                 )}
               </div>
               <div>
                 <h4 className="text-foreground font-bold text-xl">{league}</h4>
                 {participants !== undefined && (
-                  <p className="text-base">
+                  <p className="text-sm">
                     {hasTeam && userRank !== undefined ? (
                       <>
                         <span className="text-primary font-semibold">{formatParticipants(userRank)}</span>
@@ -143,8 +139,9 @@ const SportCard = ({
                     )}
                   </p>
                 )}
-                <p className="text-muted-foreground text-base">
-                  Дедлайн: {date} в {time}
+                <p className="text-sm">
+                  <span className="text-muted-foreground">Дедлайн: </span>
+                  <span className="text-foreground">{date} в {time}</span>
                 </p>
               </div>
             </div>
