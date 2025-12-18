@@ -72,7 +72,7 @@ const SportCard = ({
       </div>
 
       <Card
-        className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 shadow-card hover:shadow-neon transition-all duration-300 cursor-pointer group"
+        className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 shadow-card transition-all duration-300 cursor-pointer group"
         style={{
           boxShadow: `0 8px 32px hsl(${glowColor} / 0.15)`,
         }}
