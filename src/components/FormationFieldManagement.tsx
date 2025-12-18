@@ -30,17 +30,28 @@ import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/for
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
-    case "Динамо-Минск": return jerseyDinamoMinsk;
-    case "БАТЭ": return position === "ВР" ? jerseyBateGk : jerseyBate;
-    case "Динамо-Брест": return jerseyDinamoBrest;
-    case "МЛ Витебск": return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
-    case "Славия-Мозырь": return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
-    case "Арсенал": return position === "ВР" ? jerseyArsenalGk : playerJerseyNew;
-    case "Неман": return jerseyNeman;
-    case "Минск": return jerseyMinsk;
-    case "Торпедо-БелАЗ": return jerseyTorpedo;
-    case "Витебск": return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
-    default: return playerJerseyNew;
+    case "Динамо-Минск":
+      return jerseyDinamoMinsk;
+    case "БАТЭ":
+      return position === "ВР" ? jerseyBateGk : jerseyBate;
+    case "Динамо-Брест":
+      return jerseyDinamoBrest;
+    case "МЛ Витебск":
+      return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
+    case "Славия-Мозырь":
+      return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
+    case "Арсенал":
+      return position === "ВР" ? jerseyArsenalGk : playerJerseyNew;
+    case "Неман":
+      return jerseyNeman;
+    case "Минск":
+      return jerseyMinsk;
+    case "Торпедо-БелАЗ":
+      return jerseyTorpedo;
+    case "Витебск":
+      return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
+    default:
+      return playerJerseyNew;
   }
 };
 
@@ -82,11 +93,11 @@ const truncateName = (text: string, maxLength: number) => {
   return text;
 };
 
-const FormationFieldManagement = ({ 
-  mainSquadPlayers, 
+const FormationFieldManagement = ({
+  mainSquadPlayers,
   benchPlayers,
   maxBenchSize = 4,
-  onPlayerClick, 
+  onPlayerClick,
   onRemovePlayer,
   onSwapPlayer,
   onEmptySlotClick,
@@ -96,14 +107,14 @@ const FormationFieldManagement = ({
   isDoublePowerBoostActive = false,
   isCaptain3xBoostActive = false,
   showPrice = true,
-  showPointsInsteadOfTeam = false
+  showPointsInsteadOfTeam = false,
 }: FormationFieldManagementProps) => {
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
   const formation = getFormationSlots(currentFormation);
 
   const getPlayerForSlot = (position: string, slotIndex: number) => {
-    return mainSquadPlayers.find(p => p.position === position && p.slotIndex === slotIndex);
+    return mainSquadPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
   };
 
   const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => {
@@ -119,11 +130,8 @@ const FormationFieldManagement = ({
     const isInjured = player.isInjured;
 
     // Border color priority: red card/injury > green boost > default white
-    const borderClass = (hasRedCard || isInjured)
-      ? "border-red-500" 
-      : hasGreenBorder 
-        ? "border-primary" 
-        : "border-white/60";
+    const borderClass =
+      hasRedCard || isInjured ? "border-red-500" : hasGreenBorder ? "border-primary" : "border-white/60";
 
     return (
       <div
@@ -157,53 +165,60 @@ const FormationFieldManagement = ({
           </button>
         ) : null}
 
-      {/* Price centered */}
-      {showPrice && (
-        <div className="w-full flex items-center justify-center pt-1 pb-0.5">
-          <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
-            ${(player.price || 9).toFixed(1)}
-          </span>
-        </div>
-      )}
-
-      {/* Jersey - larger size, overlaps name/club below */}
-      <div className="relative">
-        <img src={getJerseyForTeam(player.team, player.position)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
-        
-        {/* Red card badge - positioned at bottom right of jersey */}
-        {hasRedCard && (
-          <img src={redCardBadge} alt="Red card" className="absolute bottom-[2px] right-1 z-50 w-2.5 h-2.5" />
-        )}
-        
-        {/* Injury badge - positioned at bottom right of jersey */}
-        {isInjured && !hasRedCard && (
-          <img src={injuryBadge} alt="Injury" className="absolute bottom-[2px] right-1 z-50 w-2.5 h-2.5" />
-        )}
-      </div>
-
-      {/* Player name and club blocks - jersey overlaps from above */}
-      <div className="w-full relative z-10">
-        <div className="bg-white px-[4%] py-[2%]">
-          <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
-            {isOnBench ? `(${player.position}) ` : ""}{truncateName(player.name, isOnBench ? 6 : 9)}
-          </span>
-        </div>
-        <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
-          {showPointsInsteadOfTeam ? (
-            <span className={`text-[clamp(6px,2vw,10px)] font-bold block text-center ${
-              player.points > 0 ? 'text-primary' : player.points < 0 ? 'text-red-500' : 'text-white'
-            }`}>
-              {player.points > 0 ? `+${player.points}` : player.points}
+        {/* Price centered */}
+        {showPrice && (
+          <div className="w-full flex items-center justify-center pt-1 pb-0.5">
+            <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
+              ${(player.price || 9).toFixed(1)}
             </span>
-          ) : (
-            <span className="text-[clamp(4px,1.5vw,6px)] font-medium block truncate whitespace-nowrap text-center">
-              <span className="text-[#7D7A94]">(Д)</span>
-              <span className="text-white ml-[2%]">{truncateName(player.team, 7)}</span>
-            </span>
+          </div>
+        )}
+
+        {/* Jersey - larger size, overlaps name/club below */}
+        <div className="relative">
+          <img
+            src={getJerseyForTeam(player.team, player.position)}
+            alt={player.name}
+            className="w-[156%] h-auto object-contain mb-[-45%] z-0"
+          />
+
+          {/* Red card badge - positioned at bottom right of jersey */}
+          {hasRedCard && (
+            <img src={redCardBadge} alt="Red card" className="absolute bottom-[2px] right-1 z-50 w-2.5 h-2.5" />
+          )}
+
+          {/* Injury badge - positioned at bottom right of jersey */}
+          {isInjured && !hasRedCard && (
+            <img src={injuryBadge} alt="Injury" className="absolute bottom-[2px] right-1 z-50 w-2.5 h-2.5" />
           )}
         </div>
+
+        {/* Player name and club blocks - jersey overlaps from above */}
+        <div className="w-full relative z-10">
+          <div className="bg-white px-[4%] py-[2%]">
+            <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
+              {isOnBench ? `(${player.position}) ` : ""}
+              {truncateName(player.name, isOnBench ? 6 : 9)}
+            </span>
+          </div>
+          <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
+            {showPointsInsteadOfTeam ? (
+              <span
+                className={`text-[clamp(6px,2vw,10px)] font-bold block text-center ${
+                  player.points > 0 ? "text-primary" : player.points < 0 ? "text-red-500" : "text-white"
+                }`}
+              >
+                {player.points > 0 ? `+${player.points}` : player.points}
+              </span>
+            ) : (
+              <span className="text-[clamp(4px,1.5vw,6px)] font-medium block truncate whitespace-nowrap text-center">
+                <span className="text-[#7D7A94]">(Д)</span>
+                <span className="text-white ml-[2%]">{truncateName(player.team, 7)}</span>
+              </span>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
     );
   };
 
@@ -212,9 +227,7 @@ const FormationFieldManagement = ({
       className="w-[62px] h-[85px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
       onClick={() => onEmptySlotClick?.(position, isOnBench, slotIndex)}
     >
-      <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">
-        {position}
-      </span>
+      <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">{position}</span>
       <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
         <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
       </div>
@@ -225,24 +238,12 @@ const FormationFieldManagement = ({
     <div>
       {/* Football Field */}
       <div className="relative w-full">
-        <img
-          src={footballFieldNew}
-          alt="Football field"
-          className="w-full"
-        />
-        
+        <img src={footballFieldNew} alt="Football field" className="w-full" />
+
         {/* Advertisement banners in corners */}
-        <img 
-          src={bannerLeft} 
-          alt="Advertisement" 
-          className="absolute top-1 left-[41px] w-[22%] h-auto z-30"
-        />
-        <img 
-          src={bannerRight} 
-          alt="Advertisement" 
-          className="absolute top-1 right-[41px] w-[22%] h-auto z-30"
-        />
-        
+        <img src={bannerLeft} alt="Advertisement" className="absolute top-1 left-[41px] w-[22%] h-auto z-30" />
+        <img src={bannerRight} alt="Advertisement" className="absolute top-1 right-[41px] w-[22%] h-auto z-30" />
+
         {formation.map((slot, idx) => {
           const style = getPlayerPosition(slot.row, slot.col);
           const player = getPlayerForSlot(slot.position, slot.slotIndex);
