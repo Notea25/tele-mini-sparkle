@@ -117,7 +117,7 @@ const SportCard = ({
 
             <div className="flex items-center gap-4">
               <div
-                className={`w-20 h-20 rounded-full flex items-center justify-center ${hasTeam ? 'ring-2 ring-primary' : ''}`}
+                className="w-20 h-20 rounded-full flex items-center justify-center"
               >
                 {leagueIcon ? (
                   <img src={leagueIcon} alt={league} className="w-20 h-20 object-contain" />
