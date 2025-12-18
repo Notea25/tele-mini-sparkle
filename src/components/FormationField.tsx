@@ -168,7 +168,7 @@ const FormationField = ({
             {isOccupied ? (
               // Occupied slot with player
               <div
-                className="w-[62px] h-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
+                className="w-[62px] h-[84px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Captain/Vice-Captain badge - absolute in left corner */}
