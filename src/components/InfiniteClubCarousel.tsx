@@ -1,21 +1,21 @@
 import { useRef, useEffect, useState } from "react";
 
-import arsenal from "@/assets/arsenalLogo.png";
-import baranovichi from "@/assets/dinamoLogo.png";
-import bate from "@/assets/bateLogo.png";
-import belshina from "@/assets/dinamoLogo.png";
-import vitebsk from "@/assets/vitebskLogo.png";
-import gomel from "@/assets/gomelLogo.png";
-import dinamoBrest from "@/assets/brestLogo.svg";
-import dinamoMinsk from "@/assets/dinamoLogo.png";
-import dnepr from "@/assets/dinamoLogo.png";
-import isloch from "@/assets/islochLogo.png";
-import minsk from "@/assets/minskLogo.png";
-import mlVitebsk from "@/assets/mlLogo.png";
-import naftan from "@/assets/naftanLogo.png";
-import neman from "@/assets/nemanLogo.png";
-import slavia from "@/assets/slaviyaLogo.png";
-import torpedo from "@/assets/torpedoLogo.png";
+import arsenal from "@/assets/clubs/arsenalLogo.png";
+import baranovichi from "@/assets/clubs/baranovichiLogo.png";
+import bate from "@/assets/clubs/bateLogo.png";
+import belshina from "@/assets/clubs/belshinaLogo.png";
+import vitebsk from "@/assets/clubs/vitebskLogo.png";
+import gomel from "@/assets/clubs/gomelLogo.png";
+import dinamoBrest from "@/assets/clubs/brestLogo.svg";
+import dinamoMinsk from "@/assets/clubs/dinamoLogo.png";
+import dnepr from "@/assets/clubs/dneprLogo.png";
+import isloch from "@/assets/clubs/islochLogo.png";
+import minsk from "@/assets/clubs/minskLogo.png";
+import mlVitebsk from "@/assets/clubs/mlLogo.png";
+import naftan from "@/assets/clubs/naftanLogo.png";
+import neman from "@/assets/clubs/nemanLogo.png";
+import slavia from "@/assets/clubs/slaviaLogo.png";
+import torpedo from "@/assets/clubs/torpedoLogo.png";
 
 // Конфигурация
 const CONFIG = {
