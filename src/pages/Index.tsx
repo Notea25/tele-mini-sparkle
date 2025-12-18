@@ -15,7 +15,7 @@ import iconBasketball from "@/assets/icon-basketball.png";
 import iconHockey from "@/assets/icon-hockey.png";
 import iconCs2 from "@/assets/icon-cs2.png";
 import championsLeagueLogo from "@/assets/champions-league-logo-white.png";
-import europaLeagueLogo from "@/assets/europa-league-logo.svg";
+import europaLeagueLogo from "@/assets/europa-league-logo.png";
 import vtbLeagueLogo from "@/assets/vtb-league-logo.png";
 import nbaLogo from "@/assets/nba-logo.png";
 import khlLogo from "@/assets/khl-logo.png";
@@ -23,6 +23,10 @@ import nhlLogo from "@/assets/nhl-logo.png";
 import pglLogo from "@/assets/pgl-logo.png";
 import fastcupLogo from "@/assets/fastcup-logo.png";
 import eslLogo from "@/assets/esl-logo.png";
+import extraligaLogo from "@/assets/extraliga-logo.png";
+import rplLogo from "@/assets/rpl-logo.png";
+import aplLogo from "@/assets/apl-logo.png";
+import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
@@ -400,6 +404,44 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
+                      
+                      {/* RPL card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={rplLogo} 
+                            alt="RPL" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">РПЛ</h4>
+                          <p className="text-white/50 text-sm">41 890 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">01.08 в 18.00</span>
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* APL card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={aplLogo} 
+                            alt="APL" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">АПЛ</h4>
+                          <p className="text-white/50 text-sm">67 320 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">16.08 в 15.00</span>
+                          </p>
+                        </div>
+                      </div>
                     </div>
                     
                     {/* Overlay text */}
@@ -459,6 +501,25 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
+                      
+                      {/* BETERA Championship card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={beteraBasketballLogo} 
+                            alt="BETERA" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">BETERA-Чемпионат</h4>
+                          <p className="text-white/50 text-sm">12 580 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">01.11 в 19.00</span>
+                          </p>
+                        </div>
+                      </div>
                     </div>
                     
                     {/* Overlay text */}
@@ -481,6 +542,25 @@ const Index = () => {
                   <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[180px]">
                     {/* Blurred league cards - stacked like Belarus card */}
                     <div className="opacity-25 blur-[4px] flex flex-col gap-6">
+                      {/* Extraliga card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={extraligaLogo} 
+                            alt="Extraliga" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">Экстралига</h4>
+                          <p className="text-white/50 text-sm">8 450 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">25.08 в 18.00</span>
+                          </p>
+                        </div>
+                      </div>
+                      
                       {/* KHL card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
