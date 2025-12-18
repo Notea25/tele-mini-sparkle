@@ -3,25 +3,29 @@ import { ArrowLeftRight, AlertCircle } from "lucide-react";
 import playerJerseyTeam from "@/assets/player-jersey-team.png";
 import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
 import jerseyBate from "@/assets/jersey-bate.png";
+import jerseyBateGk from "@/assets/jersey-bate-gk.png";
 import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
 import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
+import jerseyMlVitebskGk from "@/assets/jersey-ml-vitebsk-gk.png";
 import jerseySlavia from "@/assets/jersey-slaviya.png";
-import jerseySlaviaGk from "@/assets/jersey-slaviya-gk.png";
+import jerseySlaviaGk from "@/assets/jersey-slaviya-gk-new.png";
 import jerseyNeman from "@/assets/jersey-neman.png";
 import jerseyMinsk from "@/assets/jersey-minsk.png";
 import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
 import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
+import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
 import { FormationKey, FORMATION_LABELS } from "@/lib/formationUtils";
 
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
     case "Динамо-Минск": return jerseyDinamoMinsk;
-    case "БАТЭ": return jerseyBate;
+    case "БАТЭ": return position === "ВР" ? jerseyBateGk : jerseyBate;
     case "Динамо-Брест": return jerseyDinamoBrest;
-    case "МЛ Витебск": return jerseyMlVitebsk;
+    case "МЛ Витебск": return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
     case "Славия-Мозырь": return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
+    case "Арсенал": return position === "ВР" ? jerseyArsenalGk : playerJerseyTeam;
     case "Неман": return jerseyNeman;
     case "Минск": return jerseyMinsk;
     case "Торпедо-БелАЗ": return jerseyTorpedo;
