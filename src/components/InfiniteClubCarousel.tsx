@@ -6,7 +6,7 @@ import bate from "@/assets/clubs/bateLogo.png";
 import belshina from "@/assets/clubs/belshinaLogo.png";
 import vitebsk from "@/assets/clubs/vitebskLogo.png";
 import gomel from "@/assets/clubs/gomelLogo.png";
-import dinamoBrest from "@/assets/clubs/brestLogo.svg";
+import dinamoBrest from "@/assets/clubs/brestLogo.png";
 import dinamoMinsk from "@/assets/clubs/dinamoLogo.png";
 import dnepr from "@/assets/clubs/dneprLogo.png";
 import isloch from "@/assets/clubs/islochLogo.png";
