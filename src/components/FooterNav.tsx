@@ -1,22 +1,24 @@
-import { Instagram, Send, Youtube } from "lucide-react";
 import logo from "@/assets/logo.png";
+import instagramIcon from "@/assets/icon-instagram.png";
+import telegramIcon from "@/assets/icon-telegram.png";
+import youtubeIcon from "@/assets/icon-youtube.png";
 
 const socialLinks = [
   {
     name: "Instagram",
-    icon: Instagram,
+    icon: instagramIcon,
     href: "https://www.onliner.by/",
     ariaLabel: "Перейти в наш Instagram",
   },
   {
     name: "Telegram",
-    icon: Send,
+    icon: telegramIcon,
     href: "https://www.onliner.by/",
     ariaLabel: "Перейти в наш Telegram",
   },
   {
     name: "YouTube",
-    icon: Youtube,
+    icon: youtubeIcon,
     href: "https://www.onliner.by/",
     ariaLabel: "Перейти на наш YouTube канал",
   },
@@ -52,9 +54,9 @@ const FooterNav = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={social.ariaLabel}
-            className="w-14 h-14 rounded-full bg-secondary/80 border border-muted-foreground/30 hover:bg-secondary transition-colors flex items-center justify-center"
+            className="hover:opacity-80 transition-opacity"
           >
-            <social.icon className="w-6 h-6 text-foreground" />
+            <img src={social.icon} alt={social.name} className="w-10 h-10" />
           </a>
         ))}
       </div>
