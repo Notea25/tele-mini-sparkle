@@ -1,4 +1,4 @@
-import { ChevronRight, Star } from "lucide-react";
+import { Play, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 
@@ -146,7 +146,9 @@ const SportCard = ({
               </div>
             </div>
             <div className="flex items-center">
-              <ChevronRight className="w-6 h-6 text-muted-foreground" />
+              <div className="w-10 h-10 rounded-full border border-muted-foreground/30 flex items-center justify-center">
+                <Play className={`w-4 h-4 fill-current ${hasTeam ? "text-primary" : "text-muted-foreground"}`} />
+              </div>
             </div>
 
             {/* Green bottom line when user has team */}
