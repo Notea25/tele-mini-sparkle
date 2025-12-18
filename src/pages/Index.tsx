@@ -340,7 +340,7 @@ const Index = () => {
                   className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50"
                 >
                   {/* Blurred league cards container */}
-                  <div className="relative p-4 pb-3 flex flex-col gap-4 min-h-[180px]">
+                  <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[180px]">
                     {/* Blurred league cards - stacked like Belarus card */}
                     <div className="opacity-25 blur-[4px] flex flex-col gap-6">
                       {/* Champions League card */}
