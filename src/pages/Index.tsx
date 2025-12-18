@@ -343,9 +343,9 @@ const Index = () => {
                   }}
                 >
                   {/* Blurred league cards container */}
-                  <div className="relative p-4 flex flex-col gap-4 min-h-[200px]">
+                  <div className="relative p-4 pb-3 flex flex-col gap-4 min-h-[180px]">
                     {/* Blurred league cards - stacked like Belarus card */}
-                    <div className="opacity-25 blur-[4px] flex flex-col gap-4">
+                    <div className="opacity-25 blur-[4px] flex flex-col gap-6">
                       {/* Champions League card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
