@@ -179,7 +179,7 @@ const FormationFieldManagement = ({
           <img
             src={getJerseyForTeam(player.team, player.position)}
             alt={player.name}
-            className="w-[156%] h-auto object-contain mb-[-45%] z-0"
+            className="w-[156%] h-auto object-contain mb-[-65%] z-0"
           />
 
           {/* Red card badge - positioned at bottom right of jersey */}
