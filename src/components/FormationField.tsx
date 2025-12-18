@@ -203,7 +203,7 @@ const FormationField = ({
                 <img
                   src={getJerseyForTeam(assignedPlayer.team, assignedPlayer.position)}
                   alt={assignedPlayer.name}
-                  className="w-[156%] h-auto object-contain mb-[-25] z-0"
+                  className="w-[156%] h-auto object-contain mb-[-30] z-0"
                 />
 
                 {/* Player name and club blocks - jersey overlaps from above */}
