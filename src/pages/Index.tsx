@@ -356,13 +356,11 @@ const Index = () => {
                 hasTeam={leagueData.id === "football-belarus" && hasTeam}
               />
             )}
-            
+
             {/* UEFA Leagues Coming Soon - shown after Football Belarus */}
             {leagueData.id === "football-belarus" && (
               <div className="px-4 mb-4">
-                <Card
-                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50"
-                >
+                <Card className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50">
                   {/* Blurred league cards container */}
                   <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[180px]">
                     {/* Blurred league cards - stacked like Belarus card */}
@@ -370,11 +368,7 @@ const Index = () => {
                       {/* Champions League card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={championsLeagueLogo} 
-                            alt="Champions League" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={championsLeagueLogo} alt="Champions League" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">Лига Чемпионов</h4>
@@ -385,15 +379,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* Europa League card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={europaLeagueLogo} 
-                            alt="Europa League" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={europaLeagueLogo} alt="Europa League" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">Лига Европы</h4>
@@ -404,15 +394,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* RPL card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={rplLogo} 
-                            alt="RPL" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={rplLogo} alt="RPL" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">РПЛ</h4>
@@ -423,15 +409,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* APL card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={aplLogo} 
-                            alt="APL" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={aplLogo} alt="APL" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">АПЛ</h4>
@@ -443,23 +425,21 @@ const Index = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
-                      <p className="text-primary text-2xl font-black">2027</p>
+                      <p className="text-primary text-lg font-black">2027</p>
                     </div>
                   </div>
                 </Card>
               </div>
             )}
-            
+
             {/* Basketball Leagues Coming Soon - shown after Basketball */}
             {leagueData.id === "basketball" && (
               <div className="px-4 mb-4">
-                <Card
-                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50"
-                >
+                <Card className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50">
                   {/* Blurred league cards container */}
                   <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[180px]">
                     {/* Blurred league cards - stacked like Belarus card */}
@@ -467,11 +447,7 @@ const Index = () => {
                       {/* VTB League card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={vtbLeagueLogo} 
-                            alt="VTB League" 
-                            className="w-16 h-16 object-contain rounded-full"
-                          />
+                          <img src={vtbLeagueLogo} alt="VTB League" className="w-16 h-16 object-contain rounded-full" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">Лига ВТБ</h4>
@@ -482,15 +458,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* NBA card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={nbaLogo} 
-                            alt="NBA" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={nbaLogo} alt="NBA" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">НБА</h4>
@@ -501,15 +473,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* BETERA Championship card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={beteraBasketballLogo} 
-                            alt="BETERA" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={beteraBasketballLogo} alt="BETERA" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">BETERA-Чемпионат</h4>
@@ -521,7 +489,7 @@ const Index = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
@@ -531,13 +499,11 @@ const Index = () => {
                 </Card>
               </div>
             )}
-            
+
             {/* Hockey Leagues Coming Soon - shown after Hockey */}
             {leagueData.id === "hockey" && (
               <div className="px-4 mb-4">
-                <Card
-                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50"
-                >
+                <Card className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50">
                   {/* Blurred league cards container */}
                   <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[180px]">
                     {/* Blurred league cards - stacked like Belarus card */}
@@ -545,11 +511,7 @@ const Index = () => {
                       {/* Extraliga card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={extraligaLogo} 
-                            alt="Extraliga" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={extraligaLogo} alt="Extraliga" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">Экстралига</h4>
@@ -560,15 +522,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* KHL card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={khlLogo} 
-                            alt="KHL" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={khlLogo} alt="KHL" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">КХЛ</h4>
@@ -579,15 +537,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* NHL card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={nhlLogo} 
-                            alt="NHL" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={nhlLogo} alt="NHL" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">НХЛ</h4>
@@ -599,7 +553,7 @@ const Index = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
@@ -609,13 +563,11 @@ const Index = () => {
                 </Card>
               </div>
             )}
-            
+
             {/* CS2 Leagues Coming Soon - shown after CS2 */}
             {leagueData.id === "cs2" && (
               <div className="px-4 mb-4">
-                <Card
-                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50"
-                >
+                <Card className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50">
                   {/* Blurred league cards container */}
                   <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[220px]">
                     {/* Blurred league cards */}
@@ -623,11 +575,7 @@ const Index = () => {
                       {/* PGL card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={pglLogo} 
-                            alt="PGL" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={pglLogo} alt="PGL" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">PGL</h4>
@@ -638,15 +586,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* FASTCUP card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={fastcupLogo} 
-                            alt="FASTCUP" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={fastcupLogo} alt="FASTCUP" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">FASTCUP</h4>
@@ -657,15 +601,11 @@ const Index = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* ESL card */}
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img 
-                            src={eslLogo} 
-                            alt="ESL" 
-                            className="w-16 h-16 object-contain"
-                          />
+                          <img src={eslLogo} alt="ESL" className="w-16 h-16 object-contain" />
                         </div>
                         <div className="blur-[1px]">
                           <h4 className="text-white/70 font-bold text-lg">ESL</h4>
@@ -677,7 +617,7 @@ const Index = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
