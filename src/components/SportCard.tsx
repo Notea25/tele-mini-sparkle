@@ -99,7 +99,7 @@ const SportCard = ({
             </div>
           </div>
         ) : (
-          <div className="relative p-6 flex items-center justify-between min-h-[180px]">
+          <div className="relative p-4 flex items-center justify-between min-h-[100px]">
             {/* Star in top-right corner */}
             <button
               onClick={handleStarClick}
