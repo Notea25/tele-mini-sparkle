@@ -16,7 +16,7 @@ import iconHockey from "@/assets/icon-hockey.png";
 import iconCs2 from "@/assets/icon-cs2.png";
 import championsLeagueLogo from "@/assets/champions-league-logo-white.png";
 import europaLeagueLogo from "@/assets/europa-league-logo.svg";
-import vtbLeagueLogo from "@/assets/vtb-league-logo.jpg";
+import vtbLeagueLogo from "@/assets/vtb-league-logo.png";
 import nbaLogo from "@/assets/nba-logo.png";
 import { Card } from "@/components/ui/card";
 
@@ -192,6 +192,7 @@ const Index = () => {
       glowColor: "35 85% 55%",
       comingSoon: true,
       comingSoonYear: "2026",
+      hideCard: true,
     },
     {
       id: "hockey",
@@ -316,24 +317,34 @@ const Index = () => {
       <div className="mt-6">
         {sortedLeagues.map((leagueData) => (
           <div key={leagueData.id} id={leagueData.section}>
-            <SportCard
-              title={leagueData.title}
-              iconImage={leagueData.iconImage}
-              leagueIcon={leagueData.leagueIcon}
-              league={leagueData.league}
-              participants={leagueData.participants}
-              userRank={leagueData.id === "football-belarus" && hasTeam ? 21953 : undefined}
-              date={leagueData.date}
-              time={leagueData.time}
-              glowColor={leagueData.glowColor}
-              href={leagueData.href}
-              comingSoon={leagueData.comingSoon}
-              comingSoonYear={leagueData.comingSoonYear}
-              leagueId={leagueData.id}
-              isFavorite={favorites.includes(leagueData.id)}
-              onToggleFavorite={toggleFavorite}
-              hasTeam={leagueData.id === "football-belarus" && hasTeam}
-            />
+            {leagueData.hideCard ? (
+              // Only show header for items with hideCard
+              <div className="px-4 mb-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <img src={leagueData.iconImage} alt={leagueData.title} className="w-7 h-7 object-contain" />
+                  <h3 className="text-foreground text-lg font-bold">{leagueData.title}</h3>
+                </div>
+              </div>
+            ) : (
+              <SportCard
+                title={leagueData.title}
+                iconImage={leagueData.iconImage}
+                leagueIcon={leagueData.leagueIcon}
+                league={leagueData.league}
+                participants={leagueData.participants}
+                userRank={leagueData.id === "football-belarus" && hasTeam ? 21953 : undefined}
+                date={leagueData.date}
+                time={leagueData.time}
+                glowColor={leagueData.glowColor}
+                href={leagueData.href}
+                comingSoon={leagueData.comingSoon}
+                comingSoonYear={leagueData.comingSoonYear}
+                leagueId={leagueData.id}
+                isFavorite={favorites.includes(leagueData.id)}
+                onToggleFavorite={toggleFavorite}
+                hasTeam={leagueData.id === "football-belarus" && hasTeam}
+              />
+            )}
             
             {/* UEFA Leagues Coming Soon - shown after Football Belarus */}
             {leagueData.id === "football-belarus" && (
