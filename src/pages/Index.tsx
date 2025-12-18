@@ -342,33 +342,46 @@ const Index = () => {
                     boxShadow: `0 8px 32px hsl(240 85% 55% / 0.15)`,
                   }}
                 >
-                  {/* Background glow */}
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      background: `radial-gradient(circle at center, hsl(240 85% 55% / 0.3), transparent)`,
-                    }}
-                  />
-                  
-                  {/* Blurred logos container */}
-                  <div className="relative p-6 flex items-center justify-center gap-8 min-h-[140px]">
-                    {/* Blurred logos */}
-                    <div className="flex items-center justify-center gap-6 opacity-15 blur-[2px]">
-                      <div className="flex flex-col items-center gap-2">
-                        <img 
-                          src={championsLeagueLogo} 
-                          alt="Champions League" 
-                          className="w-16 h-16 object-contain"
-                        />
-                        <span className="text-foreground text-xs font-medium text-center">Лига Чемпионов</span>
+                  {/* Blurred league cards container */}
+                  <div className="relative p-4 flex flex-col gap-4 min-h-[200px]">
+                    {/* Blurred league cards - stacked like Belarus card */}
+                    <div className="opacity-20 blur-[3px] flex flex-col gap-4">
+                      {/* Champions League card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={championsLeagueLogo} 
+                            alt="Champions League" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="text-foreground font-bold text-lg">Лига Чемпионов</h4>
+                          <p className="text-muted-foreground text-sm">54 230 участников</p>
+                          <p className="text-sm">
+                            <span className="text-muted-foreground">Дедлайн: </span>
+                            <span className="text-foreground">17.09 в 22.00</span>
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex flex-col items-center gap-2">
-                        <img 
-                          src={europaLeagueLogo} 
-                          alt="Europa League" 
-                          className="w-16 h-16 object-contain"
-                        />
-                        <span className="text-foreground text-xs font-medium text-center">Лига Европы</span>
+                      
+                      {/* Europa League card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={europaLeagueLogo} 
+                            alt="Europa League" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="text-foreground font-bold text-lg">Лига Европы</h4>
+                          <p className="text-muted-foreground text-sm">32 450 участников</p>
+                          <p className="text-sm">
+                            <span className="text-muted-foreground">Дедлайн: </span>
+                            <span className="text-foreground">17.09 в 19.00</span>
+                          </p>
+                        </div>
                       </div>
                     </div>
                     
