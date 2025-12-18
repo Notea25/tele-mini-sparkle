@@ -428,7 +428,7 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
+                      <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
                       <p className="text-primary text-lg font-black">2027</p>
                     </div>
                   </div>
@@ -492,7 +492,7 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
+                      <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
                       <p className="text-primary text-lg font-black">2026</p>
                     </div>
                   </div>
@@ -556,7 +556,7 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
+                      <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
                       <p className="text-primary text-lg font-black">2028</p>
                     </div>
                   </div>
@@ -620,7 +620,7 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
+                      <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
                       <p className="text-primary text-lg font-black">2029</p>
                     </div>
                   </div>
