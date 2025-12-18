@@ -172,7 +172,7 @@ const Index = () => {
       iconImage: iconFootball,
       leagueIcon: leagueLogo,
       league: "Беларусь",
-      participants: 26130,
+      participants: 26.13,
       date: "04.04",
       time: "19.00",
       glowColor: "120 85% 55%",
