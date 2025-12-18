@@ -1,8 +1,4 @@
-import {
-  Drawer,
-  DrawerContent,
-  DrawerFooter,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import playerPhoto from "@/assets/player-photo.png";
 import clubLogo from "@/assets/club-logo.png";
@@ -49,10 +45,10 @@ const PlayerCard = ({
   if (!player) return null;
 
   const positionNames: Record<string, string> = {
-    "ВР": "Вратарь",
-    "ЗЩ": "Защитник",
-    "ПЗ": "Полузащитник",
-    "НП": "Нападающий",
+    ВР: "Вратарь",
+    ЗЩ: "Защитник",
+    ПЗ: "Полузащитник",
+    НП: "Нападающий",
   };
 
   // Mock form data for recent matches with club images
@@ -71,25 +67,24 @@ const PlayerCard = ({
           {/* Header with position and player info */}
           <div className="flex items-start gap-4">
             {/* Player photo */}
-            <div className="w-24 h-28 rounded-lg overflow-hidden">
+            <div className="w-24 h-28 rounded-lg overflow-hidden -mt-3">
               <img src={playerPhoto} alt={player.name} className="w-full h-full object-cover" />
             </div>
-            
+
             <div className="flex-1">
               {/* Position badge */}
               <span className="inline-block bg-secondary text-secondary-foreground text-xs px-3 py-1 rounded-full mb-2">
                 {positionNames[player.position] || player.position}
               </span>
-              
+
               {/* Player name */}
               <h2 className="text-foreground text-2xl font-bold">{player.name}</h2>
-              
+
               {/* Team */}
               <div className="flex items-center gap-2 mt-1">
                 <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
                 <span className="text-primary">{player.team}</span>
               </div>
-              
             </div>
           </div>
 
@@ -97,7 +92,9 @@ const PlayerCard = ({
           <div className="grid grid-cols-4 gap-2 mt-6 bg-secondary/50 rounded-xl p-4">
             <div className="text-center">
               <span className="text-muted-foreground text-xs block">Цена</span>
-              <span className="text-foreground text-xl font-bold">{typeof player.price === 'number' ? player.price.toFixed(1) : player.price}</span>
+              <span className="text-foreground text-xl font-bold">
+                {typeof player.price === "number" ? player.price.toFixed(1) : player.price}
+              </span>
               <span className="text-muted-foreground text-xs block">{Math.floor(Math.random() * 10) + 1} из 82</span>
             </div>
             <div className="text-center">
@@ -190,9 +187,7 @@ const PlayerCard = ({
                 onClose();
               }}
               className={`w-full rounded-full py-6 font-semibold text-lg ${
-                isSelected 
-                  ? "bg-red-500 hover:bg-red-600 text-white" 
-                  : "bg-[#A8FF00] hover:bg-[#98EE00] text-black"
+                isSelected ? "bg-red-500 hover:bg-red-600 text-white" : "bg-[#A8FF00] hover:bg-[#98EE00] text-black"
               }`}
             >
               {isSelected ? "Убрать" : "Выбрать"}
