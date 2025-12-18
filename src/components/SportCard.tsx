@@ -145,13 +145,10 @@ const SportCard = ({
                 </p>
               </div>
             </div>
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full border border-muted-foreground/30 flex items-center justify-center">
-                <Play className={`w-4 h-4 fill-current ${hasTeam ? "text-primary" : "text-muted-foreground"}`} />
-              </div>
+            {/* Play button in bottom-right corner */}
+            <div className="absolute bottom-3 right-3 w-6 h-6 rounded-full border border-muted-foreground/30 flex items-center justify-center">
+              <Play className={`w-3 h-3 fill-current ${hasTeam ? "text-primary" : "text-muted-foreground"}`} />
             </div>
-
-            {/* Green bottom line when user has team */}
             {hasTeam && (
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-b-lg" />
             )}
