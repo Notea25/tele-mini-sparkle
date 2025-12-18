@@ -21,17 +21,28 @@ import { X, Plus } from "lucide-react";
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
-    case "Динамо-Минск": return jerseyDinamoMinsk;
-    case "БАТЭ": return position === "ВР" ? jerseyBateGk : jerseyBate;
-    case "Динамо-Брест": return jerseyDinamoBrest;
-    case "МЛ Витебск": return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
-    case "Славия-Мозырь": return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
-    case "Арсенал": return position === "ВР" ? jerseyArsenalGk : playerJerseyNew;
-    case "Неман": return jerseyNeman;
-    case "Минск": return jerseyMinsk;
-    case "Торпедо-БелАЗ": return jerseyTorpedo;
-    case "Витебск": return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
-    default: return playerJerseyNew;
+    case "Динамо-Минск":
+      return jerseyDinamoMinsk;
+    case "БАТЭ":
+      return position === "ВР" ? jerseyBateGk : jerseyBate;
+    case "Динамо-Брест":
+      return jerseyDinamoBrest;
+    case "МЛ Витебск":
+      return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
+    case "Славия-Мозырь":
+      return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
+    case "Арсенал":
+      return position === "ВР" ? jerseyArsenalGk : playerJerseyNew;
+    case "Неман":
+      return jerseyNeman;
+    case "Минск":
+      return jerseyMinsk;
+    case "Торпедо-БелАЗ":
+      return jerseyTorpedo;
+    case "Витебск":
+      return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
+    default:
+      return playerJerseyNew;
   }
 };
 
@@ -58,21 +69,27 @@ interface FormationFieldTransfersProps {
 
 // Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
 const TRANSFERS_FORMATION = {
-  "ВР": { count: 2, row: 1 },
-  "ЗЩ": { count: 5, row: 2 },
-  "ПЗ": { count: 5, row: 3 },
-  "НП": { count: 3, row: 4 },
+  ВР: { count: 2, row: 1 },
+  ЗЩ: { count: 5, row: 2 },
+  ПЗ: { count: 5, row: 3 },
+  НП: { count: 3, row: 4 },
 };
 
 // Get left percentage positions based on number of players in a row - uniform spacing
 function getColumnPositions(count: number): number[] {
   switch (count) {
-    case 1: return [50];
-    case 2: return [37, 63];
-    case 3: return [25, 50, 75];
-    case 4: return [12.5, 37.5, 62.5, 87.5];
-    case 5: return [10, 30, 50, 70, 90];
-    default: return [50];
+    case 1:
+      return [50];
+    case 2:
+      return [37, 63];
+    case 3:
+      return [25, 50, 75];
+    case 4:
+      return [12.5, 37.5, 62.5, 87.5];
+    case 5:
+      return [10, 30, 50, 70, 90];
+    default:
+      return [50];
   }
 }
 
@@ -98,17 +115,16 @@ const truncateName = (text: string, maxLength: number) => {
   return text;
 };
 
-const FormationFieldTransfers = ({ 
+const FormationFieldTransfers = ({
   players,
-  onPlayerClick, 
+  onPlayerClick,
   onRemovePlayer,
   onEmptySlotClick,
   captain,
-  viceCaptain
+  viceCaptain,
 }: FormationFieldTransfersProps) => {
-  
   const getPlayerForSlot = (position: string, slotIndex: number) => {
-    return players.find(p => p.position === position && p.slotIndex === slotIndex);
+    return players.find((p) => p.position === position && p.slotIndex === slotIndex);
   };
 
   const renderPlayer = (player: PlayerData) => (
@@ -117,9 +133,7 @@ const FormationFieldTransfers = ({
       onClick={() => onPlayerClick?.(player)}
     >
       {/* Captain/Vice-Captain badge - absolute in left corner */}
-      {captain === player.id && (
-        <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />
-      )}
+      {captain === player.id && <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />}
       {viceCaptain === player.id && (
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
@@ -145,7 +159,11 @@ const FormationFieldTransfers = ({
       </div>
 
       {/* Jersey - larger size, overlaps name/club below */}
-      <img src={getJerseyForTeam(player.team, player.position)} alt={player.name} className="w-[156%] h-auto object-contain mb-[-35%] z-0" />
+      <img
+        src={getJerseyForTeam(player.team, player.position)}
+        alt={player.name}
+        className="w-[106%] h-auto object-contain mb-[-55%] z-0"
+      />
 
       {/* Player name and club blocks - jersey overlaps from above */}
       <div className="w-full relative z-10">
@@ -169,9 +187,7 @@ const FormationFieldTransfers = ({
       className="w-[62px] h-[85px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
       onClick={() => onEmptySlotClick?.(position, slotIndex)}
     >
-      <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">
-        {position}
-      </span>
+      <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">{position}</span>
       <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
         <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
       </div>
@@ -181,14 +197,14 @@ const FormationFieldTransfers = ({
   // Generate all slots for the fixed formation
   const generateSlots = () => {
     const slots: { position: string; row: number; col: number; slotIndex: number }[] = [];
-    
+
     for (const [position, config] of Object.entries(TRANSFERS_FORMATION)) {
       const cols = getColumnPositions(config.count);
       for (let i = 0; i < config.count; i++) {
         slots.push({ position, row: config.row, col: cols[i], slotIndex: i });
       }
     }
-    
+
     return slots;
   };
 
@@ -196,12 +212,8 @@ const FormationFieldTransfers = ({
 
   return (
     <div className="relative w-full">
-      <img
-        src={footballFieldNew}
-        alt="Football field"
-        className="w-full"
-      />
-      
+      <img src={footballFieldNew} alt="Football field" className="w-full" />
+
       {allSlots.map((slot, idx) => {
         const style = getPlayerPosition(slot.row, slot.col);
         const player = getPlayerForSlot(slot.position, slot.slotIndex);
