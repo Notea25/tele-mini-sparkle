@@ -14,6 +14,9 @@ import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
 import iconHockey from "@/assets/icon-hockey.png";
 import iconCs2 from "@/assets/icon-cs2.png";
+import championsLeagueLogo from "@/assets/champions-league-logo.png";
+import europaLeagueLogo from "@/assets/europa-league-logo.svg";
+import { Card } from "@/components/ui/card";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 const TEAM_PLAYERS_KEY = "fantasyTeamPlayers";
@@ -329,6 +332,55 @@ const Index = () => {
               onToggleFavorite={toggleFavorite}
               hasTeam={leagueData.id === "football-belarus" && hasTeam}
             />
+            
+            {/* UEFA Leagues Coming Soon - shown after Football Belarus */}
+            {leagueData.id === "football-belarus" && (
+              <div className="px-4 mb-4">
+                <Card
+                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 shadow-card"
+                  style={{
+                    boxShadow: `0 8px 32px hsl(240 85% 55% / 0.15)`,
+                  }}
+                >
+                  {/* Background glow */}
+                  <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                      background: `radial-gradient(circle at center, hsl(240 85% 55% / 0.3), transparent)`,
+                    }}
+                  />
+                  
+                  {/* Blurred logos container */}
+                  <div className="relative p-6 flex items-center justify-center gap-8 min-h-[140px]">
+                    {/* Blurred logos */}
+                    <div className="flex items-center justify-center gap-6 opacity-15 blur-[2px]">
+                      <div className="flex flex-col items-center gap-2">
+                        <img 
+                          src={championsLeagueLogo} 
+                          alt="Champions League" 
+                          className="w-16 h-16 object-contain"
+                        />
+                        <span className="text-foreground text-xs font-medium text-center">Лига Чемпионов</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-2">
+                        <img 
+                          src={europaLeagueLogo} 
+                          alt="Europa League" 
+                          className="w-16 h-16 object-contain"
+                        />
+                        <span className="text-foreground text-xs font-medium text-center">Лига Европы</span>
+                      </div>
+                    </div>
+                    
+                    {/* Overlay text */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
+                      <p className="text-primary text-2xl font-black">2027</p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            )}
           </div>
         ))}
       </div>
