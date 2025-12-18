@@ -18,6 +18,8 @@ import championsLeagueLogo from "@/assets/champions-league-logo-white.png";
 import europaLeagueLogo from "@/assets/europa-league-logo.svg";
 import vtbLeagueLogo from "@/assets/vtb-league-logo.png";
 import nbaLogo from "@/assets/nba-logo.png";
+import khlLogo from "@/assets/khl-logo.png";
+import nhlLogo from "@/assets/nhl-logo.png";
 import { Card } from "@/components/ui/card";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
@@ -202,6 +204,7 @@ const Index = () => {
       glowColor: "200 85% 55%",
       comingSoon: true,
       comingSoonYear: "2028",
+      hideCard: true,
     },
     {
       id: "cs2",
@@ -458,6 +461,65 @@ const Index = () => {
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
                       <p className="text-primary text-2xl font-black">2026</p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            )}
+            
+            {/* Hockey Leagues Coming Soon - shown after Hockey */}
+            {leagueData.id === "hockey" && (
+              <div className="px-4 mb-4">
+                <Card
+                  className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50"
+                >
+                  {/* Blurred league cards container */}
+                  <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[180px]">
+                    {/* Blurred league cards - stacked like Belarus card */}
+                    <div className="opacity-25 blur-[4px] flex flex-col gap-6">
+                      {/* KHL card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={khlLogo} 
+                            alt="KHL" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">КХЛ</h4>
+                          <p className="text-white/50 text-sm">21 890 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">01.09 в 19.30</span>
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* NHL card */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                          <img 
+                            src={nhlLogo} 
+                            alt="NHL" 
+                            className="w-16 h-16 object-contain"
+                          />
+                        </div>
+                        <div className="blur-[1px]">
+                          <h4 className="text-white/70 font-bold text-lg">НХЛ</h4>
+                          <p className="text-white/50 text-sm">38 760 участников</p>
+                          <p className="text-sm">
+                            <span className="text-white/50">Дедлайн: </span>
+                            <span className="text-white/60">10.10 в 03.00</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Overlay text */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
+                      <p className="text-primary text-2xl font-black">2028</p>
                     </div>
                   </div>
                 </Card>
