@@ -1,7 +1,7 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
-import jerseySlavia from "@/assets/jerseys/jerseySlavia.png";
+import jerseySlavia from "@/assets/player-jersey-team.png";
 import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
 import jerseyBate from "@/assets/jersey-bate.png";
 import jerseyBateGk from "@/assets/jersey-bate-gk.png";
