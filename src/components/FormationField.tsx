@@ -410,9 +410,9 @@ const FormationField = ({
             }}
           >
             {isOccupied ? (
-              // Occupied slot with player - ТАКОЙ ЖЕ РАЗМЕР КАК ПУСТАЯ
+              // Occupied slot with player
               <div
-                className="w-[70px] h-[84px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
+                className="w-[70px] h-[84px] relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Captain/Vice-Captain badge - absolute in left corner */}
@@ -437,18 +437,18 @@ const FormationField = ({
                 )}
 
                 {/* Price centered */}
-                <div className="w-full flex items-center justify-center pt-1 pb-0.5 z-30">
+                <div className="w-full flex items-center justify-center pt-1 pb-0.5 z-30 h-[16px]">
                   <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
                     ${(assignedPlayer.price || 9).toFixed(1)}
                   </span>
                 </div>
 
-                {/* Jersey - опущена ниже, больше не обрезается */}
-                <div className="relative w-full flex-1 z-10 overflow-hidden mt-1">
+                {/* Jersey - начинается сразу под ценой */}
+                <div className="relative w-full flex-1 z-10 overflow-hidden">
                   <img
                     src={getJerseyForTeam(assignedPlayer.team, assignedPlayer.position)}
                     alt={assignedPlayer.name}
-                    className="w-[145%] h-auto object-contain absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    className="w-[120%] h-auto object-contain absolute top-0 left-1/2 transform -translate-x-1/2"
                     style={{ maxWidth: "none" }}
                   />
                 </div>
