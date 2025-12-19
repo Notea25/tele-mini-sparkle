@@ -1,7 +1,7 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
-import playerJerseyTeam from "@/assets/player-jersey-team.png";
+import jerseySlavia from "@/assets/jerseys/jerseySlavia.png";
 import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
 import jerseyBate from "@/assets/jersey-bate.png";
 import jerseyBateGk from "@/assets/jersey-bate-gk.png";
@@ -33,7 +33,7 @@ const getJerseyForTeam = (team: string, position?: string) => {
     case "Славия-Мозырь":
       return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
     case "Арсенал":
-      return position === "ВР" ? jerseyArsenalGk : playerJerseyTeam;
+      return position === "ВР" ? jerseyArsenalGk : jerseySlavia;
     case "Неман":
       return jerseyNeman;
     case "Минск":
@@ -43,7 +43,7 @@ const getJerseyForTeam = (team: string, position?: string) => {
     case "Витебск":
       return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
     default:
-      return playerJerseyTeam;
+      return jerseySlavia;
   }
 };
 
