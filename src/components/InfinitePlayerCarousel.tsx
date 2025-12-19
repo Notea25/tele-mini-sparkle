@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import playerPlotnikov from "@/assets/player-plotnikov.png";
 import clubSlavia from "@/assets/club-slavia.png";
-import playerKozlov from "@/assets/player-kozlov.png";
+import playerKozlov from "@/assets/players/michailKozlov.png";
 import clubNeman from "@/assets/club-neman.png";
 import playerBykov from "@/assets/player-bykov.png";
 import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
@@ -90,7 +90,7 @@ const InfinitePlayerCarousel = () => {
   };
 
   return (
-    <div 
+    <div
       className="overflow-x-auto cursor-grab active:cursor-grabbing select-none scrollbar-hide"
       ref={containerRef}
       onMouseDown={onMouseDown}
@@ -100,7 +100,7 @@ const InfinitePlayerCarousel = () => {
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       <div
         className="flex"
@@ -125,7 +125,7 @@ const InfinitePlayerCarousel = () => {
                 <span className="text-sm">🛡️</span>
               )}
             </div>
-            
+
             {/* Player Photo */}
             <div className="w-full flex-1 flex items-center justify-center">
               {player.photo ? (
@@ -136,7 +136,7 @@ const InfinitePlayerCarousel = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Player Info */}
             <div className="px-3 py-2">
               <p className="text-foreground font-semibold text-sm truncate">{player.name}</p>
