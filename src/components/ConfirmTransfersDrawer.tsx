@@ -15,23 +15,35 @@ import jerseyMinsk from "@/assets/jersey-minsk.png";
 import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
 import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
-import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
+// import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
+import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
 import { BoostChip } from "@/components/BoostDrawer";
 
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
-    case "Динамо-Минск": return jerseyDinamoMinsk;
-    case "БАТЭ": return position === "ВР" ? jerseyBateGk : jerseyBate;
-    case "Динамо-Брест": return jerseyDinamoBrest;
-    case "МЛ Витебск": return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
-    case "Славия-Мозырь": return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
-    case "Арсенал": return position === "ВР" ? jerseyArsenalGk : playerJerseyTeam;
-    case "Неман": return jerseyNeman;
-    case "Минск": return jerseyMinsk;
-    case "Торпедо-БелАЗ": return jerseyTorpedo;
-    case "Витебск": return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
-    default: return playerJerseyTeam;
+    case "Динамо-Минск":
+      return jerseyDinamoMinsk;
+    case "БАТЭ":
+      return position === "ВР" ? jerseyBateGk : jerseyBate;
+    case "Динамо-Брест":
+      return jerseyDinamoBrest;
+    case "МЛ Витебск":
+      return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
+    case "Славия-Мозырь":
+      return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
+    case "Арсенал":
+      return position === "ВР" ? jerseyArsenalGk : playerJerseyTeam;
+    case "Неман":
+      return jerseyNeman;
+    case "Минск":
+      return jerseyMinsk;
+    case "Торпедо-БелАЗ":
+      return jerseyTorpedo;
+    case "Витебск":
+      return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
+    default:
+      return playerJerseyTeam;
   }
 };
 
@@ -75,7 +87,7 @@ const ConfirmTransfersDrawer = ({
   boosts = [],
 }: ConfirmTransfersDrawerProps) => {
   // Check if any boost is active (pending)
-  const hasActiveBoost = boosts.some(b => b.status === "pending");
+  const hasActiveBoost = boosts.some((b) => b.status === "pending");
 
   const getBoostStatusText = (boost: BoostChip) => {
     if (boost.status === "pending") {
@@ -91,11 +103,9 @@ const ConfirmTransfersDrawer = ({
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-card border-border max-h-[85vh]">
         <DrawerHeader>
-          <DrawerTitle className="text-foreground text-center text-xl">
-            Подтвердите замены
-          </DrawerTitle>
+          <DrawerTitle className="text-foreground text-center text-xl">Подтвердите замены</DrawerTitle>
         </DrawerHeader>
-        
+
         <div className="px-4 pb-6 overflow-y-auto">
           {/* Transfer pairs */}
           {transfers.length > 0 ? (
@@ -104,18 +114,14 @@ const ConfirmTransfersDrawer = ({
                 <div key={index} className="flex items-center justify-center gap-3">
                   {/* Player Out */}
                   <div className="flex-1 bg-secondary rounded-xl p-3 flex items-center gap-3">
-                    <img 
-                      src={getJerseyForTeam(transfer.playerOut?.team || "", transfer.playerOut?.position)} 
-                      alt={transfer.playerOut?.name || "Player"} 
+                    <img
+                      src={getJerseyForTeam(transfer.playerOut?.team || "", transfer.playerOut?.position)}
+                      alt={transfer.playerOut?.name || "Player"}
                       className="w-10 h-10 object-contain rounded-lg"
                     />
                     <div className="flex flex-col">
-                      <span className="text-foreground text-sm font-medium">
-                        {transfer.playerOut?.name || "—"}
-                      </span>
-                      <span className="text-muted-foreground text-xs">
-                        {transfer.playerOut?.points || 0} очков
-                      </span>
+                      <span className="text-foreground text-sm font-medium">{transfer.playerOut?.name || "—"}</span>
+                      <span className="text-muted-foreground text-xs">{transfer.playerOut?.points || 0} очков</span>
                     </div>
                   </div>
 
@@ -124,27 +130,21 @@ const ConfirmTransfersDrawer = ({
 
                   {/* Player In */}
                   <div className="flex-1 bg-secondary rounded-xl p-3 flex items-center gap-3">
-                    <img 
-                      src={getJerseyForTeam(transfer.playerIn?.team || "", transfer.playerIn?.position)} 
-                      alt={transfer.playerIn?.name || "Player"} 
+                    <img
+                      src={getJerseyForTeam(transfer.playerIn?.team || "", transfer.playerIn?.position)}
+                      alt={transfer.playerIn?.name || "Player"}
                       className="w-10 h-10 object-contain rounded-lg"
                     />
                     <div className="flex flex-col">
-                      <span className="text-foreground text-sm font-medium">
-                        {transfer.playerIn?.name || "—"}
-                      </span>
-                      <span className="text-muted-foreground text-xs">
-                        {transfer.playerIn?.points || 0} очков
-                      </span>
+                      <span className="text-foreground text-sm font-medium">{transfer.playerIn?.name || "—"}</span>
+                      <span className="text-muted-foreground text-xs">{transfer.playerIn?.points || 0} очков</span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-center text-muted-foreground py-6">
-              Нет изменений для сохранения
-            </p>
+            <p className="text-center text-muted-foreground py-6">Нет изменений для сохранения</p>
           )}
 
           {/* Boosts Section - only show if there are boosts */}
@@ -155,30 +155,34 @@ const ConfirmTransfersDrawer = ({
                   <div
                     key={boost.id}
                     className={`flex flex-col items-center p-3 rounded-xl min-w-[100px] relative ${
-                      boost.status === "pending"
-                        ? "bg-card border-2 border-primary"
-                        : "bg-card/50 grayscale opacity-60"
+                      boost.status === "pending" ? "bg-card border-2 border-primary" : "bg-card/50 grayscale opacity-60"
                     }`}
                   >
-                    <img 
-                      src={boost.icon} 
-                      alt={boost.label} 
-                      className={`w-8 h-8 mb-1 ${boost.status !== "pending" ? "grayscale" : ""}`} 
+                    <img
+                      src={boost.icon}
+                      alt={boost.label}
+                      className={`w-8 h-8 mb-1 ${boost.status !== "pending" ? "grayscale" : ""}`}
                     />
-                    <span className={`text-xs font-medium text-center ${
-                      boost.status === "pending" ? "text-foreground" : "text-muted-foreground"
-                    }`}>
+                    <span
+                      className={`text-xs font-medium text-center ${
+                        boost.status === "pending" ? "text-foreground" : "text-muted-foreground"
+                      }`}
+                    >
                       {boost.label}
                     </span>
-                    <span className={`text-[10px] text-center ${
-                      boost.status === "pending" ? "text-primary" : "text-muted-foreground"
-                    }`}>
+                    <span
+                      className={`text-[10px] text-center ${
+                        boost.status === "pending" ? "text-primary" : "text-muted-foreground"
+                      }`}
+                    >
                       {getBoostStatusText(boost)}
                     </span>
                     {/* Alert circle indicator */}
-                    <AlertCircle className={`absolute top-1 right-1 w-4 h-4 ${
-                      boost.status === "pending" ? "text-primary" : "text-muted-foreground/50"
-                    }`} />
+                    <AlertCircle
+                      className={`absolute top-1 right-1 w-4 h-4 ${
+                        boost.status === "pending" ? "text-primary" : "text-muted-foreground/50"
+                      }`}
+                    />
                   </div>
                 ))}
               </div>
@@ -206,13 +210,13 @@ const ConfirmTransfersDrawer = ({
 
           {/* Action Buttons */}
           <div className="flex gap-3">
-            <Button 
+            <Button
               onClick={onClose}
               className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-full h-12"
             >
               Изменить
             </Button>
-            <Button 
+            <Button
               onClick={onConfirm}
               className="flex-1 bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-full h-12"
             >
