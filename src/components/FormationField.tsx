@@ -410,9 +410,9 @@ const FormationField = ({
             }}
           >
             {isOccupied ? (
-              // Occupied slot with player - ВАЖНО: сохранена текущая структура
+              // Occupied slot with player - ТАКОЙ ЖЕ РАЗМЕР КАК ПУСТАЯ
               <div
-                className="w-[62px] h-[84px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
+                className="w-[70px] h-[84px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
                 onClick={() => onPlayerClick?.(assignedPlayer)}
               >
                 {/* Captain/Vice-Captain badge - absolute in left corner */}
@@ -436,25 +436,25 @@ const FormationField = ({
                   </button>
                 )}
 
-                {/* Price centered - ОСТАЕТСЯ В ТЕКУЩЕЙ ПОЗИЦИИ */}
+                {/* Price centered */}
                 <div className="w-full flex items-center justify-center pt-1 pb-0.5 z-30">
                   <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
                     ${(assignedPlayer.price || 9).toFixed(1)}
                   </span>
                 </div>
 
-                {/* Jersey - изменено: позиционирование и z-index */}
-                <div className="relative w-full flex-1 z-10 overflow-hidden">
+                {/* Jersey - опущена ниже, больше не обрезается */}
+                <div className="relative w-full flex-1 z-10 overflow-hidden mt-1">
                   <img
                     src={getJerseyForTeam(assignedPlayer.team, assignedPlayer.position)}
                     alt={assignedPlayer.name}
-                    className="w-[140%] h-auto object-contain absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    className="w-[145%] h-auto object-contain absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                     style={{ maxWidth: "none" }}
                   />
                 </div>
 
-                {/* Player name and club blocks - ВЫШЕ джерси (z-20) */}
-                <div className="w-full relative z-20 mt-auto">
+                {/* Player name and club blocks */}
+                <div className="w-full relative z-20">
                   <div className="bg-white px-[4%] py-[2%]">
                     <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
                       {truncateName(assignedPlayer.name, 9)}
@@ -469,7 +469,7 @@ const FormationField = ({
                 </div>
               </div>
             ) : (
-              // Empty slot - dashed border, position label, + button (same size as filled card ~85px height)
+              // Empty slot - dashed border, position label, + button
               <div
                 className="w-[70px] h-[84px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
                 onClick={() => onEmptySlotClick?.(slot.position)}
