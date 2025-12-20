@@ -110,8 +110,8 @@ const FormationField = ({
     const topPositions: Record<number, string> = {
       1: "2%",
       2: "21%",
-      3: "35%",
-      4: "54%",
+      3: "40%",
+      4: "59%",
     };
 
     // Uniform spacing based on player count per row
