@@ -110,7 +110,7 @@ const FormationField = ({
     const topPositions: Record<number, string> = {
       1: "2%",
       2: "20%",
-      3: "30%",
+      3: "40%",
       4: "54%",
     };
 
