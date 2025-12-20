@@ -28,6 +28,8 @@ const ViewLeague = () => {
   const isCommercial = searchParams.get("commercial") === "true";
   const deadline = searchParams.get("deadline") || "";
   const startTour = parseInt(searchParams.get("startTour") || "1");
+  const isRegistrationOpen = searchParams.get("registrationOpen") === "true";
+  const isBeforeRegistration = searchParams.get("beforeRegistration") === "true";
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
 
@@ -201,13 +203,45 @@ const ViewLeague = () => {
             >
               Закрыть
             </Button>
-          ) : (
+          ) : isBeforeRegistration ? (
+            <>
+              <Button
+                disabled
+                className="w-full rounded-full py-6 font-semibold bg-muted text-muted-foreground cursor-not-allowed"
+              >
+                Регистрация ещё не началась
+              </Button>
+              <Button
+                onClick={handleClose}
+                variant="outline"
+                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+              >
+                Закрыть
+              </Button>
+            </>
+          ) : isRegistrationOpen ? (
             <>
               <Button
                 onClick={handleParticipate}
                 className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
               >
                 Участвовать
+              </Button>
+              <Button
+                onClick={handleClose}
+                variant="outline"
+                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+              >
+                Закрыть
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                disabled
+                className="w-full rounded-full py-6 font-semibold bg-muted text-muted-foreground cursor-not-allowed"
+              >
+                Регистрация закрыта
               </Button>
               <Button
                 onClick={handleClose}

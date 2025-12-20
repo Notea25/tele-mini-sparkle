@@ -461,16 +461,25 @@ const League = () => {
                 const isFinished = currentTour > league.endTour;
                 const userCommercialLeagues = JSON.parse(localStorage.getItem("userCommercialLeagues") || "[]");
                 const isParticipating = userCommercialLeagues.includes(league.id);
+                
+                // Parse deadline date and calculate registration window
+                const [day, month, year] = league.deadline.split(".");
+                const deadlineDate = new Date(`${year}-${month}-${day}T19:00:00`);
+                const registrationStartDate = new Date(deadlineDate.getTime() - 72 * 60 * 60 * 1000); // 72 hours before
+                const now = new Date();
+                const isRegistrationOpen = now >= registrationStartDate && now < deadlineDate;
+                const isBeforeRegistration = now < registrationStartDate;
+                
                 return (
                   <div key={idx} className="space-y-1">
                     <span className="text-xs text-muted-foreground ml-4">Дедлайн вступления: {league.deadline}</span>
                     <div
                       className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
-                        isFinished ? "opacity-40" : ""
+                        isFinished || (!isRegistrationOpen && !isParticipating) ? "opacity-40" : ""
                       }`}
                       onClick={() =>
                         navigate(
-                          `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}`,
+                          `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}&registrationOpen=${isRegistrationOpen}&beforeRegistration=${isBeforeRegistration}`,
                         )
                       }
                     >
