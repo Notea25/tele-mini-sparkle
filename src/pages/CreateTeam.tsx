@@ -237,12 +237,11 @@ const CreateTeam = () => {
       </div>
 
       {/* Collect Team Section */}
-      <div className="mt-8 text-center">
-        <div className="px-4">
-          <h3 className="text-foreground text-3xl font-bold mb-4">Собирай команду</h3>
+      <div className="mt-8">
+        <div className="px-4 text-left">
+          <h3 className="text-foreground text-3xl font-bold mb-4">Создавай команду</h3>
           <p className="text-muted-foreground text-base leading-relaxed">
-            Воспользуйся бюджетом в <span className="text-primary font-semibold">100 миллионов</span>
-            <br />и собери команду лучших игроков чемпионата
+            Мы выделим тебе бюджет в <span className="text-primary font-semibold">100 миллионов</span> - собери команду своей мечты!
           </p>
         </div>
 
@@ -253,20 +252,13 @@ const CreateTeam = () => {
       </div>
 
       {/* Score Points Section */}
-      <div className="px-4 mt-8 text-center">
+      <div className="px-4 mt-8 text-left">
         <h3 className="text-foreground text-3xl font-bold mb-4">Набирай очки</h3>
         <p className="text-muted-foreground text-base leading-relaxed">
-          Каждый игрок будет получать или терять
-          <br />
-          очки за свои действия в реальных матчах.
-          <br />
-          Количество очков может отличаться, в
-          <br />
-          зависимости от амплуа футболиста.
-          <br />
-          Например, защитник получит за гол — 6
-          <br />
-          очков, а нападающий — 4 очка
+          Каждый игрок на своей позиции получает виртуальные очки за <span className="text-primary font-semibold">реальные действия</span> на футбольном поле.
+        </p>
+        <p className="text-muted-foreground text-base leading-relaxed mt-3">
+          Количество очков зависит от амплуа: например, защитник за гол получает 6 очков, а нападающий - 4.
         </p>
 
         {/* Scoring Example Image */}
@@ -276,18 +268,16 @@ const CreateTeam = () => {
       </div>
 
       {/* Transfer Details Section */}
-      <div className="px-4 mt-8 text-center">
+      <div className="px-4 mt-8 text-left">
         <h3 className="text-foreground text-3xl font-bold mb-4">Делай трансферы</h3>
         <p className="text-muted-foreground text-base leading-relaxed">
-          Если кто-то из футболистов твоей команды
-          <br />
-          получил травму или просто плохо играет, не
-          <br />
-          набирая очки — каждый тур ты сможешь сделать
-          <br />
-          <span className="text-primary font-semibold">до 3-х трансферов</span>, чтобы изменить состав на
-          <br />
-          более оптимальный
+          Не нравится игрок? Смело отправляй его на скамейку или продавай.
+        </p>
+        <p className="text-muted-foreground text-base leading-relaxed mt-3">
+          Перед каждым туром у тебя есть <span className="text-primary font-semibold">2 бесплатных трансфера</span>.
+        </p>
+        <p className="text-muted-foreground text-base leading-relaxed mt-3">
+          Если команда совсем не радует - активируй буст и меняй всех, кого подскажет сердце и интуиция.
         </p>
 
         {/* Transfers Player Cards */}
@@ -340,16 +330,13 @@ const CreateTeam = () => {
       </div>
 
       {/* Compete Section */}
-      <div className="px-4 mt-8 text-center">
+      <div className="px-4 mt-8 text-left">
         <h3 className="text-foreground text-3xl font-bold mb-4">Соревнуйся</h3>
         <p className="text-muted-foreground text-base leading-relaxed">
-          Соревнуйся с другими пользователями в общей
-          <br />
-          лиге или создай свою собственную лигу для
-          <br />
-          друзей, где вы сможете бороться за первое место
-          <br />
-          только между собой
+          Играй против других пользователей в общей лиге, <span className="text-primary font-semibold">борись с друзьями</span> в частных лигах и выигрывай призы в коммерческих.
+        </p>
+        <p className="text-muted-foreground text-base leading-relaxed mt-3">
+          Мы также добавим тебя в лигу твоего любимого клуба - там свои.
         </p>
 
         {/* Leaderboard Example Image */}
@@ -359,12 +346,10 @@ const CreateTeam = () => {
       </div>
 
       {/* Prizes Section */}
-      <div className="px-4 mt-8 text-center">
+      <div className="px-4 mt-8 text-left">
         <h3 className="text-foreground text-3xl font-bold mb-4">Получай призы</h3>
         <p className="text-muted-foreground text-base leading-relaxed mb-6">
-          Пользователи, набравшие наибольшее количество
-          <br />
-          очков, получат призы от <span className="text-primary font-semibold">Fantasy.sports.by</span>
+          Самые успешные менеджеры получат крутые призы от <span className="text-primary font-semibold">Fantasy Sports</span>.
         </p>
 
         {/* Prize Cards */}
