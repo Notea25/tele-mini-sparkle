@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeftRight } from "lucide-react";
+
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
@@ -18,10 +18,12 @@ import leaderboardExample from "@/assets/leaderboard-example.png";
 import prize3rdPlace from "@/assets/prize-3rd-place.png";
 import prize2ndPlace from "@/assets/prize-2nd-place.png";
 import prize1stPlace from "@/assets/prize-1st-place.png";
-import playerBykov from "@/assets/player-bykov.png";
-import playerKozlov from "@/assets/player-kozlov.png";
-import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
-import clubNeman from "@/assets/club-neman.png";
+import playerBykovCard from "@/assets/players/bykov.png";
+import playerKozlovCard from "@/assets/players/kozlov.png";
+import playerVakulich from "@/assets/players/vakulich.png";
+import playerGutor from "@/assets/players/gutor.png";
+import playerKarpovich from "@/assets/players/karpovich.png";
+import playerKhvashchinsky from "@/assets/players/khvashchinsky.png";
 import bgImage from "@/assets/bg_image.png";
 
 const MAX_NAME_LENGTH = 15;
@@ -290,51 +292,27 @@ const CreateTeam = () => {
           более оптимальный
         </p>
 
-        {/* Transfers Player Cards */}
-        <div className="mt-6 flex justify-center items-center gap-2">
-          {/* Bykov Card */}
-          <div
-            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
-            style={{ width: "140px", height: "180px" }}
-          >
-            <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
-              <img src={clubDinamoBrest} alt="Club" className="max-w-full max-h-full object-contain" />
-            </div>
-            <div className="w-full flex-1 flex items-center justify-center">
-              <img src={playerBykov} alt="Быков" className="w-full h-full object-contain object-bottom" />
-            </div>
-            <div className="px-3 py-2">
-              <p className="text-foreground font-semibold text-sm truncate">Быков</p>
-              <div className="flex justify-between items-center mt-1">
-                <span className="text-muted-foreground text-xs">9 очков</span>
-                <span className="text-muted-foreground text-xs">ЗЩ</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Swap Arrow */}
-          <div className="flex items-center justify-center">
-            <ArrowLeftRight className="w-6 h-6 text-primary" />
-          </div>
-
-          {/* Kozlov Card */}
-          <div
-            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
-            style={{ width: "140px", height: "180px" }}
-          >
-            <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
-              <img src={clubNeman} alt="Club" className="max-w-full max-h-full object-contain" />
-            </div>
-            <div className="w-full flex-1 flex items-center justify-center">
-              <img src={playerKozlov} alt="Козлов" className="w-full h-full object-contain object-bottom" />
-            </div>
-            <div className="px-3 py-2">
-              <p className="text-foreground font-semibold text-sm truncate">Козлов</p>
-              <div className="flex justify-between items-center mt-1">
-                <span className="text-muted-foreground text-xs">7 очков</span>
-                <span className="text-muted-foreground text-xs">ПЗ</span>
-              </div>
-            </div>
+        {/* Player Cards Horizontal Scroll */}
+        <div
+          className="mt-6 overflow-x-auto scrollbar-hide"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          <div className="flex gap-4 px-4" style={{ width: "max-content" }}>
+            {[
+              { src: playerBykovCard, name: "Быков" },
+              { src: playerKozlovCard, name: "Козлов" },
+              { src: playerVakulich, name: "Вакулич" },
+              { src: playerGutor, name: "Гутор" },
+              { src: playerKarpovich, name: "Карпович" },
+              { src: playerKhvashchinsky, name: "Хващинский" },
+            ].map((player, index) => (
+              <img
+                key={index}
+                src={player.src}
+                alt={player.name}
+                className="w-[200px] h-auto rounded-2xl flex-shrink-0"
+              />
+            ))}
           </div>
         </div>
       </div>
