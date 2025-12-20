@@ -489,20 +489,9 @@ const League = () => {
                 
                 return (
                   <div key={idx} className="space-y-1">
-                    <div className="flex items-center justify-between ml-4 mr-4">
-                      <span className="text-xs text-muted-foreground">
-                        Окно регистрации: {registrationStartFormatted} — {league.deadline}
-                      </span>
-                      <span className={`text-xs ${
-                        isParticipating 
-                          ? "text-primary" 
-                          : isRegistrationOpen 
-                            ? "text-green-500" 
-                            : "text-muted-foreground"
-                      }`}>
-                        {statusText}
-                      </span>
-                    </div>
+                    <span className="text-xs text-muted-foreground ml-4">
+                      Регистрация с {registrationStartFormatted} по {league.deadline}
+                    </span>
                     <div
                       className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
                         isFinished || (!isRegistrationOpen && !isParticipating) ? "opacity-40" : ""
