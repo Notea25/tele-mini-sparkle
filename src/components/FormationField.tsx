@@ -448,7 +448,7 @@ const FormationField = ({
                   <img
                     src={getJerseyForTeam(assignedPlayer.team, assignedPlayer.position)}
                     alt={assignedPlayer.name}
-                    className="w-[120%] h-auto object-contain absolute top-0 left-1/2 transform -translate-x-1/2"
+                    className="w-[120%] h-auto object-contain absolute -top-[5px] left-1/2 transform -translate-x-1/2"
                     style={{ maxWidth: "none" }}
                   />
                 </div>
