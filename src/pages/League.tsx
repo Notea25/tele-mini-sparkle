@@ -470,9 +470,39 @@ const League = () => {
                 const isRegistrationOpen = now >= registrationStartDate && now < deadlineDate;
                 const isBeforeRegistration = now < registrationStartDate;
                 
+                // Format registration start date
+                const formatDate = (date: Date) => {
+                  const d = String(date.getDate()).padStart(2, "0");
+                  const m = String(date.getMonth() + 1).padStart(2, "0");
+                  const y = date.getFullYear();
+                  return `${d}.${m}.${y}`;
+                };
+                
+                const registrationStartFormatted = formatDate(registrationStartDate);
+                const statusText = isParticipating 
+                  ? "Вы участвуете" 
+                  : isRegistrationOpen 
+                    ? "Регистрация открыта" 
+                    : isBeforeRegistration 
+                      ? `Регистрация с ${registrationStartFormatted}` 
+                      : "Регистрация закрыта";
+                
                 return (
                   <div key={idx} className="space-y-1">
-                    <span className="text-xs text-muted-foreground ml-4">Дедлайн вступления: {league.deadline}</span>
+                    <div className="flex items-center justify-between ml-4 mr-4">
+                      <span className="text-xs text-muted-foreground">
+                        Окно регистрации: {registrationStartFormatted} — {league.deadline}
+                      </span>
+                      <span className={`text-xs ${
+                        isParticipating 
+                          ? "text-primary" 
+                          : isRegistrationOpen 
+                            ? "text-green-500" 
+                            : "text-muted-foreground"
+                      }`}>
+                        {statusText}
+                      </span>
+                    </div>
                     <div
                       className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
                         isFinished || (!isRegistrationOpen && !isParticipating) ? "opacity-40" : ""
