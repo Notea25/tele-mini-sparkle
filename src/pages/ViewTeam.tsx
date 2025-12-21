@@ -78,7 +78,7 @@ const ViewTeam = () => {
 
   // Generate random players for this team and tour
   // Total squad: 2 ВР, 5 ЗЩ, 5 ПЗ, 3 НП = 15 players
-  const { mainSquadPlayers, benchPlayers } = useMemo(() => {
+  const { mainSquadPlayers, benchPlayers, captainId, viceCaptainId } = useMemo(() => {
     // Main squad: 1 ВР, 4 ЗЩ, 4 ПЗ, 2 НП = 11
     const positions = ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"];
     // Bench: 1 ВР, 1 ЗЩ, 1 ПЗ, 1 НП = 4 (goalkeeper always first)
@@ -86,6 +86,14 @@ const ViewTeam = () => {
     
     // Use tour and teamId as seed for different points per tour
     const seed = teamId * 100 + currentTour;
+    
+    // Deterministic captain and vice-captain selection based on seed
+    const captainSeed = Math.sin(seed * 7) * 10000;
+    const captainIdx = Math.floor((captainSeed - Math.floor(captainSeed)) * 11);
+    let viceCaptainIdx = Math.floor((Math.sin(seed * 13) * 10000 - Math.floor(Math.sin(seed * 13) * 10000)) * 11);
+    if (viceCaptainIdx === captainIdx) {
+      viceCaptainIdx = (viceCaptainIdx + 1) % 11;
+    }
     
     const main: PlayerData[] = positions.map((pos, idx) => {
       const playerSeed = seed * 100 + idx;
@@ -100,7 +108,8 @@ const ViewTeam = () => {
         points: Math.floor(randomFactor * 15) + 2,
         price: Math.floor(randomFactor * 5) + 5 + randomFactor,
         slotIndex: positions.slice(0, idx).filter(p => p === pos).length,
-        isCaptain: idx === 5,
+        isCaptain: idx === captainIdx,
+        isViceCaptain: idx === viceCaptainIdx,
       };
     });
 
@@ -120,7 +129,12 @@ const ViewTeam = () => {
       };
     });
 
-    return { mainSquadPlayers: main, benchPlayers: bench };
+    return { 
+      mainSquadPlayers: main, 
+      benchPlayers: bench,
+      captainId: captainIdx,
+      viceCaptainId: viceCaptainIdx,
+    };
   }, [teamId, currentTour]);
 
   const handleTourChange = (direction: "prev" | "next") => {
@@ -225,6 +239,8 @@ const ViewTeam = () => {
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={handlePlayerClick}
+            captain={captainId}
+            viceCaptain={viceCaptainId}
             showPrice={false}
             showPointsInsteadOfTeam={true}
           />
@@ -258,7 +274,10 @@ const ViewTeam = () => {
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
                   {player.isCaptain && (
-                    <span className="bg-primary text-primary-foreground text-[8px] px-1 rounded">x3</span>
+                    <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">К</span>
+                  )}
+                  {player.isViceCaptain && (
+                    <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">ВК</span>
                   )}
                 </div>
                 <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
