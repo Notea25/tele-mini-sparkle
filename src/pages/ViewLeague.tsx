@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Copy, User } from "lucide-react";
+import { Copy, User, ArrowRight } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -166,11 +166,11 @@ const ViewLeague = () => {
         </div>
 
         {/* Table header */}
-        <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground mb-2">
-          <span className="col-span-2">Место</span>
+        <div className="grid grid-cols-12 gap-2 items-center px-4 py-2 text-xs text-muted-foreground">
+          <span className="col-span-4">Место</span>
           <span className="col-span-4">Название</span>
-          <span className="col-span-3 text-center">Тур</span>
-          <span className="col-span-3 text-center">Всего<br/>очков</span>
+          <span className="col-span-2 text-center">Тур</span>
+          <span className="col-span-2 text-right pr-5">Всего очков</span>
         </div>
 
         {/* League Standings */}
@@ -178,25 +178,26 @@ const ViewLeague = () => {
           {leagueStandings.map((row) => (
             <div
               key={row.id}
-              className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full cursor-pointer transition-opacity hover:opacity-80 ${
+              className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
                 row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
               }`}
               onClick={() => handleTeamClick(row)}
             >
-              <div className="col-span-2 flex items-center gap-1">
+              <div className="col-span-4 flex items-center gap-1">
                 {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                 {row.change === "down" && !row.isUser && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
-                {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3 rotate-180" />}
+                {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
                 {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+                <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
                 {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
                 {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
                 {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
               </div>
-              <span className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-              <span className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-              <span className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                {row.totalPoints.toLocaleString().replace(",", " ")}
+              <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+              <span className={`col-span-2 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+              <span className={`col-span-2 text-right font-bold text-sm flex items-center justify-end gap-1 ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                {row.totalPoints.toLocaleString()}
+                <ArrowRight className={`w-4 h-4 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`} />
               </span>
             </div>
           ))}
