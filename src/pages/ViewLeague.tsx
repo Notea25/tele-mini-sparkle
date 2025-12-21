@@ -116,6 +116,9 @@ const ViewLeague = () => {
 
   const currentPrize = commercialPrizes[leagueId];
 
+  // Current championship tour (should come from API/state in real implementation)
+  const currentTour = 29;
+
   // Mock standings data
   const leagueStandings = [
     { id: "team-1", position: 1, change: "up", name: "Dream team", tourPoints: 32, totalPoints: 3123, isUser: false },
@@ -166,11 +169,17 @@ const ViewLeague = () => {
         </div>
 
         {/* Table header */}
-        <div className="grid grid-cols-12 gap-2 items-center px-4 py-2 text-xs text-muted-foreground">
-          <span className="col-span-4">Место</span>
-          <span className="col-span-4">Название</span>
-          <span className="col-span-2 text-center">Тур</span>
-          <span className="col-span-2 text-right pr-5">Всего очков</span>
+        <div className="grid grid-cols-12 gap-2 items-center px-4 py-2 text-muted-foreground">
+          <span className="col-span-4 text-xs">Место</span>
+          <span className="col-span-4 text-xs">Название</span>
+          <span className="col-span-2 text-center">
+            <span className="text-xs block">{currentTour}-й тур</span>
+            <span className="text-[10px] italic block">(очки)</span>
+          </span>
+          <span className="col-span-2 text-right pr-5">
+            <span className="text-xs block">Всего</span>
+            <span className="text-[10px] italic block">(очков)</span>
+          </span>
         </div>
 
         {/* League Standings */}
