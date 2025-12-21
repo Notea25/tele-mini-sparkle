@@ -77,9 +77,12 @@ const ViewTeam = () => {
   const currentTourPoints = tourPoints[currentTour - 1] || 0;
 
   // Generate random players for this team and tour
+  // Total squad: 2 ВР, 5 ЗЩ, 5 ПЗ, 3 НП = 15 players
   const { mainSquadPlayers, benchPlayers } = useMemo(() => {
+    // Main squad: 1 ВР, 4 ЗЩ, 4 ПЗ, 2 НП = 11
     const positions = ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"];
-    const benchPositions = ["ВР", "ЗЩ", "ПЗ", "ПЗ"]; // Goalkeeper always first on bench
+    // Bench: 1 ВР, 1 ЗЩ, 1 ПЗ, 1 НП = 4 (goalkeeper always first)
+    const benchPositions = ["ВР", "ЗЩ", "ПЗ", "НП"];
     
     // Use tour and teamId as seed for different points per tour
     const seed = teamId * 100 + currentTour;
