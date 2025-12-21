@@ -6,12 +6,7 @@ import { User, Copy } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -32,7 +27,7 @@ const CreateLeague = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const leagueIdFromUrl = searchParams.get("id");
-  
+
   const [leagueName, setLeagueName] = useState("");
   const [viewingLeague, setViewingLeague] = useState<CreatedLeague | null>(null);
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
@@ -42,7 +37,7 @@ const CreateLeague = () => {
   useEffect(() => {
     const savedLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
     setUserLeaguesCount(savedLeagues.length);
-    
+
     if (leagueIdFromUrl) {
       const league = savedLeagues.find((l: CreatedLeague) => l.id === leagueIdFromUrl);
       if (league) {
@@ -68,10 +63,10 @@ const CreateLeague = () => {
 
   const handleCreateLeague = () => {
     if (isLimitReached) {
-      toast.error("Вы не можете создать более 10 лиг, где вы являетесь владельцем");
+      toast.error("Ты не можешь создать более 10 лиг, где являешься владельцем");
       return;
     }
-    
+
     if (leagueName.trim()) {
       const newLeague: CreatedLeague = {
         id: `league-${Date.now()}`,
@@ -84,7 +79,7 @@ const CreateLeague = () => {
       // Save to localStorage
       const existingLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
       localStorage.setItem("userCreatedLeagues", JSON.stringify([...existingLeagues, newLeague]));
-      
+
       // Navigate to view the created league
       navigate(`/create-league?id=${newLeague.id}`);
     }
@@ -122,7 +117,7 @@ const CreateLeague = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <SportHeader backTo="/league" />
-        
+
         <main className="flex-1 px-4 pb-6">
           {/* Breadcrumb */}
           <div className="py-4">
@@ -155,10 +150,7 @@ const CreateLeague = () => {
           {/* League Standings */}
           <div className="space-y-2 mb-6">
             {leagueStandings.map((row, idx) => (
-              <div
-                key={idx}
-                className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full"
-              >
+              <div key={idx} className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full">
                 <div className="col-span-2 flex items-center gap-1">
                   {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                   {row.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
@@ -197,21 +189,15 @@ const CreateLeague = () => {
         <Drawer open={showInviteDrawer} onOpenChange={setShowInviteDrawer}>
           <DrawerContent className="bg-background border-t border-border">
             <DrawerHeader className="text-center">
-              <DrawerTitle className="text-xl font-bold text-foreground">
-                Пригласить друзей
-              </DrawerTitle>
+              <DrawerTitle className="text-xl font-bold text-foreground">Пригласить друзей</DrawerTitle>
             </DrawerHeader>
-            
+
             <div className="px-6 pb-6 space-y-6">
               {/* QR Code Section */}
               <div className="flex flex-col items-center gap-3">
                 <span className="text-sm text-muted-foreground">QR</span>
                 <div className="bg-white p-4 rounded-lg">
-                  <QRCodeSVG
-                    value={getInviteLink()}
-                    size={180}
-                    level="M"
-                  />
+                  <QRCodeSVG value={getInviteLink()} size={180} level="M" />
                 </div>
               </div>
 
@@ -219,13 +205,8 @@ const CreateLeague = () => {
               <div className="space-y-2">
                 <span className="text-sm text-muted-foreground">Ссылка приглашения</span>
                 <div className="flex items-center gap-2 bg-secondary/50 rounded-xl px-4 py-3">
-                  <span className="flex-1 text-foreground text-sm truncate">
-                    {getInviteLink()}
-                  </span>
-                  <button
-                    onClick={handleCopyLink}
-                    className="p-2 hover:bg-secondary rounded-lg transition-colors"
-                  >
+                  <span className="flex-1 text-foreground text-sm truncate">{getInviteLink()}</span>
+                  <button onClick={handleCopyLink} className="p-2 hover:bg-secondary rounded-lg transition-colors">
                     <Copy className="w-5 h-5 text-muted-foreground" />
                   </button>
                 </div>
@@ -249,7 +230,7 @@ const CreateLeague = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <SportHeader backTo="/league" />
-      
+
       <main className="flex-1 px-4 pb-6">
         {/* Breadcrumb */}
         <div className="py-4">
@@ -263,18 +244,11 @@ const CreateLeague = () => {
           />
         </div>
 
-
         {/* Title */}
-        <h1 className="text-3xl font-bold text-foreground mb-4">
-          Создай свою лигу
-        </h1>
+        <h1 className="text-3xl font-bold text-foreground mb-4">Создай свою лигу</h1>
 
         {/* Players Image */}
-        <img 
-          src={leagueCreationPlayers} 
-          alt="League players" 
-          className="w-full mb-6"
-        />
+        <img src={leagueCreationPlayers} alt="League players" className="w-full mb-6" />
 
         {/* League Name Input */}
         <Input
