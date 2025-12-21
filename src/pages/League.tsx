@@ -36,6 +36,7 @@ const League = () => {
   });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showAllCommercialLeagues, setShowAllCommercialLeagues] = useState(false);
+  const [showPastLeagues, setShowPastLeagues] = useState(false);
   const [showAllClubLeague, setShowAllClubLeague] = useState(false);
   const [clubLeaguePage, setClubLeaguePage] = useState(1);
 
@@ -119,9 +120,12 @@ const League = () => {
       period: "1-3 тур",
       endTour: 3,
       startTour: 1,
+      registrationStart: "20.12.2025",
       deadline: "01.03.2026",
+      winner: "ProGamer2025",
+      winnerPoints: 287,
     },
-    { id: "bnb", name: "BNB", logo: eslLogo, prize: "1000 BYN", period: "4-6 тур", endTour: 6, startTour: 4, deadline: "15.04.2026" },
+    { id: "bnb", name: "BNB", logo: eslLogo, prize: "1000 BYN", period: "4-6 тур", endTour: 6, startTour: 4, registrationStart: "12.04.2026", deadline: "15.04.2026", winner: "FootballKing", winnerPoints: 312 },
     {
       id: "atlant-m",
       name: "Atlant-M",
@@ -130,7 +134,10 @@ const League = () => {
       period: "7-9 тур",
       endTour: 9,
       startTour: 7,
+      registrationStart: "28.04.2026",
       deadline: "01.05.2026",
+      winner: "LuckyStrike",
+      winnerPoints: 298,
     },
     {
       id: "abff",
@@ -140,6 +147,7 @@ const League = () => {
       period: "10-12 тур",
       endTour: 12,
       startTour: 10,
+      registrationStart: "17.05.2026",
       deadline: "20.05.2026",
     },
     {
@@ -150,6 +158,7 @@ const League = () => {
       period: "13-15 тур",
       endTour: 15,
       startTour: 13,
+      registrationStart: "07.06.2026",
       deadline: "10.06.2026",
     },
     {
@@ -160,6 +169,7 @@ const League = () => {
       period: "16-18 тур",
       endTour: 18,
       startTour: 16,
+      registrationStart: "28.06.2026",
       deadline: "01.07.2026",
     },
     {
@@ -170,6 +180,7 @@ const League = () => {
       period: "19-21 тур",
       endTour: 21,
       startTour: 19,
+      registrationStart: "22.07.2026",
       deadline: "25.07.2026",
     },
     {
@@ -180,6 +191,7 @@ const League = () => {
       period: "22-24 тур",
       endTour: 24,
       startTour: 22,
+      registrationStart: "12.08.2026",
       deadline: "15.08.2026",
     },
     {
@@ -190,6 +202,7 @@ const League = () => {
       period: "25-27 тур",
       endTour: 27,
       startTour: 25,
+      registrationStart: "07.09.2026",
       deadline: "10.09.2026",
     },
     {
@@ -200,12 +213,17 @@ const League = () => {
       period: "28-30 тур",
       endTour: 30,
       startTour: 28,
+      registrationStart: "29.10.2026",
       deadline: "01.11.2026",
     },
   ];
 
-  // Determine which leagues to display based on showAll state
-  const displayedCommercialLeagues = showAllCommercialLeagues ? commercialLeagues : commercialLeagues.slice(0, 4);
+  // Separate active and finished leagues
+  const activeLeagues = commercialLeagues.filter(league => currentTour <= league.endTour);
+  const finishedLeagues = commercialLeagues.filter(league => currentTour > league.endTour);
+
+  // Determine which active leagues to display (3 by default, all on expand)
+  const displayedActiveLeagues = showAllCommercialLeagues ? activeLeagues : activeLeagues.slice(0, 3);
 
   // My leagues data - combine static data with user-created leagues
   const staticLeagues: Array<{
@@ -465,39 +483,102 @@ const League = () => {
               {/* Section Description */}
               <p className="text-muted-foreground text-sm mb-6">Соревнуйся за призы в коммерческих лигах</p>
 
-              {/* Commercial leagues cards */}
+              {/* Past leagues button */}
+              {finishedLeagues.length > 0 && (
+                <button
+                  className="w-full flex items-center justify-center gap-2 text-muted-foreground text-sm py-3 mb-4 bg-secondary/30 rounded-xl hover:bg-secondary/50 transition-colors"
+                  onClick={() => setShowPastLeagues(!showPastLeagues)}
+                >
+                  {showPastLeagues ? (
+                    <>
+                      <ChevronUp className="w-4 h-4" />
+                      Скрыть прошедшие турниры
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-4 h-4" />
+                      Посмотреть прошедшие турниры ({finishedLeagues.length})
+                    </>
+                  )}
+                </button>
+              )}
+
+              {/* Past leagues */}
+              {showPastLeagues && finishedLeagues.length > 0 && (
+                <div className="space-y-3 mb-6">
+                  {finishedLeagues.map((league, idx) => (
+                    <Card
+                      key={`finished-${idx}`}
+                      className="bg-secondary/30 border-border/30 overflow-hidden cursor-pointer hover:bg-secondary/50 transition-colors opacity-70"
+                      onClick={() =>
+                        navigate(
+                          `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=true&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}&registrationOpen=false&beforeRegistration=false`,
+                        )
+                      }
+                    >
+                      <div className="p-4">
+                        {/* League Logo + Arrow */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden">
+                              <img src={league.logo} alt={league.name} className="w-8 h-8 object-contain" />
+                            </div>
+                            <span className="text-foreground text-lg font-bold">{league.name}</span>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                        </div>
+
+                        {/* Table Header */}
+                        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-2">
+                          <span>Приз</span>
+                          <span>Отрезок</span>
+                        </div>
+
+                        {/* Table Values */}
+                        <div className="grid grid-cols-2 gap-2 text-sm text-foreground mb-3">
+                          <span className="font-medium">{league.prize}</span>
+                          <span>{league.period}</span>
+                        </div>
+
+                        {/* Winner Info */}
+                        <div className="pt-3 border-t border-border/30">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground">
+                              Победитель: <span className="text-primary font-medium">{league.winner}</span>
+                            </span>
+                            <span className="text-xs text-foreground font-bold">{league.winnerPoints} очков</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Active leagues cards */}
               <div className="space-y-3">
-                {displayedCommercialLeagues.map((league, idx) => {
-                  const isFinished = currentTour > league.endTour;
+                {displayedActiveLeagues.map((league, idx) => {
                   const userCommercialLeagues = JSON.parse(localStorage.getItem("userCommercialLeagues") || "[]");
                   const isParticipating = userCommercialLeagues.includes(league.id);
 
-                  // Parse deadline date and calculate registration window
-                  const [day, month, year] = league.deadline.split(".");
-                  const deadlineDate = new Date(`${year}-${month}-${day}T19:00:00`);
-                  const registrationStartDate = new Date(deadlineDate.getTime() - 72 * 60 * 60 * 1000);
+                  // Parse registration dates
+                  const [startDay, startMonth, startYear] = league.registrationStart.split(".");
+                  const [endDay, endMonth, endYear] = league.deadline.split(".");
+                  const registrationStartDate = new Date(`${startYear}-${startMonth}-${startDay}T00:00:00`);
+                  const deadlineDate = new Date(`${endYear}-${endMonth}-${endDay}T19:00:00`);
                   const now = new Date();
                   const isRegistrationOpen = now >= registrationStartDate && now < deadlineDate;
                   const isBeforeRegistration = now < registrationStartDate;
-
-                  const formatDate = (date: Date) => {
-                    const d = String(date.getDate()).padStart(2, "0");
-                    const m = String(date.getMonth() + 1).padStart(2, "0");
-                    const y = date.getFullYear();
-                    return `${d}.${m}.${y}`;
-                  };
-
-                  const registrationStartFormatted = formatDate(registrationStartDate);
 
                   return (
                     <Card
                       key={idx}
                       className={`bg-secondary/50 border-border/50 overflow-hidden cursor-pointer hover:bg-secondary/70 transition-colors ${
-                        isFinished || (!isRegistrationOpen && !isParticipating) ? "opacity-40" : ""
+                        !isRegistrationOpen && !isParticipating ? "opacity-60" : ""
                       }`}
                       onClick={() =>
                         navigate(
-                          `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=${isFinished}&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}&registrationOpen=${isRegistrationOpen}&beforeRegistration=${isBeforeRegistration}`,
+                          `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=false&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}&registrationOpen=${isRegistrationOpen}&beforeRegistration=${isBeforeRegistration}`,
                         )
                       }
                     >
@@ -529,7 +610,7 @@ const League = () => {
                         <div className="pt-3 border-t border-border/30">
                           <div className="flex items-center justify-between">
                             <span className="text-xs text-muted-foreground">
-                              Регистрация: {registrationStartFormatted} – {league.deadline}
+                              Регистрация: {league.registrationStart} – {league.deadline}
                             </span>
                             {isParticipating && (
                               <span className="text-xs text-primary font-medium">Вы участвуете</span>
@@ -544,25 +625,27 @@ const League = () => {
                   );
                 })}
               </div>
-            </div>
 
-            {/* See all commercial */}
-            <button
-              className="w-full flex items-center justify-center gap-1 text-foreground text-sm py-2 mb-8"
-              onClick={() => setShowAllCommercialLeagues(!showAllCommercialLeagues)}
-            >
-              {showAllCommercialLeagues ? (
-                <>
-                  <ChevronUp className="w-4 h-4" />
-                  Скрыть
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" />
-                  Смотреть все
-                </>
+              {/* See all active leagues button */}
+              {activeLeagues.length > 3 && (
+                <button
+                  className="w-full flex items-center justify-center gap-1 text-foreground text-sm py-3 mt-4"
+                  onClick={() => setShowAllCommercialLeagues(!showAllCommercialLeagues)}
+                >
+                  {showAllCommercialLeagues ? (
+                    <>
+                      <ChevronUp className="w-4 h-4" />
+                      Скрыть
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-4 h-4" />
+                      Смотреть все ({activeLeagues.length})
+                    </>
+                  )}
+                </button>
               )}
-            </button>
+            </div>
 
             {/* My Leagues */}
             <h2 className="text-2xl font-bold text-foreground mb-2">Мои лиги</h2>
