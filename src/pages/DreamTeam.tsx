@@ -130,7 +130,7 @@ const DreamTeam = () => {
           <ChevronLeft className="w-5 h-5" />
         </button>
         
-        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2">
+        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
           <span className="text-2xl font-bold text-primary-foreground">{currentTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
           {/* Used Boost Icon - only show if boost was used this tour */}
