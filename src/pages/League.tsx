@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Pencil, ChevronDown, ChevronUp, User, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -729,11 +730,29 @@ const League = () => {
             {/* Main Cup */}
             <h2 className="text-2xl font-bold text-foreground mb-4">Кубок</h2>
 
-            {/* Coming soon card */}
-            <div className="bg-secondary/30 rounded-2xl p-8 flex flex-col items-center justify-center min-h-[280px] border border-border/50">
-              <h3 className="text-2xl font-bold text-foreground mb-2">Скоро запустим</h3>
-              <span className="text-primary text-xl font-medium">2026</span>
-            </div>
+            {/* Coming soon card with blur effect */}
+            <Card className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50">
+              <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[280px]">
+                {/* Blurred text behind */}
+                <div className="opacity-25 blur-[4px] px-2">
+                  <p className="text-white/70 text-sm leading-relaxed">
+                    Соперники будут определены в конце 33-й игровой недели. Если в лиге 32 команды, то у каждой из них будет свой соперник в 54-й игровой неделе. Если в лиге от 17 до 31 команды, то некоторые команды получат пропуск в 34-й игровой неделе в зависимости от их результатов в 33-й игровой неделе.
+                  </p>
+                  <p className="text-white/70 text-sm leading-relaxed mt-4">
+                    Соперники будут определены в конце 33-й игровой недели. Если в лиге 32 команды, то у каждой из них будет свой соперник в 54-й игровой неделе. Если в лиге от 17 до 31 команды, то некоторые команды получат пропуск в 34-й игровой неделе в зависимости от их результатов в 33-й игровой неделе.
+                  </p>
+                  <p className="text-white/70 text-sm leading-relaxed mt-4">
+                    Соперники будут определены в конце 33-й игровой недели. Если в лиге 32 команды, то у каждой из них будет свой соперник в 54-й игровой неделе. Если в лиге от 17 до 31 команды, то некоторые команды получат пропуск в 34-й игровой неделе в зависимости от их результатов в 33-й игровой неделе.
+                  </p>
+                </div>
+
+                {/* Overlay text */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
+                  <p className="text-primary text-lg font-black">2026</p>
+                </div>
+              </div>
+            </Card>
           </div>
         )}
       </main>
