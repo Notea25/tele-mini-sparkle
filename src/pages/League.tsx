@@ -125,7 +125,7 @@ const League = () => {
       winner: "ProGamer2025",
       winnerPoints: 287,
     },
-    { id: "bnb", name: "BNB", logo: eslLogo, prize: "1000 BYN", period: "4-6 тур", endTour: 6, startTour: 4, registrationStart: "12.04.2026", deadline: "15.04.2026", winner: "FootballKing", winnerPoints: 312 },
+    { id: "bnb", name: "BNB", logo: eslLogo, prize: "1000 BYN", period: "4-6 тур", endTour: 6, startTour: 4, registrationStart: "20.12.2025", deadline: "15.04.2026" },
     {
       id: "atlant-m",
       name: "Atlant-M",
