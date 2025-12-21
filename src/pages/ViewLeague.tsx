@@ -169,11 +169,11 @@ const ViewLeague = () => {
         </div>
 
         {/* Table header */}
-        <div className="grid grid-cols-12 gap-2 items-center px-4 py-2 text-muted-foreground">
+        <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">
           <span className="col-span-4 text-xs">Место</span>
-          <span className="col-span-4 text-xs">Название</span>
-          <span className="col-span-2 text-center">
-            <span className="text-xs block">{currentTour}-й тур</span>
+          <span className="col-span-3 text-xs">Название</span>
+          <span className="col-span-3 text-center">
+            <span className="text-xs block whitespace-nowrap">{currentTour}-й тур</span>
             <span className="text-[10px] italic block">(очки)</span>
           </span>
           <span className="col-span-2 text-right pr-5">
@@ -187,7 +187,7 @@ const ViewLeague = () => {
           {leagueStandings.map((row) => (
             <div
               key={row.id}
-              className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
+              className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
                 row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
               }`}
               onClick={() => handleTeamClick(row)}
@@ -202,8 +202,8 @@ const ViewLeague = () => {
                 {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
                 {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
               </div>
-              <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-              <span className={`col-span-2 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+              <span className={`col-span-3 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+              <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
               <span className={`col-span-2 text-right font-bold text-sm flex items-center justify-end gap-1 ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
                 {row.totalPoints.toLocaleString()}
                 <ArrowRight className={`w-4 h-4 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`} />
