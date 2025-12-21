@@ -93,6 +93,8 @@ export interface PlayerData {
   isCaptain?: boolean;
   isViceCaptain?: boolean;
   isOnBench?: boolean;
+  hasRedCard?: boolean;
+  isInjured?: boolean;
 }
 
 export interface SavedTeam {
