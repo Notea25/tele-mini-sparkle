@@ -155,7 +155,9 @@ const BuyPlayerDrawer = ({
   const paginatedPlayers = sortedPlayers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const canBuyPlayer = (player: typeof allChampionshipPlayers[0]) => {
-    if (player.price > currentBudget) return false;
+    // Use small epsilon for floating point comparison to avoid issues like 5.5 > 5.5 due to precision
+    const epsilon = 0.001;
+    if (player.price > currentBudget + epsilon) return false;
     if (getPlayersCountByClub(player.team) >= maxPlayersPerClub) return false;
     return true;
   };
