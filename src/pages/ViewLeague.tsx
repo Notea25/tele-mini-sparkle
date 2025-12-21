@@ -142,9 +142,14 @@ const ViewLeague = () => {
   const handleTeamClick = (team: typeof leagueStandings[0]) => {
     if (team.isUser) {
       handleNavigate("/your-team");
-    } else {
-      handleNavigate(`/view-team?id=${team.id}&name=${encodeURIComponent(team.name)}`);
+      return;
     }
+
+    // ViewTeam expects numeric id (used as seed). Standings ids here are strings like "team-1".
+    const numericFromId = Number.parseInt(String(team.id).replace(/[^0-9]/g, ""), 10);
+    const safeTeamId = Number.isFinite(numericFromId) && numericFromId > 0 ? numericFromId : team.position;
+
+    handleNavigate(`/view-team?id=${safeTeamId}&name=${encodeURIComponent(team.name)}`);
   };
 
   return (
