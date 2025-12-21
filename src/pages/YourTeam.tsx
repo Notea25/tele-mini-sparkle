@@ -7,7 +7,10 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
-import { generateTourData, getTourBoostInfo, MAX_TOURS } from "@/lib/tourData";
+import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
+import iconBenchPlus from "@/assets/icon-bench-plus.png";
+import icon2x from "@/assets/icon-2x-new.png";
+import icon3x from "@/assets/icon-3x-new.png";
 
 const YourTeam = () => {
   const navigate = useNavigate();
@@ -18,16 +21,41 @@ const YourTeam = () => {
   // Load saved team
   const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerData[]>([]);
   const [benchPlayers, setBenchPlayers] = useState<PlayerData[]>([]);
+  const [captain, setCaptain] = useState<number | null>(null);
+  const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | null>(null);
   const [isPlayerCardOpen, setIsPlayerCardOpen] = useState(false);
 
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
+    const savedTeam = getSavedTeam();
+    
     if (mainSquad.length > 0) {
-      setMainSquadPlayers(mainSquad);
+      // Add red card and injury to some players for demo
+      const updatedMainSquad = mainSquad.map((p, idx) => {
+        // Deterministic injury and red card based on tour
+        const seed = 999 * 100 + currentTour;
+        const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * mainSquad.length);
+        let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * mainSquad.length);
+        if (redCardIdx === injuredIdx) {
+          redCardIdx = (redCardIdx + 1) % mainSquad.length;
+        }
+        
+        return {
+          ...p,
+          hasRedCard: idx === redCardIdx,
+          isInjured: idx === injuredIdx,
+        };
+      });
+      
+      setMainSquadPlayers(updatedMainSquad);
       setBenchPlayers(bench);
+      
+      // Set captain and vice-captain from saved data
+      setCaptain(savedTeam.captain);
+      setViceCaptain(savedTeam.viceCaptain);
     }
-  }, []);
+  }, [currentTour]);
 
   const handlePlayerClick = (player: PlayerData) => {
     setSelectedPlayer(player);
@@ -41,7 +69,13 @@ const YourTeam = () => {
 
   // Get current tour boost info
   const currentBoostInfo = getTourBoostInfo(tourBoosts[currentTour - 1]);
+  const currentBoostType = tourBoosts[currentTour - 1];
   const currentTourPoints = tourPoints[currentTour - 1] || 0;
+
+  // Check which boosts are active for current tour
+  const isBenchBoostActive = currentBoostType === "bench";
+  const isCaptain3xBoostActive = currentBoostType === "captain3x";
+  const isDoublePowerBoostActive = currentBoostType === "double";
 
   const handleTourChange = (direction: "prev" | "next") => {
     if (direction === "prev" && currentTour > 1) {
@@ -140,6 +174,11 @@ const YourTeam = () => {
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={handlePlayerClick}
+            captain={captain}
+            viceCaptain={viceCaptain}
+            isBenchBoostActive={isBenchBoostActive}
+            isDoublePowerBoostActive={isDoublePowerBoostActive}
+            isCaptain3xBoostActive={isCaptain3xBoostActive}
             showPrice={false}
             showPointsInsteadOfTeam={true}
           />
@@ -165,26 +204,50 @@ const YourTeam = () => {
                 return (positionOrder[a.position as keyof typeof positionOrder] ?? 4) - 
                        (positionOrder[b.position as keyof typeof positionOrder] ?? 4);
               })
-              .map((player) => (
-              <div
-                key={player.id}
-                onClick={() => handlePlayerClick(player)}
-                className="bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors"
-              >
-                <div className="flex-1 flex items-center gap-2 min-w-0">
-                  <span className="text-foreground font-medium truncate">{player.name}</span>
-                  <span className="text-muted-foreground text-xs">{player.position}</span>
-                  {player.isCaptain && (
-                    <span className="bg-primary text-primary-foreground text-[8px] px-1 rounded">x3</span>
-                  )}
-                </div>
-                <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
-                  {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
-                </span>
-                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
-              </div>
-            ))}
+              .map((player) => {
+                const isCaptainPlayer = captain === player.id;
+                const isViceCaptainPlayer = viceCaptain === player.id;
+                const showCaptain3xBadge = isCaptain3xBoostActive && isCaptainPlayer;
+                const showDoublePowerBadge = isDoublePowerBoostActive && (isCaptainPlayer || isViceCaptainPlayer);
+                
+                return (
+                  <div
+                    key={player.id}
+                    onClick={() => handlePlayerClick(player)}
+                    className={`bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
+                      showCaptain3xBadge || showDoublePowerBadge ? "border border-primary" : ""
+                    } ${player.hasRedCard || player.isInjured ? "border border-red-500" : ""}`}
+                  >
+                    <div className="flex-1 flex items-center gap-2 min-w-0">
+                      <span className="text-foreground font-medium truncate">{player.name}</span>
+                      <span className="text-muted-foreground text-xs">{player.position}</span>
+                      {isCaptainPlayer && (
+                        <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">К</span>
+                      )}
+                      {isViceCaptainPlayer && (
+                        <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">ВК</span>
+                      )}
+                      {showCaptain3xBadge && (
+                        <img src={icon3x} alt="3x" className="w-4 h-4" />
+                      )}
+                      {showDoublePowerBadge && !showCaptain3xBadge && (
+                        <img src={icon2x} alt="2x" className="w-4 h-4" />
+                      )}
+                      {player.hasRedCard && (
+                        <span className="bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">КК</span>
+                      )}
+                      {player.isInjured && !player.hasRedCard && (
+                        <span className="bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">ТР</span>
+                      )}
+                    </div>
+                    <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
+                      {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
+                    </span>
+                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+                    <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
+                  </div>
+                );
+              })}
           </div>
 
           {/* Bench players */}
@@ -194,11 +257,16 @@ const YourTeam = () => {
               <div
                 key={player.id}
                 onClick={() => handlePlayerClick(player)}
-                className="bg-card rounded-full px-4 py-2 flex items-center opacity-70 cursor-pointer hover:bg-card/80 transition-colors"
+                className={`bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
+                  isBenchBoostActive ? "border border-primary" : "opacity-70"
+                }`}
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
+                  {isBenchBoostActive && (
+                    <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />
+                  )}
                 </div>
                 <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
                   {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
