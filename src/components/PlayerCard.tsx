@@ -51,13 +51,18 @@ const PlayerCard = ({
     НП: "Нападающий",
   };
 
-  // Mock form data for recent matches with club images
+  // Mock form data - last 3 matches
   const recentForm = [
-    { tour: 24, opponent: "BAT", home: true, points: 4, logo: clubLogo },
-    { tour: 25, opponent: "TOR", home: false, points: -1, logo: clubBelshina },
-    { tour: 26, opponent: "ARS", home: true, points: 2, logo: clubLogo },
-    { tour: 27, opponent: "MOL", home: false, points: 5, logo: clubBelshina },
-    { tour: 28, opponent: "VIT", home: true, points: 3, logo: clubLogo },
+    { tour: 24, opponent: "БАТ", home: true, points: 4, logo: clubLogo },
+    { tour: 25, opponent: "ТОР", home: false, points: -1, logo: clubBelshina },
+    { tour: 26, opponent: "АРС", home: true, points: 2, logo: clubLogo },
+  ];
+
+  // Mock calendar data - next 3 matches
+  const upcomingMatches = [
+    { tour: 27, opponent: "МОЛ", home: false, logo: clubBelshina },
+    { tour: 28, opponent: "ВИТ", home: true, logo: clubLogo },
+    { tour: 29, opponent: "НЕМ", home: false, logo: clubBelshina },
   ];
 
   return (
@@ -114,24 +119,45 @@ const PlayerCard = ({
             </div>
           </div>
 
-          {/* Form section */}
-          <div className="mt-6">
-            <h3 className="text-foreground text-xl font-bold text-center mb-4">Форма</h3>
-            <div className="grid grid-cols-5 gap-2">
-              {recentForm.map((match, idx) => (
-                <div key={idx} className="text-center">
-                  <span className="text-muted-foreground text-xs block">Тур {match.tour}</span>
-                  <div className="w-8 h-8 mx-auto my-2 flex items-center justify-center">
-                    <img src={match.logo} alt={match.opponent} className="w-6 h-6 object-contain" />
+          {/* Form and Calendar sections */}
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            {/* Form - last 3 matches */}
+            <div>
+              <h3 className="text-foreground text-sm font-bold text-center mb-3">Форма</h3>
+              <div className="space-y-2">
+                {recentForm.map((match, idx) => (
+                  <div key={idx} className="flex items-center justify-between bg-secondary/30 rounded-lg px-2 py-1.5">
+                    <span className="text-muted-foreground text-xs">Тур {match.tour}</span>
+                    <div className="flex items-center gap-1.5">
+                      <img src={match.logo} alt={match.opponent} className="w-4 h-4 object-contain" />
+                      <span className="text-muted-foreground text-xs">
+                        {match.opponent} ({match.home ? "Д" : "Г"})
+                      </span>
+                    </div>
+                    <span className={`text-sm font-bold ${match.points < 0 ? "text-red-500" : "text-foreground"}`}>
+                      {match.points}
+                    </span>
                   </div>
-                  <span className="text-muted-foreground text-xs block">
-                    {match.opponent} ({match.home ? "H" : "G"})
-                  </span>
-                  <span className={`text-lg font-bold ${match.points < 0 ? "text-red-500" : "text-foreground"}`}>
-                    {match.points > 0 ? match.points : match.points}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Calendar - next 3 matches */}
+            <div>
+              <h3 className="text-foreground text-sm font-bold text-center mb-3">Календарь</h3>
+              <div className="space-y-2">
+                {upcomingMatches.map((match, idx) => (
+                  <div key={idx} className="flex items-center justify-between bg-secondary/30 rounded-lg px-2 py-1.5">
+                    <span className="text-muted-foreground text-xs">Тур {match.tour}</span>
+                    <div className="flex items-center gap-1.5">
+                      <img src={match.logo} alt={match.opponent} className="w-4 h-4 object-contain" />
+                      <span className="text-muted-foreground text-xs">
+                        {match.opponent} ({match.home ? "Д" : "Г"})
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
