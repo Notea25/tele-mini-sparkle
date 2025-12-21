@@ -75,7 +75,7 @@ const TeamBuilder = () => {
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
   const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
   const [priceFrom, setPriceFrom] = useState(3);
-  const [priceTo, setPriceTo] = useState(10);
+  const [priceTo, setPriceTo] = useState(14);
   const [captain, setCaptain] = useState<number | null>(() => {
     const saved = localStorage.getItem("fantasyTeamCaptain");
     return saved ? JSON.parse(saved) : null;
@@ -328,7 +328,7 @@ const TeamBuilder = () => {
     setSelectedTeam("Все команды");
     setSelectedPoints("Фильтр по очкам");
     setPriceFrom(3);
-    setPriceTo(10);
+    setPriceTo(14);
     setCurrentPage(1);
   };
 
@@ -339,7 +339,7 @@ const TeamBuilder = () => {
     selectedTeam !== "Все команды" ||
     selectedPoints !== "Фильтр по очкам" ||
     priceFrom !== 3 ||
-    priceTo !== 10;
+    priceTo !== 14;
 
   // Price control handlers
   const handlePriceFromIncrease = () => {
@@ -347,11 +347,11 @@ const TeamBuilder = () => {
     setCurrentPage(1);
   };
   const handlePriceFromDecrease = () => {
-    setPriceFrom((prev) => Math.max(prev - 1, 1));
+    setPriceFrom((prev) => Math.max(prev - 1, 3));
     setCurrentPage(1);
   };
   const handlePriceToIncrease = () => {
-    setPriceTo((prev) => Math.min(prev + 1, 15));
+    setPriceTo((prev) => Math.min(prev + 1, 14));
     setCurrentPage(1);
   };
   const handlePriceToDecrease = () => {
