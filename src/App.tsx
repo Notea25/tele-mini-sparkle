@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useSearchParams } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import { TelegramProvider } from "./providers/TelegramProvider";
 import SplashScreen from "./components/SplashScreen";
@@ -24,6 +24,13 @@ import ViewTeam from "./pages/ViewTeam";
 import ViewLeague from "./pages/ViewLeague";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+
+// Wrapper to force re-render when team ID changes
+const ViewTeamWrapper = () => {
+  const [searchParams] = useSearchParams();
+  const teamId = searchParams.get("id") || "1";
+  return <ViewTeam key={teamId} />;
+};
 
 const queryClient = new QueryClient();
 
@@ -142,7 +149,7 @@ const App = () => {
               <Route path="/your-team" element={<YourTeam />} />
               <Route path="/dream-team" element={<DreamTeam />} />
               <Route path="/transfers" element={<Transfers />} />
-              <Route path="/view-team" element={<ViewTeam />} />
+              <Route path="/view-team" element={<ViewTeamWrapper />} />
               <Route path="/view-league" element={<ViewLeague />} />
               <Route path="/profile" element={<Profile />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
