@@ -128,33 +128,41 @@ const ViewTeam = () => {
         <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
       </div>
 
-      {/* Tour Selector */}
-      <div className="px-4 mt-4 flex items-center justify-center gap-4">
-        <button
-          onClick={() => handleTourChange("prev")}
-          disabled={currentTour <= 1}
-          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <span className="text-foreground text-lg font-medium">{currentTour} тур</span>
-        <button
-          onClick={() => handleTourChange("next")}
-          disabled={currentTour >= 38}
-          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-      </div>
+      {/* Compact Points Card with Tour Navigation */}
+      <div className="px-4 mt-4">
+        <div className="bg-primary rounded-xl px-3 py-2 flex items-center justify-between">
+          {/* Left: Tour Navigation */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleTourChange("prev")}
+              disabled={currentTour <= 1}
+              className="w-7 h-7 rounded-full bg-primary-foreground/20 flex items-center justify-center text-primary-foreground disabled:opacity-30 hover:bg-primary-foreground/30 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <span className="text-primary-foreground text-sm font-medium min-w-[60px] text-center">
+              {currentTour} тур
+            </span>
+            <button
+              onClick={() => handleTourChange("next")}
+              disabled={currentTour >= 38}
+              className="w-7 h-7 rounded-full bg-primary-foreground/20 flex items-center justify-center text-primary-foreground disabled:opacity-30 hover:bg-primary-foreground/30 transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
 
-      {/* Points Card */}
-      <div className="px-4 mt-6">
-        <div className="bg-primary rounded-t-2xl p-4 flex flex-col items-center">
-          <span className="text-4xl font-bold text-primary-foreground">{totalPoints}</span>
-          <span className="text-primary-foreground/80 text-sm">Очки</span>
-        </div>
-        <div className="bg-secondary rounded-b-2xl py-2 text-center">
-          <span className="text-foreground text-sm font-medium">3x Капитан</span>
+          {/* Center: Points */}
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
+            <span className="text-primary-foreground/70 text-xs">очков</span>
+          </div>
+
+          {/* Right: Boost Badge */}
+          <div className="flex items-center gap-1.5 bg-primary-foreground/20 rounded-full px-2.5 py-1">
+            <span className="text-primary-foreground text-xs font-bold">3×</span>
+            <span className="text-primary-foreground/80 text-[10px]">КАП</span>
+          </div>
         </div>
       </div>
 
