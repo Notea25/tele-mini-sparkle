@@ -143,10 +143,10 @@ const ViewLeague = () => {
 
         {/* Table header */}
         <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground mb-2">
-          <span className="col-span-3">Место</span>
+          <span className="col-span-2">Место</span>
           <span className="col-span-4">Название</span>
-          <span className="col-span-2 text-center">Тур</span>
-          <span className="col-span-3 text-right">Всего<br/>очков</span>
+          <span className="col-span-3 text-center">Тур</span>
+          <span className="col-span-3 text-center">Всего<br/>очков</span>
         </div>
 
         {/* League Standings */}
@@ -160,7 +160,7 @@ const ViewLeague = () => {
                 className="grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full bg-secondary/50"
                 style={{ width: 'calc(100% - 8px)' }}
               >
-                <div className="col-span-3 flex items-center gap-1">
+                <div className="col-span-2 flex items-center gap-1">
                   {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                   {row.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
                   {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
@@ -170,8 +170,8 @@ const ViewLeague = () => {
                   {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
                 </div>
                 <span className="col-span-4 text-foreground font-medium truncate">{row.name}</span>
-                <span className="col-span-2 text-center text-foreground">{row.tourPoints}</span>
-                <span className="col-span-3 text-right text-foreground font-bold">
+                <span className="col-span-3 text-center text-foreground">{row.tourPoints}</span>
+                <span className="col-span-3 text-center text-foreground font-bold">
                   {row.totalPoints.toLocaleString().replace(",", " ")}
                 </span>
               </div>
