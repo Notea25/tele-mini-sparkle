@@ -802,7 +802,7 @@ const TeamBuilder = () => {
       {activeTab === "formation" && (
         <>
           {/* Football Field */}
-          <div className="mt-4">
+          <div className="mt-4 mb-40">
             <FormationField
               selectedPlayers={selectedPlayersData}
               onRemovePlayer={(id) => togglePlayer(id)}
@@ -815,7 +815,7 @@ const TeamBuilder = () => {
           </div>
 
           {/* Price Range */}
-          <div className="px-4 -mt-36 relative z-10">
+          <div className="px-4 relative z-10">
             <div className="flex items-center justify-between mb-3">
               <span className="text-foreground text-sm">Цена</span>
               {hasActiveFilters && (
