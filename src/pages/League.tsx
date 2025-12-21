@@ -81,6 +81,22 @@ const League = () => {
   const tournamentStartDate = new Date("2025-12-04T19:00:00");
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
 
+  // Restore scroll position when returning to this page
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem("leagueScrollPosition");
+    if (savedScrollPosition) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedScrollPosition, 10));
+      }, 0);
+    }
+  }, []);
+
+  // Save scroll position before navigating away
+  const handleNavigate = (path: string) => {
+    sessionStorage.setItem("leagueScrollPosition", window.scrollY.toString());
+    navigate(path);
+  };
+
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date();
@@ -332,7 +348,7 @@ const League = () => {
                   transformOrigin: "right center",
                   zIndex: 1,
                 }}
-                onClick={() => navigate("/tournament-table")}
+                onClick={() => handleNavigate("/tournament-table")}
               >
                 <span className="text-xl font-bold text-foreground">{isTournamentStarted ? "40" : "0"}</span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap">Средний результат</span>
@@ -344,7 +360,7 @@ const League = () => {
                   transform: "translateZ(20px)",
                   zIndex: 10,
                 }}
-                onClick={() => navigate("/your-team")}
+                onClick={() => handleNavigate("/your-team")}
               >
                 <span className="text-3xl font-bold text-foreground">{isTournamentStarted ? "55" : "0"}</span>
                 <span className="text-xs text-muted-foreground whitespace-nowrap">Твои очки</span>
@@ -357,7 +373,7 @@ const League = () => {
                   transformOrigin: "left center",
                   zIndex: 1,
                 }}
-                onClick={() => navigate("/dream-team")}
+                onClick={() => handleNavigate("/dream-team")}
               >
                 <span className="text-xl font-bold text-foreground">{isTournamentStarted ? "129" : "0"}</span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap">Лучший результат</span>
@@ -397,13 +413,13 @@ const League = () => {
             <div className="grid grid-cols-2 gap-3 mb-8">
               <div
                 className="w-full h-12 bg-[#AAFF03] rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => navigate("/team-management")}
+                onClick={() => handleNavigate("/team-management")}
               >
                 <span className="text-black font-medium text-base">Моя команда</span>
               </div>
               <div
                 className="w-full h-12 bg-[#AAFF03] rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => navigate("/transfers")}
+                onClick={() => handleNavigate("/transfers")}
               >
                 <span className="text-black font-medium text-base">Трансферы</span>
               </div>
@@ -429,9 +445,9 @@ const League = () => {
                   }`}
                   onClick={() => {
                     if (row.isUser) {
-                      navigate("/your-team");
+                      handleNavigate("/your-team");
                     } else {
-                      navigate(`/view-team?id=${row.position}&name=${encodeURIComponent(row.name)}`);
+                      handleNavigate(`/view-team?id=${row.position}&name=${encodeURIComponent(row.name)}`);
                     }
                   }}
                 >
@@ -467,7 +483,7 @@ const League = () => {
             <Button
               variant="outline"
               className="w-full mt-6 rounded-full py-6 font-semibold border-border"
-              onClick={() => navigate("/tournament-table")}
+              onClick={() => handleNavigate("/tournament-table")}
             >
               Смотреть все
             </Button>
@@ -511,7 +527,7 @@ const League = () => {
                       key={`finished-${idx}`}
                       className="bg-secondary/30 border-border/30 overflow-hidden cursor-pointer hover:bg-secondary/50 transition-colors opacity-70"
                       onClick={() =>
-                        navigate(
+                        handleNavigate(
                           `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=true&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}&registrationOpen=false&beforeRegistration=false`,
                         )
                       }
@@ -577,7 +593,7 @@ const League = () => {
                         !isRegistrationOpen && !isParticipating ? "opacity-60" : ""
                       }`}
                       onClick={() =>
-                        navigate(
+                        handleNavigate(
                           `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=false&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}&registrationOpen=${isRegistrationOpen}&beforeRegistration=${isBeforeRegistration}`,
                         )
                       }
@@ -666,7 +682,7 @@ const League = () => {
                   key={idx}
                   className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
                   onClick={() => {
-                    navigate(
+                    handleNavigate(
                       `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=${league.isOwner}`,
                     );
                   }}
@@ -697,7 +713,7 @@ const League = () => {
                 if (userCreatedLeagues.length >= 10) {
                   toast.error("Ты не можешь создать более 10 лиг, где являешься владельцем");
                 } else {
-                  navigate("/create-league");
+                  handleNavigate("/create-league");
                 }
               }}
             >
@@ -750,9 +766,9 @@ const League = () => {
                         }`}
                         onClick={() => {
                           if (row.isUser) {
-                            navigate("/your-team");
+                            handleNavigate("/your-team");
                           } else {
-                            navigate(`/view-team?id=${row.teamId}&name=${encodeURIComponent(row.name)}`);
+                            handleNavigate(`/view-team?id=${row.teamId}&name=${encodeURIComponent(row.name)}`);
                           }
                         }}
                       >
