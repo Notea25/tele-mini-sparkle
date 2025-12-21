@@ -726,12 +726,18 @@ const League = () => {
               Соревнуйся с другими болельщиками твоего любимого клуба
             </p>
 
-            {/* Club league table header - same as Мои лиги */}
-            <div className="grid grid-cols-12 gap-2 items-center px-4 py-2 text-xs text-muted-foreground">
-              <span className="col-span-4">Место</span>
-              <span className="col-span-4">Название</span>
-              <span className="col-span-2 text-center">Тур</span>
-              <span className="col-span-2 text-right pr-5">Всего очков</span>
+            {/* Club league table header - same style as /view-league */}
+            <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">
+              <span className="col-span-3 text-xs">Место</span>
+              <span className="col-span-4 text-xs">Название</span>
+              <span className="col-span-3 text-center">
+                <span className="text-xs block whitespace-nowrap">{currentTour}-й тур</span>
+                <span className="text-[10px] italic block">(очки)</span>
+              </span>
+              <span className="col-span-2 text-right pr-5">
+                <span className="text-xs block">Всего</span>
+                <span className="text-[10px] italic block">(очков)</span>
+              </span>
             </div>
 
             {/* Club league data - full 100 users with user at position 9 */}
@@ -761,7 +767,7 @@ const League = () => {
                     {displayData.map((row, idx) => (
                       <div
                         key={idx}
-                        className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
+                        className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
                           row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                         }`}
                         onClick={() => {
@@ -772,7 +778,7 @@ const League = () => {
                           }
                         }}
                       >
-                        <div className="col-span-4 flex items-center gap-1">
+                        <div className="col-span-3 flex items-center gap-1">
                           {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                           {row.change === "down" && !row.isUser && (
                             <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
@@ -794,7 +800,7 @@ const League = () => {
                           {row.name}
                         </span>
                         <span
-                          className={`col-span-2 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                          className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                         >
                           {row.tourPoints}
                         </span>
