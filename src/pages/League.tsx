@@ -461,7 +461,7 @@ const League = () => {
                 const isFinished = currentTour > league.endTour;
                 const userCommercialLeagues = JSON.parse(localStorage.getItem("userCommercialLeagues") || "[]");
                 const isParticipating = userCommercialLeagues.includes(league.id);
-                
+
                 // Parse deadline date and calculate registration window
                 const [day, month, year] = league.deadline.split(".");
                 const deadlineDate = new Date(`${year}-${month}-${day}T19:00:00`);
@@ -469,7 +469,7 @@ const League = () => {
                 const now = new Date();
                 const isRegistrationOpen = now >= registrationStartDate && now < deadlineDate;
                 const isBeforeRegistration = now < registrationStartDate;
-                
+
                 // Format registration start date
                 const formatDate = (date: Date) => {
                   const d = String(date.getDate()).padStart(2, "0");
@@ -477,16 +477,16 @@ const League = () => {
                   const y = date.getFullYear();
                   return `${d}.${m}.${y}`;
                 };
-                
+
                 const registrationStartFormatted = formatDate(registrationStartDate);
-                const statusText = isParticipating 
-                  ? "Вы участвуете" 
-                  : isRegistrationOpen 
-                    ? "Регистрация открыта" 
-                    : isBeforeRegistration 
-                      ? `Регистрация с ${registrationStartFormatted}` 
+                const statusText = isParticipating
+                  ? "Вы участвуете"
+                  : isRegistrationOpen
+                    ? "Регистрация открыта"
+                    : isBeforeRegistration
+                      ? `Регистрация с ${registrationStartFormatted}`
                       : "Регистрация закрыта";
-                
+
                 return (
                   <div key={idx} className="space-y-1">
                     <span className="text-xs text-muted-foreground ml-4">
@@ -582,7 +582,7 @@ const League = () => {
               }`}
               onClick={() => {
                 if (userCreatedLeagues.length >= 10) {
-                  toast.error("Вы не можете создать более 10 лиг, где вы являетесь владельцем");
+                  toast.error("Ты не можешь создать более 10 лиг, где являешься владельцем");
                 } else {
                   navigate("/create-league");
                 }
