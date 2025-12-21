@@ -134,35 +134,39 @@ const ViewTeam = () => {
         <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
       </div>
 
-      {/* Tour Selector - Centered */}
+      {/* Tour Label with Gradient Lines */}
       <div className="px-4 mt-4 flex items-center justify-center gap-3">
+        <div className="flex-1 h-px bg-gradient-to-r from-transparent to-muted-foreground/30" />
+        <span className="text-muted-foreground text-sm font-medium">{currentTour} тур</span>
+        <div className="flex-1 h-px bg-gradient-to-l from-transparent to-muted-foreground/30" />
+      </div>
+
+      {/* Points Block with Navigation Arrows */}
+      <div className="px-4 mt-3 flex items-center justify-center gap-3">
         <button
           onClick={() => handleTourChange("prev")}
           disabled={currentTour <= 1}
-          className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
+          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-5 h-5" />
         </button>
-        <span className="text-foreground text-sm font-medium min-w-[60px] text-center">{currentTour} тур</span>
-        <button
-          onClick={() => handleTourChange("next")}
-          disabled={currentTour >= 38}
-          className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* Points Block - Full Width */}
-      <div className="px-4 mt-3">
-        <div className="bg-primary rounded-xl px-4 py-2 flex items-center justify-center gap-3">
+        
+        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-3">
           <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
           {/* Used Boost Icon */}
-          <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-2" title="3x Капитан">
+          <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center" title="3x Капитан">
             <img src={icon3x} alt="3x Капитан" className="w-5 h-5 object-contain" />
           </div>
         </div>
+        
+        <button
+          onClick={() => handleTourChange("next")}
+          disabled={currentTour >= 38}
+          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Tabs */}
