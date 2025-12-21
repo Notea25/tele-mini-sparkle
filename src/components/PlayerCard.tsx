@@ -120,44 +120,43 @@ const PlayerCard = ({
           </div>
 
           {/* Form and Calendar sections */}
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            {/* Form - last 3 matches */}
-            <div>
-              <h3 className="text-foreground text-sm font-bold text-center mb-3">Форма</h3>
-              <div className="space-y-2">
-                {recentForm.map((match, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-secondary/30 rounded-lg px-2 py-1.5">
-                    <span className="text-muted-foreground text-xs">Тур {match.tour}</span>
+          <div className="mt-6">
+            {/* Headers */}
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <h3 className="text-foreground text-sm font-bold text-center">Форма</h3>
+              <h3 className="text-foreground text-sm font-bold text-center">Календарь</h3>
+            </div>
+            
+            {/* Rows - each row has one form match and one calendar match */}
+            <div className="space-y-2">
+              {[0, 1, 2].map((idx) => (
+                <div key={idx} className="grid grid-cols-2 gap-4">
+                  {/* Form match */}
+                  <div className="flex items-center justify-between bg-secondary/30 rounded-lg px-2 py-1.5">
+                    <span className="text-muted-foreground text-xs">Тур {recentForm[idx].tour}</span>
                     <div className="flex items-center gap-1.5">
-                      <img src={match.logo} alt={match.opponent} className="w-4 h-4 object-contain" />
+                      <img src={recentForm[idx].logo} alt={recentForm[idx].opponent} className="w-4 h-4 object-contain" />
                       <span className="text-muted-foreground text-xs">
-                        {match.opponent} ({match.home ? "Д" : "Г"})
+                        {recentForm[idx].opponent} ({recentForm[idx].home ? "Д" : "Г"})
                       </span>
                     </div>
-                    <span className={`text-sm font-bold ${match.points < 0 ? "text-red-500" : "text-foreground"}`}>
-                      {match.points}
+                    <span className={`text-sm font-bold ${recentForm[idx].points < 0 ? "text-red-500" : "text-foreground"}`}>
+                      {recentForm[idx].points}
                     </span>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Calendar - next 3 matches */}
-            <div>
-              <h3 className="text-foreground text-sm font-bold text-center mb-3">Календарь</h3>
-              <div className="space-y-2">
-                {upcomingMatches.map((match, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-secondary/30 rounded-lg px-2 py-1.5">
-                    <span className="text-muted-foreground text-xs">Тур {match.tour}</span>
+                  
+                  {/* Calendar match */}
+                  <div className="flex items-center justify-between bg-secondary/30 rounded-lg px-2 py-1.5">
+                    <span className="text-muted-foreground text-xs">Тур {upcomingMatches[idx].tour}</span>
                     <div className="flex items-center gap-1.5">
-                      <img src={match.logo} alt={match.opponent} className="w-4 h-4 object-contain" />
+                      <img src={upcomingMatches[idx].logo} alt={upcomingMatches[idx].opponent} className="w-4 h-4 object-contain" />
                       <span className="text-muted-foreground text-xs">
-                        {match.opponent} ({match.home ? "Д" : "Г"})
+                        {upcomingMatches[idx].opponent} ({upcomingMatches[idx].home ? "Д" : "Г"})
                       </span>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
