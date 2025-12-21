@@ -176,7 +176,7 @@ const ViewLeague = () => {
             <span className="text-xs block whitespace-nowrap">{currentTour}-й тур</span>
             <span className="text-[10px] italic block">(очки)</span>
           </span>
-          <span className="col-span-2 text-right pr-5">
+          <span className="col-span-2 text-right">
             <span className="text-xs block">Всего</span>
             <span className="text-[10px] italic block">(очков)</span>
           </span>
