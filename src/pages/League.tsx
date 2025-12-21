@@ -732,7 +732,7 @@ const League = () => {
 
             {/* Coming soon card with blur effect */}
             <Card className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50">
-              <div className="relative py-5 px-4 flex flex-col gap-4 min-h-[280px]">
+              <div className="relative py-5 px-4 flex flex-col gap-4">
                 {/* Blurred text behind */}
                 <div className="opacity-25 blur-[4px] px-2">
                   <p className="text-white/70 text-sm leading-relaxed">
