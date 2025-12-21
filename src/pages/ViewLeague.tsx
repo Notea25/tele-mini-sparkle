@@ -36,6 +36,7 @@ const ViewLeague = () => {
   const isBeforeRegistration = searchParams.get("beforeRegistration") === "true";
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
+  const [showLeaveConfirmDrawer, setShowLeaveConfirmDrawer] = useState(false);
 
   // Restore scroll position when returning to this page
   useEffect(() => {
@@ -72,6 +73,11 @@ const ViewLeague = () => {
   };
 
   const handleLeaveLeague = () => {
+    setShowLeaveConfirmDrawer(true);
+  };
+
+  const confirmLeaveLeague = () => {
+    setShowLeaveConfirmDrawer(false);
     toast.success("Вы покинули лигу");
     navigate("/league");
   };
@@ -306,20 +312,29 @@ const ViewLeague = () => {
             </Button>
             {isOwner ? (
               <Button
-                onClick={handleDeleteLeague}
+                onClick={handleClose}
                 variant="outline"
                 className="w-full rounded-full py-6 font-semibold border-border text-foreground"
               >
-                ✕ Удалить лигу
+                Закрыть
               </Button>
             ) : (
-              <Button
-                onClick={handleLeaveLeague}
-                variant="outline"
-                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
-              >
-                Покинуть лигу
-              </Button>
+              <>
+                <Button
+                  onClick={handleLeaveLeague}
+                  variant="outline"
+                  className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                >
+                  Покинуть лигу
+                </Button>
+                <Button
+                  onClick={handleClose}
+                  variant="outline"
+                  className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                >
+                  Закрыть
+                </Button>
+              </>
             )}
           </>
         )}
@@ -370,6 +385,40 @@ const ViewLeague = () => {
             >
               Закрыть
             </Button>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Leave League Confirmation Drawer */}
+      <Drawer open={showLeaveConfirmDrawer} onOpenChange={setShowLeaveConfirmDrawer}>
+        <DrawerContent className="bg-background border-t border-border">
+          <DrawerHeader className="text-center">
+            <DrawerTitle className="text-xl font-bold text-foreground">
+              Покинуть лигу?
+            </DrawerTitle>
+          </DrawerHeader>
+          
+          <div className="px-6 pb-6 space-y-6">
+            <p className="text-center text-muted-foreground">
+              Весь ваш прогресс в данной лиге будет безвозвратно удален.
+            </p>
+
+            <div className="space-y-3">
+              <Button
+                onClick={confirmLeaveLeague}
+                variant="destructive"
+                className="w-full rounded-full py-6 font-semibold"
+              >
+                Покинуть лигу
+              </Button>
+              <Button
+                onClick={() => setShowLeaveConfirmDrawer(false)}
+                variant="outline"
+                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+              >
+                Отмена
+              </Button>
+            </div>
           </div>
         </DrawerContent>
       </Drawer>
