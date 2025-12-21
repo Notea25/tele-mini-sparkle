@@ -355,16 +355,16 @@ const League = () => {
                 <span className="text-muted-foreground text-xs">→</span>
               </div>
               <div
-                className="bg-[hsl(220_15%_12%)] rounded-2xl px-4 py-4 flex flex-col items-center border-2 border-primary cursor-pointer hover:bg-secondary/70 transition-all shadow-[0_0_25px_hsl(88_85%_55%/0.5)] w-[125px]"
+                className="bg-primary rounded-2xl px-4 py-4 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-all w-[125px]"
                 style={{
                   transform: "translateZ(20px)",
                   zIndex: 10,
                 }}
                 onClick={() => handleNavigate("/your-team")}
               >
-                <span className="text-3xl font-bold text-foreground">{isTournamentStarted ? "55" : "0"}</span>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">Твои очки</span>
-                <span className="text-primary text-sm">→</span>
+                <span className="text-3xl font-bold text-primary-foreground">{isTournamentStarted ? "55" : "0"}</span>
+                <span className="text-xs text-primary-foreground/70 whitespace-nowrap">Твои очки</span>
+                <span className="text-primary-foreground text-sm">→</span>
               </div>
               <div
                 className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
