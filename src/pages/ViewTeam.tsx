@@ -7,6 +7,12 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
 
+// Boost icons
+import iconBenchPlus from "@/assets/icon-bench-plus.png";
+import icon3x from "@/assets/icon-3x.png";
+import iconStar from "@/assets/icon-star.png";
+import iconFree from "@/assets/icon-free.png";
+import icon2x from "@/assets/icon-2x.png";
 // Random team names (same as in TournamentTable)
 const teamNames = [
   "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",
@@ -128,36 +134,37 @@ const ViewTeam = () => {
         <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
       </div>
 
-      {/* Tour Selector + Points - Compact */}
-      <div className="px-4 mt-4 flex items-center justify-between gap-3">
-        {/* Tour Navigation */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => handleTourChange("prev")}
-            disabled={currentTour <= 1}
-            className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <span className="text-foreground text-sm font-medium min-w-[60px] text-center">{currentTour} тур</span>
-          <button
-            onClick={() => handleTourChange("next")}
-            disabled={currentTour >= 38}
-            className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+      {/* Tour Selector - Centered */}
+      <div className="px-4 mt-4 flex items-center justify-center gap-3">
+        <button
+          onClick={() => handleTourChange("prev")}
+          disabled={currentTour <= 1}
+          className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <span className="text-foreground text-sm font-medium min-w-[60px] text-center">{currentTour} тур</span>
+        <button
+          onClick={() => handleTourChange("next")}
+          disabled={currentTour >= 38}
+          className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
 
-        {/* Points Badge */}
-        <div className="flex items-center gap-2">
-          <div className="bg-primary rounded-lg px-4 py-1.5 flex items-center gap-2">
+      {/* Points Block - Full Width */}
+      <div className="px-4 mt-3">
+        <div className="bg-primary rounded-xl px-4 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
-            <span className="text-primary-foreground/80 text-xs">очков</span>
+            <span className="text-primary-foreground/80 text-sm">очков</span>
           </div>
-          {/* Boost Badge */}
-          <div className="bg-secondary rounded-lg p-2 flex items-center justify-center" title="3x Капитан">
-            <img src="/src/assets/icon-3x-new.png" alt="3x Капитан" className="w-6 h-6 object-contain" />
+          {/* Used Boost Icons */}
+          <div className="flex items-center gap-2">
+            <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center" title="3x Капитан">
+              <img src={icon3x} alt="3x Капитан" className="w-5 h-5 object-contain" />
+            </div>
           </div>
         </div>
       </div>
