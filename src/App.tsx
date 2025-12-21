@@ -23,6 +23,7 @@ import Transfers from "./pages/Transfers";
 import ViewTeam from "./pages/ViewTeam";
 import ViewLeague from "./pages/ViewLeague";
 import Profile from "./pages/Profile";
+import Rules from "./pages/Rules";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -145,6 +146,7 @@ const App = () => {
               <Route path="/view-team" element={<ViewTeam />} />
               <Route path="/view-league" element={<ViewLeague />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/rules" element={<Rules />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
