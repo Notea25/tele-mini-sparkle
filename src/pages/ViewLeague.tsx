@@ -15,9 +15,13 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
+import arrowDownBlack from "@/assets/arrow-down-black.png";
 import prize1stPlace from "@/assets/prize-1st-place.png";
 import prize2ndPlace from "@/assets/prize-2nd-place.png";
 import prize3rdPlace from "@/assets/prize-3rd-place.png";
+import trophyGold from "@/assets/trophy-gold.png";
+import trophySilver from "@/assets/trophy-silver.png";
+import trophyBronze from "@/assets/trophy-bronze.png";
 
 const ViewLeague = () => {
   const navigate = useNavigate();
@@ -137,33 +141,40 @@ const ViewLeague = () => {
           )}
         </div>
 
-        {/* Table Header */}
-        <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
-          <span className="col-span-2">Позиция</span>
-          <span className="col-span-4">Команда</span>
-          <span className="col-span-3 text-center">Очки / тур 29</span>
-          <span className="col-span-3 text-right">Всего очков</span>
+        {/* Table header */}
+        <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground mb-2">
+          <span className="col-span-3">Место</span>
+          <span className="col-span-4">Название</span>
+          <span className="col-span-2 text-center">Тур</span>
+          <span className="col-span-3 text-right">Всего<br/>очков</span>
         </div>
 
         {/* League Standings */}
         <div className="space-y-2 mb-6">
           {leagueStandings.map((row, idx) => (
-            <div
-              key={idx}
-              className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full"
+            <div 
+              key={idx} 
+              className="flex items-center gap-2"
             >
-              <div className="col-span-2 flex items-center gap-1">
-                {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
-                {row.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
-                {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                <span className="text-foreground font-medium">{row.position}</span>
-                {row.position <= 3 && <span className="text-yellow-500">🏆</span>}
+              <div
+                className="grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full bg-secondary/50"
+                style={{ width: 'calc(100% - 8px)' }}
+              >
+                <div className="col-span-3 flex items-center gap-1">
+                  {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                  {row.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
+                  {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
+                  <span className="text-foreground font-medium">{row.position}</span>
+                  {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
+                  {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
+                  {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
+                </div>
+                <span className="col-span-4 text-foreground font-medium truncate">{row.name}</span>
+                <span className="col-span-2 text-center text-foreground">{row.tourPoints}</span>
+                <span className="col-span-3 text-right text-foreground font-bold">
+                  {row.totalPoints.toLocaleString().replace(",", " ")}
+                </span>
               </div>
-              <span className="col-span-4 text-foreground text-sm truncate">{row.name}</span>
-              <span className="col-span-3 text-center text-foreground text-sm">{row.tourPoints}</span>
-              <span className="col-span-3 text-right text-foreground text-sm font-medium">
-                {row.totalPoints.toLocaleString().replace(",", " ")}
-              </span>
             </div>
           ))}
         </div>
