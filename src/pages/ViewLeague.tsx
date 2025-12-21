@@ -102,17 +102,25 @@ const ViewLeague = () => {
 
   // Mock standings data
   const leagueStandings = [
-    { position: 1, change: "up", name: "Dream team", tourPoints: 32, totalPoints: 3123 },
-    { position: 2, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 3, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 4, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 5, change: "up", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 6, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 7, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 8, change: "up", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 9, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 10, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
+    { id: "team-1", position: 1, change: "up", name: "Dream team", tourPoints: 32, totalPoints: 3123, isUser: false },
+    { id: "team-2", position: 2, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3108, isUser: false },
+    { id: "team-3", position: 3, change: "same", name: "Stayki", tourPoints: 32, totalPoints: 3093, isUser: false },
+    { id: "team-4", position: 4, change: "same", name: "Champions", tourPoints: 32, totalPoints: 3050, isUser: false },
+    { id: "team-5", position: 5, change: "up", name: "Football Pro", tourPoints: 32, totalPoints: 3020, isUser: false },
+    { id: "team-6", position: 6, change: "down", name: "Winners", tourPoints: 32, totalPoints: 3010, isUser: false },
+    { id: "team-7", position: 7, change: "same", name: "Best Team", tourPoints: 32, totalPoints: 3005, isUser: false },
+    { id: "team-8", position: 8, change: "up", name: "Legends", tourPoints: 32, totalPoints: 3000, isUser: false },
+    { id: "user-team", position: 9, change: "down", name: "Alepyz", tourPoints: 32, totalPoints: 2995, isUser: true },
+    { id: "team-10", position: 10, change: "same", name: "Dragons", tourPoints: 32, totalPoints: 2990, isUser: false },
   ];
+
+  const handleTeamClick = (team: typeof leagueStandings[0]) => {
+    if (team.isUser) {
+      navigate("/your-team");
+    } else {
+      navigate(`/view-team?id=${team.id}&name=${encodeURIComponent(team.name)}`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -151,30 +159,41 @@ const ViewLeague = () => {
 
         {/* League Standings */}
         <div className="space-y-2 mb-6">
-          {leagueStandings.map((row, idx) => (
+          {leagueStandings.map((row) => (
             <div 
-              key={idx} 
-              className="flex items-center gap-2"
+              key={row.id} 
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => handleTeamClick(row)}
             >
               <div
-                className="grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full bg-secondary/50"
-                style={{ width: 'calc(100% - 8px)' }}
+                className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full transition-opacity hover:opacity-80 ${
+                  row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
+                }`}
+                style={{ width: 'calc(100% - 32px)' }}
               >
                 <div className="col-span-2 flex items-center gap-1">
                   {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
-                  {row.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
+                  {row.change === "down" && !row.isUser && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
+                  {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3 rotate-180" />}
                   {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                  <span className="text-foreground font-medium">{row.position}</span>
+                  <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
                   {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
                   {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
                   {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
                 </div>
-                <span className="col-span-4 text-foreground font-medium truncate">{row.name}</span>
-                <span className="col-span-3 text-center text-foreground">{row.tourPoints}</span>
-                <span className="col-span-3 text-center text-foreground font-bold">
+                <span className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+                <span className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+                <span className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
                   {row.totalPoints.toLocaleString().replace(",", " ")}
                 </span>
               </div>
+              {row.isUser ? (
+                <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-xs">
+                  Ты
+                </span>
+              ) : (
+                <span className="w-8" />
+              )}
             </div>
           ))}
         </div>
