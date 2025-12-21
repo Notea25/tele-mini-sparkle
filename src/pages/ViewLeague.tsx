@@ -323,7 +323,7 @@ const ViewLeague = () => {
                 <Button
                   onClick={handleLeaveLeague}
                   variant="outline"
-                  className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                  className="w-full rounded-full py-6 font-semibold border-destructive text-destructive hover:bg-destructive/10"
                 >
                   Покинуть лигу
                 </Button>
