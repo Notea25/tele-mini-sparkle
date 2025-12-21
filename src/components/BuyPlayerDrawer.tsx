@@ -52,7 +52,7 @@ const BuyPlayerDrawer = ({
   const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
   const [activeFilter, setActiveFilter] = useState("Все");
   const [priceFrom, setPriceFrom] = useState(3);
-  const [priceTo, setPriceTo] = useState(15);
+  const [priceTo, setPriceTo] = useState(14);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
@@ -166,7 +166,7 @@ const BuyPlayerDrawer = ({
     setSelectedTeam("Все команды");
     setSelectedPoints("Фильтр по очкам");
     setPriceFrom(3);
-    setPriceTo(15);
+    setPriceTo(14);
     setActiveFilter("Все");
     setCurrentPage(1);
   };
@@ -178,7 +178,7 @@ const BuyPlayerDrawer = ({
     selectedTeam !== "Все команды" ||
     selectedPoints !== "Фильтр по очкам" ||
     priceFrom !== 3 ||
-    priceTo !== 15;
+    priceTo !== 14;
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -296,7 +296,7 @@ const BuyPlayerDrawer = ({
                 </button>
                 <span className="text-foreground text-xs w-8 text-center">{priceTo.toFixed(1)}</span>
                 <button 
-                  onClick={() => { setPriceTo(Math.min(15, priceTo + 1)); setCurrentPage(1); }} 
+                  onClick={() => { setPriceTo(Math.min(14, priceTo + 1)); setCurrentPage(1); }} 
                   className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
                 >
                   <Plus className="w-3 h-3 text-primary-foreground" />
