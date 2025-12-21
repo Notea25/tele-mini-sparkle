@@ -342,7 +342,7 @@ const League = () => {
 
             <div className="flex items-center justify-center gap-3 mb-6" style={{ perspective: "600px" }}>
               <div
-                className="bg-secondary/50 rounded-2xl flex flex-col items-center justify-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px] h-[105px]"
+                className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
                 style={{
                   transform: "rotateY(20deg) translateX(5px) translateZ(-15px)",
                   transformOrigin: "right center",
@@ -355,7 +355,7 @@ const League = () => {
                 <span className="text-muted-foreground text-xs">→</span>
               </div>
               <div
-                className="bg-primary rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-primary/90 transition-all w-[125px] h-[125px]"
+                className="bg-primary rounded-2xl px-4 py-4 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-all w-[125px]"
                 style={{
                   transform: "translateZ(20px)",
                   zIndex: 10,
@@ -367,7 +367,7 @@ const League = () => {
                 <span className="text-primary-foreground text-sm">→</span>
               </div>
               <div
-                className="bg-secondary/50 rounded-2xl flex flex-col items-center justify-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px] h-[105px]"
+                className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
                 style={{
                   transform: "rotateY(-20deg) translateX(-5px) translateZ(-15px)",
                   transformOrigin: "left center",
