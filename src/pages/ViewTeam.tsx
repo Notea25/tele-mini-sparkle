@@ -7,6 +7,22 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
 
+// Boost icons
+import iconBenchPlus from "@/assets/icon-bench-plus.png";
+import icon3x from "@/assets/icon-3x.png";
+import iconStar from "@/assets/icon-star.png";
+import iconFree from "@/assets/icon-free.png";
+import icon2x from "@/assets/icon-2x.png";
+
+// Boost icons mapping
+const boostIcons: Record<string, { icon: string; label: string }> = {
+  "bench": { icon: iconBenchPlus, label: "Скамейка +" },
+  "captain3x": { icon: icon3x, label: "3x Капитан" },
+  "transfers": { icon: iconStar, label: "Трансферы +" },
+  "golden": { icon: iconFree, label: "Золотой тур" },
+  "double": { icon: icon2x, label: "Двойная сила" },
+};
+
 // Random team names (same as in TournamentTable)
 const teamNames = [
   "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",
@@ -62,6 +78,13 @@ const ViewTeam = () => {
   const teamNameParam = searchParams.get("name");
   const teamIndex = parseInt(teamId) - 1;
   const teamName = teamNameParam || teamNames[teamIndex % teamNames.length];
+
+  // Simulate active boost for this tour (null if no boost used)
+  const activeBoost = useMemo(() => {
+    // Randomly assign a boost for demo purposes based on tour
+    const boosts = ["bench", "captain3x", "transfers", "golden", "double", null];
+    return boosts[currentTour % boosts.length];
+  }, [currentTour]);
 
   // Generate random players for this team
   const { mainSquadPlayers, benchPlayers, totalPoints } = useMemo(() => {
@@ -158,11 +181,19 @@ const ViewTeam = () => {
             <span className="text-primary-foreground/70 text-xs">очков</span>
           </div>
 
-          {/* Right: Boost Badge */}
-          <div className="flex items-center gap-1.5 bg-primary-foreground/20 rounded-full px-2.5 py-1">
-            <span className="text-primary-foreground text-xs font-bold">3×</span>
-            <span className="text-primary-foreground/80 text-[10px]">КАП</span>
-          </div>
+          {/* Right: Boost Badge (only show if boost is active) */}
+          {activeBoost && boostIcons[activeBoost] && (
+            <div className="flex items-center gap-1.5 bg-card rounded-lg px-2 py-1">
+              <img 
+                src={boostIcons[activeBoost].icon} 
+                alt={boostIcons[activeBoost].label}
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-foreground text-[10px] font-medium max-w-[60px] truncate">
+                {boostIcons[activeBoost].label}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
