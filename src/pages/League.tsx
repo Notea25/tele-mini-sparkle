@@ -396,7 +396,7 @@ const League = () => {
             </div>
 
             {/* Action buttons */}
-            <div className="grid grid-cols-2 gap-3 mb-3">
+            <div className="grid grid-cols-2 gap-3 mb-8">
               <div
                 className="w-full h-12 bg-[#AAFF03] rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => handleNavigate("/team-management")}
@@ -409,12 +409,6 @@ const League = () => {
               >
                 <span className="text-black font-medium text-base">Трансферы</span>
               </div>
-            </div>
-            <div
-              className="w-full h-12 bg-secondary rounded-xl flex items-center justify-center cursor-pointer hover:bg-secondary/80 transition-all mb-8"
-              onClick={() => handleNavigate("/rules")}
-            >
-              <span className="text-foreground font-medium text-base">Правила</span>
             </div>
 
             {/* Tournament Table */}

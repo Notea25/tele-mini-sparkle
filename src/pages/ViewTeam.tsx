@@ -7,22 +7,6 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
 
-// Boost icons
-import iconBenchPlus from "@/assets/icon-bench-plus.png";
-import icon3x from "@/assets/icon-3x.png";
-import iconStar from "@/assets/icon-star.png";
-import iconFree from "@/assets/icon-free.png";
-import icon2x from "@/assets/icon-2x.png";
-
-// Boost icons mapping
-const boostIcons: Record<string, { icon: string; label: string }> = {
-  "bench": { icon: iconBenchPlus, label: "Скамейка +" },
-  "captain3x": { icon: icon3x, label: "3x Капитан" },
-  "transfers": { icon: iconStar, label: "Трансферы +" },
-  "golden": { icon: iconFree, label: "Золотой тур" },
-  "double": { icon: icon2x, label: "Двойная сила" },
-};
-
 // Random team names (same as in TournamentTable)
 const teamNames = [
   "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",
@@ -78,13 +62,6 @@ const ViewTeam = () => {
   const teamNameParam = searchParams.get("name");
   const teamIndex = parseInt(teamId) - 1;
   const teamName = teamNameParam || teamNames[teamIndex % teamNames.length];
-
-  // Simulate active boost for this tour (null if no boost used)
-  const activeBoost = useMemo(() => {
-    // Randomly assign a boost for demo purposes based on tour
-    const boosts = ["bench", "captain3x", "transfers", "golden", "double", null];
-    return boosts[currentTour % boosts.length];
-  }, [currentTour]);
 
   // Generate random players for this team
   const { mainSquadPlayers, benchPlayers, totalPoints } = useMemo(() => {
@@ -151,49 +128,33 @@ const ViewTeam = () => {
         <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
       </div>
 
-      {/* Compact Points Card with Tour Navigation */}
-      <div className="px-4 mt-4">
-        <div className="bg-primary rounded-xl px-3 py-2 flex items-center justify-between">
-          {/* Left: Tour Navigation */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handleTourChange("prev")}
-              disabled={currentTour <= 1}
-              className="w-7 h-7 rounded-full bg-primary-foreground/20 flex items-center justify-center text-primary-foreground disabled:opacity-30 hover:bg-primary-foreground/30 transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="text-primary-foreground text-sm font-medium min-w-[60px] text-center">
-              {currentTour} тур
-            </span>
-            <button
-              onClick={() => handleTourChange("next")}
-              disabled={currentTour >= 38}
-              className="w-7 h-7 rounded-full bg-primary-foreground/20 flex items-center justify-center text-primary-foreground disabled:opacity-30 hover:bg-primary-foreground/30 transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+      {/* Tour Selector */}
+      <div className="px-4 mt-4 flex items-center justify-center gap-4">
+        <button
+          onClick={() => handleTourChange("prev")}
+          disabled={currentTour <= 1}
+          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <span className="text-foreground text-lg font-medium">{currentTour} тур</span>
+        <button
+          onClick={() => handleTourChange("next")}
+          disabled={currentTour >= 38}
+          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
 
-          {/* Center: Points */}
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
-            <span className="text-primary-foreground/70 text-xs">очков</span>
-          </div>
-
-          {/* Right: Boost Badge (only show if boost is active) */}
-          {activeBoost && boostIcons[activeBoost] && (
-            <div className="flex items-center gap-1.5 bg-card rounded-lg px-2 py-1">
-              <img 
-                src={boostIcons[activeBoost].icon} 
-                alt={boostIcons[activeBoost].label}
-                className="w-5 h-5 object-contain"
-              />
-              <span className="text-foreground text-[10px] font-medium max-w-[60px] truncate">
-                {boostIcons[activeBoost].label}
-              </span>
-            </div>
-          )}
+      {/* Points Card */}
+      <div className="px-4 mt-6">
+        <div className="bg-primary rounded-t-2xl p-4 flex flex-col items-center">
+          <span className="text-4xl font-bold text-primary-foreground">{totalPoints}</span>
+          <span className="text-primary-foreground/80 text-sm">Очки</span>
+        </div>
+        <div className="bg-secondary rounded-b-2xl py-2 text-center">
+          <span className="text-foreground text-sm font-medium">3x Капитан</span>
         </div>
       </div>
 
