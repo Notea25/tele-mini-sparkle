@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
-
-// Boost icons
-import icon3x from "@/assets/icon-3x.png";
+import { generateTourData, getTourBoostInfo, MAX_TOURS } from "@/lib/tourData";
 
 const YourTeam = () => {
   const navigate = useNavigate();
@@ -36,13 +34,19 @@ const YourTeam = () => {
     setIsPlayerCardOpen(true);
   };
 
-  // Calculate total points
-  const totalPoints = mainSquadPlayers.reduce((sum, p) => sum + p.points, 0);
+  // Generate tour data for user's team (using seed 999 for user)
+  const { tourPoints, tourBoosts } = useMemo(() => {
+    return generateTourData(999);
+  }, []);
+
+  // Get current tour boost info
+  const currentBoostInfo = getTourBoostInfo(tourBoosts[currentTour - 1]);
+  const currentTourPoints = tourPoints[currentTour - 1] || 0;
 
   const handleTourChange = (direction: "prev" | "next") => {
     if (direction === "prev" && currentTour > 1) {
       setCurrentTour(currentTour - 1);
-    } else if (direction === "next" && currentTour < 38) {
+    } else if (direction === "next" && currentTour < MAX_TOURS) {
       setCurrentTour(currentTour + 1);
     }
   };
@@ -85,18 +89,20 @@ const YourTeam = () => {
           <ChevronLeft className="w-5 h-5" />
         </button>
         
-        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-3">
-          <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
+        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2">
+          <span className="text-2xl font-bold text-primary-foreground">{currentTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
-          {/* Used Boost Icon */}
-          <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center" title="3x Капитан">
-            <img src={icon3x} alt="3x Капитан" className="w-5 h-5 object-contain" />
-          </div>
+          {/* Used Boost Icon - only show if boost was used this tour */}
+          {currentBoostInfo && (
+            <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1" title={currentBoostInfo.label}>
+              <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-5 h-5 object-contain" />
+            </div>
+          )}
         </div>
         
         <button
           onClick={() => handleTourChange("next")}
-          disabled={currentTour >= 38}
+          disabled={currentTour >= MAX_TOURS}
           className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
         >
           <ChevronRight className="w-5 h-5" />
