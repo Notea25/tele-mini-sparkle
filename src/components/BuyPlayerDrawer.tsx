@@ -273,7 +273,7 @@ const BuyPlayerDrawer = ({
               <span className="text-muted-foreground text-xs">от</span>
               <div className="flex items-center gap-1 bg-card rounded-full px-2 py-1">
                 <button 
-                  onClick={() => { setPriceFrom(Math.max(1, priceFrom - 1)); setCurrentPage(1); }} 
+                  onClick={() => { setPriceFrom(Math.max(3, priceFrom - 1)); setCurrentPage(1); }} 
                   className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
                 >
                   <Minus className="w-3 h-3 text-primary-foreground" />
