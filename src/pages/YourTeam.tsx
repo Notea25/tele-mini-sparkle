@@ -8,6 +8,9 @@ import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
 
+// Boost icons
+import icon3x from "@/assets/icon-3x.png";
+
 const YourTeam = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
@@ -65,8 +68,15 @@ const YourTeam = () => {
         <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
       </div>
 
-      {/* Tour Selector */}
-      <div className="px-4 mt-4 flex items-center justify-center gap-4">
+      {/* Tour Label with Gradient Lines */}
+      <div className="px-4 mt-4 flex items-center justify-center gap-3">
+        <div className="flex-1 h-px bg-gradient-to-r from-transparent to-muted-foreground/30" />
+        <span className="text-muted-foreground text-sm font-medium">{currentTour} тур</span>
+        <div className="flex-1 h-px bg-gradient-to-l from-transparent to-muted-foreground/30" />
+      </div>
+
+      {/* Points Block with Navigation Arrows */}
+      <div className="px-4 mt-3 flex items-center justify-center gap-3">
         <button
           onClick={() => handleTourChange("prev")}
           disabled={currentTour <= 1}
@@ -74,7 +84,16 @@ const YourTeam = () => {
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <span className="text-foreground text-lg font-medium">{currentTour} тур</span>
+        
+        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-3">
+          <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
+          <span className="text-primary-foreground/80 text-sm">очков</span>
+          {/* Used Boost Icon */}
+          <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center" title="3x Капитан">
+            <img src={icon3x} alt="3x Капитан" className="w-5 h-5 object-contain" />
+          </div>
+        </div>
+        
         <button
           onClick={() => handleTourChange("next")}
           disabled={currentTour >= 38}
@@ -82,17 +101,6 @@ const YourTeam = () => {
         >
           <ChevronRight className="w-5 h-5" />
         </button>
-      </div>
-
-      {/* Points Card */}
-      <div className="px-4 mt-6">
-        <div className="bg-primary rounded-t-2xl p-4 flex flex-col items-center">
-          <span className="text-4xl font-bold text-primary-foreground">{totalPoints}</span>
-          <span className="text-primary-foreground/80 text-sm">Очки</span>
-        </div>
-        <div className="bg-secondary rounded-b-2xl py-2 text-center">
-          <span className="text-foreground text-sm font-medium">3x Капитан</span>
-        </div>
       </div>
 
       {/* Tabs */}
