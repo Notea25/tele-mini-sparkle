@@ -340,14 +340,9 @@ const League = () => {
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
             </div>
 
-            <div className="flex items-center justify-center gap-3 mb-6" style={{ perspective: "600px" }}>
+            <div className="flex items-center justify-center gap-2 mb-6">
               <div
-                className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
-                style={{
-                  transform: "rotateY(20deg) translateX(5px) translateZ(-15px)",
-                  transformOrigin: "right center",
-                  zIndex: 1,
-                }}
+                className="bg-secondary rounded-xl px-3 py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all w-[100px]"
                 onClick={() => handleNavigate("/tournament-table")}
               >
                 <span className="text-xl font-bold text-foreground">{isTournamentStarted ? "40" : "0"}</span>
@@ -355,24 +350,15 @@ const League = () => {
                 <span className="text-muted-foreground text-xs">→</span>
               </div>
               <div
-                className="bg-primary rounded-2xl px-4 py-4 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-all w-[125px]"
-                style={{
-                  transform: "translateZ(20px)",
-                  zIndex: 10,
-                }}
+                className="bg-primary rounded-xl px-4 py-3 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-all w-[110px]"
                 onClick={() => handleNavigate("/your-team")}
               >
-                <span className="text-3xl font-bold text-primary-foreground">{isTournamentStarted ? "55" : "0"}</span>
-                <span className="text-xs text-primary-foreground/70 whitespace-nowrap">Твои очки</span>
-                <span className="text-primary-foreground text-sm">→</span>
+                <span className="text-2xl font-bold text-primary-foreground">{isTournamentStarted ? "55" : "0"}</span>
+                <span className="text-[10px] text-primary-foreground/70 whitespace-nowrap">Мои очки</span>
+                <span className="text-primary-foreground text-xs">→</span>
               </div>
               <div
-                className="bg-secondary/50 rounded-2xl px-3 py-2 flex flex-col items-center border border-border cursor-pointer hover:bg-secondary/70 transition-all w-[105px]"
-                style={{
-                  transform: "rotateY(-20deg) translateX(-5px) translateZ(-15px)",
-                  transformOrigin: "left center",
-                  zIndex: 1,
-                }}
+                className="bg-secondary rounded-xl px-3 py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all w-[100px]"
                 onClick={() => handleNavigate("/dream-team")}
               >
                 <span className="text-xl font-bold text-foreground">{isTournamentStarted ? "129" : "0"}</span>
