@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SportHeader from "@/components/SportHeader";
@@ -21,6 +21,22 @@ const TournamentTable = () => {
 
   const totalPages = Math.ceil(allTeams.length / itemsPerPage);
   
+  // Restore scroll position when returning to this page
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem("tournamentTableScrollPosition");
+    if (savedScrollPosition) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedScrollPosition, 10));
+      }, 0);
+    }
+  }, []);
+
+  // Save scroll position before navigating away
+  const handleNavigate = (path: string) => {
+    sessionStorage.setItem("tournamentTableScrollPosition", window.scrollY.toString());
+    navigate(path);
+  };
+
   // Get current page data
   const currentPageData = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -35,9 +51,9 @@ const TournamentTable = () => {
 
   const handleTeamClick = (team: typeof allTeams[0]) => {
     if (team.isUser) {
-      navigate("/your-team");
+      handleNavigate("/your-team");
     } else {
-      navigate(`/view-team?id=${team.id}&name=${encodeURIComponent(team.name)}`);
+      handleNavigate(`/view-team?id=${team.id}&name=${encodeURIComponent(team.name)}`);
     }
   };
 

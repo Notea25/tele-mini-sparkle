@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Copy, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -36,6 +36,22 @@ const ViewLeague = () => {
   const isBeforeRegistration = searchParams.get("beforeRegistration") === "true";
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
+
+  // Restore scroll position when returning to this page
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem("viewLeagueScrollPosition");
+    if (savedScrollPosition) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedScrollPosition, 10));
+      }, 0);
+    }
+  }, []);
+
+  // Save scroll position before navigating away
+  const handleNavigate = (path: string) => {
+    sessionStorage.setItem("viewLeagueScrollPosition", window.scrollY.toString());
+    navigate(path);
+  };
 
   // Get user ID for invite link
   const profileData = localStorage.getItem("fantasyUserProfile");
@@ -116,9 +132,9 @@ const ViewLeague = () => {
 
   const handleTeamClick = (team: typeof leagueStandings[0]) => {
     if (team.isUser) {
-      navigate("/your-team");
+      handleNavigate("/your-team");
     } else {
-      navigate(`/view-team?id=${team.id}&name=${encodeURIComponent(team.name)}`);
+      handleNavigate(`/view-team?id=${team.id}&name=${encodeURIComponent(team.name)}`);
     }
   };
 
