@@ -24,13 +24,13 @@ import icon2x from "@/assets/icon-2x.png";
 
 // Club icons mapping
 const clubIcons: Record<string, string> = {
-  "Белшина": clubBelshina,
-  "БАТЭ": clubLogo,
+  Белшина: clubBelshina,
+  БАТЭ: clubLogo,
   "Динамо Минск": clubLogo,
-  "Шахтер": clubLogo,
-  "Неман": clubLogo,
-  "Славия": clubLogo,
-  "Торпедо": clubLogo,
+  Шахтер: clubLogo,
+  Неман: clubLogo,
+  Славия: clubLogo,
+  Торпедо: clubLogo,
 };
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
@@ -46,7 +46,7 @@ const initialChips: BoostChip[] = [
 
 // Formation options - all 8 valid formations
 const formationOptions: { value: FormationKey; label: string }[] = Object.entries(FORMATION_LABELS).map(
-  ([value, label]) => ({ value: value as FormationKey, label })
+  ([value, label]) => ({ value: value as FormationKey, label }),
 );
 
 interface PlayerDataExt extends PlayerData {
@@ -79,24 +79,24 @@ const TeamManagement = () => {
 
   const applyBoost = (chipId: string) => {
     // Check if another boost is already pending
-    const hasPendingBoost = specialChips.some(chip => chip.status === "pending");
+    const hasPendingBoost = specialChips.some((chip) => chip.status === "pending");
     if (hasPendingBoost) {
       toast.error("В одном туре можно использовать только 1 буст");
       return;
     }
-    
-    setSpecialChips(prev => 
-      prev.map(chip => 
-        chip.id === chipId ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" } : chip
-      )
+
+    setSpecialChips((prev) =>
+      prev.map((chip) =>
+        chip.id === chipId ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" } : chip,
+      ),
     );
   };
 
   const cancelBoost = (chipId: string) => {
-    setSpecialChips(prev => 
-      prev.map(chip => 
-        chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее" } : chip
-      )
+    setSpecialChips((prev) =>
+      prev.map((chip) =>
+        chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее" } : chip,
+      ),
     );
   };
   // Deadline countdown
@@ -110,14 +110,14 @@ const TeamManagement = () => {
       const difference = deadlineDate.getTime() - now.getTime();
       const totalDuration = deadlineDate.getTime() - tournamentStartDate.getTime();
       const elapsed = now.getTime() - tournamentStartDate.getTime();
-      
+
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((difference / (1000 * 60)) % 60);
         const seconds = Math.floor((difference / 1000) % 60);
         const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-        
+
         setTimeLeft({ days, hours, minutes, seconds, progress });
       } else {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 100 });
@@ -126,7 +126,7 @@ const TeamManagement = () => {
 
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);
-    
+
     return () => clearInterval(timer);
   }, []);
 
@@ -137,49 +137,49 @@ const TeamManagement = () => {
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
     const savedTeam = getSavedTeam();
-    
+
     if (mainSquad.length > 0) {
       // Add red card to Степанов and injury to Макаров for testing
-      const updatedMainSquad = mainSquad.map(p => {
+      const updatedMainSquad = mainSquad.map((p) => {
         if (p.name === "Степанов") return { ...p, hasRedCard: true };
         if (p.name === "Макаров") return { ...p, isInjured: true };
         return p;
       });
-      const updatedBench = bench.map(p => {
+      const updatedBench = bench.map((p) => {
         if (p.name === "Степанов") return { ...p, hasRedCard: true };
         if (p.name === "Макаров") return { ...p, isInjured: true };
         return p;
       });
       setMainSquadPlayers(updatedMainSquad);
       setBenchPlayers(updatedBench);
-      
+
       // Get main squad player IDs for validation
-      const mainSquadIds = updatedMainSquad.map(p => p.id);
-      
+      const mainSquadIds = updatedMainSquad.map((p) => p.id);
+
       // Validate saved captain/vice-captain are in main squad (not on bench)
       const savedCaptainValid = savedTeam.captain && mainSquadIds.includes(savedTeam.captain);
       const savedViceCaptainValid = savedTeam.viceCaptain && mainSquadIds.includes(savedTeam.viceCaptain);
-      
+
       // Sort main squad by price (descending) to get most expensive players for auto-assign
       const sortedByPrice = [...updatedMainSquad].sort((a, b) => (b.price || 0) - (a.price || 0));
-      
+
       if (sortedByPrice.length >= 2) {
         // Use saved values only if they're valid (player is in main squad)
         let newCaptain = savedCaptainValid ? savedTeam.captain : sortedByPrice[0].id;
         let newViceCaptain = savedViceCaptainValid ? savedTeam.viceCaptain : null;
-        
+
         // If vice-captain not valid or equals captain, pick next best player
         if (!newViceCaptain || newViceCaptain === newCaptain) {
-          const nextBest = sortedByPrice.find(p => p.id !== newCaptain);
+          const nextBest = sortedByPrice.find((p) => p.id !== newCaptain);
           newViceCaptain = nextBest?.id || null;
         }
-        
+
         setCaptain(newCaptain!);
         setViceCaptain(newViceCaptain);
-        
+
         // Save to localStorage
-        localStorage.setItem('fantasyTeamCaptain', JSON.stringify(newCaptain));
-        localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(newViceCaptain));
+        localStorage.setItem("fantasyTeamCaptain", JSON.stringify(newCaptain));
+        localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(newViceCaptain));
       }
     }
   }, []);
@@ -192,21 +192,21 @@ const TeamManagement = () => {
 
   // Group players by position for list view
   const playersByPosition = {
-    "ВР": mainSquadPlayers.filter(p => p.position === "ВР"),
-    "ЗЩ": mainSquadPlayers.filter(p => p.position === "ЗЩ"),
-    "ПЗ": mainSquadPlayers.filter(p => p.position === "ПЗ"),
-    "НП": mainSquadPlayers.filter(p => p.position === "НП"),
+    ВР: mainSquadPlayers.filter((p) => p.position === "ВР"),
+    ЗЩ: mainSquadPlayers.filter((p) => p.position === "ЗЩ"),
+    ПЗ: mainSquadPlayers.filter((p) => p.position === "ПЗ"),
+    НП: mainSquadPlayers.filter((p) => p.position === "НП"),
   };
 
   const positionLabels: Record<string, string> = {
-    "ВР": "Вратарь",
-    "ЗЩ": "Защита",
-    "ПЗ": "Полузащита",
-    "НП": "Нападение",
+    ВР: "Вратарь",
+    ЗЩ: "Защита",
+    ПЗ: "Полузащита",
+    НП: "Нападение",
   };
 
   const handlePlayerSwap = (playerId: number) => {
-    const player = allPlayers.find(p => p.id === playerId);
+    const player = allPlayers.find((p) => p.id === playerId);
     if (player) {
       setPlayerToSwap(player);
       setSwapDrawerOpen(true);
@@ -214,9 +214,9 @@ const TeamManagement = () => {
   };
 
   const handleSwapConfirm = (fromPlayerId: number, toPlayerId: number) => {
-    const fromPlayer = allPlayers.find(p => p.id === fromPlayerId);
-    const toPlayer = allPlayers.find(p => p.id === toPlayerId);
-    
+    const fromPlayer = allPlayers.find((p) => p.id === fromPlayerId);
+    const toPlayer = allPlayers.find((p) => p.id === toPlayerId);
+
     if (!fromPlayer || !toPlayer) return;
 
     // Determine if swapping between main and bench
@@ -236,24 +236,18 @@ const TeamManagement = () => {
       if (viceCaptain === toPlayerId) {
         newViceCaptain = fromPlayerId;
       }
-      
+
       // Create new main squad: replace field player with bench player
-      const newMainSquad = mainSquadPlayers.map(p => 
-        p.id === toPlayerId 
-          ? { ...fromPlayer, isOnBench: false } 
-          : p
-      );
-      
+      const newMainSquad = mainSquadPlayers.map((p) => (p.id === toPlayerId ? { ...fromPlayer, isOnBench: false } : p));
+
       // Create new bench: replace bench player with field player
-      const newBench = benchPlayers.map(p => 
-        p.id === fromPlayerId 
-          ? { ...toPlayer, slotIndex: undefined, isOnBench: true } 
-          : p
+      const newBench = benchPlayers.map((p) =>
+        p.id === fromPlayerId ? { ...toPlayer, slotIndex: undefined, isOnBench: true } : p,
       );
-      
+
       // Reassign slot indices based on positions
       const reassignedMainSquad = reassignSlotIndices(newMainSquad);
-      
+
       setMainSquadPlayers(reassignedMainSquad);
       setBenchPlayers(newBench);
     } else if (!fromIsOnBench && toIsOnBench) {
@@ -265,24 +259,18 @@ const TeamManagement = () => {
       if (viceCaptain === fromPlayerId) {
         newViceCaptain = toPlayerId;
       }
-      
+
       // Create new main squad: replace field player with bench player
-      const newMainSquad = mainSquadPlayers.map(p => 
-        p.id === fromPlayerId 
-          ? { ...toPlayer, isOnBench: false } 
-          : p
-      );
-      
+      const newMainSquad = mainSquadPlayers.map((p) => (p.id === fromPlayerId ? { ...toPlayer, isOnBench: false } : p));
+
       // Create new bench: replace bench player with field player
-      const newBench = benchPlayers.map(p => 
-        p.id === toPlayerId 
-          ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } 
-          : p
+      const newBench = benchPlayers.map((p) =>
+        p.id === toPlayerId ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } : p,
       );
-      
+
       // Reassign slot indices based on positions
       const reassignedMainSquad = reassignSlotIndices(newMainSquad);
-      
+
       setMainSquadPlayers(reassignedMainSquad);
       setBenchPlayers(newBench);
     }
@@ -296,24 +284,24 @@ const TeamManagement = () => {
     // Update captain/vice-captain if they changed
     if (newCaptain !== captain) {
       setCaptain(newCaptain);
-      localStorage.setItem('fantasyTeamCaptain', JSON.stringify(newCaptain));
+      localStorage.setItem("fantasyTeamCaptain", JSON.stringify(newCaptain));
     }
     if (newViceCaptain !== viceCaptain) {
       setViceCaptain(newViceCaptain);
-      localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(newViceCaptain));
+      localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(newViceCaptain));
     }
   };
 
   // Helper function to reassign slot indices based on player positions
   const reassignSlotIndices = (players: PlayerDataExt[]): PlayerDataExt[] => {
     const positionCounters: Record<string, number> = {
-      "ВР": 0,
-      "ЗЩ": 0,
-      "ПЗ": 0,
-      "НП": 0,
+      ВР: 0,
+      ЗЩ: 0,
+      ПЗ: 0,
+      НП: 0,
     };
-    
-    return players.map(player => {
+
+    return players.map((player) => {
       const slotIndex = positionCounters[player.position] || 0;
       positionCounters[player.position] = slotIndex + 1;
       return { ...player, slotIndex };
@@ -323,7 +311,7 @@ const TeamManagement = () => {
   // Get available players for swap (all players from opposite side)
   const getAvailableSwapPlayers = () => {
     if (!playerToSwap) return [];
-    
+
     if (playerToSwap.isOnBench) {
       // Bench player - return all field players
       return mainSquadPlayers;
@@ -343,7 +331,7 @@ const TeamManagement = () => {
     <div className="mb-6" key={position}>
       {/* Position header */}
       <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
-      
+
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
         <span className="flex-1">Игрок ↕</span>
@@ -356,40 +344,31 @@ const TeamManagement = () => {
       {/* Players */}
       <div className="space-y-2">
         {players.map((player) => (
-          <div
-            key={player.id}
-            className="bg-card rounded-full px-4 py-2 flex items-center"
-          >
+          <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
             {/* Player name + position */}
-            <div 
+            <div
               className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
               onClick={() => setSelectedPlayerForCard(player.id)}
             >
               <span className="text-foreground font-medium truncate">{player.name}</span>
               <span className="text-muted-foreground text-xs">{player.position}</span>
             </div>
-            
+
             {/* Club */}
             <div className="w-14 flex-shrink-0 flex justify-center">
               {clubIcons[player.team] && (
-                <img 
-                  src={clubIcons[player.team]} 
-                  alt={player.team}
-                  className="w-5 h-5 object-contain"
-                />
+                <img src={clubIcons[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
               )}
             </div>
-            
+
             {/* Points */}
             <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
               <span className="text-foreground text-sm">{player.points}</span>
             </div>
-            
+
             {/* Price */}
-            <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-              {player.price}
-            </span>
-            
+            <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
+
             {/* Swap button */}
             <button
               onClick={() => handlePlayerSwap(player.id)}
@@ -411,10 +390,10 @@ const TeamManagement = () => {
       <div className="px-4 mt-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <img 
-              src={homeIcon} 
-              alt="Home" 
-              className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity" 
+            <img
+              src={homeIcon}
+              alt="Home"
+              className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => navigate("/")}
             />
             <span>Футбол</span>
@@ -424,16 +403,19 @@ const TeamManagement = () => {
             <span className="text-foreground">Управление командой</span>
           </div>
         </div>
-        
+
         {/* Team name */}
         <div className="flex items-center justify-center mb-2">
           <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
         </div>
-        
+
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Дедлайн: <span className="text-foreground">04.04 в 19.00</span></span>
+          <span className="text-muted-foreground">
+            Дедлайн: <span className="text-foreground">04.04 в 19.00</span>
+          </span>
           <span className="text-foreground">
-            {timeLeft.days} дня {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
+            {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
+            {String(timeLeft.seconds).padStart(2, "0")}
           </span>
         </div>
       </div>
@@ -441,7 +423,7 @@ const TeamManagement = () => {
       {/* Deadline Progress Bar */}
       <div className="px-4 mt-4">
         <div className="w-full h-2 bg-card rounded-full overflow-hidden">
-          <div 
+          <div
             className="h-full bg-primary rounded-full transition-all duration-300"
             style={{ width: `${timeLeft.progress}%` }}
           />
@@ -472,7 +454,6 @@ const TeamManagement = () => {
         </Button>
       </div>
 
-
       {/* Special Chips */}
       <div className="px-4 mt-4">
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
@@ -481,30 +462,32 @@ const TeamManagement = () => {
               key={chip.id}
               onClick={() => openBoostDrawer(chip)}
               className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-2xl cursor-pointer transition-all hover:bg-card/80 ${
-                chip.status === "pending" 
-                  ? "bg-card border-2 border-primary" 
-                  : chip.status === "used" 
-                    ? "bg-card/50" 
+                chip.status === "pending"
+                  ? "bg-card border-2 border-primary"
+                  : chip.status === "used"
+                    ? "bg-card/50"
                     : "bg-card"
               }`}
             >
-              <img 
-                src={chip.icon} 
-                alt={chip.label} 
+              <img
+                src={chip.icon}
+                alt={chip.label}
                 className={`w-8 h-8 object-contain mb-1 transition-all ${chip.status === "used" ? "grayscale opacity-50" : ""}`}
               />
               <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
-              <span className={`text-[8px] ${
-                chip.status === "pending" 
-                  ? "text-primary" 
-                  : chip.status === "used" 
-                    ? "text-muted-foreground" 
-                    : "text-primary"
-              }`}>
-                {chip.status === "pending" 
-                  ? "Используется" 
-                  : chip.status === "used" 
-                    ? `${chip.usedInTour} тур` 
+              <span
+                className={`text-[8px] ${
+                  chip.status === "pending"
+                    ? "text-primary"
+                    : chip.status === "used"
+                      ? "text-muted-foreground"
+                      : "text-primary"
+                }`}
+              >
+                {chip.status === "pending"
+                  ? "Используется"
+                  : chip.status === "used"
+                    ? `${chip.usedInTour} тур`
                     : chip.sublabel}
               </span>
             </div>
@@ -520,14 +503,14 @@ const TeamManagement = () => {
             <Select value={captain?.toString() || ""} onValueChange={(v) => setCaptain(Number(v))}>
               <SelectTrigger className="w-full bg-card border-border text-foreground rounded-full">
                 <SelectValue placeholder="Выбрать">
-                  {captain ? allPlayers.find(p => p.id === captain)?.name : "Плотников"}
+                  {captain ? allPlayers.find((p) => p.id === captain)?.name : "Плотников"}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
                 {mainSquadPlayers.map((player) => (
-                  <SelectItem 
-                    key={player.id} 
-                    value={player.id.toString()} 
+                  <SelectItem
+                    key={player.id}
+                    value={player.id.toString()}
                     className="text-foreground hover:bg-secondary cursor-pointer"
                     disabled={player.id === viceCaptain}
                   >
@@ -542,14 +525,14 @@ const TeamManagement = () => {
             <Select value={viceCaptain?.toString() || ""} onValueChange={(v) => setViceCaptain(Number(v))}>
               <SelectTrigger className="w-full bg-card border-border text-foreground rounded-full">
                 <SelectValue placeholder="Выбрать">
-                  {viceCaptain ? allPlayers.find(p => p.id === viceCaptain)?.name : "Чиж"}
+                  {viceCaptain ? allPlayers.find((p) => p.id === viceCaptain)?.name : "Чиж"}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
                 {mainSquadPlayers.map((player) => (
-                  <SelectItem 
-                    key={player.id} 
-                    value={player.id.toString()} 
+                  <SelectItem
+                    key={player.id}
+                    value={player.id.toString()}
                     className="text-foreground hover:bg-secondary cursor-pointer"
                     disabled={player.id === captain}
                   >
@@ -565,7 +548,7 @@ const TeamManagement = () => {
       {/* Main content */}
       {activeTab === "formation" ? (
         <div className="mt-4">
-        <FormationFieldManagement 
+          <FormationFieldManagement
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
@@ -573,23 +556,21 @@ const TeamManagement = () => {
             captain={captain}
             showPrice={false}
             viceCaptain={viceCaptain}
-            isBenchBoostActive={specialChips.find(c => c.id === "bench")?.status === "pending"}
-            isDoublePowerBoostActive={specialChips.find(c => c.id === "double")?.status === "pending"}
-            isCaptain3xBoostActive={specialChips.find(c => c.id === "captain3x")?.status === "pending"}
+            isBenchBoostActive={specialChips.find((c) => c.id === "bench")?.status === "pending"}
+            isDoublePowerBoostActive={specialChips.find((c) => c.id === "double")?.status === "pending"}
+            isCaptain3xBoostActive={specialChips.find((c) => c.id === "captain3x")?.status === "pending"}
           />
         </div>
       ) : (
         <div className="px-4 mt-6 pb-6">
           {/* Main Squad */}
           <h2 className="text-foreground text-xl font-bold mb-4">Основной состав</h2>
-          
-          {Object.entries(playersByPosition).map(([position, players]) => 
-            renderListSection(position, players)
-          )}
+
+          {Object.entries(playersByPosition).map(([position, players]) => renderListSection(position, players))}
 
           {/* Bench */}
           <h2 className="text-foreground text-xl font-bold mb-4 mt-8">Замены</h2>
-          
+
           {/* Column headers */}
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
             <span className="flex-1">Игрок</span>
@@ -601,40 +582,31 @@ const TeamManagement = () => {
 
           <div className="space-y-2">
             {benchPlayers.map((player) => (
-              <div
-                key={player.id}
-                className="bg-card rounded-full px-4 py-2 flex items-center"
-              >
+              <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
                 {/* Player name + position */}
-                <div 
+                <div
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                   onClick={() => setSelectedPlayerForCard(player.id)}
                 >
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
                 </div>
-                
+
                 {/* Club */}
                 <div className="w-14 flex-shrink-0 flex justify-center">
                   {clubIcons[player.team] && (
-                    <img 
-                      src={clubIcons[player.team]} 
-                      alt={player.team}
-                      className="w-5 h-5 object-contain"
-                    />
+                    <img src={clubIcons[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
                   )}
                 </div>
-                
+
                 {/* Points */}
                 <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
                   <span className="text-foreground text-sm">{player.points}</span>
                 </div>
-                
+
                 {/* Price */}
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-                  {player.price}
-                </span>
-                
+                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
+
                 {/* Swap button */}
                 <button
                   onClick={() => handlePlayerSwap(player.id)}
@@ -650,9 +622,9 @@ const TeamManagement = () => {
 
       {/* Fixed Bottom Section with Save Button */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
-        <Button 
+        <Button
           onClick={() => {
-            const pendingBoost = specialChips.find(c => c.status === "pending");
+            const pendingBoost = specialChips.find((c) => c.status === "pending");
             if (pendingBoost) {
               setIsConfirmBoostOpen(true);
             } else {
@@ -672,7 +644,7 @@ const TeamManagement = () => {
       {/* Player Card Drawer */}
       {selectedPlayerForCard !== null && (
         <PlayerCard
-          player={allPlayers.find(p => p.id === selectedPlayerForCard) || null}
+          player={allPlayers.find((p) => p.id === selectedPlayerForCard) || null}
           isOpen={selectedPlayerForCard !== null}
           onClose={() => setSelectedPlayerForCard(null)}
           isSelected={true}
@@ -704,7 +676,7 @@ const TeamManagement = () => {
 
       {/* Boost Drawer */}
       <BoostDrawer
-        chip={selectedBoostChip ? specialChips.find(c => c.id === selectedBoostChip.id) || null : null}
+        chip={selectedBoostChip ? specialChips.find((c) => c.id === selectedBoostChip.id) || null : null}
         isOpen={isBoostDrawerOpen}
         onClose={() => setIsBoostDrawerOpen(false)}
         onApply={applyBoost}
@@ -716,7 +688,7 @@ const TeamManagement = () => {
       <ConfirmBoostDrawer
         isOpen={isConfirmBoostOpen}
         onClose={() => setIsConfirmBoostOpen(false)}
-        pendingBoost={specialChips.find(c => c.status === "pending") || null}
+        pendingBoost={specialChips.find((c) => c.status === "pending") || null}
         onConfirm={() => {
           setIsConfirmBoostOpen(false);
           toast.success("Изменения сохранены");
