@@ -805,12 +805,9 @@ const League = () => {
                           {row.tourPoints}
                         </span>
                         <span
-                          className={`col-span-2 text-right font-bold text-sm flex items-center justify-end gap-1 ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
+                          className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                         >
                           {row.totalPoints.toLocaleString()}
-                          <ArrowRight
-                            className={`w-4 h-4 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`}
-                          />
                         </span>
                       </div>
                     ))}
