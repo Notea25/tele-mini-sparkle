@@ -79,7 +79,7 @@ const ViewTeam = () => {
   // Generate random players for this team and tour
   const { mainSquadPlayers, benchPlayers } = useMemo(() => {
     const positions = ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"];
-    const benchPositions = ["ЗЩ", "ПЗ", "ПЗ", "ВР"];
+    const benchPositions = ["ВР", "ЗЩ", "ПЗ", "ПЗ"]; // Goalkeeper always first on bench
     
     // Use tour and teamId as seed for different points per tour
     const seed = teamId * 100 + currentTour;

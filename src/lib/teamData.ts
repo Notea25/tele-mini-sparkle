@@ -132,6 +132,7 @@ export function getTeamPlayers(): PlayerData[] {
 }
 
 // Split players into main squad (11) and bench (4) based on formation 1-4-4-2
+// Goalkeeper always first on bench
 export function getMainSquadAndBench(): { mainSquad: PlayerData[]; bench: PlayerData[] } {
   const teamPlayers = getTeamPlayers();
   
@@ -155,7 +156,14 @@ export function getMainSquadAndBench(): { mainSquad: PlayerData[]; bench: Player
     }
   }
   
-  return { mainSquad, bench };
+  // Sort bench: goalkeeper always first, then other positions maintain their order
+  const sortedBench = bench.sort((a, b) => {
+    if (a.position === "ВР" && b.position !== "ВР") return -1;
+    if (a.position !== "ВР" && b.position === "ВР") return 1;
+    return 0;
+  });
+  
+  return { mainSquad, bench: sortedBench };
 }
 
 // Save team transfers (updated squad composition)

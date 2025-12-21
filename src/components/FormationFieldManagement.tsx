@@ -22,8 +22,6 @@ import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
-import bannerLeft from "@/assets/banner-left.png";
-import bannerRight from "@/assets/banner-right.png";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
@@ -240,9 +238,6 @@ const FormationFieldManagement = ({
       <div className="relative w-full">
         <img src={footballFieldNew} alt="Football field" className="w-full" />
 
-        {/* Advertisement banners in corners */}
-        <img src={bannerLeft} alt="Advertisement" className="absolute top-1 left-[41px] w-[22%] h-auto z-30" />
-        <img src={bannerRight} alt="Advertisement" className="absolute top-1 right-[41px] w-[22%] h-auto z-30" />
 
         {formation.map((slot, idx) => {
           const style = getPlayerPosition(slot.row, slot.col);
