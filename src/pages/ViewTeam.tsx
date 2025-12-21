@@ -6,7 +6,10 @@ import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
-import { generateTourData, getTourBoostInfo, MAX_TOURS } from "@/lib/tourData";
+import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
+import iconBenchPlus from "@/assets/icon-bench-plus.png";
+import icon2x from "@/assets/icon-2x-new.png";
+import icon3x from "@/assets/icon-3x-new.png";
 
 // Random team names (same as in TournamentTable)
 const teamNames = [
@@ -49,6 +52,8 @@ interface PlayerData {
   isCaptain?: boolean;
   isViceCaptain?: boolean;
   isOnBench?: boolean;
+  hasRedCard?: boolean;
+  isInjured?: boolean;
 }
 
 const ViewTeam = () => {
@@ -74,7 +79,13 @@ const ViewTeam = () => {
 
   // Get current tour boost info
   const currentBoostInfo = getTourBoostInfo(tourBoosts[currentTour - 1]);
+  const currentBoostType = tourBoosts[currentTour - 1];
   const currentTourPoints = tourPoints[currentTour - 1] || 0;
+
+  // Check which boosts are active for current tour
+  const isBenchBoostActive = currentBoostType === "bench";
+  const isCaptain3xBoostActive = currentBoostType === "captain3x";
+  const isDoublePowerBoostActive = currentBoostType === "double";
 
   // Generate random players for this team and tour
   // Total squad: 2 ВР, 5 ЗЩ, 5 ПЗ, 3 НП = 15 players
@@ -95,6 +106,13 @@ const ViewTeam = () => {
       viceCaptainIdx = (viceCaptainIdx + 1) % 11;
     }
     
+    // Deterministic injury and red card (1 injury, 1 red card per team per tour)
+    const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * 11);
+    let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * 11);
+    if (redCardIdx === injuredIdx) {
+      redCardIdx = (redCardIdx + 1) % 11;
+    }
+
     const main: PlayerData[] = positions.map((pos, idx) => {
       const playerSeed = seed * 100 + idx;
       const pseudoRandom = Math.sin(playerSeed) * 10000;
@@ -110,6 +128,8 @@ const ViewTeam = () => {
         slotIndex: positions.slice(0, idx).filter(p => p === pos).length,
         isCaptain: idx === captainIdx,
         isViceCaptain: idx === viceCaptainIdx,
+        hasRedCard: idx === redCardIdx,
+        isInjured: idx === injuredIdx,
       };
     });
 
@@ -241,6 +261,9 @@ const ViewTeam = () => {
             onPlayerClick={handlePlayerClick}
             captain={captainId}
             viceCaptain={viceCaptainId}
+            isBenchBoostActive={isBenchBoostActive}
+            isDoublePowerBoostActive={isDoublePowerBoostActive}
+            isCaptain3xBoostActive={isCaptain3xBoostActive}
             showPrice={false}
             showPointsInsteadOfTeam={true}
           />
@@ -264,29 +287,48 @@ const ViewTeam = () => {
                 return (positionOrder[a.position as keyof typeof positionOrder] ?? 4) - 
                        (positionOrder[b.position as keyof typeof positionOrder] ?? 4);
               })
-              .map((player) => (
-              <div
-                key={player.id}
-                onClick={() => handlePlayerClick(player)}
-                className="bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors"
-              >
-                <div className="flex-1 flex items-center gap-2 min-w-0">
-                  <span className="text-foreground font-medium truncate">{player.name}</span>
-                  <span className="text-muted-foreground text-xs">{player.position}</span>
-                  {player.isCaptain && (
-                    <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">К</span>
-                  )}
-                  {player.isViceCaptain && (
-                    <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">ВК</span>
-                  )}
-                </div>
-                <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
-                  {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
-                </span>
-                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
-              </div>
-            ))}
+              .map((player) => {
+                const showCaptain3xBadge = isCaptain3xBoostActive && player.isCaptain;
+                const showDoublePowerBadge = isDoublePowerBoostActive && (player.isCaptain || player.isViceCaptain);
+                
+                return (
+                  <div
+                    key={player.id}
+                    onClick={() => handlePlayerClick(player)}
+                    className={`bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
+                      showCaptain3xBadge || showDoublePowerBadge ? "border border-primary" : ""
+                    } ${player.hasRedCard || player.isInjured ? "border border-red-500" : ""}`}
+                  >
+                    <div className="flex-1 flex items-center gap-2 min-w-0">
+                      <span className="text-foreground font-medium truncate">{player.name}</span>
+                      <span className="text-muted-foreground text-xs">{player.position}</span>
+                      {player.isCaptain && (
+                        <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">К</span>
+                      )}
+                      {player.isViceCaptain && (
+                        <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">ВК</span>
+                      )}
+                      {showCaptain3xBadge && (
+                        <img src={icon3x} alt="3x" className="w-4 h-4" />
+                      )}
+                      {showDoublePowerBadge && !showCaptain3xBadge && (
+                        <img src={icon2x} alt="2x" className="w-4 h-4" />
+                      )}
+                      {player.hasRedCard && (
+                        <span className="bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">КК</span>
+                      )}
+                      {player.isInjured && !player.hasRedCard && (
+                        <span className="bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">ТР</span>
+                      )}
+                    </div>
+                    <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
+                      {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
+                    </span>
+                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+                    <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
+                  </div>
+                );
+              })}
           </div>
 
           <h3 className="text-muted-foreground text-sm mt-6 mb-2">Замены</h3>
@@ -295,11 +337,16 @@ const ViewTeam = () => {
               <div
                 key={player.id}
                 onClick={() => handlePlayerClick(player)}
-                className="bg-card rounded-full px-4 py-2 flex items-center opacity-70 cursor-pointer hover:bg-card/80 transition-colors"
+                className={`bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
+                  isBenchBoostActive ? "border border-primary" : "opacity-70"
+                }`}
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
+                  {isBenchBoostActive && (
+                    <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />
+                  )}
                 </div>
                 <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
                   {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
