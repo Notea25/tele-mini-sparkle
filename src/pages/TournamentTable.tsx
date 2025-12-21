@@ -154,48 +154,44 @@ const TournamentTable = () => {
         <h1 className="text-3xl font-bold text-foreground mb-6">Турнирная таблица</h1>
 
         {/* Table header */}
-        <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
-          <span className="col-span-2">Позиция</span>
-          <span className="col-span-4">Команда</span>
-          <span className="col-span-3 text-center">Очки / тур<br/>29</span>
-          <span className="col-span-3 text-center">Всего очков</span>
+        <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">
+          <span className="col-span-3 text-xs">Место</span>
+          <span className="col-span-4 text-xs">Название</span>
+          <span className="col-span-3 text-center">
+            <span className="text-xs block whitespace-nowrap">29-й тур</span>
+            <span className="text-[10px] italic block">(очки)</span>
+          </span>
+          <span className="col-span-2 text-right">
+            <span className="text-xs block">Всего</span>
+            <span className="text-[10px] italic block">(очков)</span>
+          </span>
         </div>
 
         {/* Table rows */}
         <div className="space-y-2">
           {currentPageData.map((row) => (
-            <div 
-              key={row.id} 
-              className="flex items-center gap-2 cursor-pointer"
+            <div
+              key={row.id}
+              className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
+                row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
+              }`}
               onClick={() => handleTeamClick(row)}
             >
-              <div
-                className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full transition-opacity hover:opacity-80 ${
-                  row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
-                }`}
-                style={{ width: 'calc(100% - 24px)' }}
-              >
-                <div className="col-span-2 flex items-center gap-1">
-                  {row.change === "up" && <img src={arrowUpRed} alt="up" className="w-3 h-3" />}
-                  {row.change === "down" && !row.isUser && <img src={arrowDownGreen} alt="down" className="w-3 h-3" />}
-                  {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
-                  {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                  <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
-                  {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
-                  {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
-                  {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
-                </div>
-                <span className={`col-span-4 font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-                <span className={`col-span-3 text-center ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-                <span className={`col-span-3 text-center font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.totalPoints.toLocaleString().replace(",", " ")}</span>
+              <div className="col-span-3 flex items-center gap-1">
+                {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                {row.change === "down" && !row.isUser && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
+                {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
+                {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
+                <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+                {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
+                {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
+                {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
               </div>
-              {row.isUser ? (
-                <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-xs">
-                  Ты
-                </span>
-              ) : (
-                <span className="w-8" />
-              )}
+              <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+              <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+              <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                {row.totalPoints.toLocaleString()}
+              </span>
             </div>
           ))}
         </div>
