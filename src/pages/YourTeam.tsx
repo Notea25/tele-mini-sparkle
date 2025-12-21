@@ -8,9 +8,14 @@ import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
 import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
+import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
+
+interface ExtendedPlayerData extends PlayerData {
+  displayedPoints: number;
+}
 
 const YourTeam = () => {
   const navigate = useNavigate();
@@ -19,48 +24,12 @@ const YourTeam = () => {
   const [teamName] = useState(() => getSavedTeam().teamName);
 
   // Load saved team
-  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerData[]>([]);
-  const [benchPlayers, setBenchPlayers] = useState<PlayerData[]>([]);
+  const [mainSquadPlayers, setMainSquadPlayers] = useState<ExtendedPlayerData[]>([]);
+  const [benchPlayers, setBenchPlayers] = useState<ExtendedPlayerData[]>([]);
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
-  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<ExtendedPlayerData | null>(null);
   const [isPlayerCardOpen, setIsPlayerCardOpen] = useState(false);
-
-  useEffect(() => {
-    const { mainSquad, bench } = getMainSquadAndBench();
-    const savedTeam = getSavedTeam();
-    
-    if (mainSquad.length > 0) {
-      // Add red card and injury to some players for demo
-      const updatedMainSquad = mainSquad.map((p, idx) => {
-        // Deterministic injury and red card based on tour
-        const seed = 999 * 100 + currentTour;
-        const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * mainSquad.length);
-        let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * mainSquad.length);
-        if (redCardIdx === injuredIdx) {
-          redCardIdx = (redCardIdx + 1) % mainSquad.length;
-        }
-        
-        return {
-          ...p,
-          hasRedCard: idx === redCardIdx,
-          isInjured: idx === injuredIdx,
-        };
-      });
-      
-      setMainSquadPlayers(updatedMainSquad);
-      setBenchPlayers(bench);
-      
-      // Set captain and vice-captain from saved data
-      setCaptain(savedTeam.captain);
-      setViceCaptain(savedTeam.viceCaptain);
-    }
-  }, [currentTour]);
-
-  const handlePlayerClick = (player: PlayerData) => {
-    setSelectedPlayer(player);
-    setIsPlayerCardOpen(true);
-  };
 
   // Generate tour data for user's team (using seed 999 for user)
   const { tourPoints, tourBoosts } = useMemo(() => {
@@ -70,12 +39,66 @@ const YourTeam = () => {
   // Get current tour boost info
   const currentBoostInfo = getTourBoostInfo(tourBoosts[currentTour - 1]);
   const currentBoostType = tourBoosts[currentTour - 1];
-  const currentTourPoints = tourPoints[currentTour - 1] || 0;
 
   // Check which boosts are active for current tour
   const isBenchBoostActive = currentBoostType === "bench";
   const isCaptain3xBoostActive = currentBoostType === "captain3x";
   const isDoublePowerBoostActive = currentBoostType === "double";
+
+  useEffect(() => {
+    const { mainSquad, bench } = getMainSquadAndBench();
+    const savedTeam = getSavedTeam();
+    
+    if (mainSquad.length > 0) {
+      const savedCaptain = savedTeam.captain;
+      const savedViceCaptain = savedTeam.viceCaptain;
+      
+      // Deterministic injury and red card based on tour
+      const seed = 999 * 100 + currentTour;
+      const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * mainSquad.length);
+      let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * mainSquad.length);
+      if (redCardIdx === injuredIdx) {
+        redCardIdx = (redCardIdx + 1) % mainSquad.length;
+      }
+      
+      // Add displayed points with boost multipliers
+      const updatedMainSquad: ExtendedPlayerData[] = mainSquad.map((p, idx) => {
+        const isCaptainPlayer = p.id === savedCaptain;
+        const isViceCaptainPlayer = p.id === savedViceCaptain;
+        
+        return {
+          ...p,
+          hasRedCard: idx === redCardIdx,
+          isInjured: idx === injuredIdx,
+          isCaptain: isCaptainPlayer,
+          isViceCaptain: isViceCaptainPlayer,
+          displayedPoints: getDisplayedPoints(p.points, isCaptainPlayer, isViceCaptainPlayer, currentBoostType),
+        };
+      });
+      
+      const updatedBench: ExtendedPlayerData[] = bench.map(p => ({
+        ...p,
+        displayedPoints: p.points,
+      }));
+      
+      setMainSquadPlayers(updatedMainSquad);
+      setBenchPlayers(updatedBench);
+      setCaptain(savedCaptain);
+      setViceCaptain(savedViceCaptain);
+    }
+  }, [currentTour, currentBoostType]);
+
+  // Calculate total tour points
+  const totalTourPoints = useMemo(() => {
+    if (mainSquadPlayers.length === 0) return 0;
+    return calculateTotalTourPoints(mainSquadPlayers, benchPlayers, currentBoostType);
+  }, [mainSquadPlayers, benchPlayers, currentBoostType]);
+
+  const handlePlayerClick = (player: ExtendedPlayerData | PlayerData) => {
+    const extendedPlayer = player as ExtendedPlayerData;
+    setSelectedPlayer(extendedPlayer);
+    setIsPlayerCardOpen(true);
+  };
 
   const handleTourChange = (direction: "prev" | "next") => {
     if (direction === "prev" && currentTour > 1) {
@@ -124,9 +147,8 @@ const YourTeam = () => {
         </button>
         
         <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
-          <span className="text-2xl font-bold text-primary-foreground">{currentTourPoints}</span>
+          <span className="text-2xl font-bold text-primary-foreground">{totalTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
-          {/* Used Boost Icon - only show if boost was used this tour */}
           {currentBoostInfo && (
             <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1" title={currentBoostInfo.label}>
               <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-5 h-5 object-contain" />
@@ -171,7 +193,7 @@ const YourTeam = () => {
       {activeTab === "formation" && (
         <div className="mt-6">
           <FormationFieldManagement
-            mainSquadPlayers={mainSquadPlayers}
+            mainSquadPlayers={mainSquadPlayers.map(p => ({ ...p, points: p.displayedPoints }))}
             benchPlayers={benchPlayers}
             onPlayerClick={handlePlayerClick}
             captain={captain}
@@ -243,7 +265,7 @@ const YourTeam = () => {
                     <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
                       {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
                     </span>
-                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
                     <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
                   </div>
                 );
@@ -271,7 +293,7 @@ const YourTeam = () => {
                 <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
                   {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
                 </span>
-                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
               </div>
             ))}
@@ -281,7 +303,7 @@ const YourTeam = () => {
 
       {/* Player Card Drawer */}
       <PlayerCard
-        player={selectedPlayer}
+        player={selectedPlayer ? { ...selectedPlayer, points: selectedPlayer.displayedPoints } : null}
         isOpen={isPlayerCardOpen}
         onClose={() => setIsPlayerCardOpen(false)}
         variant="view"

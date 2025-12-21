@@ -7,6 +7,7 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
 import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
+import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
@@ -17,6 +18,7 @@ interface PlayerData {
   team: string;
   position: string;
   points: number;
+  displayedPoints: number;
   price: number;
   slotIndex?: number;
   isCaptain?: boolean;
@@ -36,11 +38,11 @@ const DreamTeam = () => {
   const teamName = "Dream team";
 
   // Generate tour-specific dream team data
-  const { mainSquadPlayers, benchPlayers, tourPoints, tourBoosts, captainId, viceCaptainId } = useMemo(() => {
+  const { mainSquadPlayers, benchPlayers, tourBoosts, captainId, viceCaptainId, totalTourPoints } = useMemo(() => {
     const { tourPoints, tourBoosts } = generateTourData(0); // seed 0 for dream team
     
-    // Generate players with tour-specific points
     const seed = currentTour;
+    const boostType = tourBoosts[currentTour - 1];
     
     // Deterministic captain and vice-captain selection based on seed
     const captainSeed = Math.sin(seed * 7) * 10000;
@@ -57,64 +59,77 @@ const DreamTeam = () => {
       redCardIdx = (redCardIdx + 1) % 11;
     }
 
-    const baseMainSquad: PlayerData[] = [
-      { id: 0, name: "Плотников", team: "Динамо Минск", position: "ВР", points: 0, price: 6.5, slotIndex: 0 },
-      { id: 4, name: "Козлов", team: "Белшина", position: "ЗЩ", points: 0, price: 6.5, slotIndex: 0 },
-      { id: 5, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", points: 0, price: 6.5, slotIndex: 1 },
-      { id: 6, name: "Петров", team: "Динамо Минск", position: "ЗЩ", points: 0, price: 6.5, slotIndex: 2 },
-      { id: 7, name: "Сидоров", team: "БАТЭ", position: "ЗЩ", points: 0, price: 6.5, slotIndex: 3 },
-      { id: 12, name: "Новиков", team: "Белшина", position: "ПЗ", points: 0, price: 6.5, slotIndex: 0 },
-      { id: 13, name: "Морозов", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, slotIndex: 1 },
-      { id: 14, name: "Волков", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, slotIndex: 2 },
-      { id: 15, name: "Алексеев", team: "БАТЭ", position: "ПЗ", points: 0, price: 6.5, slotIndex: 3 },
-      { id: 22, name: "Лебедев", team: "Динамо Минск", position: "НП", points: 0, price: 6.5, slotIndex: 0 },
-      { id: 23, name: "Семенов", team: "БАТЭ", position: "НП", points: 0, price: 6.5, slotIndex: 1 },
+    const baseMainSquad = [
+      { id: 0, name: "Плотников", team: "Динамо Минск", position: "ВР", price: 6.5, slotIndex: 0 },
+      { id: 4, name: "Козлов", team: "Белшина", position: "ЗЩ", price: 6.5, slotIndex: 0 },
+      { id: 5, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", price: 6.5, slotIndex: 1 },
+      { id: 6, name: "Петров", team: "Динамо Минск", position: "ЗЩ", price: 6.5, slotIndex: 2 },
+      { id: 7, name: "Сидоров", team: "БАТЭ", position: "ЗЩ", price: 6.5, slotIndex: 3 },
+      { id: 12, name: "Новиков", team: "Белшина", position: "ПЗ", price: 6.5, slotIndex: 0 },
+      { id: 13, name: "Морозов", team: "Динамо Минск", position: "ПЗ", price: 6.5, slotIndex: 1 },
+      { id: 14, name: "Волков", team: "Динамо Минск", position: "ПЗ", price: 6.5, slotIndex: 2 },
+      { id: 15, name: "Алексеев", team: "БАТЭ", position: "ПЗ", price: 6.5, slotIndex: 3 },
+      { id: 22, name: "Лебедев", team: "Динамо Минск", position: "НП", price: 6.5, slotIndex: 0 },
+      { id: 23, name: "Семенов", team: "БАТЭ", position: "НП", price: 6.5, slotIndex: 1 },
     ];
 
-    // Goalkeeper always first on bench
-    const baseBench: PlayerData[] = [
-      { id: 103, name: "Николаев", team: "Динамо Минск", position: "ВР", points: 0, price: 6.5, isOnBench: true },
-      { id: 100, name: "Егоров", team: "Динамо Минск", position: "ЗЩ", points: 0, price: 6.5, isOnBench: true },
-      { id: 101, name: "Павлов", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, isOnBench: true },
-      { id: 102, name: "Федоров", team: "Динамо Минск", position: "НП", points: 0, price: 6.5, isOnBench: true },
+    const baseBench = [
+      { id: 103, name: "Николаев", team: "Динамо Минск", position: "ВР", price: 6.5 },
+      { id: 100, name: "Егоров", team: "Динамо Минск", position: "ЗЩ", price: 6.5 },
+      { id: 101, name: "Павлов", team: "Динамо Минск", position: "ПЗ", price: 6.5 },
+      { id: 102, name: "Федоров", team: "Динамо Минск", position: "НП", price: 6.5 },
     ];
 
-    // Assign tour-specific points, captain, vice-captain, injuries and red cards
-    const mainSquad = baseMainSquad.map((p, idx) => {
+    // Assign tour-specific points
+    const mainSquad: PlayerData[] = baseMainSquad.map((p, idx) => {
       const playerSeed = seed * 100 + idx;
       const pseudoRandom = Math.sin(playerSeed) * 10000;
       const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
+      const basePoints = Math.floor(randomFactor * 15) + 25;
+      const isCaptain = idx === captainIdx;
+      const isViceCaptain = idx === viceCaptainIdx;
+      
       return { 
         ...p, 
-        points: Math.floor(randomFactor * 15) + 25,
-        isCaptain: idx === captainIdx,
-        isViceCaptain: idx === viceCaptainIdx,
+        points: basePoints,
+        displayedPoints: getDisplayedPoints(basePoints, isCaptain, isViceCaptain, boostType),
+        isCaptain,
+        isViceCaptain,
         hasRedCard: idx === redCardIdx,
         isInjured: idx === injuredIdx,
       };
     });
 
-    const bench = baseBench.map((p, idx) => {
+    const bench: PlayerData[] = baseBench.map((p, idx) => {
       const playerSeed = seed * 100 + 50 + idx;
       const pseudoRandom = Math.sin(playerSeed) * 10000;
       const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      return { ...p, points: Math.floor(randomFactor * 10) + 20 };
+      const basePoints = Math.floor(randomFactor * 10) + 20;
+      
+      return { 
+        ...p, 
+        points: basePoints,
+        displayedPoints: basePoints,
+        isOnBench: true,
+      };
     });
+
+    // Calculate total points with boost logic
+    const total = calculateTotalTourPoints(mainSquad, bench, boostType);
 
     return { 
       mainSquadPlayers: mainSquad, 
       benchPlayers: bench, 
-      tourPoints, 
       tourBoosts,
       captainId: captainIdx,
       viceCaptainId: viceCaptainIdx,
+      totalTourPoints: total,
     };
   }, [currentTour]);
 
   // Get current tour boost info
   const currentBoostInfo = getTourBoostInfo(tourBoosts[currentTour - 1]);
   const currentBoostType = tourBoosts[currentTour - 1];
-  const currentTourPoints = tourPoints[currentTour - 1] || 0;
 
   // Check which boosts are active for current tour
   const isBenchBoostActive = currentBoostType === "bench";
@@ -173,9 +188,8 @@ const DreamTeam = () => {
         </button>
         
         <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
-          <span className="text-2xl font-bold text-primary-foreground">{currentTourPoints}</span>
+          <span className="text-2xl font-bold text-primary-foreground">{totalTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
-          {/* Used Boost Icon - only show if boost was used this tour */}
           {currentBoostInfo && (
             <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1" title={currentBoostInfo.label}>
               <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-5 h-5 object-contain" />
@@ -220,7 +234,7 @@ const DreamTeam = () => {
       {activeTab === "formation" && (
         <div className="mt-6">
           <FormationFieldManagement
-            mainSquadPlayers={mainSquadPlayers}
+            mainSquadPlayers={mainSquadPlayers.map(p => ({ ...p, points: p.displayedPoints }))}
             benchPlayers={benchPlayers}
             onPlayerClick={handlePlayerClick}
             captain={captainId}
@@ -290,7 +304,7 @@ const DreamTeam = () => {
                     <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
                       {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
                     </span>
-                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
                     <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
                   </div>
                 );
@@ -318,7 +332,7 @@ const DreamTeam = () => {
                 <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
                   {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
                 </span>
-                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
               </div>
             ))}
@@ -328,7 +342,7 @@ const DreamTeam = () => {
 
       {/* Player Card Drawer */}
       <PlayerCard
-        player={selectedPlayer}
+        player={selectedPlayer ? { ...selectedPlayer, points: selectedPlayer.displayedPoints } : null}
         isOpen={isPlayerCardOpen}
         onClose={() => setIsPlayerCardOpen(false)}
         variant="view"
