@@ -101,7 +101,6 @@ const TeamBuilder = () => {
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
 
-
   // Check for unsaved changes
   const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
 
@@ -137,7 +136,6 @@ const TeamBuilder = () => {
   const deadlineDate = new Date("2025-12-14T19:00:00");
   const tournamentStartDate = new Date("2025-12-04T19:00:00"); // Tournament start (10 days before deadline)
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
-
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -1194,16 +1192,13 @@ const TeamBuilder = () => {
             <span className="text-white text-sm font-bold">!</span>
           </div>
           <p className="text-muted-foreground text-sm">
-            Вы не можете добавить более трёх игроков из одного клуба в свою команду
+            Ты не можешь добавлять более трёх игроков из одного клуба в свою команду
           </p>
         </div>
       </div>
 
       {/* Team Cost & Balance - Sticky */}
-      <div
-        className="sticky left-0 right-0 bg-background border-t border-border px-4 py-2 z-40"
-        style={{ bottom: 0 }}
-      >
+      <div className="sticky left-0 right-0 bg-background border-t border-border px-4 py-2 z-40" style={{ bottom: 0 }}>
         <div className="flex justify-between mb-2">
           <div>
             <span className="text-muted-foreground text-xs">Стоимость команды</span>
@@ -1268,9 +1263,7 @@ const TeamBuilder = () => {
       <AlertDialog open={showSaveConfirmation} onOpenChange={setShowSaveConfirmation}>
         <AlertDialogContent className="bg-[#1A1A2E] border-border rounded-2xl max-w-[320px]">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground text-center">
-              Сохранить команду?
-            </AlertDialogTitle>
+            <AlertDialogTitle className="text-foreground text-center">Сохранить команду?</AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground text-center">
               Твоя команда "{teamName}" будет сохранена. Именно с этим составом ты входишь в сезон.
             </AlertDialogDescription>
