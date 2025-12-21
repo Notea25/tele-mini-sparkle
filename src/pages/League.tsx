@@ -445,56 +445,41 @@ const League = () => {
 
         {activeTab === "leagues" && (
           <>
-            {/* Commercial Leagues */}
-            <h2 className="text-2xl font-bold text-foreground mb-2">Коммерческие лиги</h2>
-            <p className="text-muted-foreground text-sm mb-4">Соревнуйся за призы в коммерческих лигах</p>
+            {/* Commercial Leagues Section */}
+            <div className="mb-8">
+              {/* Section Title */}
+              <h2 className="text-2xl font-bold text-foreground mb-2">Коммерческие лиги</h2>
+              {/* Section Description */}
+              <p className="text-muted-foreground text-sm mb-6">Соревнуйся за призы в коммерческих лигах</p>
 
-            {/* Commercial leagues table header */}
-            <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
-              <span className="col-span-4">Название</span>
-              <span className="col-span-4">Приз</span>
-              <span className="col-span-4">Отрезок</span>
-            </div>
+              {/* Commercial leagues cards */}
+              <div className="space-y-3">
+                {displayedCommercialLeagues.map((league, idx) => {
+                  const isFinished = currentTour > league.endTour;
+                  const userCommercialLeagues = JSON.parse(localStorage.getItem("userCommercialLeagues") || "[]");
+                  const isParticipating = userCommercialLeagues.includes(league.id);
 
-            {/* Commercial leagues rows */}
-            <div className="space-y-2 mb-4">
-              {displayedCommercialLeagues.map((league, idx) => {
-                const isFinished = currentTour > league.endTour;
-                const userCommercialLeagues = JSON.parse(localStorage.getItem("userCommercialLeagues") || "[]");
-                const isParticipating = userCommercialLeagues.includes(league.id);
+                  // Parse deadline date and calculate registration window
+                  const [day, month, year] = league.deadline.split(".");
+                  const deadlineDate = new Date(`${year}-${month}-${day}T19:00:00`);
+                  const registrationStartDate = new Date(deadlineDate.getTime() - 72 * 60 * 60 * 1000);
+                  const now = new Date();
+                  const isRegistrationOpen = now >= registrationStartDate && now < deadlineDate;
+                  const isBeforeRegistration = now < registrationStartDate;
 
-                // Parse deadline date and calculate registration window
-                const [day, month, year] = league.deadline.split(".");
-                const deadlineDate = new Date(`${year}-${month}-${day}T19:00:00`);
-                const registrationStartDate = new Date(deadlineDate.getTime() - 72 * 60 * 60 * 1000); // 72 hours before
-                const now = new Date();
-                const isRegistrationOpen = now >= registrationStartDate && now < deadlineDate;
-                const isBeforeRegistration = now < registrationStartDate;
+                  const formatDate = (date: Date) => {
+                    const d = String(date.getDate()).padStart(2, "0");
+                    const m = String(date.getMonth() + 1).padStart(2, "0");
+                    const y = date.getFullYear();
+                    return `${d}.${m}.${y}`;
+                  };
 
-                // Format registration start date
-                const formatDate = (date: Date) => {
-                  const d = String(date.getDate()).padStart(2, "0");
-                  const m = String(date.getMonth() + 1).padStart(2, "0");
-                  const y = date.getFullYear();
-                  return `${d}.${m}.${y}`;
-                };
+                  const registrationStartFormatted = formatDate(registrationStartDate);
 
-                const registrationStartFormatted = formatDate(registrationStartDate);
-                const statusText = isParticipating
-                  ? "Вы участвуете"
-                  : isRegistrationOpen
-                    ? "Регистрация открыта"
-                    : isBeforeRegistration
-                      ? `Регистрация с ${registrationStartFormatted}`
-                      : "Регистрация закрыта";
-
-                return (
-                  <div key={idx} className="space-y-1">
-                    <span className="text-xs text-muted-foreground ml-4">
-                      Регистрация с {registrationStartFormatted} по {league.deadline}
-                    </span>
-                    <div
-                      className={`grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors ${
+                  return (
+                    <Card
+                      key={idx}
+                      className={`bg-secondary/50 border-border/50 overflow-hidden cursor-pointer hover:bg-secondary/70 transition-colors ${
                         isFinished || (!isRegistrationOpen && !isParticipating) ? "opacity-40" : ""
                       }`}
                       onClick={() =>
@@ -503,18 +488,44 @@ const League = () => {
                         )
                       }
                     >
-                      <span className="col-span-4 text-foreground text-sm truncate">{league.name}</span>
-                      <span className="col-span-4 text-foreground text-sm truncate">{league.prize}</span>
-                      <span className="col-span-3 text-foreground text-sm">{league.period}</span>
-                      <span
-                        className={`col-span-1 text-right ${isParticipating ? "text-primary" : "text-muted-foreground"}`}
-                      >
-                        →
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
+                      <div className="p-4">
+                        {/* League Name/Logo + Arrow */}
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-foreground text-lg font-bold">{league.name}</span>
+                          <ArrowRight className={`w-5 h-5 ${isParticipating ? "text-primary" : "text-muted-foreground"}`} />
+                        </div>
+
+                        {/* Table Header */}
+                        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-2">
+                          <span>Приз</span>
+                          <span>Отрезок</span>
+                        </div>
+
+                        {/* Table Values */}
+                        <div className="grid grid-cols-2 gap-2 text-sm text-foreground mb-3">
+                          <span className="font-medium">{league.prize}</span>
+                          <span>{league.period}</span>
+                        </div>
+
+                        {/* Registration Info */}
+                        <div className="pt-3 border-t border-border/30">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground">
+                              Регистрация: {registrationStartFormatted} – {league.deadline}
+                            </span>
+                            {isParticipating && (
+                              <span className="text-xs text-primary font-medium">Вы участвуете</span>
+                            )}
+                            {!isParticipating && isRegistrationOpen && (
+                              <span className="text-xs text-primary font-medium">Открыта</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
             </div>
 
             {/* See all commercial */}
