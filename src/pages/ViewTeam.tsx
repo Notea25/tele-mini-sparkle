@@ -6,13 +6,8 @@ import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
+import { generateTourData, getTourBoostInfo, MAX_TOURS } from "@/lib/tourData";
 
-// Boost icons
-import iconBenchPlus from "@/assets/icon-bench-plus.png";
-import icon3x from "@/assets/icon-3x.png";
-import iconStar from "@/assets/icon-star.png";
-import iconFree from "@/assets/icon-free.png";
-import icon2x from "@/assets/icon-2x.png";
 // Random team names (same as in TournamentTable)
 const teamNames = [
   "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",
@@ -69,41 +64,63 @@ const ViewTeam = () => {
   const teamIndex = parseInt(teamId) - 1;
   const teamName = teamNameParam || teamNames[teamIndex % teamNames.length];
 
-  // Generate random players for this team
-  const { mainSquadPlayers, benchPlayers, totalPoints } = useMemo(() => {
+  // Generate tour data for this team
+  const { tourPoints, tourBoosts } = useMemo(() => {
+    return generateTourData(parseInt(teamId));
+  }, [teamId]);
+
+  // Get current tour boost info
+  const currentBoostInfo = getTourBoostInfo(tourBoosts[currentTour - 1]);
+  const currentTourPoints = tourPoints[currentTour - 1] || 0;
+
+  // Generate random players for this team and tour
+  const { mainSquadPlayers, benchPlayers } = useMemo(() => {
     const positions = ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"];
     const benchPositions = ["ЗЩ", "ПЗ", "ПЗ", "ВР"];
     
-    const main: PlayerData[] = positions.map((pos, idx) => ({
-      id: idx,
-      name: playerNames[idx % playerNames.length],
-      team: "Динамо Минск",
-      position: pos,
-      points: Math.floor(Math.random() * 20) + 20,
-      price: Math.floor(Math.random() * 5) + 5 + Math.random(),
-      slotIndex: positions.slice(0, idx).filter(p => p === pos).length,
-      isCaptain: idx === 5,
-    }));
+    // Use tour and teamId as seed for different points per tour
+    const seed = parseInt(teamId) * 100 + currentTour;
+    
+    const main: PlayerData[] = positions.map((pos, idx) => {
+      const playerSeed = seed * 100 + idx;
+      const pseudoRandom = Math.sin(playerSeed) * 10000;
+      const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
+      
+      return {
+        id: idx,
+        name: playerNames[idx % playerNames.length],
+        team: "Динамо Минск",
+        position: pos,
+        points: Math.floor(randomFactor * 15) + 2,
+        price: Math.floor(randomFactor * 5) + 5 + randomFactor,
+        slotIndex: positions.slice(0, idx).filter(p => p === pos).length,
+        isCaptain: idx === 5,
+      };
+    });
 
-    const bench: PlayerData[] = benchPositions.map((pos, idx) => ({
-      id: 100 + idx,
-      name: playerNames[(idx + 11) % playerNames.length],
-      team: "БАТЭ",
-      position: pos,
-      points: Math.floor(Math.random() * 15) + 15,
-      price: Math.floor(Math.random() * 4) + 4 + Math.random(),
-      isOnBench: true,
-    }));
+    const bench: PlayerData[] = benchPositions.map((pos, idx) => {
+      const playerSeed = seed * 100 + 50 + idx;
+      const pseudoRandom = Math.sin(playerSeed) * 10000;
+      const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
+      
+      return {
+        id: 100 + idx,
+        name: playerNames[(idx + 11) % playerNames.length],
+        team: "БАТЭ",
+        position: pos,
+        points: Math.floor(randomFactor * 10) + 1,
+        price: Math.floor(randomFactor * 4) + 4 + randomFactor,
+        isOnBench: true,
+      };
+    });
 
-    const total = main.reduce((sum, p) => sum + p.points, 0);
-
-    return { mainSquadPlayers: main, benchPlayers: bench, totalPoints: total };
-  }, [teamId]);
+    return { mainSquadPlayers: main, benchPlayers: bench };
+  }, [teamId, currentTour]);
 
   const handleTourChange = (direction: "prev" | "next") => {
     if (direction === "prev" && currentTour > 1) {
       setCurrentTour(currentTour - 1);
-    } else if (direction === "next" && currentTour < 38) {
+    } else if (direction === "next" && currentTour < MAX_TOURS) {
       setCurrentTour(currentTour + 1);
     }
   };
@@ -151,18 +168,20 @@ const ViewTeam = () => {
           <ChevronLeft className="w-5 h-5" />
         </button>
         
-        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-3">
-          <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
+        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2">
+          <span className="text-2xl font-bold text-primary-foreground">{currentTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
-          {/* Used Boost Icon */}
-          <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center" title="3x Капитан">
-            <img src={icon3x} alt="3x Капитан" className="w-5 h-5 object-contain" />
-          </div>
+          {/* Used Boost Icon - only show if boost was used this tour */}
+          {currentBoostInfo && (
+            <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1" title={currentBoostInfo.label}>
+              <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-5 h-5 object-contain" />
+            </div>
+          )}
         </div>
         
         <button
           onClick={() => handleTourChange("next")}
-          disabled={currentTour >= 38}
+          disabled={currentTour >= MAX_TOURS}
           className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
         >
           <ChevronRight className="w-5 h-5" />

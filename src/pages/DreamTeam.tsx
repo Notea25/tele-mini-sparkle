@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
-
-// Boost icons
-import icon3x from "@/assets/icon-3x.png";
+import { generateTourData, getTourBoostInfo, MAX_TOURS } from "@/lib/tourData";
 
 interface PlayerData {
   id: number;
@@ -32,35 +30,59 @@ const DreamTeam = () => {
 
   const teamName = "Dream team";
 
-  // Main squad players - best performers
-  const mainSquadPlayers: PlayerData[] = [
-    { id: 0, name: "Плотников", team: "Динамо Минск", position: "ВР", points: 32, price: 6.5, slotIndex: 0 },
-    { id: 4, name: "Плотников", team: "Белшина", position: "ЗЩ", points: 28, price: 6.5, slotIndex: 0 },
-    { id: 5, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 30, price: 6.5, slotIndex: 1, isCaptain: true },
-    { id: 6, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 27, price: 6.5, slotIndex: 2 },
-    { id: 7, name: "Плотников", team: "БАТЭ", position: "ЗЩ", points: 29, price: 6.5, slotIndex: 3 },
-    { id: 12, name: "Плотников", team: "Белшина", position: "ПЗ", points: 35, price: 6.5, slotIndex: 0 },
-    { id: 13, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 33, price: 6.5, slotIndex: 1 },
-    { id: 14, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 31, price: 6.5, slotIndex: 2 },
-    { id: 15, name: "Плотников", team: "БАТЭ", position: "ПЗ", points: 34, price: 6.5, slotIndex: 3 },
-    { id: 22, name: "Плотников", team: "Динамо Минск", position: "НП", points: 38, price: 6.5, slotIndex: 0 },
-    { id: 23, name: "Плотников", team: "БАТЭ", position: "НП", points: 36, price: 6.5, slotIndex: 1 },
-  ];
+  // Generate tour-specific dream team data
+  const { mainSquadPlayers, benchPlayers, tourPoints, tourBoosts } = useMemo(() => {
+    const { tourPoints, tourBoosts } = generateTourData(0); // seed 0 for dream team
+    
+    // Generate players with tour-specific points
+    const seed = currentTour;
+    const baseMainSquad: PlayerData[] = [
+      { id: 0, name: "Плотников", team: "Динамо Минск", position: "ВР", points: 0, price: 6.5, slotIndex: 0 },
+      { id: 4, name: "Козлов", team: "Белшина", position: "ЗЩ", points: 0, price: 6.5, slotIndex: 0 },
+      { id: 5, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", points: 0, price: 6.5, slotIndex: 1, isCaptain: true },
+      { id: 6, name: "Петров", team: "Динамо Минск", position: "ЗЩ", points: 0, price: 6.5, slotIndex: 2 },
+      { id: 7, name: "Сидоров", team: "БАТЭ", position: "ЗЩ", points: 0, price: 6.5, slotIndex: 3 },
+      { id: 12, name: "Новиков", team: "Белшина", position: "ПЗ", points: 0, price: 6.5, slotIndex: 0 },
+      { id: 13, name: "Морозов", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, slotIndex: 1 },
+      { id: 14, name: "Волков", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, slotIndex: 2 },
+      { id: 15, name: "Алексеев", team: "БАТЭ", position: "ПЗ", points: 0, price: 6.5, slotIndex: 3 },
+      { id: 22, name: "Лебедев", team: "Динамо Минск", position: "НП", points: 0, price: 6.5, slotIndex: 0 },
+      { id: 23, name: "Семенов", team: "БАТЭ", position: "НП", points: 0, price: 6.5, slotIndex: 1 },
+    ];
 
-  const benchPlayers: PlayerData[] = [
-    { id: 100, name: "Плотников", team: "Динамо Минск", position: "ЗЩ", points: 24, price: 6.5, isOnBench: true },
-    { id: 101, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 25, price: 6.5, isOnBench: true },
-    { id: 102, name: "Плотников", team: "Динамо Минск", position: "ПЗ", points: 23, price: 6.5, isOnBench: true },
-    { id: 103, name: "Плотников", team: "Динамо Минск", position: "ВР", points: 22, price: 6.5, isOnBench: true },
-  ];
+    const baseBench: PlayerData[] = [
+      { id: 100, name: "Егоров", team: "Динамо Минск", position: "ЗЩ", points: 0, price: 6.5, isOnBench: true },
+      { id: 101, name: "Павлов", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, isOnBench: true },
+      { id: 102, name: "Федоров", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, isOnBench: true },
+      { id: 103, name: "Николаев", team: "Динамо Минск", position: "ВР", points: 0, price: 6.5, isOnBench: true },
+    ];
 
-  // Calculate total points
-  const totalPoints = mainSquadPlayers.reduce((sum, p) => sum + p.points, 0);
+    // Assign tour-specific points
+    const mainSquad = baseMainSquad.map((p, idx) => {
+      const playerSeed = seed * 100 + idx;
+      const pseudoRandom = Math.sin(playerSeed) * 10000;
+      const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
+      return { ...p, points: Math.floor(randomFactor * 15) + 25 }; // Dream team has higher points
+    });
+
+    const bench = baseBench.map((p, idx) => {
+      const playerSeed = seed * 100 + 50 + idx;
+      const pseudoRandom = Math.sin(playerSeed) * 10000;
+      const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
+      return { ...p, points: Math.floor(randomFactor * 10) + 20 };
+    });
+
+    return { mainSquadPlayers: mainSquad, benchPlayers: bench, tourPoints, tourBoosts };
+  }, [currentTour]);
+
+  // Get current tour boost info (Dream team doesn't use boosts, so no boost displayed)
+  const currentBoostInfo = null; // Dream team is the best performers, no boosts
+  const currentTourPoints = tourPoints[currentTour - 1] || 0;
 
   const handleTourChange = (direction: "prev" | "next") => {
     if (direction === "prev" && currentTour > 1) {
       setCurrentTour(currentTour - 1);
-    } else if (direction === "next" && currentTour < 38) {
+    } else if (direction === "next" && currentTour < MAX_TOURS) {
       setCurrentTour(currentTour + 1);
     }
   };
@@ -108,18 +130,20 @@ const DreamTeam = () => {
           <ChevronLeft className="w-5 h-5" />
         </button>
         
-        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-3">
-          <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
+        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2">
+          <span className="text-2xl font-bold text-primary-foreground">{currentTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
-          {/* Used Boost Icon */}
-          <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center" title="3x Капитан">
-            <img src={icon3x} alt="3x Капитан" className="w-5 h-5 object-contain" />
-          </div>
+          {/* Used Boost Icon - only show if boost was used this tour */}
+          {currentBoostInfo && (
+            <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1" title={currentBoostInfo.label}>
+              <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-5 h-5 object-contain" />
+            </div>
+          )}
         </div>
         
         <button
           onClick={() => handleTourChange("next")}
-          disabled={currentTour >= 38}
+          disabled={currentTour >= MAX_TOURS}
           className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
         >
           <ChevronRight className="w-5 h-5" />
