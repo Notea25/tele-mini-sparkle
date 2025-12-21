@@ -204,9 +204,8 @@ const ViewLeague = () => {
               </div>
               <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
               <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-              <span className={`col-span-2 text-right font-bold text-sm flex items-center justify-end gap-1 ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+              <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
                 {row.totalPoints.toLocaleString()}
-                <ArrowRight className={`w-4 h-4 ${row.isUser ? "text-primary-foreground" : "text-muted-foreground"}`} />
               </span>
             </div>
           ))}
