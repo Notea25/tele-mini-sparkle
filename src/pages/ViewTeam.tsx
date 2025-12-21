@@ -59,14 +59,17 @@ const ViewTeam = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | null>(null);
   const [isPlayerCardOpen, setIsPlayerCardOpen] = useState(false);
 
-  const teamId = searchParams.get("id") || "1";
+  const teamIdParam = searchParams.get("id");
+  const parsedTeamId = Number.parseInt(teamIdParam ?? "1", 10);
+  const teamId = Number.isFinite(parsedTeamId) ? parsedTeamId : 1;
+
   const teamNameParam = searchParams.get("name");
-  const teamIndex = parseInt(teamId) - 1;
+  const teamIndex = teamId - 1;
   const teamName = teamNameParam || teamNames[teamIndex % teamNames.length];
 
   // Generate tour data for this team
   const { tourPoints, tourBoosts } = useMemo(() => {
-    return generateTourData(parseInt(teamId));
+    return generateTourData(teamId);
   }, [teamId]);
 
   // Get current tour boost info
@@ -79,7 +82,7 @@ const ViewTeam = () => {
     const benchPositions = ["ЗЩ", "ПЗ", "ПЗ", "ВР"];
     
     // Use tour and teamId as seed for different points per tour
-    const seed = parseInt(teamId) * 100 + currentTour;
+    const seed = teamId * 100 + currentTour;
     
     const main: PlayerData[] = positions.map((pos, idx) => {
       const playerSeed = seed * 100 + idx;
