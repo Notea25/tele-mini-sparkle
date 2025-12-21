@@ -155,16 +155,12 @@ const ViewTeam = () => {
 
       {/* Points Block - Full Width */}
       <div className="px-4 mt-3">
-        <div className="bg-primary rounded-xl px-4 py-2 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
-            <span className="text-primary-foreground/80 text-sm">очков</span>
-          </div>
-          {/* Used Boost Icons */}
-          <div className="flex items-center gap-2">
-            <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center" title="3x Капитан">
-              <img src={icon3x} alt="3x Капитан" className="w-5 h-5 object-contain" />
-            </div>
+        <div className="bg-primary rounded-xl px-4 py-2 flex items-center justify-center gap-3">
+          <span className="text-2xl font-bold text-primary-foreground">{totalPoints}</span>
+          <span className="text-primary-foreground/80 text-sm">очков</span>
+          {/* Used Boost Icon */}
+          <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-2" title="3x Капитан">
+            <img src={icon3x} alt="3x Капитан" className="w-5 h-5 object-contain" />
           </div>
         </div>
       </div>
