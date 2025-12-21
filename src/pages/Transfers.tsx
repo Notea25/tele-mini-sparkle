@@ -279,9 +279,9 @@ const Transfers = () => {
     setPendingNavigation(null);
   };
 
-  // Calculate budget info
-  const totalPrice = players.reduce((sum, p) => sum + (p.price || 0), 0);
-  const budget = 100 - totalPrice;
+  // Calculate budget info - round to 1 decimal to avoid floating point issues
+  const totalPrice = Math.round(players.reduce((sum, p) => sum + (p.price || 0), 0) * 10) / 10;
+  const budget = Math.round((100 - totalPrice) * 10) / 10;
   const freeTransfers = 5;
   const MAX_PLAYERS_PER_CLUB = 3;
   const MAX_SQUAD_SIZE = 15;
@@ -296,7 +296,7 @@ const Transfers = () => {
       return;
     }
 
-    if (player.price > budget) {
+    if (player.price > budget + 0.001) {
       toast.error("Недостаточно бюджета");
       return;
     }

@@ -378,8 +378,8 @@ const TeamBuilder = () => {
 
   const BUDGET = 100;
   const MAX_PLAYERS_PER_CLUB = 3;
-  const currentTeamCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
-  const currentBalance = BUDGET - currentTeamCost;
+  const currentTeamCost = Math.round(selectedPlayersData.reduce((sum, p) => sum + p.price, 0) * 10) / 10;
+  const currentBalance = Math.round((BUDGET - currentTeamCost) * 10) / 10;
 
   const getPlayersCountByClub = (playerSelections: { id: number; slotIndex: number }[], clubName: string) => {
     return playerSelections.filter((sel) => {
@@ -436,8 +436,8 @@ const TeamBuilder = () => {
         toast.error(`Все слоты для позиции "${player.position}" заняты`);
         return;
       }
-      // Check budget before adding
-      if (player.price > currentBalance) {
+      // Check budget before adding (use >= for exact match)
+      if (player.price > currentBalance + 0.001) {
         toast.error("Недостаточно бюджета для добавления этого игрока");
         return;
       }
