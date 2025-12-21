@@ -239,7 +239,13 @@ const ViewTeam = () => {
           </div>
 
           <div className="space-y-2">
-            {mainSquadPlayers.map((player) => (
+            {[...mainSquadPlayers]
+              .sort((a, b) => {
+                const positionOrder = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
+                return (positionOrder[a.position as keyof typeof positionOrder] ?? 4) - 
+                       (positionOrder[b.position as keyof typeof positionOrder] ?? 4);
+              })
+              .map((player) => (
               <div
                 key={player.id}
                 onClick={() => handlePlayerClick(player)}
