@@ -50,11 +50,12 @@ const DreamTeam = () => {
       { id: 23, name: "Семенов", team: "БАТЭ", position: "НП", points: 0, price: 6.5, slotIndex: 1 },
     ];
 
+    // Goalkeeper always first on bench
     const baseBench: PlayerData[] = [
+      { id: 103, name: "Николаев", team: "Динамо Минск", position: "ВР", points: 0, price: 6.5, isOnBench: true },
       { id: 100, name: "Егоров", team: "Динамо Минск", position: "ЗЩ", points: 0, price: 6.5, isOnBench: true },
       { id: 101, name: "Павлов", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, isOnBench: true },
       { id: 102, name: "Федоров", team: "Динамо Минск", position: "ПЗ", points: 0, price: 6.5, isOnBench: true },
-      { id: 103, name: "Николаев", team: "Динамо Минск", position: "ВР", points: 0, price: 6.5, isOnBench: true },
     ];
 
     // Assign tour-specific points
