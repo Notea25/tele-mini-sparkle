@@ -15,6 +15,10 @@ import trophyGold from "@/assets/trophy-gold.png";
 import trophySilver from "@/assets/trophy-silver.png";
 import trophyBronze from "@/assets/trophy-bronze.png";
 import { getLeaguePreviewTeams } from "@/lib/tournamentData";
+import beteraLogo from "@/assets/betera-basketball-logo.png";
+import eslLogo from "@/assets/esl-logo.png";
+import leagueLogo from "@/assets/league-logo.png";
+import aplLogo from "@/assets/apl-logo.png";
 
 const LEAGUE_TAB_KEY = "fantasyLeagueActiveTab";
 
@@ -110,16 +114,18 @@ const League = () => {
     {
       id: "betera",
       name: "Betera",
+      logo: beteraLogo,
       prize: "100 Freebet",
       period: "1-3 тур",
       endTour: 3,
       startTour: 1,
       deadline: "01.03.2026",
     },
-    { id: "bnb", name: "BNB", prize: "1000 BYN", period: "4-6 тур", endTour: 6, startTour: 4, deadline: "15.04.2026" },
+    { id: "bnb", name: "BNB", logo: eslLogo, prize: "1000 BYN", period: "4-6 тур", endTour: 6, startTour: 4, deadline: "15.04.2026" },
     {
       id: "atlant-m",
       name: "Atlant-M",
+      logo: leagueLogo,
       prize: "iPhone 17",
       period: "7-9 тур",
       endTour: 9,
@@ -129,6 +135,7 @@ const League = () => {
     {
       id: "abff",
       name: "ABFF",
+      logo: aplLogo,
       prize: "VIP-ложа",
       period: "10-12 тур",
       endTour: 12,
@@ -138,6 +145,7 @@ const League = () => {
     {
       id: "bcs",
       name: "BCS",
+      logo: beteraLogo,
       prize: "MacBook",
       period: "13-15 тур",
       endTour: 15,
@@ -147,6 +155,7 @@ const League = () => {
     {
       id: "hc-dinamo",
       name: "HC Dinamo",
+      logo: eslLogo,
       prize: "Абонемент",
       period: "16-18 тур",
       endTour: 18,
@@ -156,6 +165,7 @@ const League = () => {
     {
       id: "maxline",
       name: "Maxline",
+      logo: leagueLogo,
       prize: "250 Free Spin",
       period: "19-21 тур",
       endTour: 21,
@@ -165,6 +175,7 @@ const League = () => {
     {
       id: "papa-doner",
       name: "Papa Doner",
+      logo: aplLogo,
       prize: "100 BYN",
       period: "22-24 тур",
       endTour: 24,
@@ -174,6 +185,7 @@ const League = () => {
     {
       id: "zubr",
       name: "Zubr",
+      logo: beteraLogo,
       prize: "AirPods",
       period: "25-27 тур",
       endTour: 27,
@@ -183,6 +195,7 @@ const League = () => {
     {
       id: "hello",
       name: "Hello",
+      logo: eslLogo,
       prize: "1000 минут",
       period: "28-30 тур",
       endTour: 30,
@@ -489,9 +502,14 @@ const League = () => {
                       }
                     >
                       <div className="p-4">
-                        {/* League Name/Logo + Arrow */}
+                        {/* League Logo + Arrow */}
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-foreground text-lg font-bold">{league.name}</span>
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden">
+                              <img src={league.logo} alt={league.name} className="w-8 h-8 object-contain" />
+                            </div>
+                            <span className="text-foreground text-lg font-bold">{league.name}</span>
+                          </div>
                           <ArrowRight className={`w-5 h-5 ${isParticipating ? "text-primary" : "text-muted-foreground"}`} />
                         </div>
 
