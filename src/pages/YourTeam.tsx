@@ -49,24 +49,28 @@ const YourTeam = () => {
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
     const savedTeam = getSavedTeam();
-    
+
     if (mainSquad.length > 0) {
       const savedCaptain = savedTeam.captain;
       const savedViceCaptain = savedTeam.viceCaptain;
-      
+
       // Deterministic injury and red card based on tour
       const seed = 999 * 100 + currentTour;
-      const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * mainSquad.length);
-      let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * mainSquad.length);
+      const injuredIdx = Math.floor(
+        (Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * mainSquad.length,
+      );
+      let redCardIdx = Math.floor(
+        (Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * mainSquad.length,
+      );
       if (redCardIdx === injuredIdx) {
         redCardIdx = (redCardIdx + 1) % mainSquad.length;
       }
-      
+
       // Add displayed points with boost multipliers
       const updatedMainSquad: ExtendedPlayerData[] = mainSquad.map((p, idx) => {
         const isCaptainPlayer = p.id === savedCaptain;
         const isViceCaptainPlayer = p.id === savedViceCaptain;
-        
+
         return {
           ...p,
           hasRedCard: idx === redCardIdx,
@@ -76,12 +80,12 @@ const YourTeam = () => {
           displayedPoints: getDisplayedPoints(p.points, isCaptainPlayer, isViceCaptainPlayer, currentBoostType),
         };
       });
-      
-      const updatedBench: ExtendedPlayerData[] = bench.map(p => ({
+
+      const updatedBench: ExtendedPlayerData[] = bench.map((p) => ({
         ...p,
         displayedPoints: p.points,
       }));
-      
+
       setMainSquadPlayers(updatedMainSquad);
       setBenchPlayers(updatedBench);
       setCaptain(savedCaptain);
@@ -146,17 +150,20 @@ const YourTeam = () => {
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        
+
         <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
           <span className="text-2xl font-bold text-primary-foreground">{totalTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
           {currentBoostInfo && (
-            <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1" title={currentBoostInfo.label}>
+            <div
+              className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1"
+              title={currentBoostInfo.label}
+            >
               <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-5 h-5 object-contain" />
             </div>
           )}
         </div>
-        
+
         <button
           onClick={() => handleTourChange("next")}
           disabled={currentTour >= MAX_TOURS}
@@ -186,7 +193,7 @@ const YourTeam = () => {
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
         >
-          Списком
+          Список
         </Button>
       </div>
 
@@ -194,7 +201,7 @@ const YourTeam = () => {
       {activeTab === "formation" && (
         <div className="mt-6">
           <FormationFieldManagement
-            mainSquadPlayers={mainSquadPlayers.map(p => ({ ...p, points: p.displayedPoints }))}
+            mainSquadPlayers={mainSquadPlayers.map((p) => ({ ...p, points: p.displayedPoints }))}
             benchPlayers={benchPlayers}
             onPlayerClick={handlePlayerClick}
             captain={captain}
@@ -223,16 +230,18 @@ const YourTeam = () => {
           <div className="space-y-2">
             {[...mainSquadPlayers]
               .sort((a, b) => {
-                const positionOrder = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
-                return (positionOrder[a.position as keyof typeof positionOrder] ?? 4) - 
-                       (positionOrder[b.position as keyof typeof positionOrder] ?? 4);
+                const positionOrder = { ВР: 0, ЗЩ: 1, ПЗ: 2, НП: 3 };
+                return (
+                  (positionOrder[a.position as keyof typeof positionOrder] ?? 4) -
+                  (positionOrder[b.position as keyof typeof positionOrder] ?? 4)
+                );
               })
               .map((player) => {
                 const isCaptainPlayer = captain === player.id;
                 const isViceCaptainPlayer = viceCaptain === player.id;
                 const showCaptain3xBadge = isCaptain3xBoostActive && isCaptainPlayer;
                 const showDoublePowerBadge = isDoublePowerBoostActive && (isCaptainPlayer || isViceCaptainPlayer);
-                
+
                 return (
                   <div
                     key={player.id}
@@ -243,22 +252,26 @@ const YourTeam = () => {
                   >
                     <div className="flex-1 flex items-center gap-2 min-w-0">
                       {clubLogos[player.team] && (
-                        <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                        <img
+                          src={clubLogos[player.team]}
+                          alt={player.team}
+                          className="w-5 h-5 object-contain flex-shrink-0"
+                        />
                       )}
                       <span className="text-foreground font-medium truncate">{player.name}</span>
                       <span className="text-muted-foreground text-xs">{player.position}</span>
                       {isCaptainPlayer && (
-                        <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">К</span>
+                        <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">
+                          К
+                        </span>
                       )}
                       {isViceCaptainPlayer && (
-                        <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">ВК</span>
+                        <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">
+                          ВК
+                        </span>
                       )}
-                      {showCaptain3xBadge && (
-                        <img src={icon3x} alt="3x" className="w-4 h-4" />
-                      )}
-                      {showDoublePowerBadge && !showCaptain3xBadge && (
-                        <img src={icon2x} alt="2x" className="w-4 h-4" />
-                      )}
+                      {showCaptain3xBadge && <img src={icon3x} alt="3x" className="w-4 h-4" />}
+                      {showDoublePowerBadge && !showCaptain3xBadge && <img src={icon2x} alt="2x" className="w-4 h-4" />}
                       {player.hasRedCard && (
                         <span className="bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">КК</span>
                       )}
@@ -266,7 +279,9 @@ const YourTeam = () => {
                         <span className="bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">ТР</span>
                       )}
                     </div>
-                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
+                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">
+                      {player.displayedPoints}
+                    </span>
                     <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
                   </div>
                 );
@@ -286,13 +301,15 @@ const YourTeam = () => {
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
                   {clubLogos[player.team] && (
-                    <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                    <img
+                      src={clubLogos[player.team]}
+                      alt={player.team}
+                      className="w-5 h-5 object-contain flex-shrink-0"
+                    />
                   )}
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
-                  {isBenchBoostActive && (
-                    <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />
-                  )}
+                  {isBenchBoostActive && <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />}
                 </div>
                 <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
