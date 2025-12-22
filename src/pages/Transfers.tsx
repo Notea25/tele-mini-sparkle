@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers } from "@/lib/teamData";
+import { clubLogos } from "@/lib/clubLogos";
 import FormationFieldTransfers from "@/components/FormationFieldTransfers";
 import PlayerCard from "@/components/PlayerCard";
 import BoostDrawer from "@/components/BoostDrawer";
@@ -31,15 +32,10 @@ import iconFree from "@/assets/icon-free.png";
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon3x from "@/assets/icon-3x.png";
 
-// Club icons mapping
+// Club icons mapping - use clubLogos as primary, fall back to defaults
 const clubIcons: Record<string, string> = {
-  "Белшина": clubBelshina,
-  "БАТЭ": clubLogo,
-  "Динамо Минск": clubLogo,
+  ...clubLogos,
   "Шахтер": clubLogo,
-  "Неман": clubLogo,
-  "Славия": clubLogo,
-  "Торпедо": clubLogo,
 };
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
