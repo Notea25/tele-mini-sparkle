@@ -65,6 +65,42 @@ const PlayerCard = ({
     { tour: 29, opponent: "НЕМ", home: false, logo: clubBelshina },
   ];
 
+  // Mock point breakdown for the current tour - only show actions that happened
+  const getPointBreakdown = () => {
+    const actions: { action: string; points: number }[] = [];
+    
+    // Simulate random actions based on player position and points
+    const rand = (player.id + player.points) % 10;
+    
+    if (player.position === "ВР") {
+      if (rand > 3) actions.push({ action: "Выход на поле", points: 2 });
+      if (rand > 5) actions.push({ action: "Сухой матч", points: 4 });
+      if (rand > 7) actions.push({ action: "Пенальти отбит", points: 5 });
+      if (rand < 2) actions.push({ action: "Гол пропущен", points: -1 });
+    } else if (player.position === "ЗЩ") {
+      if (rand > 2) actions.push({ action: "Выход на поле", points: 2 });
+      if (rand > 6) actions.push({ action: "Гол", points: 6 });
+      if (rand > 4) actions.push({ action: "Голевая передача", points: 3 });
+      if (rand > 7) actions.push({ action: "Сухой матч", points: 4 });
+      if (rand < 3) actions.push({ action: "Жёлтая карточка", points: -1 });
+    } else if (player.position === "ПЗ") {
+      if (rand > 2) actions.push({ action: "Выход на поле", points: 2 });
+      if (rand > 5) actions.push({ action: "Гол", points: 5 });
+      if (rand > 4) actions.push({ action: "Голевая передача", points: 3 });
+      if (rand < 2) actions.push({ action: "Жёлтая карточка", points: -1 });
+      if (rand < 1) actions.push({ action: "Красная карточка", points: -3 });
+    } else if (player.position === "НП") {
+      if (rand > 2) actions.push({ action: "Выход на поле", points: 2 });
+      if (rand > 4) actions.push({ action: "Гол", points: 4 });
+      if (rand > 5) actions.push({ action: "Голевая передача", points: 3 });
+      if (rand < 3) actions.push({ action: "Жёлтая карточка", points: -1 });
+    }
+    
+    return actions;
+  };
+
+  const pointBreakdown = getPointBreakdown();
+
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-card border-border">
@@ -159,6 +195,29 @@ const PlayerCard = ({
               ))}
             </div>
           </div>
+
+          {/* Points breakdown section - only show if there are actions */}
+          {pointBreakdown.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-foreground text-sm font-bold mb-3">Начисление очков за тур</h3>
+              <div className="bg-secondary/30 rounded-xl p-3 space-y-2">
+                {pointBreakdown.map((item, idx) => (
+                  <div key={idx} className="flex items-center justify-between">
+                    <span className="text-muted-foreground text-sm">{item.action}</span>
+                    <span className={`text-sm font-bold ${item.points > 0 ? "text-primary" : "text-red-500"}`}>
+                      {item.points > 0 ? `+${item.points}` : item.points}
+                    </span>
+                  </div>
+                ))}
+                <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
+                  <span className="text-foreground text-sm font-semibold">Итого</span>
+                  <span className={`text-sm font-bold ${pointBreakdown.reduce((sum, i) => sum + i.points, 0) >= 0 ? "text-primary" : "text-red-500"}`}>
+                    {pointBreakdown.reduce((sum, i) => sum + i.points, 0) > 0 ? "+" : ""}{pointBreakdown.reduce((sum, i) => sum + i.points, 0)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <DrawerFooter className="px-6 pb-6">
