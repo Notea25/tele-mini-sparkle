@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, ChevronDown, ChevronUp, User, ArrowRight } from "lucide-react";
+import { Pencil, ChevronDown, ChevronUp, User, ArrowRight, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowSame from "@/assets/arrow-same.png";
@@ -35,6 +36,7 @@ const League = () => {
     return localStorage.getItem("fantasyTeamName") || "Lucky Team";
   });
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
+  const [isRulesDrawerOpen, setIsRulesDrawerOpen] = useState(false);
   const [showAllCommercialLeagues, setShowAllCommercialLeagues] = useState(false);
   const [showPastLeagues, setShowPastLeagues] = useState(false);
   const [showAllClubLeague, setShowAllClubLeague] = useState(false);
@@ -396,7 +398,7 @@ const League = () => {
             </div>
 
             {/* Action buttons */}
-            <div className="grid grid-cols-2 gap-3 mb-8">
+            <div className="grid grid-cols-2 gap-3 mb-4">
               <div
                 className="w-full h-12 bg-[#AAFF03] rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => handleNavigate("/team-management")}
@@ -409,6 +411,15 @@ const League = () => {
               >
                 <span className="text-black font-medium text-base">Трансферы</span>
               </div>
+            </div>
+
+            {/* Rules button */}
+            <div
+              className="w-full h-10 bg-secondary rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:bg-secondary/80 transition-opacity mb-8"
+              onClick={() => setIsRulesDrawerOpen(true)}
+            >
+              <HelpCircle className="w-4 h-4 text-muted-foreground" />
+              <span className="text-muted-foreground font-medium text-sm">Правила игры</span>
             </div>
 
             {/* Tournament Table */}
@@ -879,6 +890,11 @@ const League = () => {
         onClose={() => setIsEditTeamNameModalOpen(false)}
         currentName={teamName}
         onSave={handleSaveTeamName}
+      />
+
+      <RulesDrawer
+        isOpen={isRulesDrawerOpen}
+        onClose={() => setIsRulesDrawerOpen(false)}
       />
     </div>
   );
