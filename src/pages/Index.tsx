@@ -784,25 +784,58 @@ const FormationField = ({
     4: formation.filter((slot) => slot.row === 4),
   };
 
-  // Состояние для определения размера экрана
-  const [cardSize, setCardSize] = useState({ width: 64, height: 82 });
+  // Состояние для определения размера экрана и карточки
+  const [screenWidth, setScreenWidth] = useState(0);
+  const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     const updateCardSize = () => {
-      const screenWidth = window.innerWidth;
+      const width = window.innerWidth;
+      setScreenWidth(width);
 
-      if (screenWidth >= 1024) {
-        // Десктоп
-        // В 2 раза больше мобильного (64 × 2 = 128)
-        setCardSize({ width: 128, height: 164 }); // +100% от мобильного
-      } else if (screenWidth >= 768) {
-        // Планшет
-        // В 1.5 раза больше мобильного (64 × 1.5 = 96)
-        setCardSize({ width: 96, height: 123 }); // +50% от мобильного
+      // Базовые значения для мобильного (320px)
+      const mobileBase = 320;
+      const mobileCardWidth = 64; // На мобильном 64px
+      const mobileCardHeight = 82; // На мобильном 82px
+
+      // Рассчитываем размер карточки в зависимости от ширины экрана
+      // Используем нелинейное масштабирование для лучшего результата
+      let cardWidth;
+
+      if (width <= 375) {
+        // Мобильные до 375px
+        cardWidth = mobileCardWidth * (width / mobileBase);
+      } else if (width <= 768) {
+        // Планшеты 375-768px
+        // На 768px хотим карточку 96px (в 1.5 раза больше чем на 320px)
+        const minWidth = mobileCardWidth * (375 / mobileBase); // ~75px
+        const maxWidth = 96; // Желаемый размер на 768px
+        const scale = (width - 375) / (768 - 375); // 0-1
+        cardWidth = minWidth + (maxWidth - minWidth) * scale;
+      } else if (width <= 1024) {
+        // Планшеты 768-1024px
+        // На 1024px хотим карточку 128px
+        const minWidth = 96;
+        const maxWidth = 128;
+        const scale = (width - 768) / (1024 - 768);
+        cardWidth = minWidth + (maxWidth - minWidth) * scale;
       } else {
-        // Мобильный (не меняем - идеально)
-        setCardSize({ width: 64, height: 82 });
+        // Десктопы 1024px+
+        // Плавное увеличение дальше
+        const minWidth = 128;
+        const maxWidth = 160; // Максимальный размер на очень широких экранах
+        const maxScreen = 1920;
+        const scale = Math.min(1, (width - 1024) / (maxScreen - 1024));
+        cardWidth = minWidth + (maxWidth - minWidth) * scale;
       }
+
+      // Ограничиваем минимальный и максимальный размер
+      cardWidth = Math.max(56, Math.min(160, cardWidth));
+
+      // Высота пропорциональна ширине (соотношение 82:64 = 1.28125)
+      const cardHeight = cardWidth * 1.28125;
+
+      setCardSize({ width: cardWidth, height: cardHeight });
     };
 
     // Устанавливаем начальный размер
@@ -813,6 +846,11 @@ const FormationField = ({
 
     return () => window.removeEventListener("resize", updateCardSize);
   }, []);
+
+  // Если карточка еще не рассчитана, показываем пустой контейнер
+  if (cardSize.width === 0 || cardSize.height === 0) {
+    return <div className="relative w-full h-[400px] bg-gray-900/20 animate-pulse rounded-lg" />;
+  }
 
   // Компонент карточки игрока
   const PlayerCardComponent = ({
@@ -916,7 +954,7 @@ const FormationField = ({
             className="font-semibold text-black block truncate whitespace-nowrap text-center"
             style={{ fontSize: `${cardSize.width * 0.1}px` }} // 10% от ширины
           >
-            {truncateName(player.name, cardSize.width >= 128 ? 20 : cardSize.width >= 96 ? 15 : 10)}
+            {truncateName(player.name, Math.floor(cardSize.width / 6.4))} // 6.4px на символ
           </span>
         </div>
         <div
@@ -931,9 +969,8 @@ const FormationField = ({
             style={{ fontSize: `${cardSize.width * 0.085}px` }} // 8.5% от ширины
           >
             <span className="text-[#7D7A94]">(Д)</span>
-            <span className="text-white ml-[2%]">
-              {truncateName(player.team, cardSize.width >= 128 ? 16 : cardSize.width >= 96 ? 12 : 8)}
-            </span>
+            <span className="text-white ml-[2%]">{truncateName(player.team, Math.floor(cardSize.width / 8))}</span> //
+            8px на символ
           </span>
         </div>
       </div>
@@ -975,26 +1012,26 @@ const FormationField = ({
     </div>
   );
 
-  // Рассчитываем паддинги и гэпы пропорционально
-  // На мобильном: padding 4px, гэпы 8-16px
-  const mobileCardWidth = 64;
+  // Рассчитываем паддинги и гэпы пропорционально ширине экрана
+  // Базовые значения для мобильного (320px)
+  const mobileBaseWidth = 320;
   const mobilePadding = 4;
   const mobileGapFor2 = 16; // для 2 карточек
   const mobileGapFor5 = 8; // для 5 карточек
 
-  // Рассчитываем коэффициент увеличения относительно мобильного
-  const scaleFactor = cardSize.width / mobileCardWidth;
+  // Рассчитываем коэффициент увеличения относительно базовой мобильной ширины
+  const baseScaleFactor = screenWidth / mobileBaseWidth;
 
-  // Гэпы пропорциональны паддингам
+  // Гэпы пропорциональны ширине экрана
   const getRowGap = (cardsInRow: number) => {
-    if (cardsInRow === 2) return mobileGapFor2 * scaleFactor;
-    if (cardsInRow === 3) return mobileGapFor2 * scaleFactor * 0.85; // Немного меньше для 3 карточек
-    if (cardsInRow === 5) return mobileGapFor5 * scaleFactor;
-    return mobileGapFor5 * scaleFactor;
+    if (cardsInRow === 2) return mobileGapFor2 * baseScaleFactor;
+    if (cardsInRow === 3) return mobileGapFor2 * baseScaleFactor * 0.85; // Немного меньше для 3 карточек
+    if (cardsInRow === 5) return mobileGapFor5 * baseScaleFactor;
+    return mobileGapFor5 * baseScaleFactor;
   };
 
-  // Паддинги контейнера пропорциональны
-  const containerPadding = mobilePadding * scaleFactor;
+  // Паддинги контейнера пропорциональны ширине экрана
+  const containerPadding = mobilePadding * baseScaleFactor;
 
   // Вертикальные отступы между строками
   const rowSpacing = cardSize.height * 0.5; // 50% от высоты карточки
