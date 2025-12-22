@@ -326,9 +326,9 @@ const FormationField = ({
   );
 
   const mobileBaseWidth = 320;
-  const mobilePadding = 4;
-  const mobileGapFor2 = 16;
-  const mobileGapFor5 = 8;
+  const mobilePadding = 2;
+  const mobileGapFor2 = 8;
+  const mobileGapFor5 = 4;
 
   const baseScaleFactor = screenWidth / mobileBaseWidth;
 
