@@ -148,29 +148,29 @@ const ConfirmTransfersDrawer = ({
 
           {/* Boosts Section - only show if there are boosts */}
           {boosts.length > 0 && (
-            <div className="mb-6">
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="mb-4">
+              <div className="grid grid-cols-5 gap-1">
                 {boosts.map((boost) => (
                   <div
                     key={boost.id}
-                    className={`flex flex-col items-center p-3 rounded-xl min-w-[100px] relative ${
-                      boost.status === "pending" ? "bg-card border-2 border-primary" : "bg-card/50 grayscale opacity-60"
+                    className={`flex flex-col items-center p-2 rounded-lg relative ${
+                      boost.status === "pending" ? "bg-card border border-primary" : "bg-card/50 grayscale opacity-60"
                     }`}
                   >
                     <img
                       src={boost.icon}
                       alt={boost.label}
-                      className={`w-8 h-8 mb-1 ${boost.status !== "pending" ? "grayscale" : ""}`}
+                      className={`w-5 h-5 mb-0.5 ${boost.status !== "pending" ? "grayscale" : ""}`}
                     />
                     <span
-                      className={`text-xs font-medium text-center ${
+                      className={`text-[8px] font-medium text-center leading-tight ${
                         boost.status === "pending" ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
                       {boost.label}
                     </span>
                     <span
-                      className={`text-[10px] text-center ${
+                      className={`text-[7px] text-center leading-tight ${
                         boost.status === "pending" ? "text-primary" : "text-muted-foreground"
                       }`}
                     >
@@ -178,7 +178,7 @@ const ConfirmTransfersDrawer = ({
                     </span>
                     {/* Alert circle indicator */}
                     <AlertCircle
-                      className={`absolute top-1 right-1 w-4 h-4 ${
+                      className={`absolute -top-0.5 -right-0.5 w-3 h-3 ${
                         boost.status === "pending" ? "text-primary" : "text-muted-foreground/50"
                       }`}
                     />
