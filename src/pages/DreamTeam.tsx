@@ -228,9 +228,9 @@ const DreamTeam = () => {
               ? "bg-primary text-primary-foreground hover:bg-primary/90"
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
-        >
-          Списком
-        </Button>
+          >
+            Список
+          </Button>
       </div>
 
       {/* Formation View */}
