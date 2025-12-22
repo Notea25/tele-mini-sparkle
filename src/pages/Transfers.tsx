@@ -714,6 +714,7 @@ const Transfers = () => {
           onSetViceCaptain={setViceCaptain}
           variant="transfers"
           onSell={handleSellPlayer}
+          hidePointsBreakdown
         />
       )}
 
