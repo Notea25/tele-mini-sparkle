@@ -425,16 +425,18 @@ const Transfers = () => {
 
     return (
       <div className="mb-6" key={position}>
+        {/* Position header */}
         <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
         
+        {/* Column headers */}
         <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
           <span className="flex-1">Игрок</span>
-          <span className="w-14 text-center">Клуб</span>
           <span className="w-12 text-center">Очки</span>
           <span className="w-10 text-center">Цена</span>
           <span className="w-10"></span>
         </div>
 
+        {/* Players */}
         <div className="space-y-2">
           {slots.map((slot, idx) => {
             if ('isEmpty' in slot) {
@@ -448,11 +450,10 @@ const Transfers = () => {
                     <span className="text-muted-foreground">Пустой слот</span>
                     <span className="text-muted-foreground text-xs">{position}</span>
                   </div>
-                  <div className="w-14 flex-shrink-0"></div>
-                  <div className="w-12 flex-shrink-0"></div>
+                  <span className="w-12 flex-shrink-0"></span>
                   <span className="w-10 flex-shrink-0"></span>
                   <button
-                    className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors flex-shrink-0"
+                    className="w-8 h-8 ml-2 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors flex-shrink-0"
                   >
                     <Plus className="w-4 h-4 text-primary" />
                   </button>
@@ -461,40 +462,34 @@ const Transfers = () => {
             }
 
             const player = slot;
+            const clubLogo = clubIcons[player.team];
             return (
               <div
                 key={player.id}
                 className="bg-card rounded-full px-4 py-2 flex items-center"
               >
+                {/* Club logo + Player name + position */}
                 <div 
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                   onClick={() => setSelectedPlayerForCard(player.id)}
                 >
+                  {clubLogo && (
+                    <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                  )}
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
                 </div>
                 
-                <div className="w-14 flex-shrink-0 flex justify-center">
-                  {clubIcons[player.team] && (
-                    <img 
-                      src={clubIcons[player.team]} 
-                      alt={player.team}
-                      className="w-5 h-5 object-contain"
-                    />
-                  )}
-                </div>
+                {/* Points */}
+                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
                 
-                <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-                  <span className="text-foreground text-sm">{player.points}</span>
-                </div>
+                {/* Price */}
+                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
                 
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-                  {player.price}
-                </span>
-                
+                {/* Remove button */}
                 <button
                   onClick={() => handleSellPlayer(player.id)}
-                  className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors flex-shrink-0"
+                  className="w-8 h-8 ml-2 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors flex-shrink-0"
                 >
                   <X className="w-4 h-4 text-foreground" />
                 </button>
