@@ -9,6 +9,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PlayerCard from "@/components/PlayerCard";
 import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
 import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
+import { clubLogos } from "@/lib/clubLogos";
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
@@ -213,7 +214,7 @@ const YourTeam = () => {
           {/* Column headers */}
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground mb-2">
             <span className="flex-1">Игрок</span>
-            <span className="w-14 text-center">Клуб</span>
+            <span className="w-6 text-center"></span>
             <span className="w-12 text-center">Очки</span>
             <span className="w-10 text-center">Цена</span>
           </div>
@@ -262,9 +263,11 @@ const YourTeam = () => {
                         <span className="bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">ТР</span>
                       )}
                     </div>
-                    <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
-                      {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
-                    </span>
+                    <div className="w-6 flex-shrink-0 flex justify-center">
+                      {clubLogos[player.team] && (
+                        <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
+                      )}
+                    </div>
                     <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
                     <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
                   </div>
@@ -290,9 +293,11 @@ const YourTeam = () => {
                     <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />
                   )}
                 </div>
-                <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center truncate">
-                  {player.team.length > 6 ? player.team.substring(0, 6) : player.team}
-                </span>
+                <div className="w-6 flex-shrink-0 flex justify-center">
+                  {clubLogos[player.team] && (
+                    <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
+                  )}
+                </div>
                 <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
               </div>
