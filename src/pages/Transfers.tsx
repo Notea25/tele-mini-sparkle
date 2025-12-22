@@ -10,6 +10,7 @@ import PlayerCard from "@/components/PlayerCard";
 import BoostDrawer from "@/components/BoostDrawer";
 import BuyPlayerDrawer from "@/components/BuyPlayerDrawer";
 import ConfirmTransfersDrawer from "@/components/ConfirmTransfersDrawer";
+import { getBoostState, setPendingBoost, clearPendingBoost, hasAnyPendingBoost, TRANSFER_BOOSTS } from "@/lib/boostState";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -79,23 +80,63 @@ const Transfers = () => {
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName] = useState(() => getSavedTeam().teamName);
-  const [specialChips, setSpecialChips] = useState<BoostChip[]>(initialChips);
+  const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
+    // Load initial state from localStorage
+    const boostState = getBoostState();
+    return initialChips.map(chip => {
+      if (boostState.pendingBoostId === chip.id) {
+        return { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" };
+      }
+      const usedBoost = boostState.usedBoosts.find(b => b.id === chip.id);
+      if (usedBoost) {
+        return { ...chip, status: "used" as BoostStatus, usedInTour: usedBoost.tour };
+      }
+      return chip;
+    });
+  });
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
+  const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
   const currentTour = 1;
 
+  // Check if boost is active on the other page
+  useEffect(() => {
+    const checkOtherPageBoost = () => {
+      const { pending, boostId, page } = hasAnyPendingBoost();
+      if (pending && page === "team-management") {
+        setOtherPageBoostActive(true);
+      } else {
+        setOtherPageBoostActive(false);
+      }
+    };
+    checkOtherPageBoost();
+    
+    // Listen for storage changes from other tabs/pages
+    const handleStorageChange = () => checkOtherPageBoost();
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const openBoostDrawer = (chip: BoostChip) => {
+    // Check if boost is active on other page
+    if (otherPageBoostActive) {
+      toast.error("В этом туре уже активирован буст в разделе Управление командой");
+      return;
+    }
     setSelectedBoostChip(chip);
     setIsBoostDrawerOpen(true);
   };
 
   const applyBoost = (chipId: string) => {
     const hasPendingBoost = specialChips.some(chip => chip.status === "pending");
-    if (hasPendingBoost) {
+    const { pending, page } = hasAnyPendingBoost();
+    
+    if (hasPendingBoost || (pending && page !== "transfers")) {
       toast.error("В одном туре можно использовать только 1 буст");
       return;
     }
     
+    setPendingBoost(chipId, "transfers");
     setSpecialChips(prev => 
       prev.map(chip => 
         chip.id === chipId ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" } : chip
@@ -104,6 +145,7 @@ const Transfers = () => {
   };
 
   const cancelBoost = (chipId: string) => {
+    clearPendingBoost();
     setSpecialChips(prev => 
       prev.map(chip => 
         chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее" } : chip
@@ -512,40 +554,53 @@ const Transfers = () => {
 
       {/* Special Chips */}
       <div className="px-4 mt-4">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {specialChips.map((chip) => (
-            <div
-              key={chip.id}
-              onClick={() => openBoostDrawer(chip)}
-              className={`flex-1 flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all hover:bg-card/80 ${
-                chip.status === "pending" 
-                  ? "bg-card border-2 border-primary" 
-                  : chip.status === "used" 
-                    ? "bg-card/50 border border-border" 
-                    : "bg-card border border-border"
-              }`}
-            >
-              <img 
-                src={chip.icon} 
-                alt={chip.label} 
-                className={`w-8 h-8 object-contain mb-1 transition-all ${chip.status === "used" ? "grayscale opacity-50" : ""}`}
-              />
-              <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
-              <span className={`text-[8px] ${
-                chip.status === "pending" 
-                  ? "text-primary" 
-                  : chip.status === "used" 
-                    ? "text-muted-foreground" 
-                    : "text-primary"
-              }`}>
-                {chip.status === "pending" 
-                  ? "Используется" 
-                  : chip.status === "used" 
-                    ? `${chip.usedInTour} тур` 
-                    : chip.sublabel}
-              </span>
-            </div>
-          ))}
+        <div className="grid grid-cols-2 gap-3">
+          {specialChips.map((chip) => {
+            const isBlocked = otherPageBoostActive && chip.status === "available";
+            return (
+              <div
+                key={chip.id}
+                onClick={() => openBoostDrawer(chip)}
+                className={`flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all ${
+                  isBlocked
+                    ? "bg-card/30 opacity-50"
+                    : chip.status === "pending"
+                      ? "bg-card border-2 border-primary hover:bg-card/80"
+                      : chip.status === "used"
+                        ? "bg-card/50 border border-border"
+                        : "bg-card border border-border hover:bg-card/80"
+                }`}
+              >
+                <img 
+                  src={chip.icon} 
+                  alt={chip.label} 
+                  className={`w-8 h-8 object-contain mb-1 transition-all ${
+                    isBlocked || chip.status === "used" ? "grayscale opacity-50" : ""
+                  }`}
+                />
+                <span className={`text-[10px] font-medium text-center leading-tight ${
+                  isBlocked ? "text-muted-foreground" : "text-foreground"
+                }`}>{chip.label}</span>
+                <span className={`text-[8px] ${
+                  isBlocked
+                    ? "text-muted-foreground"
+                    : chip.status === "pending" 
+                      ? "text-primary" 
+                      : chip.status === "used" 
+                        ? "text-muted-foreground" 
+                        : "text-primary"
+                }`}>
+                  {isBlocked
+                    ? "Заблокировано"
+                    : chip.status === "pending" 
+                      ? "Используется" 
+                      : chip.status === "used" 
+                        ? `${chip.usedInTour} тур` 
+                        : chip.sublabel}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
