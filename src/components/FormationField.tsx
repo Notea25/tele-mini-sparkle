@@ -263,6 +263,7 @@ import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
 
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
@@ -379,7 +380,70 @@ const FormationField = ({
     4: formation.filter((slot) => slot.row === 4),
   };
 
-  // Компонент карточки игрока (вынесен для переиспользования)
+  // Состояние для определения размера экрана и карточки
+  const [screenWidth, setScreenWidth] = useState(0);
+  const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const updateCardSize = () => {
+      const width = window.innerWidth;
+      setScreenWidth(width);
+
+      let cardWidth;
+      let cardHeight;
+
+      // Определяем размеры по контрольным точкам
+      if (width < 375) {
+        // Меньше 375px - плавное масштабирование от 320px до 375px
+        const minWidth = 64;
+        const maxWidth = 75;
+        const scale = (width - 320) / (375 - 320);
+        cardWidth = minWidth + (maxWidth - minWidth) * Math.max(0, Math.min(1, scale));
+      } else if (width < 768) {
+        // От 375px до 768px - плавное масштабирование
+        const minWidth = 75;
+        const maxWidth = 192;
+        const scale = (width - 375) / (768 - 375);
+        cardWidth = minWidth + (maxWidth - minWidth) * scale;
+      } else if (width < 1024) {
+        // От 768px до 1024px - плавное масштабирование
+        const minWidth = 192;
+        const maxWidth = 256; // Исправляем 56px на 256px (в 4 раза больше мобильного)
+        const scale = (width - 768) / (1024 - 768);
+        cardWidth = minWidth + (maxWidth - minWidth) * scale;
+      } else {
+        // От 1024px и выше - плавное масштабирование до 1920px
+        const minWidth = 256;
+        const maxWidth = 320;
+        const maxScreen = 1920;
+        const scale = Math.min(1, (width - 1024) / (maxScreen - 1024));
+        cardWidth = minWidth + (maxWidth - minWidth) * scale;
+      }
+
+      // Ограничиваем минимальный и максимальный размер
+      cardWidth = Math.max(64, Math.min(320, cardWidth));
+
+      // Высота пропорциональна ширине (соотношение 82:64 = 1.28125)
+      cardHeight = cardWidth * 1.28125;
+
+      setCardSize({ width: cardWidth, height: cardHeight });
+    };
+
+    // Устанавливаем начальный размер
+    updateCardSize();
+
+    // Добавляем слушатель изменения размера
+    window.addEventListener("resize", updateCardSize);
+
+    return () => window.removeEventListener("resize", updateCardSize);
+  }, []);
+
+  // Если карточка еще не рассчитана, показываем пустой контейнер
+  if (cardSize.width === 0 || cardSize.height === 0) {
+    return <div className="relative w-full h-[400px] bg-gray-900/20 animate-pulse rounded-lg" />;
+  }
+
+  // Компонент карточки игрока
   const PlayerCardComponent = ({
     player,
     showRemoveButton = true,
@@ -390,8 +454,8 @@ const FormationField = ({
     <div
       className="relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       style={{
-        width: "clamp(64px, 9.2vw, 80px)", // Слегка уменьшили ширину (было 68px, 10vw, 86px)
-        height: "clamp(82px, 12vw, 104px)", // Высота без изменений
+        width: `${cardSize.width}px`,
+        height: `${cardSize.height}px`,
       }}
       onClick={() => onPlayerClick?.(player)}
     >
@@ -400,10 +464,10 @@ const FormationField = ({
         <img
           src={captainBadge}
           alt="C"
-          className="absolute top-1.5 left-1.5 z-50"
+          className="absolute top-2 left-2 z-50"
           style={{
-            width: "clamp(12px, 1.8vw, 18px)",
-            height: "clamp(12px, 1.8vw, 18px)",
+            width: `${cardSize.width * 0.18}px`, // 18% от ширины карточки
+            height: `${cardSize.width * 0.18}px`,
           }}
         />
       )}
@@ -411,10 +475,10 @@ const FormationField = ({
         <img
           src={viceCaptainBadge}
           alt="V"
-          className="absolute top-1.5 left-1.5 z-50"
+          className="absolute top-2 left-2 z-50"
           style={{
-            width: "clamp(12px, 1.8vw, 18px)",
-            height: "clamp(12px, 1.8vw, 18px)",
+            width: `${cardSize.width * 0.18}px`,
+            height: `${cardSize.width * 0.18}px`,
           }}
         />
       )}
@@ -426,17 +490,17 @@ const FormationField = ({
             e.stopPropagation();
             onRemovePlayer(player.id);
           }}
-          className="absolute top-1.5 right-1.5 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
+          className="absolute top-2 right-2 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
           style={{
-            width: "clamp(12px, 1.8vw, 18px)",
-            height: "clamp(12px, 1.8vw, 18px)",
+            width: `${cardSize.width * 0.18}px`,
+            height: `${cardSize.width * 0.18}px`,
           }}
         >
           <X
             className="text-[#1a2e1a]"
             style={{
-              width: "clamp(8px, 1.2vw, 14px)",
-              height: "clamp(8px, 1.2vw, 14px)",
+              width: `${cardSize.width * 0.12}px`,
+              height: `${cardSize.width * 0.12}px`,
             }}
           />
         </button>
@@ -444,101 +508,136 @@ const FormationField = ({
 
       {/* Price */}
       <div
-        className="w-full flex items-center justify-center pt-1.5 pb-1 z-30"
-        style={{ height: "clamp(18px, 2.5vw, 26px)" }}
+        className="w-full flex items-center justify-center pt-2 pb-1.5 z-30"
+        style={{ height: `${cardSize.height * 0.22}px` }} // 22% от высоты карточки
       >
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
-          style={{ fontSize: "clamp(8px, 1.2vw, 16px)" }}
+          style={{ fontSize: `${cardSize.width * 0.12}px` }} // 12% от ширины карточки
         >
           ${(player.price || 9).toFixed(1)}
         </span>
       </div>
 
-      {/* Jersey - слегка уменьшили для новой ширины */}
+      {/* Jersey */}
       <div className="relative w-full flex-1 z-10 overflow-hidden">
         <img
           src={getJerseyForTeam(player.team, player.position)}
           alt={player.name}
           className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
           style={{
-            width: "clamp(138%, 15.5vw, 158%)", // Слегка уменьшили (было 140%, 16vw, 160%)
-            top: "clamp(-14px, -2vw, -18px)",
+            width: `${cardSize.width * 1.5}px`, // 150% от ширины карточки
+            top: `-${cardSize.height * 0.16}px`, // -16% от высоты карточки
           }}
         />
       </div>
 
       {/* Name and team */}
       <div className="w-full relative z-20">
-        <div className="bg-white" style={{ padding: "clamp(2px, 0.3vw, 5px)" }}>
+        <div
+          className="bg-white"
+          style={{
+            paddingTop: `${cardSize.height * 0.02}px`,
+            paddingBottom: `${cardSize.height * 0.02}px`,
+          }}
+        >
           <span
             className="font-semibold text-black block truncate whitespace-nowrap text-center"
-            style={{ fontSize: "clamp(5px, 0.9vw, 12px)" }}
+            style={{ fontSize: `${cardSize.width * 0.1}px` }} // 10% от ширины
           >
-            {truncateName(player.name, 10)} // Слегка уменьшили максимальную длину
+            {truncateName(player.name, Math.floor(cardSize.width / 6.4))} // 6.4px на символ
           </span>
         </div>
-        <div className="bg-[#1a1a2e]" style={{ padding: "clamp(2px, 0.3vw, 5px)" }}>
+        <div
+          className="bg-[#1a1a2e]"
+          style={{
+            paddingTop: `${cardSize.height * 0.018}px`,
+            paddingBottom: `${cardSize.height * 0.018}px`,
+          }}
+        >
           <span
             className="font-medium block truncate whitespace-nowrap text-center"
-            style={{ fontSize: "clamp(4px, 0.8vw, 10px)" }}
+            style={{ fontSize: `${cardSize.width * 0.085}px` }} // 8.5% от ширины
           >
             <span className="text-[#7D7A94]">(Д)</span>
-            <span className="text-white ml-[2%]">{truncateName(player.team, 8)}</span> // Слегка уменьшили
+            <span className="text-white ml-[2%]">{truncateName(player.team, Math.floor(cardSize.width / 8))}</span> //
+            8px на символ
           </span>
         </div>
       </div>
     </div>
   );
 
-  // Компонент пустого слота - слегка уменьшили ширину
+  // Компонент пустого слота
   const EmptySlotComponent = ({ position }: { position: string }) => (
     <div
       className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
       style={{
-        width: "clamp(64px, 9.2vw, 80px)", // Слегка уменьшили ширину
-        height: "clamp(82px, 12vw, 104px)", // Высота без изменений
-        gap: "clamp(6px, 0.9vw, 12px)",
+        width: `${cardSize.width}px`,
+        height: `${cardSize.height}px`,
+        gap: `${cardSize.height * 0.06}px`, // 6% от высоты
       }}
       onClick={() => onEmptySlotClick?.(position)}
     >
-      <span className="text-white font-bold" style={{ fontSize: "clamp(12px, 1.8vw, 22px)" }}>
+      <span
+        className="text-white font-bold"
+        style={{ fontSize: `${cardSize.width * 0.2}px` }} // 20% от ширины
+      >
         {position}
       </span>
       <div
         className="rounded-full bg-white/90 flex items-center justify-center"
         style={{
-          width: "clamp(18px, 2.7vw, 28px)",
-          height: "clamp(18px, 2.7vw, 28px)",
+          width: `${cardSize.width * 0.25}px`, // 25% от ширины
+          height: `${cardSize.width * 0.25}px`,
         }}
       >
         <Plus
           className="text-[#3a5a28]"
           style={{
-            width: "clamp(10px, 1.5vw, 18px)",
-            height: "clamp(10px, 1.5vw, 18px)",
+            width: `${cardSize.width * 0.14}px`, // 14% от ширины
+            height: `${cardSize.width * 0.14}px`,
           }}
         />
       </div>
     </div>
   );
 
-  // Отступы и гэпы
-  const containerPadding = "clamp(4px, 1vw, 8px)";
-  const baseRowGap = "clamp(8px, 1.5vw, 16px)";
+  // Рассчитываем паддинги и гэпы пропорционально ширине экрана
+  // Базовые значения для мобильного (320px)
+  const mobileBaseWidth = 320;
+  const mobilePadding = 4;
+  const mobileGapFor2 = 16; // для 2 карточек
+  const mobileGapFor5 = 8; // для 5 карточек
 
-  // Вертикальные позиции строк
-  const rowPositions = {
-    1: "3%",
-    2: "26%",
-    3: "49%",
-    4: "72%",
+  // Рассчитываем коэффициент увеличения относительно базовой мобильной ширины
+  const baseScaleFactor = screenWidth / mobileBaseWidth;
+
+  // Гэпы пропорциональны ширине экрана
+  const getRowGap = (cardsInRow: number) => {
+    if (cardsInRow === 2) return mobileGapFor2 * baseScaleFactor;
+    if (cardsInRow === 3) return mobileGapFor2 * baseScaleFactor * 0.85; // Немного меньше для 3 карточек
+    if (cardsInRow === 5) return mobileGapFor5 * baseScaleFactor;
+    return mobileGapFor5 * baseScaleFactor;
   };
+
+  // Паддинги контейнера пропорциональны ширине экрана
+  const containerPadding = mobilePadding * baseScaleFactor;
+
+  // Вертикальные отступы между строками
+  const rowSpacing = cardSize.height * 0.5; // 50% от высоты карточки
 
   return (
     <div className="relative w-full">
-      {/* Football field with padding */}
-      <div className="px-[clamp(4px,1vw,8px)] py-[clamp(4px,1vw,8px)]">
+      {/* Football field */}
+      <div
+        style={{
+          paddingLeft: `${containerPadding}px`,
+          paddingRight: `${containerPadding}px`,
+          paddingTop: `${containerPadding}px`,
+          paddingBottom: `${containerPadding}px`,
+        }}
+      >
         <img src={footballFieldNew} alt="Football field" className="w-full" />
       </div>
 
@@ -546,15 +645,18 @@ const FormationField = ({
       <div
         className="absolute inset-0"
         style={{
-          padding: containerPadding,
+          paddingLeft: `${containerPadding}px`,
+          paddingRight: `${containerPadding}px`,
+          paddingTop: `${containerPadding}px`,
+          paddingBottom: `${containerPadding}px`,
         }}
       >
         {/* Row 1 - Goalkeepers (2 игрока) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: rowPositions[1],
-            gap: `calc(${baseRowGap} * 1.8)`,
+            top: "4%",
+            gap: `${getRowGap(2)}px`,
           }}
         >
           {rows[1].map((slot, idx) => {
@@ -577,8 +679,8 @@ const FormationField = ({
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: rowPositions[2],
-            gap: `calc(${baseRowGap} * 1.1)`,
+            top: `calc(4% + ${cardSize.height}px + ${rowSpacing}px)`,
+            gap: `${getRowGap(5)}px`,
           }}
         >
           {rows[2].map((slot, idx) => {
@@ -601,8 +703,8 @@ const FormationField = ({
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: rowPositions[3],
-            gap: `calc(${baseRowGap} * 1.1)`,
+            top: `calc(4% + ${cardSize.height * 2}px + ${rowSpacing * 2}px)`,
+            gap: `${getRowGap(5)}px`,
           }}
         >
           {rows[3].map((slot, idx) => {
@@ -625,8 +727,8 @@ const FormationField = ({
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: rowPositions[4],
-            gap: `calc(${baseRowGap} * 1.6)`,
+            top: `calc(4% + ${cardSize.height * 3}px + ${rowSpacing * 3}px)`,
+            gap: `${getRowGap(3)}px`,
           }}
         >
           {rows[4].map((slot, idx) => {
