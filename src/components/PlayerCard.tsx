@@ -26,6 +26,7 @@ interface PlayerCardProps {
   variant?: "default" | "transfers" | "management" | "view";
   onSell?: (playerId: number) => void;
   onSwap?: (playerId: number) => void;
+  hidePointsBreakdown?: boolean;
 }
 
 const PlayerCard = ({
@@ -41,6 +42,7 @@ const PlayerCard = ({
   variant = "default",
   onSell,
   onSwap,
+  hidePointsBreakdown = false,
 }: PlayerCardProps) => {
   if (!player) return null;
 
@@ -251,8 +253,8 @@ const PlayerCard = ({
             </div>
           </div>
 
-          {/* Points breakdown section - only show if there are actions */}
-          {pointBreakdown.length > 0 && (
+          {/* Points breakdown section - only show if there are actions and not hidden */}
+          {!hidePointsBreakdown && pointBreakdown.length > 0 && (
             <div className="mt-6">
               <h3 className="text-foreground text-sm font-bold mb-3">Начисление очков за тур</h3>
               <div className="bg-secondary/30 rounded-xl p-3 space-y-2">

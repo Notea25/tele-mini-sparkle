@@ -1299,6 +1299,7 @@ const TeamBuilder = () => {
         isViceCaptain={selectedPlayerForCard === viceCaptain}
         onSetCaptain={setCaptain}
         onSetViceCaptain={setViceCaptain}
+        hidePointsBreakdown
       />
 
       <EditTeamNameModal
