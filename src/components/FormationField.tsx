@@ -139,7 +139,8 @@ const FormationField = ({
       let cardWidth;
 
       if (width <= 375) {
-        cardWidth = mobileCardWidth * (width / mobileBase);
+        // cardWidth = mobileCardWidth * (width / mobileBase);
+        cardWidth = mobileCardWidth;
       } else if (width <= 768) {
         const minWidth = mobileCardWidth * (375 / mobileBase);
         const maxWidth = 96;
