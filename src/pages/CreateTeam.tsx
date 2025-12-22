@@ -24,6 +24,11 @@ import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
 import clubNeman from "@/assets/club-neman.png";
 import bgImage from "@/assets/bg_image.png";
 
+// Transfer section images
+import playerKarpovichTransfer from "@/assets/player-karpovich-transfer.png";
+import playerKhvashchinskyTransfer from "@/assets/player-khvashchinsky-transfer.png";
+import swapArrowsGreen from "@/assets/swap-arrows-green.png";
+
 // Player card images for carousel
 import playerVakulichNew from "@/assets/player-vakulich-new.png";
 import playerKozlovNew from "@/assets/player-kozlov-new.png";
@@ -323,63 +328,30 @@ const CreateTeam = () => {
       <div className="px-4 mt-8 text-center">
         <h3 className="text-foreground text-3xl font-bold mb-4">Делай трансферы</h3>
         <p className="text-muted-foreground text-base leading-relaxed">
-          Если кто-то из футболистов твоей команды
-          <br />
-          получил травму или просто плохо играет, не
-          <br />
-          набирая очки — каждый тур ты сможешь сделать
-          <br />
-          <span className="text-primary font-semibold">до 3-х трансферов</span>, чтобы изменить состав на
-          <br />
-          более оптимальный
+          Не нравится игрок? Смело отправляй его на скамейку или продавай.
+          <br /><br />
+          Перед каждым туром у тебя есть <span className="text-primary font-semibold">2 бесплатных трансфера</span>.
+          <br /><br />
+          Если команда совсем не радует — активируй буст и меняй всех, кого подскажет сердце и интуиция.
         </p>
 
-        {/* Transfers Player Cards */}
+        {/* Transfer Player Cards with Arrows */}
         <div className="mt-6 flex justify-center items-center gap-2">
-          {/* Bykov Card */}
-          <div
-            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
-            style={{ width: "140px", height: "180px" }}
-          >
-            <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
-              <img src={clubDinamoBrest} alt="Club" className="max-w-full max-h-full object-contain" />
-            </div>
-            <div className="w-full flex-1 flex items-center justify-center">
-              <img src={playerBykov} alt="Быков" className="w-full h-full object-contain object-bottom" />
-            </div>
-            <div className="px-3 py-2">
-              <p className="text-foreground font-semibold text-sm truncate">Быков</p>
-              <div className="flex justify-between items-center mt-1">
-                <span className="text-muted-foreground text-xs">9 очков</span>
-                <span className="text-muted-foreground text-xs">ЗЩ</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Swap Arrow */}
-          <div className="flex items-center justify-center">
-            <ArrowLeftRight className="w-6 h-6 text-primary" />
-          </div>
-
-          {/* Kozlov Card */}
-          <div
-            className="relative flex-shrink-0 rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
-            style={{ width: "140px", height: "180px" }}
-          >
-            <div className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center overflow-hidden">
-              <img src={clubNeman} alt="Club" className="max-w-full max-h-full object-contain" />
-            </div>
-            <div className="w-full flex-1 flex items-center justify-center">
-              <img src={playerKozlov} alt="Козлов" className="w-full h-full object-contain object-bottom" />
-            </div>
-            <div className="px-3 py-2">
-              <p className="text-foreground font-semibold text-sm truncate">Козлов</p>
-              <div className="flex justify-between items-center mt-1">
-                <span className="text-muted-foreground text-xs">7 очков</span>
-                <span className="text-muted-foreground text-xs">ПЗ</span>
-              </div>
-            </div>
-          </div>
+          <img 
+            src={playerKarpovichTransfer} 
+            alt="Карпович" 
+            className="w-32 h-auto rounded-xl flex-shrink-0"
+          />
+          <img 
+            src={swapArrowsGreen} 
+            alt="Swap" 
+            className="w-10 h-auto flex-shrink-0"
+          />
+          <img 
+            src={playerKhvashchinskyTransfer} 
+            alt="Хващинский" 
+            className="w-32 h-auto rounded-xl flex-shrink-0"
+          />
         </div>
       </div>
 
