@@ -390,12 +390,12 @@ const FormationField = ({
     <div
       className="relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       style={{
-        width: "clamp(68px, 10vw, 86px)", // УВЕЛИЧИЛИ ширину
-        height: "clamp(82px, 12vw, 104px)", // УВЕЛИЧИЛИ высоту
+        width: "clamp(64px, 9.2vw, 80px)", // Слегка уменьшили ширину (было 68px, 10vw, 86px)
+        height: "clamp(82px, 12vw, 104px)", // Высота без изменений
       }}
       onClick={() => onPlayerClick?.(player)}
     >
-      {/* Captain/Vice-Captain badge - УВЕЛИЧИЛИ бейджи */}
+      {/* Captain/Vice-Captain badge */}
       {showCaptainBadges && captain === player.id && (
         <img
           src={captainBadge}
@@ -419,7 +419,7 @@ const FormationField = ({
         />
       )}
 
-      {/* Delete button - УВЕЛИЧИЛИ кнопку */}
+      {/* Delete button */}
       {showRemoveButton && onRemovePlayer && (
         <button
           onClick={(e) => {
@@ -442,128 +442,119 @@ const FormationField = ({
         </button>
       )}
 
-      {/* Price - УВЕЛИЧИЛИ блок цены */}
+      {/* Price */}
       <div
         className="w-full flex items-center justify-center pt-1.5 pb-1 z-30"
         style={{ height: "clamp(18px, 2.5vw, 26px)" }}
       >
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
-          style={{ fontSize: "clamp(8px, 1.2vw, 16px)" }} // УВЕЛИЧИЛИ шрифт
+          style={{ fontSize: "clamp(8px, 1.2vw, 16px)" }}
         >
           ${(player.price || 9).toFixed(1)}
         </span>
       </div>
 
-      {/* Jersey - УВЕЛИЧИЛИ джерси */}
+      {/* Jersey - слегка уменьшили для новой ширины */}
       <div className="relative w-full flex-1 z-10 overflow-hidden">
         <img
           src={getJerseyForTeam(player.team, player.position)}
           alt={player.name}
           className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
           style={{
-            width: "clamp(140%, 16vw, 160%)", // УВЕЛИЧИЛИ
-            top: "clamp(-14px, -2vw, -18px)", // Подняли выше
+            width: "clamp(138%, 15.5vw, 158%)", // Слегка уменьшили (было 140%, 16vw, 160%)
+            top: "clamp(-14px, -2vw, -18px)",
           }}
         />
       </div>
 
-      {/* Name and team - УВЕЛИЧИЛИ текстовые блоки */}
+      {/* Name and team */}
       <div className="w-full relative z-20">
-        <div
-          className="bg-white"
-          style={{ padding: "clamp(2px, 0.3vw, 5px)" }} // УВЕЛИЧИЛИ паддинг
-        >
+        <div className="bg-white" style={{ padding: "clamp(2px, 0.3vw, 5px)" }}>
           <span
             className="font-semibold text-black block truncate whitespace-nowrap text-center"
-            style={{ fontSize: "clamp(5px, 0.9vw, 12px)" }} // УВЕЛИЧИЛИ шрифт
+            style={{ fontSize: "clamp(5px, 0.9vw, 12px)" }}
           >
-            {truncateName(player.name, 11)} // Позволяем больше символов
+            {truncateName(player.name, 10)} // Слегка уменьшили максимальную длину
           </span>
         </div>
-        <div
-          className="bg-[#1a1a2e]"
-          style={{ padding: "clamp(2px, 0.3vw, 5px)" }} // УВЕЛИЧИЛИ паддинг
-        >
+        <div className="bg-[#1a1a2e]" style={{ padding: "clamp(2px, 0.3vw, 5px)" }}>
           <span
             className="font-medium block truncate whitespace-nowrap text-center"
-            style={{ fontSize: "clamp(4px, 0.8vw, 10px)" }} // УВЕЛИЧИЛИ шрифт
+            style={{ fontSize: "clamp(4px, 0.8vw, 10px)" }}
           >
             <span className="text-[#7D7A94]">(Д)</span>
-            <span className="text-white ml-[2%]">{truncateName(player.team, 9)}</span> // Позволяем больше символов
+            <span className="text-white ml-[2%]">{truncateName(player.team, 8)}</span> // Слегка уменьшили
           </span>
         </div>
       </div>
     </div>
   );
 
-  // Компонент пустого слота - УВЕЛИЧИЛИ
+  // Компонент пустого слота - слегка уменьшили ширину
   const EmptySlotComponent = ({ position }: { position: string }) => (
     <div
       className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
       style={{
-        width: "clamp(68px, 10vw, 86px)", // УВЕЛИЧИЛИ
-        height: "clamp(82px, 12vw, 104px)", // УВЕЛИЧИЛИ
-        gap: "clamp(6px, 0.9vw, 12px)", // УВЕЛИЧИЛИ гэп
+        width: "clamp(64px, 9.2vw, 80px)", // Слегка уменьшили ширину
+        height: "clamp(82px, 12vw, 104px)", // Высота без изменений
+        gap: "clamp(6px, 0.9vw, 12px)",
       }}
       onClick={() => onEmptySlotClick?.(position)}
     >
-      <span
-        className="text-white font-bold"
-        style={{ fontSize: "clamp(12px, 1.8vw, 22px)" }} // УВЕЛИЧИЛИ шрифт
-      >
+      <span className="text-white font-bold" style={{ fontSize: "clamp(12px, 1.8vw, 22px)" }}>
         {position}
       </span>
       <div
         className="rounded-full bg-white/90 flex items-center justify-center"
         style={{
-          width: "clamp(18px, 2.7vw, 28px)", // УВЕЛИЧИЛИ
-          height: "clamp(18px, 2.7vw, 28px)", // УВЕЛИЧИЛИ
+          width: "clamp(18px, 2.7vw, 28px)",
+          height: "clamp(18px, 2.7vw, 28px)",
         }}
       >
         <Plus
           className="text-[#3a5a28]"
           style={{
-            width: "clamp(10px, 1.5vw, 18px)", // УВЕЛИЧИЛИ
-            height: "clamp(10px, 1.5vw, 18px)", // УВЕЛИЧИЛИ
+            width: "clamp(10px, 1.5vw, 18px)",
+            height: "clamp(10px, 1.5vw, 18px)",
           }}
         />
       </div>
     </div>
   );
 
-  // БОЛЬШИЕ отступы и гэпы
-  const containerPadding = "clamp(4px, 1vw, 8px)"; // УВЕЛИЧИЛИ паддинги контейнера
-  const baseRowGap = "clamp(8px, 1.5vw, 16px)"; // УВЕЛИЧИЛИ базовый гэп
+  // Отступы и гэпы
+  const containerPadding = "clamp(4px, 1vw, 8px)";
+  const baseRowGap = "clamp(8px, 1.5vw, 16px)";
 
-  // Вертикальные позиции строк с БОЛЬШИМИ отступами
+  // Вертикальные позиции строк
   const rowPositions = {
-    1: "3%", // Вратари
-    2: "26%", // Защитники
-    3: "49%", // Полузащитники
-    4: "72%", // Нападающие
+    1: "3%",
+    2: "26%",
+    3: "49%",
+    4: "72%",
   };
 
   return (
     <div className="relative w-full">
-      {/* Football field with INCREASED padding */}
+      {/* Football field with padding */}
       <div className="px-[clamp(4px,1vw,8px)] py-[clamp(4px,1vw,8px)]">
         <img src={footballFieldNew} alt="Football field" className="w-full" />
       </div>
 
-      {/* Player slots container with LARGER spacing */}
+      {/* Player slots container */}
       <div
         className="absolute inset-0"
         style={{
           padding: containerPadding,
         }}
       >
-        {/* Row 1 - Goalkeepers (2 игрока) - БОЛЬШОЙ гэп */}
+        {/* Row 1 - Goalkeepers (2 игрока) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: rowPositions[1],
-            gap: `calc(${baseRowGap} * 1.8)`, // ОЧЕНЬ БОЛЬШОЙ гэп для 2 карточек
+            gap: `calc(${baseRowGap} * 1.8)`,
           }}
         >
           {rows[1].map((slot, idx) => {
@@ -582,12 +573,12 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Row 2 - Defenders (5 игроков) - УВЕЛИЧЕННЫЙ гэп */}
+        {/* Row 2 - Defenders (5 игроков) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: rowPositions[2],
-            gap: `calc(${baseRowGap} * 1.1)`, // БОЛЬШОЙ гэп для 5 карточек
+            gap: `calc(${baseRowGap} * 1.1)`,
           }}
         >
           {rows[2].map((slot, idx) => {
@@ -606,12 +597,12 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Row 3 - Midfielders (5 игроков) - УВЕЛИЧЕННЫЙ гэп */}
+        {/* Row 3 - Midfielders (5 игроков) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: rowPositions[3],
-            gap: `calc(${baseRowGap} * 1.1)`, // БОЛЬШОЙ гэп для 5 карточек
+            gap: `calc(${baseRowGap} * 1.1)`,
           }}
         >
           {rows[3].map((slot, idx) => {
@@ -630,12 +621,12 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Row 4 - Forwards (3 игрока) - БОЛЬШОЙ гэп */}
+        {/* Row 4 - Forwards (3 игрока) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: rowPositions[4],
-            gap: `calc(${baseRowGap} * 1.6)`, // ОЧЕНЬ БОЛЬШОЙ гэп для 3 карточек
+            gap: `calc(${baseRowGap} * 1.6)`,
           }}
         >
           {rows[4].map((slot, idx) => {
