@@ -65,35 +65,90 @@ const PlayerCard = ({
     { tour: 29, opponent: "НЕМ", home: false, logo: clubBelshina },
   ];
 
-  // Mock point breakdown for the current tour - only show actions that happened
+  // Generate point breakdown that sums up to the player's actual points
   const getPointBreakdown = () => {
     const actions: { action: string; points: number }[] = [];
+    let remaining = player.points;
     
-    // Simulate random actions based on player position and points
-    const rand = (player.id + player.points) % 10;
+    // Define possible actions by position with their point values
+    const positionActions: Record<string, { action: string; points: number }[]> = {
+      "ВР": [
+        { action: "Выход на поле", points: 2 },
+        { action: "Сухой матч", points: 4 },
+        { action: "Пенальти отбит", points: 5 },
+        { action: "Гол пропущен", points: -1 },
+        { action: "Жёлтая карточка", points: -1 },
+      ],
+      "ЗЩ": [
+        { action: "Выход на поле", points: 2 },
+        { action: "Гол", points: 6 },
+        { action: "Голевая передача", points: 3 },
+        { action: "Сухой матч", points: 4 },
+        { action: "Жёлтая карточка", points: -1 },
+      ],
+      "ПЗ": [
+        { action: "Выход на поле", points: 2 },
+        { action: "Гол", points: 5 },
+        { action: "Голевая передача", points: 3 },
+        { action: "Жёлтая карточка", points: -1 },
+        { action: "Красная карточка", points: -3 },
+      ],
+      "НП": [
+        { action: "Выход на поле", points: 2 },
+        { action: "Гол", points: 4 },
+        { action: "Голевая передача", points: 3 },
+        { action: "Жёлтая карточка", points: -1 },
+      ],
+    };
+
+    const availableActions = positionActions[player.position] || positionActions["ПЗ"];
     
-    if (player.position === "ВР") {
-      if (rand > 3) actions.push({ action: "Выход на поле", points: 2 });
-      if (rand > 5) actions.push({ action: "Сухой матч", points: 4 });
-      if (rand > 7) actions.push({ action: "Пенальти отбит", points: 5 });
-      if (rand < 2) actions.push({ action: "Гол пропущен", points: -1 });
-    } else if (player.position === "ЗЩ") {
-      if (rand > 2) actions.push({ action: "Выход на поле", points: 2 });
-      if (rand > 6) actions.push({ action: "Гол", points: 6 });
-      if (rand > 4) actions.push({ action: "Голевая передача", points: 3 });
-      if (rand > 7) actions.push({ action: "Сухой матч", points: 4 });
-      if (rand < 3) actions.push({ action: "Жёлтая карточка", points: -1 });
-    } else if (player.position === "ПЗ") {
-      if (rand > 2) actions.push({ action: "Выход на поле", points: 2 });
-      if (rand > 5) actions.push({ action: "Гол", points: 5 });
-      if (rand > 4) actions.push({ action: "Голевая передача", points: 3 });
-      if (rand < 2) actions.push({ action: "Жёлтая карточка", points: -1 });
-      if (rand < 1) actions.push({ action: "Красная карточка", points: -3 });
-    } else if (player.position === "НП") {
-      if (rand > 2) actions.push({ action: "Выход на поле", points: 2 });
-      if (rand > 4) actions.push({ action: "Гол", points: 4 });
-      if (rand > 5) actions.push({ action: "Голевая передача", points: 3 });
-      if (rand < 3) actions.push({ action: "Жёлтая карточка", points: -1 });
+    // Always start with "Выход на поле" if player has positive points
+    if (remaining >= 2) {
+      actions.push({ action: "Выход на поле", points: 2 });
+      remaining -= 2;
+    }
+    
+    // Distribute remaining points using goals and assists
+    const goalPoints = player.position === "ВР" ? 6 : player.position === "ЗЩ" ? 6 : player.position === "ПЗ" ? 5 : 4;
+    const assistPoints = 3;
+    
+    // Add goals
+    while (remaining >= goalPoints) {
+      actions.push({ action: "Гол", points: goalPoints });
+      remaining -= goalPoints;
+    }
+    
+    // Add assists
+    while (remaining >= assistPoints) {
+      actions.push({ action: "Голевая передача", points: assistPoints });
+      remaining -= assistPoints;
+    }
+    
+    // Handle remaining points with clean sheet or smaller bonuses
+    if (remaining === 4 && (player.position === "ВР" || player.position === "ЗЩ")) {
+      actions.push({ action: "Сухой матч", points: 4 });
+      remaining -= 4;
+    }
+    
+    // Handle small remaining amounts
+    if (remaining === 2) {
+      actions.push({ action: "Бонус за передачи", points: 2 });
+      remaining -= 2;
+    } else if (remaining === 1) {
+      actions.push({ action: "Бонус за отборы", points: 1 });
+      remaining -= 1;
+    }
+    
+    // Handle negative remaining (if player has negative total or yellow/red cards)
+    while (remaining < 0 && remaining <= -1) {
+      if (remaining <= -3) {
+        actions.push({ action: "Красная карточка", points: -3 });
+        remaining += 3;
+      } else {
+        actions.push({ action: "Жёлтая карточка", points: -1 });
+        remaining += 1;
+      }
     }
     
     return actions;
