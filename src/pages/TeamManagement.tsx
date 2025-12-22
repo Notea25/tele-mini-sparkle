@@ -12,14 +12,14 @@ import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import ConfirmBoostDrawer from "@/components/ConfirmBoostDrawer";
-import { getBoostState, setPendingBoost, clearPendingBoost, hasAnyPendingBoost, TEAM_MANAGEMENT_BOOSTS } from "@/lib/boostState";
-import { clubLogos } from "@/lib/clubLogos";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
 
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon3x from "@/assets/icon-3x.png";
+import iconStar from "@/assets/icon-star.png";
+import iconFree from "@/assets/icon-free.png";
 import icon2x from "@/assets/icon-2x.png";
 
 // Club icons mapping
@@ -35,10 +35,12 @@ const clubIcons: Record<string, string> = {
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
 
-// Special chips data with icons - only team management boosts
+// Special chips data with icons
 const initialChips: BoostChip[] = [
   { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Подробнее", status: "available" },
   { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
+  { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
+  { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
   { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
 ];
 
@@ -64,65 +66,25 @@ const TeamManagement = () => {
   const [viceCaptain, setViceCaptain] = useState<number | null>(() => getSavedTeam().viceCaptain);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [teamName] = useState(() => getSavedTeam().teamName);
-  const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
-    // Load initial state from localStorage
-    const boostState = getBoostState();
-    return initialChips.map(chip => {
-      if (boostState.pendingBoostId === chip.id) {
-        return { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" };
-      }
-      const usedBoost = boostState.usedBoosts.find(b => b.id === chip.id);
-      if (usedBoost) {
-        return { ...chip, status: "used" as BoostStatus, usedInTour: usedBoost.tour };
-      }
-      return chip;
-    });
-  });
+  const [specialChips, setSpecialChips] = useState<BoostChip[]>(initialChips);
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
   const [isConfirmBoostOpen, setIsConfirmBoostOpen] = useState(false);
-  const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
   const currentTour = 1; // Current tour number
 
-  // Check if boost is active on the other page
-  useEffect(() => {
-    const checkOtherPageBoost = () => {
-      const { pending, boostId, page } = hasAnyPendingBoost();
-      if (pending && page === "transfers") {
-        setOtherPageBoostActive(true);
-      } else {
-        setOtherPageBoostActive(false);
-      }
-    };
-    checkOtherPageBoost();
-    
-    // Listen for storage changes from other tabs/pages
-    const handleStorageChange = () => checkOtherPageBoost();
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
   const openBoostDrawer = (chip: BoostChip) => {
-    // Check if boost is active on other page
-    if (otherPageBoostActive) {
-      toast.error("В этом туре уже активирован буст в разделе Трансферы");
-      return;
-    }
     setSelectedBoostChip(chip);
     setIsBoostDrawerOpen(true);
   };
 
   const applyBoost = (chipId: string) => {
-    // Check if another boost is already pending (local or from other page)
+    // Check if another boost is already pending
     const hasPendingBoost = specialChips.some((chip) => chip.status === "pending");
-    const { pending, page } = hasAnyPendingBoost();
-    
-    if (hasPendingBoost || (pending && page !== "team-management")) {
+    if (hasPendingBoost) {
       toast.error("В одном туре можно использовать только 1 буст");
       return;
     }
 
-    setPendingBoost(chipId, "team-management");
     setSpecialChips((prev) =>
       prev.map((chip) =>
         chip.id === chipId ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" } : chip,
@@ -131,7 +93,6 @@ const TeamManagement = () => {
   };
 
   const cancelBoost = (chipId: string) => {
-    clearPendingBoost();
     setSpecialChips((prev) =>
       prev.map((chip) =>
         chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее" } : chip,
@@ -373,46 +334,50 @@ const TeamManagement = () => {
 
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
-        <span className="flex-1">Игрок</span>
-        <span className="w-12 text-center">Очки</span>
-        <span className="w-10 text-center">Цена</span>
+        <span className="flex-1">Игрок ↕</span>
+        <span className="w-14 text-center">Клуб</span>
+        <span className="w-12 text-center">Очки ↕</span>
+        <span className="w-10 text-center">Цена ↕</span>
         <span className="w-10"></span>
       </div>
 
       {/* Players */}
       <div className="space-y-2">
-        {players.map((player) => {
-          const clubLogo = clubLogos[player.team] || clubIcons[player.team];
-          return (
-            <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-              {/* Club logo + Player name + position */}
-              <div
-                className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-                onClick={() => setSelectedPlayerForCard(player.id)}
-              >
-                {clubLogo && (
-                  <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
-                )}
-                <span className="text-foreground font-medium truncate">{player.name}</span>
-                <span className="text-muted-foreground text-xs">{player.position}</span>
-              </div>
-
-              {/* Points */}
-              <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
-
-              {/* Price */}
-              <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
-
-              {/* Swap button */}
-              <button
-                onClick={() => handlePlayerSwap(player.id)}
-                className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
-              >
-                <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
-              </button>
+        {players.map((player) => (
+          <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
+            {/* Player name + position */}
+            <div
+              className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
+              onClick={() => setSelectedPlayerForCard(player.id)}
+            >
+              <span className="text-foreground font-medium truncate">{player.name}</span>
+              <span className="text-muted-foreground text-xs">{player.position}</span>
             </div>
-          );
-        })}
+
+            {/* Club */}
+            <div className="w-14 flex-shrink-0 flex justify-center">
+              {clubIcons[player.team] && (
+                <img src={clubIcons[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
+              )}
+            </div>
+
+            {/* Points */}
+            <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
+              <span className="text-foreground text-sm">{player.points}</span>
+            </div>
+
+            {/* Price */}
+            <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
+
+            {/* Swap button */}
+            <button
+              onClick={() => handlePlayerSwap(player.id)}
+              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
+            >
+              <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -485,61 +450,48 @@ const TeamManagement = () => {
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
         >
-          Списком
+          Список
         </Button>
       </div>
 
       {/* Special Chips */}
       <div className="px-4 mt-4">
-        <div className="grid grid-cols-3 gap-3">
-          {specialChips.map((chip) => {
-            const isBlocked = otherPageBoostActive && chip.status === "available";
-            return (
-              <div
-                key={chip.id}
-                onClick={() => openBoostDrawer(chip)}
-                className={`flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all ${
-                  isBlocked
-                    ? "bg-card/30 opacity-50"
-                    : chip.status === "pending"
-                      ? "bg-card border-2 border-primary hover:bg-card/80"
-                      : chip.status === "used"
-                        ? "bg-card/50"
-                        : "bg-card hover:bg-card/80"
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
+          {specialChips.map((chip) => (
+            <div
+              key={chip.id}
+              onClick={() => openBoostDrawer(chip)}
+              className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-2xl cursor-pointer transition-all hover:bg-card/80 ${
+                chip.status === "pending"
+                  ? "bg-card border-2 border-primary"
+                  : chip.status === "used"
+                    ? "bg-card/50"
+                    : "bg-card"
+              }`}
+            >
+              <img
+                src={chip.icon}
+                alt={chip.label}
+                className={`w-8 h-8 object-contain mb-1 transition-all ${chip.status === "used" ? "grayscale opacity-50" : ""}`}
+              />
+              <span className="text-foreground text-[10px] font-medium text-center leading-tight">{chip.label}</span>
+              <span
+                className={`text-[8px] ${
+                  chip.status === "pending"
+                    ? "text-primary"
+                    : chip.status === "used"
+                      ? "text-muted-foreground"
+                      : "text-primary"
                 }`}
               >
-                <img
-                  src={chip.icon}
-                  alt={chip.label}
-                  className={`w-8 h-8 object-contain mb-1 transition-all ${
-                    isBlocked || chip.status === "used" ? "grayscale opacity-50" : ""
-                  }`}
-                />
-                <span className={`text-[10px] font-medium text-center leading-tight ${
-                  isBlocked ? "text-muted-foreground" : "text-foreground"
-                }`}>{chip.label}</span>
-                <span
-                  className={`text-[8px] ${
-                    isBlocked
-                      ? "text-muted-foreground"
-                      : chip.status === "pending"
-                        ? "text-primary"
-                        : chip.status === "used"
-                          ? "text-muted-foreground"
-                          : "text-primary"
-                  }`}
-                >
-                  {isBlocked
-                    ? "Заблокировано"
-                    : chip.status === "pending"
-                      ? "Используется"
-                      : chip.status === "used"
-                        ? `${chip.usedInTour} тур`
-                        : chip.sublabel}
-                </span>
-              </div>
-            );
-          })}
+                {chip.status === "pending"
+                  ? "Используется"
+                  : chip.status === "used"
+                    ? `${chip.usedInTour} тур`
+                    : chip.sublabel}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
