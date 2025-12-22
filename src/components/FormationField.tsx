@@ -134,26 +134,31 @@ const FormationField = ({
 
       let cardWidth;
 
-      if (width <= 768) {
-        // Для мобильных фиксированные 70x84
+      if (width <= 480) {
+        // Для ширины экрана до 480px фиксированные 70x84
         cardWidth = 70;
-      } else if (width <= 1024) {
+      } else if (width <= 768) {
         const minWidth = 70;
         const maxWidth = 96;
+        const scale = (width - 480) / (768 - 480);
+        cardWidth = minWidth + (maxWidth - minWidth) * scale;
+      } else if (width <= 1024) {
+        const minWidth = 96;
+        const maxWidth = 128;
         const scale = (width - 768) / (1024 - 768);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       } else {
-        const minWidth = 96;
+        const minWidth = 128;
         const maxWidth = 160;
         const maxScreen = 1920;
         const scale = Math.min(1, (width - 1024) / (maxScreen - 1024));
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       }
 
-      cardWidth = Math.max(70, Math.min(160, cardWidth));
+      cardWidth = Math.max(56, Math.min(160, cardWidth));
 
       // Высота рассчитывается с соотношением 84/70 = 1.2
-      const cardHeight = width <= 768 ? 84 : cardWidth * 1.2;
+      const cardHeight = cardWidth * 1.2;
 
       setCardSize({ width: cardWidth, height: cardHeight });
     };
@@ -229,7 +234,7 @@ const FormationField = ({
         </button>
       )}
 
-      <div className="absolute top-1 left-0 right-0 flex items-center justify-center z-30">
+      <div className="absolute top-[4px] left-0 right-0 flex items-center justify-center z-30">
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
           style={{
@@ -248,7 +253,7 @@ const FormationField = ({
           className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
           style={{
             width: `${cardSize.width * 1.5}px`,
-            top: `-${cardSize.height * 0.08}px`, // Опустили джерси ниже
+            top: `-${cardSize.height * 0.12}px`,
           }}
         />
       </div>
@@ -318,40 +323,24 @@ const FormationField = ({
     </div>
   );
 
-  // Определяем гэпы в зависимости от размера экрана
-  const getGapForRow = (cardsInRow: number) => {
-    if (screenWidth <= 768) {
-      // Мобильные: минимальные гэпы
-      if (cardsInRow === 2) return 8;
-      if (cardsInRow === 3) return 6;
-      if (cardsInRow === 5) return 4;
-      return 4;
-    } else {
-      // Планшет и десктоп: бОльшие гэпы
-      if (cardsInRow === 2) return 24;
-      if (cardsInRow === 3) return 20;
-      if (cardsInRow === 5) return 16;
-      return 16;
-    }
+  const mobileBaseWidth = 320;
+  const mobilePadding = 4;
+  // Уменьшили отступы между карточками в два раза
+  const mobileGapFor2 = 8; // было 16
+  const mobileGapFor5 = 4; // было 8
+
+  const baseScaleFactor = screenWidth / mobileBaseWidth;
+
+  const getRowGap = (cardsInRow: number) => {
+    if (cardsInRow === 2) return mobileGapFor2 * baseScaleFactor;
+    if (cardsInRow === 3) return mobileGapFor5 * baseScaleFactor;
+    if (cardsInRow === 5) return mobileGapFor5 * baseScaleFactor;
+    return mobileGapFor5 * baseScaleFactor;
   };
 
-  // Определяем боковые падинги для равных гэпов
-  const getRowPadding = (cardsInRow: number) => {
-    if (screenWidth <= 768) {
-      // Мобильные: рассчитываем падинги для равных гэпов
-      const totalCardWidth = cardSize.width * cardsInRow;
-      const totalGapWidth = getGapForRow(cardsInRow) * (cardsInRow - 1);
-      const availableWidth = screenWidth - 32; // 16px с каждой стороны от общего контейнера
-      const neededPadding = (availableWidth - (totalCardWidth + totalGapWidth)) / 2;
-      return Math.max(8, neededPadding); // Минимум 8px
-    }
-    return 0; // На планшетах и десктопах центрирование через justify-center
-  };
+  const containerPadding = mobilePadding * baseScaleFactor;
 
-  const containerPadding = 16; // Фиксированные падинги для общего контейнера
-
-  // Увеличили rowSpacing для планшетов и десктопов
-  const rowSpacing = screenWidth <= 768 ? cardSize.height * 0.1 : cardSize.height * 0.7;
+  const rowSpacing = screenWidth < 768 ? cardSize.height * 0.1 : cardSize.height * 0.5;
 
   return (
     <div className="relative w-full">
@@ -375,14 +364,11 @@ const FormationField = ({
           paddingBottom: `${containerPadding}px`,
         }}
       >
-        {/* Вратари */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: "4%",
-            gap: `${getGapForRow(2)}px`,
-            paddingLeft: `${getRowPadding(2)}px`,
-            paddingRight: `${getRowPadding(2)}px`,
+            gap: `${getRowGap(2)}px`,
           }}
         >
           {rows[1].map((slot, idx) => {
@@ -401,14 +387,11 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Защитники */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: `calc(4% + ${cardSize.height}px + ${rowSpacing}px)`,
-            gap: `${getGapForRow(5)}px`,
-            paddingLeft: `${getRowPadding(5)}px`,
-            paddingRight: `${getRowPadding(5)}px`,
+            gap: `${getRowGap(5)}px`,
           }}
         >
           {rows[2].map((slot, idx) => {
@@ -427,14 +410,11 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Полузащитники */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: `calc(4% + ${cardSize.height * 2}px + ${rowSpacing * 2}px)`,
-            gap: `${getGapForRow(5)}px`,
-            paddingLeft: `${getRowPadding(5)}px`,
-            paddingRight: `${getRowPadding(5)}px`,
+            gap: `${getRowGap(5)}px`,
           }}
         >
           {rows[3].map((slot, idx) => {
@@ -453,14 +433,11 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Нападающие */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: `calc(4% + ${cardSize.height * 3}px + ${rowSpacing * 3}px)`,
-            gap: `${getGapForRow(3)}px`,
-            paddingLeft: `${getRowPadding(3)}px`,
-            paddingRight: `${getRowPadding(3)}px`,
+            gap: `${getRowGap(3)}px`,
           }}
         >
           {rows[4].map((slot, idx) => {
