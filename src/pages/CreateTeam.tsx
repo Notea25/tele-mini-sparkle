@@ -25,12 +25,12 @@ import clubNeman from "@/assets/club-neman.png";
 import bgImage from "@/assets/bg_image.png";
 
 // Player card images for carousel
-import playerVakulich from "@/assets/player-vakulich.png";
-import playerKozlovCard from "@/assets/player-kozlov-card.png";
-import playerBykovCard from "@/assets/player-bykov-card.png";
-import playerKarpovich from "@/assets/player-karpovich.png";
-import playerKhvashchinsky from "@/assets/player-khvashchinsky.png";
-import playerGutor from "@/assets/player-gutor.png";
+import playerVakulichNew from "@/assets/player-vakulich-new.png";
+import playerKozlovNew from "@/assets/player-kozlov-new.png";
+import playerBykovNew from "@/assets/player-bykov-new.png";
+import playerKarpovichNew from "@/assets/player-karpovich-new.png";
+import playerKhvashchinskyNew from "@/assets/player-khvashchinsky-new.png";
+import playerGutorNew from "@/assets/player-gutor-new.png";
 
 // Club logo imports
 import arsenalLogo from "@/assets/clubs/arsenalLogo.png";
@@ -276,14 +276,14 @@ const CreateTeam = () => {
 
         {/* Scrollable Player Cards */}
         <div className="mt-6 overflow-x-auto scrollbar-hide">
-          <div className="flex gap-2 px-4 pb-2" style={{ width: "max-content" }}>
+          <div className="flex gap-1 px-4 pb-2" style={{ width: "max-content" }}>
             {[
-              playerVakulich,
-              playerKozlovCard,
-              playerBykovCard,
-              playerKarpovich,
-              playerKhvashchinsky,
-              playerGutor,
+              playerVakulichNew,
+              playerKozlovNew,
+              playerBykovNew,
+              playerKarpovichNew,
+              playerKhvashchinskyNew,
+              playerGutorNew,
             ].map((playerImg, index) => (
               <img
                 key={index}
