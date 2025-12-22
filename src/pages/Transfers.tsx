@@ -609,20 +609,20 @@ const Transfers = () => {
         <div className="flex bg-secondary rounded-full p-1">
           <Button
             onClick={() => setActiveTab("formation")}
-            className={`flex-1 rounded-full h-9 ${
+            className={`flex-1 rounded-full ${
               activeTab === "formation"
-                ? "bg-card text-foreground hover:bg-card/90 shadow-sm"
-                : "bg-transparent text-muted-foreground hover:bg-transparent hover:text-foreground"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
             }`}
           >
             Расстановка
           </Button>
           <Button
             onClick={() => setActiveTab("list")}
-            className={`flex-1 rounded-full h-9 ${
+            className={`flex-1 rounded-full ${
               activeTab === "list"
-                ? "bg-card text-foreground hover:bg-card/90 shadow-sm"
-                : "bg-transparent text-muted-foreground hover:bg-transparent hover:text-foreground"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
             }`}
           >
             Списком
