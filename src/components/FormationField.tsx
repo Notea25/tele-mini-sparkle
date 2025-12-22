@@ -127,40 +127,91 @@ const FormationField = ({
   const [screenWidth, setScreenWidth] = useState(0);
   const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
 
+  // useEffect(() => {
+  //   const updateCardSize = () => {
+  //     const width = window.innerWidth;
+  //     setScreenWidth(width);
+
+  //     const mobileBase = 320;
+  //     const mobileCardWidth = 64;
+  //     const mobileCardHeight = 82;
+
+  //     let cardWidth;
+
+  //     if (width <= 375) {
+  //       cardWidth = mobileCardWidth * (width / mobileBase);
+  //     } else if (width <= 768) {
+  //       const minWidth = mobileCardWidth * (375 / mobileBase);
+  //       const maxWidth = 96;
+  //       const scale = (width - 375) / (768 - 375);
+  //       cardWidth = minWidth + (maxWidth - minWidth) * scale;
+  //     } else if (width <= 1024) {
+  //       const minWidth = 96;
+  //       const maxWidth = 128;
+  //       const scale = (width - 768) / (1024 - 768);
+  //       cardWidth = minWidth + (maxWidth - minWidth) * scale;
+  //     } else {
+  //       const minWidth = 128;
+  //       const maxWidth = 160;
+  //       const maxScreen = 1920;
+  //       const scale = Math.min(1, (width - 1024) / (maxScreen - 1024));
+  //       cardWidth = minWidth + (maxWidth - minWidth) * scale;
+  //     }
+
+  //     cardWidth = Math.max(56, Math.min(160, cardWidth));
+
+  //     const cardHeight = cardWidth * 1.28125;
+
+  //     setCardSize({ width: cardWidth, height: cardHeight });
+  //   };
+
+  //   updateCardSize();
+
+  //   window.addEventListener("resize", updateCardSize);
+
+  //   return () => window.removeEventListener("resize", updateCardSize);
+  // }, []);
   useEffect(() => {
     const updateCardSize = () => {
       const width = window.innerWidth;
       setScreenWidth(width);
 
-      const mobileBase = 320;
-      const mobileCardWidth = 64;
-      const mobileCardHeight = 82;
-
       let cardWidth;
+      let cardHeight;
 
-      if (width <= 375) {
-        cardWidth = mobileCardWidth * (width / mobileBase);
-      } else if (width <= 768) {
-        const minWidth = mobileCardWidth * (375 / mobileBase);
-        const maxWidth = 96;
+      // Определяем размеры по контрольным точкам
+      if (width < 375) {
+        // Мобильные до 375px - плавное масштабирование
+        const minWidth = 58; // Уменьшили мобильные карточки
+        const maxWidth = 65; // На 375px
+        const scale = (width - 320) / (375 - 320);
+        cardWidth = minWidth + (maxWidth - minWidth) * Math.max(0, Math.min(1, scale));
+      } else if (width < 768) {
+        // От 375px до 768px - плавное масштабирование до 192px
+        const minWidth = 65; // На 375px
+        const maxWidth = 192; // На 768px (оставили прежним)
         const scale = (width - 375) / (768 - 375);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
-      } else if (width <= 1024) {
-        const minWidth = 96;
-        const maxWidth = 128;
+      } else if (width < 1024) {
+        // От 768px до 1024px - плавное масштабирование до 256px
+        const minWidth = 192; // На 768px (оставили прежним)
+        const maxWidth = 256; // На 1024px (оставили прежним)
         const scale = (width - 768) / (1024 - 768);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       } else {
-        const minWidth = 128;
-        const maxWidth = 160;
+        // От 1024px и выше - плавное масштабирование до 320px
+        const minWidth = 256; // На 1024px (оставили прежним)
+        const maxWidth = 320; // На 1920px (оставили прежним)
         const maxScreen = 1920;
         const scale = Math.min(1, (width - 1024) / (maxScreen - 1024));
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       }
 
-      cardWidth = Math.max(56, Math.min(160, cardWidth));
+      // Ограничиваем размеры
+      cardWidth = Math.max(58, Math.min(320, cardWidth));
 
-      const cardHeight = cardWidth * 1.28125;
+      // Высота пропорциональна ширине (соотношение 82:64 = 1.28125)
+      cardHeight = cardWidth * 1.28125;
 
       setCardSize({ width: cardWidth, height: cardHeight });
     };
