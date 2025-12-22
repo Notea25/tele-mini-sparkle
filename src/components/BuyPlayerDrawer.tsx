@@ -49,7 +49,6 @@ const BuyPlayerDrawer = ({
 }: BuyPlayerDrawerProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
-  const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
   const [activeFilter, setActiveFilter] = useState("Все");
   const [priceFrom, setPriceFrom] = useState(3);
   const [priceTo, setPriceTo] = useState(14);
@@ -69,13 +68,6 @@ const BuyPlayerDrawer = ({
   }, [isOpen, initialPositionFilter]);
 
   const teams = ["Все команды", ...allTeams];
-  const pointsOptions = [
-    { label: "Фильтр по очкам", value: "Фильтр по очкам" },
-    { label: "80+", value: "80+" },
-    { label: "70-79", value: "70-79" },
-    { label: "60-69", value: "60-69" },
-    { label: "< 60", value: "<60" },
-  ];
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
   const handleSort = (field: "name" | "points" | "price") => {
@@ -113,13 +105,6 @@ const BuyPlayerDrawer = ({
       const matchesTeam = selectedTeam === "Все команды" || player.team === selectedTeam;
       if (!matchesTeam) return false;
 
-      let matchesPoints = true;
-      if (selectedPoints === "80+") matchesPoints = player.points >= 80;
-      else if (selectedPoints === "70-79") matchesPoints = player.points >= 70 && player.points < 80;
-      else if (selectedPoints === "60-69") matchesPoints = player.points >= 60 && player.points < 70;
-      else if (selectedPoints === "<60") matchesPoints = player.points < 60;
-      if (!matchesPoints) return false;
-
       if (player.price < priceFrom || player.price > priceTo) return false;
 
       if (activeFilter === "Все") return true;
@@ -129,7 +114,7 @@ const BuyPlayerDrawer = ({
       if (activeFilter === "Нападающие") return player.position === "НП";
       return true;
     });
-  }, [availablePlayers, searchQuery, selectedTeam, selectedPoints, priceFrom, priceTo, activeFilter]);
+  }, [availablePlayers, searchQuery, selectedTeam, priceFrom, priceTo, activeFilter]);
 
   // Apply sorting
   const sortedPlayers = useMemo(() => {
@@ -164,7 +149,6 @@ const BuyPlayerDrawer = ({
   const handleResetFilters = () => {
     setSearchQuery("");
     setSelectedTeam("Все команды");
-    setSelectedPoints("Фильтр по очкам");
     setPriceFrom(3);
     setPriceTo(14);
     setActiveFilter("Все");
@@ -176,7 +160,6 @@ const BuyPlayerDrawer = ({
     searchQuery !== "" ||
     activeFilter !== "Все" ||
     selectedTeam !== "Все команды" ||
-    selectedPoints !== "Фильтр по очкам" ||
     priceFrom !== 3 ||
     priceTo !== 14;
 
@@ -222,17 +205,6 @@ const BuyPlayerDrawer = ({
               <SelectContent>
                 {teams.map((team) => (
                   <SelectItem key={team} value={team}>{team}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedPoints} onValueChange={(v) => { setSelectedPoints(v); setCurrentPage(1); }}>
-              <SelectTrigger className="h-8 bg-card border-border rounded-full text-foreground text-xs min-w-[100px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {pointsOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
