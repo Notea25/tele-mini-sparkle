@@ -6,7 +6,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
-import InfinitePlayerCarousel from "@/components/InfinitePlayerCarousel";
+
 import InfiniteClubCarousel from "@/components/InfiniteClubCarousel";
 import { useState, useMemo, useRef } from "react";
 import { Filter } from "bad-words";
@@ -257,21 +257,6 @@ const CreateTeam = () => {
         <InfiniteClubCarousel />
       </div>
 
-      {/* Collect Team Section */}
-      <div className="mt-8 text-center">
-        <div className="px-4">
-          <h3 className="text-foreground text-3xl font-bold mb-4">Собирай команду</h3>
-          <p className="text-muted-foreground text-base leading-relaxed">
-            Воспользуйся бюджетом в <span className="text-primary font-semibold">100 миллионов</span>
-            <br />и собери команду лучших игроков чемпионата
-          </p>
-        </div>
-
-        {/* Infinite Player Carousel */}
-        <div className="mt-6">
-          <InfinitePlayerCarousel />
-        </div>
-      </div>
 
       {/* Score Points Section */}
       <div className="px-4 mt-8 text-center">
