@@ -24,6 +24,24 @@ import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
 import clubNeman from "@/assets/club-neman.png";
 import bgImage from "@/assets/bg_image.png";
 
+// Club logo imports
+import arsenalLogo from "@/assets/clubs/arsenalLogo.png";
+import baranovichiLogo from "@/assets/clubs/baranovichiLogo.png";
+import bateLogo from "@/assets/clubs/bateLogo.png";
+import belshinaLogo from "@/assets/clubs/belshinaLogo.png";
+import vitebskLogo from "@/assets/clubs/vitebskLogo.png";
+import gomelLogo from "@/assets/clubs/gomelLogo.png";
+import brestLogo from "@/assets/clubs/brestLogo.png";
+import dinamoLogo from "@/assets/clubs/dinamoLogo.png";
+import dneprLogo from "@/assets/clubs/dneprLogo.png";
+import islochLogo from "@/assets/clubs/islochLogo.png";
+import minskLogo from "@/assets/clubs/minskLogo.png";
+import mlLogo from "@/assets/clubs/mlLogo.png";
+import naftanLogo from "@/assets/clubs/naftanLogo.png";
+import nemanLogo from "@/assets/clubs/nemanLogo.png";
+import slaviaLogo from "@/assets/clubs/slaviaLogo.png";
+import torpedoLogo from "@/assets/clubs/torpedoLogo.png";
+
 const MAX_NAME_LENGTH = 15;
 
 const russianBadWords = [
@@ -65,22 +83,22 @@ const russianBadWords = [
 ];
 
 const TEAM_OPTIONS = [
-  { value: "arsenal", label: "Арсенал" },
-  { value: "baranovichi", label: "Барановичи" },
-  { value: "bate", label: "БАТЭ" },
-  { value: "belshina", label: "Белшина" },
-  { value: "vitebsk", label: "Витебск" },
-  { value: "gomel", label: "Гомель" },
-  { value: "dinamo-brest", label: "Динамо-Брест" },
-  { value: "dinamo-minsk", label: "Динамо-Минск" },
-  { value: "dnepr-mogilev", label: "Днепр-Могилев" },
-  { value: "isloch", label: "Ислочь" },
-  { value: "minsk", label: "Минск" },
-  { value: "ml", label: "МЛ Витебск" },
-  { value: "naftan-novopolotsk", label: "Нафтан-Новополоцк" },
-  { value: "neman", label: "Неман" },
-  { value: "slavia", label: "Славия-Мозырь" },
-  { value: "torpedo", label: "Торпедо-БелАЗ" },
+  { value: "arsenal", label: "Арсенал", logo: arsenalLogo },
+  { value: "baranovichi", label: "Барановичи", logo: baranovichiLogo },
+  { value: "bate", label: "БАТЭ", logo: bateLogo },
+  { value: "belshina", label: "Белшина", logo: belshinaLogo },
+  { value: "vitebsk", label: "Витебск", logo: vitebskLogo },
+  { value: "gomel", label: "Гомель", logo: gomelLogo },
+  { value: "dinamo-brest", label: "Динамо-Брест", logo: brestLogo },
+  { value: "dinamo-minsk", label: "Динамо-Минск", logo: dinamoLogo },
+  { value: "dnepr-mogilev", label: "Днепр-Могилев", logo: dneprLogo },
+  { value: "isloch", label: "Ислочь", logo: islochLogo },
+  { value: "minsk", label: "Минск", logo: minskLogo },
+  { value: "ml", label: "МЛ Витебск", logo: mlLogo },
+  { value: "naftan-novopolotsk", label: "Нафтан-Новополоцк", logo: naftanLogo },
+  { value: "neman", label: "Неман", logo: nemanLogo },
+  { value: "slavia", label: "Славия-Мозырь", logo: slaviaLogo },
+  { value: "torpedo", label: "Торпедо-БелАЗ", logo: torpedoLogo },
 ];
 
 const CreateTeam = () => {
@@ -217,7 +235,10 @@ const CreateTeam = () => {
                 value={option.value}
                 className="focus:bg-white/10 focus:text-white data-[state=checked]:text-primary"
               >
-                {option.label}
+                <div className="flex items-center gap-2">
+                  <img src={option.logo} alt={option.label} className="w-5 h-5 object-contain" />
+                  <span>{option.label}</span>
+                </div>
               </SelectItem>
             ))}
           </SelectContent>
