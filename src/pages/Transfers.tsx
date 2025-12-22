@@ -605,29 +605,27 @@ const Transfers = () => {
       </div>
 
       {/* Tabs */}
-      <div className="px-4 mt-4">
-        <div className="flex bg-secondary rounded-full p-1">
-          <Button
-            onClick={() => setActiveTab("formation")}
-            className={`flex-1 rounded-full h-9 ${
-              activeTab === "formation"
-                ? "bg-card text-foreground hover:bg-card/90 shadow-sm"
-                : "bg-transparent text-muted-foreground hover:bg-transparent hover:text-foreground"
-            }`}
-          >
-            Расстановка
-          </Button>
-          <Button
-            onClick={() => setActiveTab("list")}
-            className={`flex-1 rounded-full h-9 ${
-              activeTab === "list"
-                ? "bg-card text-foreground hover:bg-card/90 shadow-sm"
-                : "bg-transparent text-muted-foreground hover:bg-transparent hover:text-foreground"
-            }`}
-          >
-            Списком
-          </Button>
-        </div>
+      <div className="px-4 mt-4 flex gap-2">
+        <Button
+          onClick={() => setActiveTab("formation")}
+          className={`flex-1 rounded-full ${
+            activeTab === "formation"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+          }`}
+        >
+          Расстановка
+        </Button>
+        <Button
+          onClick={() => setActiveTab("list")}
+          className={`flex-1 rounded-full ${
+            activeTab === "list"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+          }`}
+        >
+          Списком
+        </Button>
       </div>
 
       {/* Main content */}
