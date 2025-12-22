@@ -374,8 +374,8 @@ const TeamManagement = () => {
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
         <span className="flex-1">Игрок</span>
-        <span className="w-14 text-right">Очки</span>
-        <span className="w-14 text-right">Цена</span>
+        <span className="w-12 text-center">Очки</span>
+        <span className="w-10 text-center">Цена</span>
         <span className="w-10"></span>
       </div>
 
@@ -398,10 +398,10 @@ const TeamManagement = () => {
               </div>
 
               {/* Points */}
-              <span className="w-14 flex-shrink-0 text-foreground text-sm text-right">{player.points}</span>
+              <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
 
               {/* Price */}
-              <span className="w-14 flex-shrink-0 text-foreground text-sm text-right">{player.price}</span>
+              <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
 
               {/* Swap button */}
               <button
