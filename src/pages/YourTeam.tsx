@@ -242,6 +242,9 @@ const YourTeam = () => {
                     } ${player.hasRedCard || player.isInjured ? "border border-red-500" : ""}`}
                   >
                     <div className="flex-1 flex items-center gap-2 min-w-0">
+                      {clubLogos[player.team] && (
+                        <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                      )}
                       <span className="text-foreground font-medium truncate">{player.name}</span>
                       <span className="text-muted-foreground text-xs">{player.position}</span>
                       {isCaptainPlayer && (
@@ -263,11 +266,6 @@ const YourTeam = () => {
                         <span className="bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">ТР</span>
                       )}
                     </div>
-                    <div className="w-6 flex-shrink-0 flex justify-center">
-                      {clubLogos[player.team] && (
-                        <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
-                      )}
-                    </div>
                     <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
                     <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
                   </div>
@@ -287,15 +285,13 @@ const YourTeam = () => {
                 }`}
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
+                  {clubLogos[player.team] && (
+                    <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                  )}
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
                   {isBenchBoostActive && (
                     <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />
-                  )}
-                </div>
-                <div className="w-6 flex-shrink-0 flex justify-center">
-                  {clubLogos[player.team] && (
-                    <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
                   )}
                 </div>
                 <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
