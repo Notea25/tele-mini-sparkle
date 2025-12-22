@@ -302,9 +302,9 @@ const FormationField = ({
         >
           <span
             className="font-semibold text-black block truncate whitespace-nowrap text-center"
-            style={{ fontSize: `${cardSize.width * 0.1}px` }} // 10% от ширины
+            style={{ fontSize: `${cardSize.width * 0.1}px` }}
           >
-            {truncateName(player.name, Math.floor(cardSize.width / 6.4))} // 6.4px на символ
+            {truncateName(player.name, Math.floor(cardSize.width / 6.4))}
           </span>
         </div>
         <div
@@ -316,11 +316,10 @@ const FormationField = ({
         >
           <span
             className="font-medium block truncate whitespace-nowrap text-center"
-            style={{ fontSize: `${cardSize.width * 0.085}px` }} // 8.5% от ширины
+            style={{ fontSize: `${cardSize.width * 0.085}px` }}
           >
             <span className="text-[#7D7A94]">(Д)</span>
             <span className="text-white ml-[2%]">{truncateName(player.team, Math.floor(cardSize.width / 8))}</span> //
-            8px на символ
           </span>
         </div>
       </div>
