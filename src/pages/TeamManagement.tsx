@@ -452,12 +452,12 @@ const TeamManagement = () => {
 
       {/* Special Chips */}
       <div className="px-4 mt-4">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
+        <div className="grid grid-cols-3 gap-3">
           {specialChips.map((chip) => (
             <div
               key={chip.id}
               onClick={() => openBoostDrawer(chip)}
-              className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-2xl cursor-pointer transition-all hover:bg-card/80 ${
+              className={`flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all hover:bg-card/80 ${
                 chip.status === "pending"
                   ? "bg-card border-2 border-primary"
                   : chip.status === "used"
