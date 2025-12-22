@@ -667,6 +667,7 @@ import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
 
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
@@ -783,26 +784,36 @@ const FormationField = ({
     4: formation.filter((slot) => slot.row === 4),
   };
 
-  // Размеры карточек на разных устройствах
-  const getCardDimensions = () => {
-    // Динамически рассчитываем размеры на основе ширины экрана
-    if (typeof window === "undefined") {
-      return { width: 64, height: 82 }; // SSR fallback
-    }
+  // Состояние для определения размера экрана
+  const [cardSize, setCardSize] = useState({ width: 64, height: 82 });
 
-    const screenWidth = window.innerWidth;
+  useEffect(() => {
+    const updateCardSize = () => {
+      const screenWidth = window.innerWidth;
 
-    if (screenWidth >= 1024) {
-      // Десктоп
-      return { width: 80, height: 104 };
-    } else if (screenWidth >= 768) {
-      // Планшет
-      return { width: 72, height: 94 };
-    } else {
-      // Мобильный
-      return { width: 64, height: 82 };
-    }
-  };
+      if (screenWidth >= 1440) {
+        // Большие десктопы
+        setCardSize({ width: 96, height: 124 }); // +50% от мобильного
+      } else if (screenWidth >= 1024) {
+        // Десктоп
+        setCardSize({ width: 88, height: 114 }); // +37.5% от мобильного
+      } else if (screenWidth >= 768) {
+        // Планшет
+        setCardSize({ width: 80, height: 104 }); // +25% от мобильного
+      } else {
+        // Мобильный
+        setCardSize({ width: 64, height: 82 });
+      }
+    };
+
+    // Устанавливаем начальный размер
+    updateCardSize();
+
+    // Добавляем слушатель изменения размера
+    window.addEventListener("resize", updateCardSize);
+
+    return () => window.removeEventListener("resize", updateCardSize);
+  }, []);
 
   // Компонент карточки игрока
   const PlayerCardComponent = ({
@@ -811,180 +822,198 @@ const FormationField = ({
   }: {
     player: PlayerData;
     showRemoveButton?: boolean;
-  }) => {
-    const cardSize = getCardDimensions();
-
-    return (
-      <div
-        className="relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
-        style={{
-          width: `${cardSize.width}px`,
-          height: `${cardSize.height}px`,
-        }}
-        onClick={() => onPlayerClick?.(player)}
-      >
-        {/* Captain/Vice-Captain badge */}
-        {showCaptainBadges && captain === player.id && (
-          <img
-            src={captainBadge}
-            alt="C"
-            className="absolute top-1.5 left-1.5 z-50"
-            style={{
-              width: `${cardSize.width * 0.18}px`, // 18% от ширины карточки
-              height: `${cardSize.width * 0.18}px`,
-            }}
-          />
-        )}
-        {showCaptainBadges && viceCaptain === player.id && (
-          <img
-            src={viceCaptainBadge}
-            alt="V"
-            className="absolute top-1.5 left-1.5 z-50"
-            style={{
-              width: `${cardSize.width * 0.18}px`,
-              height: `${cardSize.width * 0.18}px`,
-            }}
-          />
-        )}
-
-        {/* Delete button */}
-        {showRemoveButton && onRemovePlayer && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onRemovePlayer(player.id);
-            }}
-            className="absolute top-1.5 right-1.5 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
-            style={{
-              width: `${cardSize.width * 0.18}px`,
-              height: `${cardSize.width * 0.18}px`,
-            }}
-          >
-            <X
-              className="text-[#1a2e1a]"
-              style={{
-                width: `${cardSize.width * 0.12}px`,
-                height: `${cardSize.width * 0.12}px`,
-              }}
-            />
-          </button>
-        )}
-
-        {/* Price */}
-        <div
-          className="w-full flex items-center justify-center pt-1.5 pb-1 z-30"
-          style={{ height: `${cardSize.height * 0.22}px` }} // 22% от высоты карточки
-        >
-          <span
-            className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
-            style={{ fontSize: `${cardSize.width * 0.15}px` }} // 15% от ширины карточки
-          >
-            ${(player.price || 9).toFixed(1)}
-          </span>
-        </div>
-
-        {/* Jersey */}
-        <div className="relative w-full flex-1 z-10 overflow-hidden">
-          <img
-            src={getJerseyForTeam(player.team, player.position)}
-            alt={player.name}
-            className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
-            style={{
-              width: `${cardSize.width * 1.55}px`, // 155% от ширины карточки
-              top: `-${cardSize.height * 0.17}px`, // -17% от высоты карточки
-            }}
-          />
-        </div>
-
-        {/* Name and team */}
-        <div className="w-full relative z-20">
-          <div
-            className="bg-white"
-            style={{ padding: `${cardSize.height * 0.02}px` }} // 2% от высоты
-          >
-            <span
-              className="font-semibold text-black block truncate whitespace-nowrap text-center"
-              style={{ fontSize: `${cardSize.width * 0.11}px` }} // 11% от ширины
-            >
-              {truncateName(player.name, cardSize.width >= 72 ? 12 : 10)}
-            </span>
-          </div>
-          <div className="bg-[#1a1a2e]" style={{ padding: `${cardSize.height * 0.02}px` }}>
-            <span
-              className="font-medium block truncate whitespace-nowrap text-center"
-              style={{ fontSize: `${cardSize.width * 0.095}px` }} // 9.5% от ширины
-            >
-              <span className="text-[#7D7A94]">(Д)</span>
-              <span className="text-white ml-[2%]">{truncateName(player.team, cardSize.width >= 72 ? 10 : 8)}</span>
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Компонент пустого слота
-  const EmptySlotComponent = ({ position }: { position: string }) => {
-    const cardSize = getCardDimensions();
-
-    return (
-      <div
-        className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
-        style={{
-          width: `${cardSize.width}px`,
-          height: `${cardSize.height}px`,
-          gap: `${cardSize.height * 0.07}px`, // 7% от высоты
-        }}
-        onClick={() => onEmptySlotClick?.(position)}
-      >
-        <span
-          className="text-white font-bold"
-          style={{ fontSize: `${cardSize.width * 0.22}px` }} // 22% от ширины
-        >
-          {position}
-        </span>
-        <div
-          className="rounded-full bg-white/90 flex items-center justify-center"
+  }) => (
+    <div
+      className="relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
+      style={{
+        width: `${cardSize.width}px`,
+        height: `${cardSize.height}px`,
+      }}
+      onClick={() => onPlayerClick?.(player)}
+    >
+      {/* Captain/Vice-Captain badge */}
+      {showCaptainBadges && captain === player.id && (
+        <img
+          src={captainBadge}
+          alt="C"
+          className="absolute top-2 left-2 z-50"
           style={{
-            width: `${cardSize.width * 0.28}px`, // 28% от ширины
-            height: `${cardSize.width * 0.28}px`,
+            width: `${cardSize.width * 0.2}px`, // 20% от ширины карточки
+            height: `${cardSize.width * 0.2}px`,
+          }}
+        />
+      )}
+      {showCaptainBadges && viceCaptain === player.id && (
+        <img
+          src={viceCaptainBadge}
+          alt="V"
+          className="absolute top-2 left-2 z-50"
+          style={{
+            width: `${cardSize.width * 0.2}px`,
+            height: `${cardSize.width * 0.2}px`,
+          }}
+        />
+      )}
+
+      {/* Delete button */}
+      {showRemoveButton && onRemovePlayer && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemovePlayer(player.id);
+          }}
+          className="absolute top-2 right-2 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
+          style={{
+            width: `${cardSize.width * 0.2}px`,
+            height: `${cardSize.width * 0.2}px`,
           }}
         >
-          <Plus
-            className="text-[#3a5a28]"
+          <X
+            className="text-[#1a2e1a]"
             style={{
-              width: `${cardSize.width * 0.15}px`, // 15% от ширины
-              height: `${cardSize.width * 0.15}px`,
+              width: `${cardSize.width * 0.13}px`,
+              height: `${cardSize.width * 0.13}px`,
             }}
           />
+        </button>
+      )}
+
+      {/* Price */}
+      <div
+        className="w-full flex items-center justify-center pt-2 pb-1.5 z-30"
+        style={{ height: `${cardSize.height * 0.24}px` }} // 24% от высоты карточки
+      >
+        <span
+          className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
+          style={{ fontSize: `${cardSize.width * 0.16}px` }} // 16% от ширины карточки
+        >
+          ${(player.price || 9).toFixed(1)}
+        </span>
+      </div>
+
+      {/* Jersey */}
+      <div className="relative w-full flex-1 z-10 overflow-hidden">
+        <img
+          src={getJerseyForTeam(player.team, player.position)}
+          alt={player.name}
+          className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
+          style={{
+            width: `${cardSize.width * 1.6}px`, // 160% от ширины карточки
+            top: `-${cardSize.height * 0.18}px`, // -18% от высоты карточки
+          }}
+        />
+      </div>
+
+      {/* Name and team */}
+      <div className="w-full relative z-20">
+        <div
+          className="bg-white"
+          style={{
+            paddingTop: `${cardSize.height * 0.025}px`,
+            paddingBottom: `${cardSize.height * 0.025}px`,
+          }}
+        >
+          <span
+            className="font-semibold text-black block truncate whitespace-nowrap text-center"
+            style={{ fontSize: `${cardSize.width * 0.13}px` }} // 13% от ширины
+          >
+            {truncateName(player.name, cardSize.width >= 88 ? 15 : cardSize.width >= 80 ? 13 : 10)}
+          </span>
+        </div>
+        <div
+          className="bg-[#1a1a2e]"
+          style={{
+            paddingTop: `${cardSize.height * 0.02}px`,
+            paddingBottom: `${cardSize.height * 0.02}px`,
+          }}
+        >
+          <span
+            className="font-medium block truncate whitespace-nowrap text-center"
+            style={{ fontSize: `${cardSize.width * 0.11}px` }} // 11% от ширины
+          >
+            <span className="text-[#7D7A94]">(Д)</span>
+            <span className="text-white ml-[2%]">
+              {truncateName(player.team, cardSize.width >= 88 ? 12 : cardSize.width >= 80 ? 10 : 8)}
+            </span>
+          </span>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 
-  // Получаем текущие размеры карточки для расчета гэпов
-  const cardSize = getCardDimensions();
+  // Компонент пустого слота
+  const EmptySlotComponent = ({ position }: { position: string }) => (
+    <div
+      className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+      style={{
+        width: `${cardSize.width}px`,
+        height: `${cardSize.height}px`,
+        gap: `${cardSize.height * 0.08}px`, // 8% от высоты
+      }}
+      onClick={() => onEmptySlotClick?.(position)}
+    >
+      <span
+        className="text-white font-bold"
+        style={{ fontSize: `${cardSize.width * 0.25}px` }} // 25% от ширины
+      >
+        {position}
+      </span>
+      <div
+        className="rounded-full bg-white/90 flex items-center justify-center"
+        style={{
+          width: `${cardSize.width * 0.32}px`, // 32% от ширины
+          height: `${cardSize.width * 0.32}px`,
+        }}
+      >
+        <Plus
+          className="text-[#3a5a28]"
+          style={{
+            width: `${cardSize.width * 0.18}px`, // 18% от ширины
+            height: `${cardSize.width * 0.18}px`,
+          }}
+        />
+      </div>
+    </div>
+  );
 
-  // Рассчитываем гэпы на основе размера карточки
+  // Рассчитываем гэпы на основе размера карточки (БОЛЬШИЕ гэпы)
   const getRowGap = (cardsInRow: number) => {
-    if (cardsInRow === 2) return cardSize.width * 0.28; // 28% от ширины карточки
-    if (cardsInRow === 3) return cardSize.width * 0.25; // 25% от ширины карточки
-    if (cardsInRow === 5) return cardSize.width * 0.15; // 15% от ширины карточки
-    return cardSize.width * 0.15;
+    if (cardsInRow === 2) return cardSize.width * 0.35; // 35% от ширины карточки (БОЛЬШОЙ)
+    if (cardsInRow === 3) return cardSize.width * 0.3; // 30% от ширины карточки
+    if (cardsInRow === 5) return cardSize.width * 0.18; // 18% от ширины карточки
+    return cardSize.width * 0.18;
   };
 
-  // Рассчитываем вертикальные отступы на основе высоты карточки
-  const rowSpacing = cardSize.height * 0.5; // 50% от высоты карточки между строками
+  // Рассчитываем вертикальные отступы (БОЛЬШИЕ отступы)
+  const rowSpacing = cardSize.height * 0.7; // 70% от высоты карточки между строками
+
+  // Рассчитываем паддинги контейнера (увеличиваем на больших экранах)
+  const containerPadding = cardSize.width * 0.1; // 10% от ширины карточки
 
   return (
     <div className="relative w-full">
       {/* Football field */}
-      <div className="px-[clamp(4px,1vw,8px)] py-[clamp(4px,1vw,8px)]">
+      <div
+        style={{
+          paddingLeft: `${containerPadding}px`,
+          paddingRight: `${containerPadding}px`,
+          paddingTop: `${containerPadding * 0.5}px`,
+          paddingBottom: `${containerPadding * 0.5}px`,
+        }}
+      >
         <img src={footballFieldNew} alt="Football field" className="w-full" />
       </div>
 
       {/* Player slots container */}
-      <div className="absolute inset-0 px-[clamp(4px,1vw,8px)] py-[clamp(4px,1vw,8px)]">
+      <div
+        className="absolute inset-0"
+        style={{
+          paddingLeft: `${containerPadding}px`,
+          paddingRight: `${containerPadding}px`,
+          paddingTop: `${containerPadding * 0.5}px`,
+          paddingBottom: `${containerPadding * 0.5}px`,
+        }}
+      >
         {/* Row 1 - Goalkeepers (2 игрока) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
