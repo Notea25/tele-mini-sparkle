@@ -625,7 +625,7 @@ const Transfers = () => {
                 : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
             }`}
           >
-            Списком
+            Список
           </Button>
         </div>
       </div>
