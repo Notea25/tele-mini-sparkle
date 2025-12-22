@@ -372,10 +372,9 @@ const TeamManagement = () => {
 
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
-        <span className="flex-1">Игрок ↕</span>
-        <span className="w-14 text-center">Клуб</span>
-        <span className="w-12 text-center">Очки ↕</span>
-        <span className="w-10 text-center">Цена ↕</span>
+        <span className="flex-1">Игрок</span>
+        <span className="w-12 text-center">Очки</span>
+        <span className="w-10 text-center">Цена</span>
         <span className="w-10"></span>
       </div>
 
@@ -383,20 +382,16 @@ const TeamManagement = () => {
       <div className="space-y-2">
         {players.map((player) => (
           <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-            {/* Player name + position */}
+            {/* Club logo + Player name + position */}
             <div
               className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
               onClick={() => setSelectedPlayerForCard(player.id)}
             >
+              {clubIcons[player.team] && (
+                <img src={clubIcons[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+              )}
               <span className="text-foreground font-medium truncate">{player.name}</span>
               <span className="text-muted-foreground text-xs">{player.position}</span>
-            </div>
-
-            {/* Club */}
-            <div className="w-14 flex-shrink-0 flex justify-center">
-              {clubIcons[player.team] && (
-                <img src={clubIcons[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
-              )}
             </div>
 
             {/* Points */}
