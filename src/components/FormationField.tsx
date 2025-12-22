@@ -132,17 +132,13 @@ const FormationField = ({
       const width = window.innerWidth;
       setScreenWidth(width);
 
-      const mobileBase = 320;
-      const mobileCardWidth = 64;
-      const mobileCardHeight = 82;
-
       let cardWidth;
 
       if (width <= 375) {
-        // Уменьшили ширину карточек на 5% для мобильных
-        cardWidth = mobileCardWidth * (width / mobileBase) * 0.95;
+        // Для мобильных фиксированные 70x84
+        cardWidth = 70;
       } else if (width <= 768) {
-        const minWidth = mobileCardWidth * (375 / mobileBase) * 0.95;
+        const minWidth = 70;
         const maxWidth = 96;
         const scale = (width - 375) / (768 - 375);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
@@ -161,7 +157,8 @@ const FormationField = ({
 
       cardWidth = Math.max(56, Math.min(160, cardWidth));
 
-      const cardHeight = cardWidth * 1.28125;
+      // Высота рассчитывается с соотношением 84/70 = 1.2
+      const cardHeight = cardWidth * 1.2;
 
       setCardSize({ width: cardWidth, height: cardHeight });
     };
@@ -256,7 +253,7 @@ const FormationField = ({
           className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
           style={{
             width: `${cardSize.width * 1.5}px`,
-            top: `-${cardSize.height * 0.12}px`, // Опустили майку
+            top: `-${cardSize.height * 0.12}px`,
           }}
         />
       </div>
