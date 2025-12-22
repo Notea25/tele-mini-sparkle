@@ -276,7 +276,7 @@ const CreateTeam = () => {
 
         {/* Scrollable Player Cards */}
         <div className="mt-6 overflow-x-auto scrollbar-hide">
-          <div className="flex gap-4 px-4 pb-2" style={{ width: "max-content" }}>
+          <div className="flex gap-2 px-4 pb-2" style={{ width: "max-content" }}>
             {[
               playerVakulich,
               playerKozlovCard,
@@ -289,7 +289,7 @@ const CreateTeam = () => {
                 key={index}
                 src={playerImg}
                 alt={`Player ${index + 1}`}
-                className="w-40 h-auto rounded-xl flex-shrink-0"
+                className="w-52 h-auto rounded-xl flex-shrink-0"
               />
             ))}
           </div>
