@@ -14,124 +14,32 @@ import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
 // Random team names (same as in TournamentTable)
 const teamNames = [
-  "FC Phoenix",
-  "Red Bulls",
-  "Golden Eagles",
-  "Thunder FC",
-  "Storm United",
-  "Blue Lions",
-  "Silver Hawks",
-  "Dark Knights",
-  "Fire Dragons",
-  "Ice Warriors",
-  "Royal Tigers",
-  "Electric City",
-  "Shadow Wolves",
-  "Crimson Kings",
-  "Emerald Stars",
-  "Diamond FC",
-  "Platinum United",
-  "Bronze Legends",
-  "Copper Chiefs",
-  "Steel Titans",
-  "Galaxy FC",
-  "Cosmic Stars",
-  "Meteor United",
-  "Comet FC",
-  "Asteroid FC",
-  "Ocean Waves",
-  "River Flow",
-  "Lake City",
-  "Mountain FC",
-  "Valley United",
-  "Forest Rangers",
-  "Desert Hawks",
-  "Tundra Bears",
-  "Jungle Cats",
-  "Savanna Lions",
-  "Arctic Foxes",
-  "Tropical Storm",
-  "Volcano FC",
-  "Canyon City",
-  "Prairie Dogs",
-  "Night Owls",
-  "Dawn Breakers",
-  "Sunset FC",
-  "Twilight United",
-  "Midnight FC",
-  "Victory FC",
-  "Champion Stars",
-  "Glory United",
-  "Honor FC",
-  "Pride City",
-  "Spirit FC",
-  "Soul United",
-  "Heart FC",
-  "Mind Warriors",
-  "Power FC",
-  "Speed Demons",
-  "Flash FC",
-  "Lightning FC",
-  "Bolt United",
-  "Spark City",
-  "Alpha FC",
-  "Beta United",
-  "Gamma FC",
-  "Delta City",
-  "Omega FC",
-  "Zenith Stars",
-  "Apex United",
-  "Summit FC",
-  "Peak City",
-  "Pinnacle FC",
-  "Nova FC",
-  "Quantum United",
-  "Fusion FC",
-  "Energy City",
-  "Dynamo FC",
-  "Rocket FC",
-  "Jet United",
-  "Turbo FC",
-  "Nitro City",
-  "Boost FC",
-  "Legend FC",
-  "Myth United",
-  "Epic FC",
-  "Hero City",
-  "Champion FC",
-  "Elite Stars",
-  "Premier United",
-  "Supreme FC",
-  "Ultimate City",
-  "Max FC",
-  "Prime FC",
-  "Core United",
-  "Base FC",
-  "Root City",
-  "Origin FC",
-  "Future FC",
-  "Next United",
-  "Forward FC",
-  "Ahead City",
-  "Beyond FC",
+  "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",
+  "Blue Lions", "Silver Hawks", "Dark Knights", "Fire Dragons", "Ice Warriors",
+  "Royal Tigers", "Electric City", "Shadow Wolves", "Crimson Kings", "Emerald Stars",
+  "Diamond FC", "Platinum United", "Bronze Legends", "Copper Chiefs", "Steel Titans",
+  "Galaxy FC", "Cosmic Stars", "Meteor United", "Comet FC", "Asteroid FC",
+  "Ocean Waves", "River Flow", "Lake City", "Mountain FC", "Valley United",
+  "Forest Rangers", "Desert Hawks", "Tundra Bears", "Jungle Cats", "Savanna Lions",
+  "Arctic Foxes", "Tropical Storm", "Volcano FC", "Canyon City", "Prairie Dogs",
+  "Night Owls", "Dawn Breakers", "Sunset FC", "Twilight United", "Midnight FC",
+  "Victory FC", "Champion Stars", "Glory United", "Honor FC", "Pride City",
+  "Spirit FC", "Soul United", "Heart FC", "Mind Warriors", "Power FC",
+  "Speed Demons", "Flash FC", "Lightning FC", "Bolt United", "Spark City",
+  "Alpha FC", "Beta United", "Gamma FC", "Delta City", "Omega FC",
+  "Zenith Stars", "Apex United", "Summit FC", "Peak City", "Pinnacle FC",
+  "Nova FC", "Quantum United", "Fusion FC", "Energy City", "Dynamo FC",
+  "Rocket FC", "Jet United", "Turbo FC", "Nitro City", "Boost FC",
+  "Legend FC", "Myth United", "Epic FC", "Hero City", "Champion FC",
+  "Elite Stars", "Premier United", "Supreme FC", "Ultimate City", "Max FC",
+  "Prime FC", "Core United", "Base FC", "Root City", "Origin FC",
+  "Future FC", "Next United", "Forward FC", "Ahead City", "Beyond FC"
 ];
 
 const playerNames = [
-  "Иванов",
-  "Петров",
-  "Сидоров",
-  "Козлов",
-  "Новиков",
-  "Морозов",
-  "Волков",
-  "Алексеев",
-  "Лебедев",
-  "Семенов",
-  "Егоров",
-  "Павлов",
-  "Федоров",
-  "Николаев",
-  "Соколов",
+  "Иванов", "Петров", "Сидоров", "Козлов", "Новиков",
+  "Морозов", "Волков", "Алексеев", "Лебедев", "Семенов",
+  "Егоров", "Павлов", "Федоров", "Николаев", "Соколов"
 ];
 
 interface PlayerData {
@@ -184,10 +92,10 @@ const ViewTeam = () => {
   const { mainSquadPlayers, benchPlayers, captainId, viceCaptainId, totalTourPoints } = useMemo(() => {
     const positions = ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"];
     const benchPositions = ["ВР", "ЗЩ", "ПЗ", "НП"];
-
+    
     const seed = teamId * 100 + currentTour;
     const boostType = tourBoosts[currentTour - 1];
-
+    
     // Deterministic captain and vice-captain selection based on seed
     const captainSeed = Math.sin(seed * 7) * 10000;
     const captainIdx = Math.floor((captainSeed - Math.floor(captainSeed)) * 11);
@@ -195,7 +103,7 @@ const ViewTeam = () => {
     if (viceCaptainIdx === captainIdx) {
       viceCaptainIdx = (viceCaptainIdx + 1) % 11;
     }
-
+    
     // Deterministic injury and red card
     const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * 11);
     let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * 11);
@@ -211,7 +119,7 @@ const ViewTeam = () => {
       const basePoints = Math.floor(randomFactor * 17) - 1;
       const isCaptain = idx === captainIdx;
       const isViceCaptain = idx === viceCaptainIdx;
-
+      
       return {
         id: idx,
         name: playerNames[idx % playerNames.length],
@@ -220,7 +128,7 @@ const ViewTeam = () => {
         points: basePoints,
         displayedPoints: getDisplayedPoints(basePoints, isCaptain, isViceCaptain, boostType),
         price: Math.round((randomFactor * 5 + 5) * 10) / 10,
-        slotIndex: positions.slice(0, idx).filter((p) => p === pos).length,
+        slotIndex: positions.slice(0, idx).filter(p => p === pos).length,
         isCaptain,
         isViceCaptain,
         hasRedCard: idx === redCardIdx,
@@ -234,7 +142,7 @@ const ViewTeam = () => {
       const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
       // Bench players: -1 to 10
       const basePoints = Math.floor(randomFactor * 12) - 1;
-
+      
       return {
         id: 100 + idx,
         name: playerNames[(idx + 11) % playerNames.length],
@@ -250,8 +158,8 @@ const ViewTeam = () => {
     // Calculate total points with boost logic
     const total = calculateTotalTourPoints(main, bench, boostType);
 
-    return {
-      mainSquadPlayers: main,
+    return { 
+      mainSquadPlayers: main, 
       benchPlayers: bench,
       captainId: captainIdx,
       viceCaptainId: viceCaptainIdx,
@@ -309,20 +217,17 @@ const ViewTeam = () => {
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-
+        
         <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
           <span className="text-2xl font-bold text-primary-foreground">{totalTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
           {currentBoostInfo && (
-            <div
-              className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1"
-              title={currentBoostInfo.label}
-            >
+            <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1" title={currentBoostInfo.label}>
               <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-5 h-5 object-contain" />
             </div>
           )}
         </div>
-
+        
         <button
           onClick={() => handleTourChange("next")}
           disabled={currentTour >= MAX_TOURS}
@@ -352,7 +257,7 @@ const ViewTeam = () => {
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
         >
-          Список
+          Списком
         </Button>
       </div>
 
@@ -360,7 +265,7 @@ const ViewTeam = () => {
       {activeTab === "formation" && (
         <div className="mt-6">
           <FormationFieldManagement
-            mainSquadPlayers={mainSquadPlayers.map((p) => ({ ...p, points: p.displayedPoints }))}
+            mainSquadPlayers={mainSquadPlayers.map(p => ({ ...p, points: p.displayedPoints }))}
             benchPlayers={benchPlayers}
             onPlayerClick={handlePlayerClick}
             captain={captainId}
@@ -387,16 +292,14 @@ const ViewTeam = () => {
           <div className="space-y-2">
             {[...mainSquadPlayers]
               .sort((a, b) => {
-                const positionOrder = { ВР: 0, ЗЩ: 1, ПЗ: 2, НП: 3 };
-                return (
-                  (positionOrder[a.position as keyof typeof positionOrder] ?? 4) -
-                  (positionOrder[b.position as keyof typeof positionOrder] ?? 4)
-                );
+                const positionOrder = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
+                return (positionOrder[a.position as keyof typeof positionOrder] ?? 4) - 
+                       (positionOrder[b.position as keyof typeof positionOrder] ?? 4);
               })
               .map((player) => {
                 const showCaptain3xBadge = isCaptain3xBoostActive && player.isCaptain;
                 const showDoublePowerBadge = isDoublePowerBoostActive && (player.isCaptain || player.isViceCaptain);
-
+                
                 return (
                   <div
                     key={player.id}
@@ -407,26 +310,22 @@ const ViewTeam = () => {
                   >
                     <div className="flex-1 flex items-center gap-2 min-w-0">
                       {clubLogos[player.team] && (
-                        <img
-                          src={clubLogos[player.team]}
-                          alt={player.team}
-                          className="w-5 h-5 object-contain flex-shrink-0"
-                        />
+                        <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
                       )}
                       <span className="text-foreground font-medium truncate">{player.name}</span>
                       <span className="text-muted-foreground text-xs">{player.position}</span>
                       {player.isCaptain && (
-                        <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">
-                          К
-                        </span>
+                        <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">К</span>
                       )}
                       {player.isViceCaptain && (
-                        <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">
-                          ВК
-                        </span>
+                        <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">ВК</span>
                       )}
-                      {showCaptain3xBadge && <img src={icon3x} alt="3x" className="w-4 h-4" />}
-                      {showDoublePowerBadge && !showCaptain3xBadge && <img src={icon2x} alt="2x" className="w-4 h-4" />}
+                      {showCaptain3xBadge && (
+                        <img src={icon3x} alt="3x" className="w-4 h-4" />
+                      )}
+                      {showDoublePowerBadge && !showCaptain3xBadge && (
+                        <img src={icon2x} alt="2x" className="w-4 h-4" />
+                      )}
                       {player.hasRedCard && (
                         <span className="bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">КК</span>
                       )}
@@ -434,12 +333,8 @@ const ViewTeam = () => {
                         <span className="bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">ТР</span>
                       )}
                     </div>
-                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">
-                      {player.displayedPoints}
-                    </span>
-                    <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-                      {player.price.toFixed(1)}
-                    </span>
+                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
+                    <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
                   </div>
                 );
               })}
@@ -457,20 +352,16 @@ const ViewTeam = () => {
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
                   {clubLogos[player.team] && (
-                    <img
-                      src={clubLogos[player.team]}
-                      alt={player.team}
-                      className="w-5 h-5 object-contain flex-shrink-0"
-                    />
+                    <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
                   )}
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
-                  {isBenchBoostActive && <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />}
+                  {isBenchBoostActive && (
+                    <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />
+                  )}
                 </div>
                 <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-                  {player.price.toFixed(1)}
-                </span>
+                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
               </div>
             ))}
           </div>
