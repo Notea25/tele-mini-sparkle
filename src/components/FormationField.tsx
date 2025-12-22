@@ -237,7 +237,7 @@ const FormationField = ({
         </button>
       )}
 
-      <div className="absolute top-[3px] left-0 right-0 flex items-center justify-center z-30">
+      <div className="absolute top-[4px] left-0 right-0 flex items-center justify-center z-30">
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
           style={{
@@ -256,7 +256,7 @@ const FormationField = ({
           className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
           style={{
             width: `${cardSize.width * 1.5}px`,
-            top: `-${cardSize.height * 0.16}px`,
+            top: `-${cardSize.height * 0.12}px`, // Опустили майку
           }}
         />
       </div>
