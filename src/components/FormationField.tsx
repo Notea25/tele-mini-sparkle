@@ -335,7 +335,7 @@ const FormationField = ({
 
   const getRowGap = (cardsInRow: number) => {
     if (cardsInRow === 2) return mobileGapFor2 * baseScaleFactor;
-    if (cardsInRow === 3) return mobileGapFor2 * baseScaleFactor * 0.85;
+    if (cardsInRow === 3) return mobileGapFor2 * baseScaleFactor;
     if (cardsInRow === 5) return mobileGapFor5 * baseScaleFactor;
     return mobileGapFor5 * baseScaleFactor;
   };
