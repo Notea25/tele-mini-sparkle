@@ -139,10 +139,10 @@ const FormationField = ({
       let cardWidth;
 
       if (width <= 375) {
-        // cardWidth = mobileCardWidth * (width / mobileBase);
-        cardWidth = mobileCardWidth;
+        // Уменьшил ширину карточек на мобильных (94% от оригинального размера)
+        cardWidth = mobileCardWidth * (width / mobileBase) * 0.94;
       } else if (width <= 768) {
-        const minWidth = mobileCardWidth * (375 / mobileBase);
+        const minWidth = mobileCardWidth * (375 / mobileBase) * 0.94;
         const maxWidth = 96;
         const scale = (width - 375) / (768 - 375);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
@@ -335,7 +335,7 @@ const FormationField = ({
 
   const getRowGap = (cardsInRow: number) => {
     if (cardsInRow === 2) return mobileGapFor2 * baseScaleFactor;
-    if (cardsInRow === 3) return mobileGapFor2 * baseScaleFactor;
+    if (cardsInRow === 3) return mobileGapFor5 * baseScaleFactor; // Исправлено: теперь используем mobileGapFor5
     if (cardsInRow === 5) return mobileGapFor5 * baseScaleFactor;
     return mobileGapFor5 * baseScaleFactor;
   };
@@ -439,7 +439,7 @@ const FormationField = ({
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: `calc(4% + ${cardSize.height * 3}px + ${rowSpacing * 3}px)`,
-            gap: `${getRowGap(3)}px`,
+            gap: `${getRowGap(3)}px`, // Теперь будет тот же гэп, что и у полузащитников
           }}
         >
           {rows[4].map((slot, idx) => {
