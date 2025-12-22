@@ -115,7 +115,8 @@ const ViewTeam = () => {
       const playerSeed = seed * 100 + idx;
       const pseudoRandom = Math.sin(playerSeed) * 10000;
       const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      const basePoints = Math.floor(randomFactor * 15) + 2;
+      // Realistic points: -1 to 15 per player
+      const basePoints = Math.floor(randomFactor * 17) - 1;
       const isCaptain = idx === captainIdx;
       const isViceCaptain = idx === viceCaptainIdx;
       
@@ -126,7 +127,7 @@ const ViewTeam = () => {
         position: pos,
         points: basePoints,
         displayedPoints: getDisplayedPoints(basePoints, isCaptain, isViceCaptain, boostType),
-        price: Math.floor(randomFactor * 5) + 5 + randomFactor,
+        price: Math.round((randomFactor * 5 + 5) * 10) / 10,
         slotIndex: positions.slice(0, idx).filter(p => p === pos).length,
         isCaptain,
         isViceCaptain,
@@ -139,7 +140,8 @@ const ViewTeam = () => {
       const playerSeed = seed * 100 + 50 + idx;
       const pseudoRandom = Math.sin(playerSeed) * 10000;
       const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      const basePoints = Math.floor(randomFactor * 10) + 1;
+      // Bench players: -1 to 10
+      const basePoints = Math.floor(randomFactor * 12) - 1;
       
       return {
         id: 100 + idx,
@@ -148,7 +150,7 @@ const ViewTeam = () => {
         position: pos,
         points: basePoints,
         displayedPoints: basePoints,
-        price: Math.floor(randomFactor * 4) + 4 + randomFactor,
+        price: Math.round((randomFactor * 4 + 4) * 10) / 10,
         isOnBench: true,
       };
     });

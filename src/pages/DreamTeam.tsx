@@ -81,12 +81,13 @@ const DreamTeam = () => {
       { id: 102, name: "Федоров", team: "Динамо Минск", position: "НП", price: 6.5 },
     ];
 
-    // Assign tour-specific points
+    // Assign tour-specific points (realistic: -1 to 15 per player)
     const mainSquad: PlayerData[] = baseMainSquad.map((p, idx) => {
       const playerSeed = seed * 100 + idx;
       const pseudoRandom = Math.sin(playerSeed) * 10000;
       const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      const basePoints = Math.floor(randomFactor * 15) + 25;
+      // Realistic points: -1 to 15 with most players getting 2-8
+      const basePoints = Math.floor(randomFactor * 17) - 1; // -1 to 15
       const isCaptain = idx === captainIdx;
       const isViceCaptain = idx === viceCaptainIdx;
       
@@ -105,7 +106,8 @@ const DreamTeam = () => {
       const playerSeed = seed * 100 + 50 + idx;
       const pseudoRandom = Math.sin(playerSeed) * 10000;
       const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      const basePoints = Math.floor(randomFactor * 10) + 20;
+      // Bench players: -1 to 10
+      const basePoints = Math.floor(randomFactor * 12) - 1;
       
       return { 
         ...p, 
