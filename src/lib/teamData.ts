@@ -58,7 +58,8 @@ function generateAllPlayers() {
       
       for (let i = 0; i < count; i++) {
         const seed = playerId * 7 + 13;
-        const points = Math.floor(seededRandom(seed) * 50) + 40; // 40-89 points
+        // Realistic points: -1 to 15 per match
+        const points = Math.floor(seededRandom(seed) * 17) - 1;
         const price = Math.round((seededRandom(seed + 1) * 8 + 4) * 10) / 10; // 4.0-12.0 price
         
         players.push({
