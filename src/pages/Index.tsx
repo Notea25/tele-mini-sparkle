@@ -791,15 +791,14 @@ const FormationField = ({
     const updateCardSize = () => {
       const screenWidth = window.innerWidth;
 
-      if (screenWidth >= 1440) {
-        // Большие десктопы
-        setCardSize({ width: 108, height: 138 }); // +68.75% от мобильного
-      } else if (screenWidth >= 1024) {
+      if (screenWidth >= 1024) {
         // Десктоп
-        setCardSize({ width: 96, height: 124 }); // +50% от мобильного
+        // В 2 раза больше мобильного (64 × 2 = 128)
+        setCardSize({ width: 128, height: 164 }); // +100% от мобильного
       } else if (screenWidth >= 768) {
         // Планшет
-        setCardSize({ width: 88, height: 114 }); // +37.5% от мобильного
+        // В 1.5 раза больше мобильного (64 × 1.5 = 96)
+        setCardSize({ width: 96, height: 123 }); // +50% от мобильного
       } else {
         // Мобильный (не меняем - идеально)
         setCardSize({ width: 64, height: 82 });
@@ -838,8 +837,8 @@ const FormationField = ({
           alt="C"
           className="absolute top-2 left-2 z-50"
           style={{
-            width: `${cardSize.width * 0.2}px`, // 20% от ширины карточки
-            height: `${cardSize.width * 0.2}px`,
+            width: `${cardSize.width * 0.18}px`, // 18% от ширины карточки
+            height: `${cardSize.width * 0.18}px`,
           }}
         />
       )}
@@ -849,8 +848,8 @@ const FormationField = ({
           alt="V"
           className="absolute top-2 left-2 z-50"
           style={{
-            width: `${cardSize.width * 0.2}px`,
-            height: `${cardSize.width * 0.2}px`,
+            width: `${cardSize.width * 0.18}px`,
+            height: `${cardSize.width * 0.18}px`,
           }}
         />
       )}
@@ -864,15 +863,15 @@ const FormationField = ({
           }}
           className="absolute top-2 right-2 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
           style={{
-            width: `${cardSize.width * 0.2}px`,
-            height: `${cardSize.width * 0.2}px`,
+            width: `${cardSize.width * 0.18}px`,
+            height: `${cardSize.width * 0.18}px`,
           }}
         >
           <X
             className="text-[#1a2e1a]"
             style={{
-              width: `${cardSize.width * 0.13}px`,
-              height: `${cardSize.width * 0.13}px`,
+              width: `${cardSize.width * 0.12}px`,
+              height: `${cardSize.width * 0.12}px`,
             }}
           />
         </button>
@@ -885,7 +884,7 @@ const FormationField = ({
       >
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
-          style={{ fontSize: `${cardSize.width * 0.145}px` }} // 14.5% от ширины карточки
+          style={{ fontSize: `${cardSize.width * 0.12}px` }} // 12% от ширины карточки
         >
           ${(player.price || 9).toFixed(1)}
         </span>
@@ -898,8 +897,8 @@ const FormationField = ({
           alt={player.name}
           className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
           style={{
-            width: `${cardSize.width * 1.55}px`, // 155% от ширины карточки
-            top: `-${cardSize.height * 0.17}px`, // -17% от высоты карточки
+            width: `${cardSize.width * 1.5}px`, // 150% от ширины карточки
+            top: `-${cardSize.height * 0.16}px`, // -16% от высоты карточки
           }}
         />
       </div>
@@ -909,31 +908,31 @@ const FormationField = ({
         <div
           className="bg-white"
           style={{
-            paddingTop: `${cardSize.height * 0.025}px`,
-            paddingBottom: `${cardSize.height * 0.025}px`,
-          }}
-        >
-          <span
-            className="font-semibold text-black block truncate whitespace-nowrap text-center"
-            style={{ fontSize: `${cardSize.width * 0.12}px` }} // 12% от ширины
-          >
-            {truncateName(player.name, cardSize.width >= 96 ? 16 : cardSize.width >= 88 ? 14 : 10)}
-          </span>
-        </div>
-        <div
-          className="bg-[#1a1a2e]"
-          style={{
             paddingTop: `${cardSize.height * 0.02}px`,
             paddingBottom: `${cardSize.height * 0.02}px`,
           }}
         >
           <span
+            className="font-semibold text-black block truncate whitespace-nowrap text-center"
+            style={{ fontSize: `${cardSize.width * 0.1}px` }} // 10% от ширины
+          >
+            {truncateName(player.name, cardSize.width >= 128 ? 20 : cardSize.width >= 96 ? 15 : 10)}
+          </span>
+        </div>
+        <div
+          className="bg-[#1a1a2e]"
+          style={{
+            paddingTop: `${cardSize.height * 0.018}px`,
+            paddingBottom: `${cardSize.height * 0.018}px`,
+          }}
+        >
+          <span
             className="font-medium block truncate whitespace-nowrap text-center"
-            style={{ fontSize: `${cardSize.width * 0.105}px` }} // 10.5% от ширины
+            style={{ fontSize: `${cardSize.width * 0.085}px` }} // 8.5% от ширины
           >
             <span className="text-[#7D7A94]">(Д)</span>
             <span className="text-white ml-[2%]">
-              {truncateName(player.team, cardSize.width >= 96 ? 14 : cardSize.width >= 88 ? 12 : 8)}
+              {truncateName(player.team, cardSize.width >= 128 ? 16 : cardSize.width >= 96 ? 12 : 8)}
             </span>
           </span>
         </div>
@@ -948,28 +947,28 @@ const FormationField = ({
       style={{
         width: `${cardSize.width}px`,
         height: `${cardSize.height}px`,
-        gap: `${cardSize.height * 0.07}px`, // 7% от высоты
+        gap: `${cardSize.height * 0.06}px`, // 6% от высоты
       }}
       onClick={() => onEmptySlotClick?.(position)}
     >
       <span
         className="text-white font-bold"
-        style={{ fontSize: `${cardSize.width * 0.23}px` }} // 23% от ширины
+        style={{ fontSize: `${cardSize.width * 0.2}px` }} // 20% от ширины
       >
         {position}
       </span>
       <div
         className="rounded-full bg-white/90 flex items-center justify-center"
         style={{
-          width: `${cardSize.width * 0.3}px`, // 30% от ширины
-          height: `${cardSize.width * 0.3}px`,
+          width: `${cardSize.width * 0.25}px`, // 25% от ширины
+          height: `${cardSize.width * 0.25}px`,
         }}
       >
         <Plus
           className="text-[#3a5a28]"
           style={{
-            width: `${cardSize.width * 0.16}px`, // 16% от ширины
-            height: `${cardSize.width * 0.16}px`,
+            width: `${cardSize.width * 0.14}px`, // 14% от ширины
+            height: `${cardSize.width * 0.14}px`,
           }}
         />
       </div>
@@ -978,9 +977,6 @@ const FormationField = ({
 
   // Рассчитываем паддинги и гэпы пропорционально
   // На мобильном: padding 4px, гэпы 8-16px
-  // Делаем пропорциональными размерам карточки
-
-  // Базовые значения для мобильного (64px карточка)
   const mobileCardWidth = 64;
   const mobilePadding = 4;
   const mobileGapFor2 = 16; // для 2 карточек
@@ -989,19 +985,19 @@ const FormationField = ({
   // Рассчитываем коэффициент увеличения относительно мобильного
   const scaleFactor = cardSize.width / mobileCardWidth;
 
-  // Гэпы пропорциональны паддингам (как на мобилке)
+  // Гэпы пропорциональны паддингам
   const getRowGap = (cardsInRow: number) => {
-    if (cardsInRow === 2) return mobileGapFor2 * scaleFactor; // Пропорционально увеличиваем
-    if (cardsInRow === 3) return mobileGapFor2 * scaleFactor * 0.85; // Немного меньше
-    if (cardsInRow === 5) return mobileGapFor5 * scaleFactor; // Пропорционально увеличиваем
+    if (cardsInRow === 2) return mobileGapFor2 * scaleFactor;
+    if (cardsInRow === 3) return mobileGapFor2 * scaleFactor * 0.85; // Немного меньше для 3 карточек
+    if (cardsInRow === 5) return mobileGapFor5 * scaleFactor;
     return mobileGapFor5 * scaleFactor;
   };
 
-  // Паддинги контейнера пропорциональны (как на мобилке)
+  // Паддинги контейнера пропорциональны
   const containerPadding = mobilePadding * scaleFactor;
 
   // Вертикальные отступы между строками
-  const rowSpacing = cardSize.height * 0.55; // 55% от высоты карточки
+  const rowSpacing = cardSize.height * 0.5; // 50% от высоты карточки
 
   return (
     <div className="relative w-full">
