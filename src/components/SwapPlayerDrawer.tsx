@@ -1,37 +1,76 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
-import playerJerseyTeam from "@/assets/player-jersey-team.png";
-import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
-import jerseyBate from "@/assets/jersey-bate.png";
-import jerseyBateGk from "@/assets/jersey-bate-gk.png";
-import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
-import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
-import jerseyMlVitebskGk from "@/assets/jersey-ml-vitebsk-gk.png";
-import jerseySlavia from "@/assets/jersey-slaviya.png";
-import jerseySlaviaGk from "@/assets/jersey-slaviya-gk-new.png";
-import jerseyNeman from "@/assets/jersey-neman.png";
-import jerseyMinsk from "@/assets/jersey-minsk.png";
-import jerseyTorpedo from "@/assets/jersey-torpedo.png";
-import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
-import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
-import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
-import { FormationKey, FORMATION_LABELS } from "@/lib/formationUtils";
+
+// Import jerseys from proper folder
+import arsenalJersey from "@/assets/jerseys/arsenalJersey.png";
+import bateJersey from "@/assets/jerseys/bateJersey.png";
+import brestJersey from "@/assets/jerseys/brestJersey.png";
+import dinamoJersey from "@/assets/jerseys/dinamoJersey.png";
+import gomelJersey from "@/assets/jerseys/gomelJersey.png";
+import minskJersey from "@/assets/jerseys/minskJersey.png";
+import mlJersey from "@/assets/jerseys/mlJersey.png";
+import naftanJersey from "@/assets/jerseys/naftanJersey.png";
+import nemanJersey from "@/assets/jerseys/nemanJersey.png";
+import slaviaJersey from "@/assets/jerseys/slaviaJersey.png";
+import torpedoJersey from "@/assets/jerseys/torpedoJersey.png";
+import vitebskJersey from "@/assets/jerseys/vitebskJersey.png";
+
+// Goalkeeper jerseys
+import arsenalGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
+import bateGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
+import gomelGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/gomelGoalkeeperJersey.png";
+import mlGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
+import slaviaGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/slaviaGoalkeeperJersey.png";
+import vitebskGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
 
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
-  switch (team) {
-    case "Динамо-Минск": return jerseyDinamoMinsk;
-    case "БАТЭ": return position === "ВР" ? jerseyBateGk : jerseyBate;
-    case "Динамо-Брест": return jerseyDinamoBrest;
-    case "МЛ Витебск": return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
-    case "Славия-Мозырь": return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
-    case "Арсенал": return position === "ВР" ? jerseyArsenalGk : playerJerseyTeam;
-    case "Неман": return jerseyNeman;
-    case "Минск": return jerseyMinsk;
-    case "Торпедо-БелАЗ": return jerseyTorpedo;
-    case "Витебск": return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
-    default: return playerJerseyTeam;
+  const isGoalkeeper = position === "ВР";
+  
+  // Normalize team name
+  const normalizedTeam = team.toLowerCase();
+  
+  if (normalizedTeam.includes("динамо") && normalizedTeam.includes("минск")) {
+    return dinamoJersey;
   }
+  if (normalizedTeam.includes("динамо") && normalizedTeam.includes("брест")) {
+    return brestJersey;
+  }
+  if (normalizedTeam.includes("батэ") || normalizedTeam === "bate") {
+    return isGoalkeeper ? bateGoalkeeperJersey : bateJersey;
+  }
+  if (normalizedTeam.includes("мл") || normalizedTeam.includes("витебск") && normalizedTeam.includes("мл")) {
+    return isGoalkeeper ? mlGoalkeeperJersey : mlJersey;
+  }
+  if (normalizedTeam.includes("витебск") && !normalizedTeam.includes("мл")) {
+    return isGoalkeeper ? vitebskGoalkeeperJersey : vitebskJersey;
+  }
+  if (normalizedTeam.includes("славия") || normalizedTeam.includes("мозырь")) {
+    return isGoalkeeper ? slaviaGoalkeeperJersey : slaviaJersey;
+  }
+  if (normalizedTeam.includes("арсенал")) {
+    return isGoalkeeper ? arsenalGoalkeeperJersey : arsenalJersey;
+  }
+  if (normalizedTeam.includes("неман")) {
+    return nemanJersey;
+  }
+  if (normalizedTeam.includes("минск") && !normalizedTeam.includes("динамо")) {
+    return minskJersey;
+  }
+  if (normalizedTeam.includes("торпедо") || normalizedTeam.includes("белаз")) {
+    return torpedoJersey;
+  }
+  if (normalizedTeam.includes("гомель")) {
+    return isGoalkeeper ? gomelGoalkeeperJersey : gomelJersey;
+  }
+  if (normalizedTeam.includes("нафтан") || normalizedTeam.includes("новополоцк")) {
+    return naftanJersey;
+  }
+  if (normalizedTeam.includes("белшина")) {
+    return slaviaJersey; // fallback
+  }
+  
+  return dinamoJersey; // default fallback
 };
 
 interface PlayerData {
@@ -48,7 +87,6 @@ interface PlayerData {
 interface ValidSwapOption {
   id: number;
   position: string;
-  resultingFormation?: FormationKey;
 }
 
 interface SwapPlayerDrawerProps {
@@ -79,14 +117,6 @@ const SwapPlayerDrawer = ({
   const validPlayerIds = new Set(validSwapOptions.map(opt => opt.id));
   const validPlayers = availablePlayers.filter(p => validPlayerIds.has(p.id));
   const invalidPlayers = availablePlayers.filter(p => !validPlayerIds.has(p.id));
-
-  const getResultingFormationLabel = (playerId: number) => {
-    const option = validSwapOptions.find(opt => opt.id === playerId);
-    if (option?.resultingFormation) {
-      return FORMATION_LABELS[option.resultingFormation];
-    }
-    return null;
-  };
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -144,44 +174,33 @@ const SwapPlayerDrawer = ({
               </div>
             ) : (
               <div className="space-y-3">
-                {validPlayers.map((player) => {
-                  const formationLabel = getResultingFormationLabel(player.id);
-                  return (
-                    <button
-                      key={player.id}
-                      onClick={() => handleSwap(player)}
-                      className="w-full bg-secondary rounded-2xl p-4 flex items-center gap-4 hover:bg-secondary/80 hover:border-primary/50 border border-transparent transition-all"
-                    >
-                      {/* Player jersey card */}
-                      <div className="relative flex-shrink-0">
-                        <img 
-                          src={getJerseyForTeam(player.team, player.position)} 
-                          alt={player.name} 
-                          className="w-14 h-14 object-contain" 
-                        />
+                {validPlayers.map((player) => (
+                  <button
+                    key={player.id}
+                    onClick={() => handleSwap(player)}
+                    className="w-full bg-secondary rounded-2xl p-4 flex items-center gap-4 hover:bg-secondary/80 hover:border-primary/50 border border-transparent transition-all"
+                  >
+                    {/* Player jersey card */}
+                    <div className="relative flex-shrink-0">
+                      <img 
+                        src={getJerseyForTeam(player.team, player.position)} 
+                        alt={player.name} 
+                        className="w-14 h-14 object-contain" 
+                      />
+                    </div>
+                    
+                    {/* Player info */}
+                    <div className="flex-1 text-left">
+                      <div className="flex items-center gap-2">
+                        <span className="text-foreground font-semibold">{player.name}</span>
+                        <span className="text-muted-foreground text-xs">{player.position}</span>
                       </div>
-                      
-                      {/* Player info */}
-                      <div className="flex-1 text-left">
-                        <div className="flex items-center gap-2">
-                          <span className="text-foreground font-semibold">{player.name}</span>
-                          <span className="text-muted-foreground text-xs">{player.position}</span>
-                        </div>
-                        {formationLabel && player.position !== selectedPlayer.position && (
-                          <div className="text-xs text-primary/80 mt-1">
-                            → {formationLabel}
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Points and price */}
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <span className="text-primary text-sm font-medium">{player.points} очков</span>
-                        <span className="text-foreground text-sm">{player.price}₽</span>
-                      </div>
-                    </button>
-                  );
-                })}
+                    </div>
+                    
+                    {/* Price only */}
+                    <span className="text-foreground text-sm flex-shrink-0">{player.price}</span>
+                  </button>
+                ))}
               </div>
             )}
 
