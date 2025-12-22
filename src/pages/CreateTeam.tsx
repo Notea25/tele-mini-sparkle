@@ -24,6 +24,14 @@ import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
 import clubNeman from "@/assets/club-neman.png";
 import bgImage from "@/assets/bg_image.png";
 
+// Player card images for carousel
+import playerVakulich from "@/assets/player-vakulich.png";
+import playerKozlovCard from "@/assets/player-kozlov-card.png";
+import playerBykovCard from "@/assets/player-bykov-card.png";
+import playerKarpovich from "@/assets/player-karpovich.png";
+import playerKhvashchinsky from "@/assets/player-khvashchinsky.png";
+import playerGutor from "@/assets/player-gutor.png";
+
 // Club logo imports
 import arsenalLogo from "@/assets/clubs/arsenalLogo.png";
 import baranovichiLogo from "@/assets/clubs/baranovichiLogo.png";
@@ -257,6 +265,36 @@ const CreateTeam = () => {
         <InfiniteClubCarousel />
       </div>
 
+      {/* Create Team Section */}
+      <div className="mt-8 text-center">
+        <div className="px-4">
+          <h3 className="text-foreground text-3xl font-bold mb-4">Создавай команду</h3>
+          <p className="text-muted-foreground text-base leading-relaxed">
+            Мы выделим тебе бюджет в <span className="text-primary font-semibold">100 миллионов</span> — собери команду своей мечты!
+          </p>
+        </div>
+
+        {/* Scrollable Player Cards */}
+        <div className="mt-6 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-4 px-4 pb-2" style={{ width: "max-content" }}>
+            {[
+              playerVakulich,
+              playerKozlovCard,
+              playerBykovCard,
+              playerKarpovich,
+              playerKhvashchinsky,
+              playerGutor,
+            ].map((playerImg, index) => (
+              <img
+                key={index}
+                src={playerImg}
+                alt={`Player ${index + 1}`}
+                className="w-40 h-auto rounded-xl flex-shrink-0"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Score Points Section */}
       <div className="px-4 mt-8 text-center">
