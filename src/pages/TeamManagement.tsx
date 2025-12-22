@@ -13,6 +13,7 @@ import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import ConfirmBoostDrawer from "@/components/ConfirmBoostDrawer";
 import { getBoostState, setPendingBoost, clearPendingBoost, hasAnyPendingBoost, TEAM_MANAGEMENT_BOOSTS } from "@/lib/boostState";
+import { clubLogos } from "@/lib/clubLogos";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
@@ -373,44 +374,45 @@ const TeamManagement = () => {
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
         <span className="flex-1">Игрок</span>
-        <span className="w-12 text-center">Очки</span>
-        <span className="w-10 text-center">Цена</span>
+        <span className="w-14 text-right">Очки</span>
+        <span className="w-14 text-right">Цена</span>
         <span className="w-10"></span>
       </div>
 
       {/* Players */}
       <div className="space-y-2">
-        {players.map((player) => (
-          <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-            {/* Club logo + Player name + position */}
-            <div
-              className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-              onClick={() => setSelectedPlayerForCard(player.id)}
-            >
-              {clubIcons[player.team] && (
-                <img src={clubIcons[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
-              )}
-              <span className="text-foreground font-medium truncate">{player.name}</span>
-              <span className="text-muted-foreground text-xs">{player.position}</span>
+        {players.map((player) => {
+          const clubLogo = clubLogos[player.team] || clubIcons[player.team];
+          return (
+            <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
+              {/* Club logo + Player name + position */}
+              <div
+                className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
+                onClick={() => setSelectedPlayerForCard(player.id)}
+              >
+                {clubLogo && (
+                  <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                )}
+                <span className="text-foreground font-medium truncate">{player.name}</span>
+                <span className="text-muted-foreground text-xs">{player.position}</span>
+              </div>
+
+              {/* Points */}
+              <span className="w-14 flex-shrink-0 text-foreground text-sm text-right">{player.points}</span>
+
+              {/* Price */}
+              <span className="w-14 flex-shrink-0 text-foreground text-sm text-right">{player.price}</span>
+
+              {/* Swap button */}
+              <button
+                onClick={() => handlePlayerSwap(player.id)}
+                className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
+              >
+                <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
+              </button>
             </div>
-
-            {/* Points */}
-            <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-              <span className="text-foreground text-sm">{player.points}</span>
-            </div>
-
-            {/* Price */}
-            <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
-
-            {/* Swap button */}
-            <button
-              onClick={() => handlePlayerSwap(player.id)}
-              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
-            >
-              <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
