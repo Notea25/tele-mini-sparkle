@@ -342,7 +342,7 @@ const FormationField = ({
 
   const containerPadding = mobilePadding * baseScaleFactor;
 
-  const rowSpacing = cardSize.height * 0.5;
+  const rowSpacing = screenWidth < 768 ? cardSize.height * 0.1 : cardSize.height * 0.5;
 
   return (
     <div className="relative w-full">
