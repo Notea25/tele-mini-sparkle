@@ -1,5 +1,4 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import scoringExample from "@/assets/scoring-example.png";
 
@@ -11,14 +10,14 @@ interface RulesDrawerProps {
 const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent className="bg-background border-t border-border max-h-[90vh]">
-        <DrawerHeader className="border-b border-border pb-4">
+      <DrawerContent className="bg-background border-t border-border max-h-[90vh] flex flex-col">
+        <DrawerHeader className="border-b border-border pb-4 flex-shrink-0">
           <DrawerTitle className="text-foreground text-xl font-bold text-center">
             Правила игры
           </DrawerTitle>
         </DrawerHeader>
 
-        <ScrollArea className="flex-1 px-4 py-4 max-h-[calc(90vh-80px)]">
+        <div className="flex-1 overflow-y-auto px-4 py-4">
           <Accordion type="single" collapsible className="w-full space-y-2">
             {/* How to play section */}
             <AccordionItem value="how-to-play" className="border border-border rounded-xl overflow-hidden">
@@ -302,7 +301,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
 
           {/* Bottom padding */}
           <div className="h-6" />
-        </ScrollArea>
+        </div>
       </DrawerContent>
     </Drawer>
   );
