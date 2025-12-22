@@ -176,104 +176,101 @@ const BuyPlayerDrawer = ({
           </div>
 
           {/* Budget info */}
-          <div className="bg-card rounded-xl p-3 mb-4 flex justify-between">
+          <div className="bg-card rounded-xl p-3 mb-4 flex justify-between items-center">
             <span className="text-muted-foreground text-sm">Доступный бюджет:</span>
-            <span className="text-primary font-bold">{currentBudget.toFixed(1)}</span>
+            <span className="text-primary font-bold text-lg">{currentBudget.toFixed(1)}</span>
           </div>
 
-          {/* Search */}
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              type="text"
-              placeholder="Поиск по имени"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="pl-10 bg-card border-border rounded-full h-10 text-foreground placeholder:text-muted-foreground"
-            />
-          </div>
+          {/* Filters section */}
+          <div className="space-y-3 mb-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                type="text"
+                placeholder="Поиск по имени"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="pl-10 bg-card border-border rounded-xl h-11 text-foreground placeholder:text-muted-foreground"
+              />
+            </div>
 
-          {/* Filters row */}
-          <div className="flex gap-2 mb-3 overflow-x-auto scrollbar-hide">
+            {/* Team filter */}
             <Select value={selectedTeam} onValueChange={(v) => { setSelectedTeam(v); setCurrentPage(1); }}>
-              <SelectTrigger className="h-8 bg-card border-border rounded-full text-foreground text-xs min-w-[100px]">
+              <SelectTrigger className="h-11 bg-card border-border rounded-xl text-foreground text-sm w-full focus:ring-2 focus:ring-primary focus:ring-offset-0">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-card border-border">
                 {teams.map((team) => (
                   <SelectItem key={team} value={team}>{team}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </div>
 
-          {/* Position filters */}
-          <div className="flex gap-1 mb-3 overflow-x-auto scrollbar-hide">
-            {filters.map((filter) => (
-              <Button
-                key={filter}
-                onClick={() => { setActiveFilter(filter); setCurrentPage(1); }}
-                className={`rounded-full h-7 px-3 text-xs ${
-                  activeFilter === filter
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card text-muted-foreground hover:bg-card/80"
-                }`}
-              >
-                {filter}
-              </Button>
-            ))}
-          </div>
+            {/* Position filters */}
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+              {filters.map((filter) => (
+                <Button
+                  key={filter}
+                  onClick={() => { setActiveFilter(filter); setCurrentPage(1); }}
+                  className={`rounded-full h-9 px-4 text-sm whitespace-nowrap ${
+                    activeFilter === filter
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
+                  }`}
+                >
+                  {filter}
+                </Button>
+              ))}
+            </div>
 
-          {/* Price range */}
-          <div className="mb-3">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-muted-foreground text-xs">Цена</span>
+            {/* Price range */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground text-sm">Цена:</span>
+                <div className="flex items-center gap-1 bg-card rounded-xl px-2 py-1.5 border border-border">
+                  <button 
+                    onClick={() => { setPriceFrom(Math.max(3, priceFrom - 1)); setCurrentPage(1); }} 
+                    className="w-7 h-7 rounded-full bg-primary flex items-center justify-center"
+                  >
+                    <Minus className="w-3 h-3 text-primary-foreground" />
+                  </button>
+                  <span className="text-foreground text-sm w-10 text-center">{priceFrom.toFixed(1)}</span>
+                  <button 
+                    onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }} 
+                    className="w-7 h-7 rounded-full bg-primary flex items-center justify-center"
+                  >
+                    <Plus className="w-3 h-3 text-primary-foreground" />
+                  </button>
+                </div>
+                <span className="text-muted-foreground text-sm">—</span>
+                <div className="flex items-center gap-1 bg-card rounded-xl px-2 py-1.5 border border-border">
+                  <button 
+                    onClick={() => { setPriceTo(Math.max(priceFrom, priceTo - 1)); setCurrentPage(1); }} 
+                    className="w-7 h-7 rounded-full bg-primary flex items-center justify-center"
+                  >
+                    <Minus className="w-3 h-3 text-primary-foreground" />
+                  </button>
+                  <span className="text-foreground text-sm w-10 text-center">{priceTo.toFixed(1)}</span>
+                  <button 
+                    onClick={() => { setPriceTo(Math.min(14, priceTo + 1)); setCurrentPage(1); }} 
+                    className="w-7 h-7 rounded-full bg-primary flex items-center justify-center"
+                  >
+                    <Plus className="w-3 h-3 text-primary-foreground" />
+                  </button>
+                </div>
+              </div>
               {hasActiveFilters && (
                 <button
                   onClick={handleResetFilters}
-                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-xs transition-colors"
+                  className="text-muted-foreground hover:text-foreground text-xs transition-colors whitespace-nowrap"
                 >
-                  Сбросить фильтры
-                  <X className="w-3 h-3" />
+                  <X className="w-4 h-4" />
                 </button>
               )}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">от</span>
-              <div className="flex items-center gap-1 bg-card rounded-full px-2 py-1">
-                <button 
-                  onClick={() => { setPriceFrom(Math.max(3, priceFrom - 1)); setCurrentPage(1); }} 
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                >
-                  <Minus className="w-3 h-3 text-primary-foreground" />
-                </button>
-                <span className="text-foreground text-xs w-8 text-center">{priceFrom.toFixed(1)}</span>
-                <button 
-                  onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }} 
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                >
-                  <Plus className="w-3 h-3 text-primary-foreground" />
-                </button>
-              </div>
-              <span className="text-muted-foreground text-xs">до</span>
-              <div className="flex items-center gap-1 bg-card rounded-full px-2 py-1">
-                <button 
-                  onClick={() => { setPriceTo(Math.max(priceFrom, priceTo - 1)); setCurrentPage(1); }} 
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                >
-                  <Minus className="w-3 h-3 text-primary-foreground" />
-                </button>
-                <span className="text-foreground text-xs w-8 text-center">{priceTo.toFixed(1)}</span>
-                <button 
-                  onClick={() => { setPriceTo(Math.min(14, priceTo + 1)); setCurrentPage(1); }} 
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                >
-                  <Plus className="w-3 h-3 text-primary-foreground" />
-                </button>
-              </div>
             </div>
           </div>
 
