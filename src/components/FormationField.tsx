@@ -389,42 +389,47 @@ const FormationField = ({
       const width = window.innerWidth;
       setScreenWidth(width);
 
-      let cardWidth;
-      let cardHeight;
+      // Базовые значения для мобильного (320px)
+      const mobileBase = 320;
+      const mobileCardWidth = 64; // На мобильном 64px
+      const mobileCardHeight = 82; // На мобильном 82px
 
-      // Определяем размеры по контрольным точкам
-      if (width < 375) {
-        // Меньше 375px - плавное масштабирование от 320px до 375px
-        const minWidth = 64;
-        const maxWidth = 75;
-        const scale = (width - 320) / (375 - 320);
-        cardWidth = minWidth + (maxWidth - minWidth) * Math.max(0, Math.min(1, scale));
-      } else if (width < 768) {
-        // От 375px до 768px - плавное масштабирование
-        const minWidth = 75;
-        const maxWidth = 192;
-        const scale = (width - 375) / (768 - 375);
+      // Рассчитываем размер карточки в зависимости от ширины экрана
+      // Используем нелинейное масштабирование для лучшего результата
+      let cardWidth;
+
+      if (width <= 375) {
+        // Мобильные до 375px
+        cardWidth = mobileCardWidth * (width / mobileBase);
+      } else if (width <= 768) {
+        // Планшеты 375-768px
+        // На 768px хотим карточку 96px (в 1.5 раза больше чем на 320px)
+        const minWidth = mobileCardWidth * (375 / mobileBase); // ~75px
+        const maxWidth = 96; // Желаемый размер на 768px
+        const scale = (width - 375) / (768 - 375); // 0-1
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
-      } else if (width < 1024) {
-        // От 768px до 1024px - плавное масштабирование
-        const minWidth = 192;
-        const maxWidth = 256; // Исправляем 56px на 256px (в 4 раза больше мобильного)
+      } else if (width <= 1024) {
+        // Планшеты 768-1024px
+        // На 1024px хотим карточку 128px
+        const minWidth = 96;
+        const maxWidth = 128;
         const scale = (width - 768) / (1024 - 768);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       } else {
-        // От 1024px и выше - плавное масштабирование до 1920px
-        const minWidth = 256;
-        const maxWidth = 320;
+        // Десктопы 1024px+
+        // Плавное увеличение дальше
+        const minWidth = 128;
+        const maxWidth = 160; // Максимальный размер на очень широких экранах
         const maxScreen = 1920;
         const scale = Math.min(1, (width - 1024) / (maxScreen - 1024));
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       }
 
       // Ограничиваем минимальный и максимальный размер
-      cardWidth = Math.max(64, Math.min(320, cardWidth));
+      cardWidth = Math.max(56, Math.min(160, cardWidth));
 
       // Высота пропорциональна ширине (соотношение 82:64 = 1.28125)
-      cardHeight = cardWidth * 1.28125;
+      const cardHeight = cardWidth * 1.28125;
 
       setCardSize({ width: cardWidth, height: cardHeight });
     };
