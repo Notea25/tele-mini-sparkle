@@ -19,7 +19,6 @@ import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 
-// Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
     case "Динамо-Минск":
@@ -84,24 +83,19 @@ const FormationField = ({
   viceCaptain,
   showCaptainBadges = true,
 }: FormationFieldProps) => {
-  // Formation: 2 ВР (goalkeepers), 5 ЗЩ (defenders), 5 ПЗ (midfielders), 3 НП (forwards)
   const formation: FormationPosition[] = [
-    // Row 1 - Goalkeepers (top)
     { position: "ВР", row: 1, col: 1 },
     { position: "ВР", row: 1, col: 2 },
-    // Row 2 - Defenders
     { position: "ЗЩ", row: 2, col: 1 },
     { position: "ЗЩ", row: 2, col: 2 },
     { position: "ЗЩ", row: 2, col: 3 },
     { position: "ЗЩ", row: 2, col: 4 },
     { position: "ЗЩ", row: 2, col: 5 },
-    // Row 3 - Midfielders
     { position: "ПЗ", row: 3, col: 1 },
     { position: "ПЗ", row: 3, col: 2 },
     { position: "ПЗ", row: 3, col: 3 },
     { position: "ПЗ", row: 3, col: 4 },
     { position: "ПЗ", row: 3, col: 5 },
-    // Row 4 - Forwards (bottom)
     { position: "НП", row: 4, col: 1 },
     { position: "НП", row: 4, col: 2 },
     { position: "НП", row: 4, col: 3 },
@@ -114,19 +108,15 @@ const FormationField = ({
     return text;
   };
 
-  // Get assigned player for a formation slot
   const getAssignedPlayer = (formationPos: FormationPosition) => {
-    // Find the slot index within the position
     const slotsForPosition = formation.filter((f) => f.position === formationPos.position);
     const slotPositionIndex = slotsForPosition.findIndex(
       (s) => s.row === formationPos.row && s.col === formationPos.col,
     );
 
-    // Find player assigned to this specific slot
     return selectedPlayers.find((p) => p.position === formationPos.position && p.slotIndex === slotPositionIndex);
   };
 
-  // Group players by row
   const rows = {
     1: formation.filter((slot) => slot.row === 1),
     2: formation.filter((slot) => slot.row === 2),
@@ -134,7 +124,6 @@ const FormationField = ({
     4: formation.filter((slot) => slot.row === 4),
   };
 
-  // Состояние для определения размера экрана и карточки
   const [screenWidth, setScreenWidth] = useState(0);
   const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
 
@@ -143,66 +132,50 @@ const FormationField = ({
       const width = window.innerWidth;
       setScreenWidth(width);
 
-      // Базовые значения для мобильного (320px)
       const mobileBase = 320;
-      const mobileCardWidth = 64; // На мобильном 64px
-      const mobileCardHeight = 82; // На мобильном 82px
+      const mobileCardWidth = 64;
+      const mobileCardHeight = 82;
 
-      // Рассчитываем размер карточки в зависимости от ширины экрана
-      // Используем нелинейное масштабирование для лучшего результата
       let cardWidth;
 
       if (width <= 375) {
-        // Мобильные до 375px
         cardWidth = mobileCardWidth * (width / mobileBase);
       } else if (width <= 768) {
-        // Планшеты 375-768px
-        // На 768px хотим карточку 96px (в 1.5 раза больше чем на 320px)
-        const minWidth = mobileCardWidth * (375 / mobileBase); // ~75px
-        const maxWidth = 96; // Желаемый размер на 768px
-        const scale = (width - 375) / (768 - 375); // 0-1
+        const minWidth = mobileCardWidth * (375 / mobileBase);
+        const maxWidth = 96;
+        const scale = (width - 375) / (768 - 375);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       } else if (width <= 1024) {
-        // Планшеты 768-1024px
-        // На 1024px хотим карточку 128px
         const minWidth = 96;
         const maxWidth = 128;
         const scale = (width - 768) / (1024 - 768);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       } else {
-        // Десктопы 1024px+
-        // Плавное увеличение дальше
         const minWidth = 128;
-        const maxWidth = 160; // Максимальный размер на очень широких экранах
+        const maxWidth = 160;
         const maxScreen = 1920;
         const scale = Math.min(1, (width - 1024) / (maxScreen - 1024));
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
       }
 
-      // Ограничиваем минимальный и максимальный размер
       cardWidth = Math.max(56, Math.min(160, cardWidth));
 
-      // Высота пропорциональна ширине (соотношение 82:64 = 1.28125)
       const cardHeight = cardWidth * 1.28125;
 
       setCardSize({ width: cardWidth, height: cardHeight });
     };
 
-    // Устанавливаем начальный размер
     updateCardSize();
 
-    // Добавляем слушатель изменения размера
     window.addEventListener("resize", updateCardSize);
 
     return () => window.removeEventListener("resize", updateCardSize);
   }, []);
 
-  // Если карточка еще не рассчитана, показываем пустой контейнер
   if (cardSize.width === 0 || cardSize.height === 0) {
     return <div className="relative w-full h-[400px] bg-gray-900/20 animate-pulse rounded-lg" />;
   }
 
-  // Компонент карточки игрока
   const PlayerCardComponent = ({
     player,
     showRemoveButton = true,
@@ -218,14 +191,13 @@ const FormationField = ({
       }}
       onClick={() => onPlayerClick?.(player)}
     >
-      {/* Captain/Vice-Captain badge */}
       {showCaptainBadges && captain === player.id && (
         <img
           src={captainBadge}
           alt="C"
           className="absolute top-2 left-2 z-50"
           style={{
-            width: `${cardSize.width * 0.18}px`, // 18% от ширины карточки
+            width: `${cardSize.width * 0.18}px`,
             height: `${cardSize.width * 0.18}px`,
           }}
         />
@@ -242,7 +214,6 @@ const FormationField = ({
         />
       )}
 
-      {/* Delete button */}
       {showRemoveButton && onRemovePlayer && (
         <button
           onClick={(e) => {
@@ -265,33 +236,30 @@ const FormationField = ({
         </button>
       )}
 
-      {/* Price */}
       <div
         className="w-full flex items-center justify-center pt-2 pb-1.5 z-30"
-        style={{ height: `${cardSize.height * 0.22}px` }} // 22% от высоты карточки
+        style={{ height: `${cardSize.height * 0.22}px` }}
       >
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
-          style={{ fontSize: `${cardSize.width * 0.12}px` }} // 12% от ширины карточки
+          style={{ fontSize: `${cardSize.width * 0.12}px` }}
         >
           ${(player.price || 9).toFixed(1)}
         </span>
       </div>
 
-      {/* Jersey */}
       <div className="relative w-full flex-1 z-10 overflow-hidden">
         <img
           src={getJerseyForTeam(player.team, player.position)}
           alt={player.name}
           className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
           style={{
-            width: `${cardSize.width * 1.5}px`, // 150% от ширины карточки
-            top: `-${cardSize.height * 0.16}px`, // -16% от высоты карточки
+            width: `${cardSize.width * 1.5}px`,
+            top: `-${cardSize.height * 0.16}px`,
           }}
         />
       </div>
 
-      {/* Name and team */}
       <div className="w-full relative z-20">
         <div
           className="bg-white"
@@ -319,41 +287,37 @@ const FormationField = ({
             style={{ fontSize: `${cardSize.width * 0.085}px` }}
           >
             <span className="text-[#7D7A94]">(Д)</span>
-            <span className="text-white ml-[2%]">{truncateName(player.team, Math.floor(cardSize.width / 8))}</span> //
+            <span className="text-white ml-[2%]">{truncateName(player.team, Math.floor(cardSize.width / 8))}</span>
           </span>
         </div>
       </div>
     </div>
   );
 
-  // Компонент пустого слота
   const EmptySlotComponent = ({ position }: { position: string }) => (
     <div
       className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
       style={{
         width: `${cardSize.width}px`,
         height: `${cardSize.height}px`,
-        gap: `${cardSize.height * 0.06}px`, // 6% от высоты
+        gap: `${cardSize.height * 0.06}px`,
       }}
       onClick={() => onEmptySlotClick?.(position)}
     >
-      <span
-        className="text-white font-bold"
-        style={{ fontSize: `${cardSize.width * 0.2}px` }} // 20% от ширины
-      >
+      <span className="text-white font-bold" style={{ fontSize: `${cardSize.width * 0.2}px` }}>
         {position}
       </span>
       <div
         className="rounded-full bg-white/90 flex items-center justify-center"
         style={{
-          width: `${cardSize.width * 0.25}px`, // 25% от ширины
+          width: `${cardSize.width * 0.25}px`,
           height: `${cardSize.width * 0.25}px`,
         }}
       >
         <Plus
           className="text-[#3a5a28]"
           style={{
-            width: `${cardSize.width * 0.14}px`, // 14% от ширины
+            width: `${cardSize.width * 0.14}px`,
             height: `${cardSize.width * 0.14}px`,
           }}
         />
@@ -361,33 +325,26 @@ const FormationField = ({
     </div>
   );
 
-  // Рассчитываем паддинги и гэпы пропорционально ширине экрана
-  // Базовые значения для мобильного (320px)
   const mobileBaseWidth = 320;
   const mobilePadding = 4;
-  const mobileGapFor2 = 16; // для 2 карточек
-  const mobileGapFor5 = 8; // для 5 карточек
+  const mobileGapFor2 = 16;
+  const mobileGapFor5 = 8;
 
-  // Рассчитываем коэффициент увеличения относительно базовой мобильной ширины
   const baseScaleFactor = screenWidth / mobileBaseWidth;
 
-  // Гэпы пропорциональны ширине экрана
   const getRowGap = (cardsInRow: number) => {
     if (cardsInRow === 2) return mobileGapFor2 * baseScaleFactor;
-    if (cardsInRow === 3) return mobileGapFor2 * baseScaleFactor * 0.85; // Немного меньше для 3 карточек
+    if (cardsInRow === 3) return mobileGapFor2 * baseScaleFactor * 0.85;
     if (cardsInRow === 5) return mobileGapFor5 * baseScaleFactor;
     return mobileGapFor5 * baseScaleFactor;
   };
 
-  // Паддинги контейнера пропорциональны ширине экрана
   const containerPadding = mobilePadding * baseScaleFactor;
 
-  // Вертикальные отступы между строками
-  const rowSpacing = cardSize.height * 0.5; // 50% от высоты карточки
+  const rowSpacing = cardSize.height * 0.5;
 
   return (
     <div className="relative w-full">
-      {/* Football field */}
       <div
         style={{
           paddingLeft: `${containerPadding}px`,
@@ -399,7 +356,6 @@ const FormationField = ({
         <img src={footballFieldNew} alt="Football field" className="w-full" />
       </div>
 
-      {/* Player slots container */}
       <div
         className="absolute inset-0"
         style={{
@@ -409,7 +365,6 @@ const FormationField = ({
           paddingBottom: `${containerPadding}px`,
         }}
       >
-        {/* Row 1 - Goalkeepers (2 игрока) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
@@ -433,7 +388,6 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Row 2 - Defenders (5 игроков) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
@@ -457,7 +411,6 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Row 3 - Midfielders (5 игроков) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
@@ -481,7 +434,6 @@ const FormationField = ({
           })}
         </div>
 
-        {/* Row 4 - Forwards (3 игрока) */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
