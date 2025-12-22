@@ -35,13 +35,17 @@ const clubIcons: Record<string, string> = {
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
 
-// Special chips data with icons
+// Special chips data with icons (main boosts)
 const initialChips: BoostChip[] = [
   { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Подробнее", status: "available" },
   { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
+  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
+];
+
+// Transfer-related boosts (can only be used in Transfers section)
+const transferBoosts: BoostChip[] = [
   { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
   { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
-  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
 ];
 
 // Formation options - all 8 valid formations
@@ -456,7 +460,8 @@ const TeamManagement = () => {
 
       {/* Special Chips */}
       <div className="px-4 mt-4">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1 items-center">
+          {/* Main boosts - full size */}
           {specialChips.map((chip) => (
             <div
               key={chip.id}
@@ -492,6 +497,29 @@ const TeamManagement = () => {
               </span>
             </div>
           ))}
+          
+          {/* Transfer boosts - half size, at the end */}
+          <div className="flex-shrink-0 flex gap-1">
+            {transferBoosts.map((chip) => (
+              <div
+                key={chip.id}
+                onClick={() => openBoostDrawer(chip)}
+                className={`flex flex-col items-center justify-center w-10 h-10 rounded-xl cursor-pointer transition-all hover:bg-card/80 ${
+                  chip.status === "pending"
+                    ? "bg-card border border-primary"
+                    : chip.status === "used"
+                      ? "bg-card/50"
+                      : "bg-card"
+                }`}
+              >
+                <img
+                  src={chip.icon}
+                  alt={chip.label}
+                  className={`w-4 h-4 object-contain transition-all ${chip.status === "used" ? "grayscale opacity-50" : ""}`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
