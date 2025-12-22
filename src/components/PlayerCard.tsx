@@ -256,18 +256,34 @@ const PlayerCard = ({
             <div className="mt-6">
               <h3 className="text-foreground text-sm font-bold mb-3">Начисление очков за тур</h3>
               <div className="bg-secondary/30 rounded-xl p-3 space-y-2">
-                {pointBreakdown.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-sm">{item.action}</span>
-                    <span className={`text-sm font-bold ${item.points > 0 ? "text-primary" : "text-red-500"}`}>
-                      {item.points > 0 ? `+${item.points}` : item.points}
-                    </span>
-                  </div>
-                ))}
+                {(() => {
+                  // Group actions by name
+                  const grouped = pointBreakdown.reduce((acc, item) => {
+                    const key = item.action;
+                    if (!acc[key]) {
+                      acc[key] = { action: item.action, points: item.points, count: 1 };
+                    } else {
+                      acc[key].count += 1;
+                      acc[key].points += item.points;
+                    }
+                    return acc;
+                  }, {} as Record<string, { action: string; points: number; count: number }>);
+                  
+                  return Object.values(grouped).map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between">
+                      <span className="text-muted-foreground text-sm">
+                        {item.action}{item.count > 1 ? ` x${item.count}` : ""}
+                      </span>
+                      <span className={`text-sm font-bold ${item.points > 0 ? "text-primary" : "text-red-500"}`}>
+                        {item.points > 0 ? `+${item.points}` : item.points}
+                      </span>
+                    </div>
+                  ));
+                })()}
                 <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
                   <span className="text-foreground text-sm font-semibold">Итого</span>
-                  <span className={`text-sm font-bold ${pointBreakdown.reduce((sum, i) => sum + i.points, 0) >= 0 ? "text-primary" : "text-red-500"}`}>
-                    {pointBreakdown.reduce((sum, i) => sum + i.points, 0) > 0 ? "+" : ""}{pointBreakdown.reduce((sum, i) => sum + i.points, 0)}
+                  <span className={`text-sm font-bold ${player.points >= 0 ? "text-primary" : "text-red-500"}`}>
+                    {player.points > 0 ? "+" : ""}{player.points}
                   </span>
                 </div>
               </div>
