@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import SportHeader from "@/components/SportHeader";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -58,79 +57,27 @@ const TournamentTable = () => {
   };
 
   const renderPagination = () => {
-    const pages = [];
-    
-    pages.push(
-      <button
-        key="prev"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="w-8 h-8 flex items-center justify-center text-muted-foreground disabled:opacity-30"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-    );
-
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(
-          <button
-            key={i}
-            onClick={() => handlePageChange(i)}
-            className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-full ${
-              currentPage === i ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            {i}
-          </button>
-        );
-      }
-    } else {
-      for (let i = 1; i <= 3; i++) {
-        pages.push(
-          <button
-            key={i}
-            onClick={() => handlePageChange(i)}
-            className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-full ${
-              currentPage === i ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            {i}
-          </button>
-        );
-      }
-      
-      pages.push(
-        <span key="ellipsis" className="w-8 h-8 flex items-center justify-center text-muted-foreground">
-          ...
-        </span>
-      );
-      
-      pages.push(
+    return (
+      <div className="flex items-center justify-center gap-2">
         <button
-          key={totalPages}
-          onClick={() => handlePageChange(totalPages)}
-          className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-full ${
-            currentPage === totalPages ? "text-primary" : "text-muted-foreground"
-          }`}
+          className="px-3 py-1 rounded-full bg-secondary/50 text-foreground text-sm disabled:opacity-40"
+          disabled={currentPage === 1}
+          onClick={() => handlePageChange(currentPage - 1)}
         >
-          {totalPages}
+          ←
         </button>
-      );
-    }
-
-    pages.push(
-      <button
-        key="next"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="w-8 h-8 flex items-center justify-center text-muted-foreground disabled:opacity-30"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
+        <span className="text-foreground text-sm">
+          {currentPage} / {totalPages}
+        </span>
+        <button
+          className="px-3 py-1 rounded-full bg-secondary/50 text-foreground text-sm disabled:opacity-40"
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
+        >
+          →
+        </button>
+      </div>
     );
-
-    return pages;
   };
 
   return (
