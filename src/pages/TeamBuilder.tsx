@@ -1039,47 +1039,23 @@ const TeamBuilder = () => {
           className={`flex-1 flex items-center gap-1 transition-colors ${sortField === "name" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Игрок</span>
-          {sortField === "name" ? (
-            sortDirection === "asc" ? (
-              <ChevronDown className="w-3 h-3 text-primary" />
-            ) : (
-              <ChevronUp className="w-3 h-3 text-primary" />
-            )
-          ) : (
-            <ChevronsUpDown className="w-3 h-3 opacity-50" />
-          )}
+          <ChevronsUpDown className={`w-3 h-3 ${sortField === "name" ? "text-primary" : "opacity-50"}`} />
         </button>
         <button
           onClick={() => handleSort("points")}
           className={`w-12 flex items-center justify-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Очки</span>
-          {sortField === "points" ? (
-            sortDirection === "desc" ? (
-              <ChevronDown className="w-3 h-3 text-primary" />
-            ) : (
-              <ChevronUp className="w-3 h-3 text-primary" />
-            )
-          ) : (
-            <ChevronsUpDown className="w-3 h-3 opacity-50" />
-          )}
+          <ChevronsUpDown className={`w-3 h-3 ${sortField === "points" ? "text-primary" : "opacity-50"}`} />
         </button>
         <button
           onClick={() => handleSort("price")}
           className={`w-10 flex items-center justify-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Цена</span>
-          {sortField === "price" ? (
-            sortDirection === "desc" ? (
-              <ChevronDown className="w-3 h-3 text-primary" />
-            ) : (
-              <ChevronUp className="w-3 h-3 text-primary" />
-            )
-          ) : (
-            <ChevronsUpDown className="w-3 h-3 opacity-50" />
-          )}
+          <ChevronsUpDown className={`w-3 h-3 ${sortField === "price" ? "text-primary" : "opacity-50"}`} />
         </button>
-        <span className="w-8"></span>
+        <span className="w-6 ml-2"></span>
       </div>
 
       {/* Players List */}
