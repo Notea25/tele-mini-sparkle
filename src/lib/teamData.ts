@@ -202,3 +202,22 @@ export function saveTeamTransfers(
     localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(viceCaptain));
   }
 }
+
+// Restore team from Golden Tour backup
+export function restoreTeamFromBackup(
+  mainSquad: { id: number; slotIndex?: number }[],
+  bench: { id: number; slotIndex?: number }[],
+  captain: number | null,
+  viceCaptain: number | null
+): void {
+  const allTeamPlayers = [...mainSquad, ...bench];
+  
+  const selectedPlayers = allTeamPlayers.map((player, index) => ({
+    id: player.id,
+    slotIndex: player.slotIndex !== undefined ? player.slotIndex : index
+  }));
+  
+  localStorage.setItem('fantasyTeamPlayers', JSON.stringify(selectedPlayers));
+  localStorage.setItem('fantasyTeamCaptain', JSON.stringify(captain));
+  localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(viceCaptain));
+}

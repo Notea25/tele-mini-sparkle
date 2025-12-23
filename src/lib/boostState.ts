@@ -2,6 +2,28 @@
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
 
 const BOOST_STATE_KEY = "fantasyBoostState";
+const GOLDEN_TOUR_BACKUP_KEY = "fantasyGoldenTourBackup";
+
+export interface PlayerBackup {
+  id: number;
+  name: string;
+  team: string;
+  position: string;
+  price: number;
+  points: number;
+  slotIndex?: number;
+  isCaptain?: boolean;
+  isViceCaptain?: boolean;
+}
+
+export interface GoldenTourBackup {
+  tour: number;
+  mainSquad: PlayerBackup[];
+  bench: PlayerBackup[];
+  captain: number | null;
+  viceCaptain: number | null;
+  savedAt: string;
+}
 
 export interface BoostState {
   pendingBoostId: string | null;
@@ -69,6 +91,53 @@ export const hasAnyPendingBoost = (): { pending: boolean; boostId?: string; page
     return { pending: true, boostId: state.pendingBoostId, page: state.pendingBoostPage || undefined };
   }
   return { pending: false };
+};
+
+// Golden Tour backup functions
+export const saveGoldenTourBackup = (
+  tour: number,
+  mainSquad: PlayerBackup[],
+  bench: PlayerBackup[],
+  captain: number | null,
+  viceCaptain: number | null
+): void => {
+  try {
+    const backup: GoldenTourBackup = {
+      tour,
+      mainSquad,
+      bench,
+      captain,
+      viceCaptain,
+      savedAt: new Date().toISOString(),
+    };
+    localStorage.setItem(GOLDEN_TOUR_BACKUP_KEY, JSON.stringify(backup));
+  } catch (e) {
+    console.error("Error saving golden tour backup:", e);
+  }
+};
+
+export const getGoldenTourBackup = (): GoldenTourBackup | null => {
+  try {
+    const saved = localStorage.getItem(GOLDEN_TOUR_BACKUP_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error("Error reading golden tour backup:", e);
+  }
+  return null;
+};
+
+export const clearGoldenTourBackup = (): void => {
+  try {
+    localStorage.removeItem(GOLDEN_TOUR_BACKUP_KEY);
+  } catch (e) {
+    console.error("Error clearing golden tour backup:", e);
+  }
+};
+
+export const hasGoldenTourBackup = (): boolean => {
+  return getGoldenTourBackup() !== null;
 };
 
 // Team management boosts
