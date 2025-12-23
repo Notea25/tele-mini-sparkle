@@ -23,10 +23,12 @@ interface PlayerCardProps {
   isViceCaptain?: boolean;
   onSetCaptain?: (playerId: number) => void;
   onSetViceCaptain?: (playerId: number) => void;
-  variant?: "default" | "transfers" | "management" | "view";
+  variant?: "default" | "transfers" | "management" | "view" | "buy";
   onSell?: (playerId: number) => void;
   onSwap?: (playerId: number) => void;
+  onBuy?: (playerId: number) => void;
   hidePointsBreakdown?: boolean;
+  canBuy?: boolean;
 }
 
 const PlayerCard = ({
@@ -42,7 +44,9 @@ const PlayerCard = ({
   variant = "default",
   onSell,
   onSwap,
+  onBuy,
   hidePointsBreakdown = false,
+  canBuy = true,
 }: PlayerCardProps) => {
   if (!player) return null;
 
@@ -335,6 +339,31 @@ const PlayerCard = ({
                 className="flex-1 rounded-full py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 Заменить
+              </Button>
+            </div>
+          ) : variant === "buy" ? (
+            <div className="flex gap-3 w-full">
+              <Button
+                onClick={onClose}
+                className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
+              >
+                Закрыть
+              </Button>
+              <Button
+                onClick={() => {
+                  if (canBuy) {
+                    onBuy?.(player.id);
+                    onClose();
+                  }
+                }}
+                disabled={!canBuy}
+                className={`flex-1 rounded-full py-6 font-semibold text-lg ${
+                  canBuy 
+                    ? "bg-primary hover:bg-primary/90 text-primary-foreground" 
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                }`}
+              >
+                Купить
               </Button>
             </div>
           ) : (
