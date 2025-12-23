@@ -74,57 +74,46 @@ const TeamListView = ({
           >
             {isOccupied && slot.player ? (
               <>
-                {/* Position badge */}
-                <span className="w-8 flex-shrink-0 text-xs text-muted-foreground font-medium">
-                  ({slot.position})
-                </span>
-                
-                {/* Player name - flexible */}
+                {/* Club logo + Player name + position */}
                 <div 
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                   onClick={() => onPlayerClick?.(slot.player!)}
                 >
-                  <span className="text-foreground font-medium truncate">{slot.player.name}</span>
-                </div>
-                
-                
-                {/* Club icon - fixed width */}
-                <div className="w-6 flex-shrink-0 flex justify-center">
                   {clubIcons[slot.player.team] && (
                     <img 
                       src={clubIcons[slot.player.team]} 
                       alt={slot.player.team}
-                      className="w-5 h-5 object-contain"
+                      className="w-5 h-5 object-contain flex-shrink-0"
                     />
                   )}
+                  <span className="text-foreground font-medium truncate">{slot.player.name}</span>
+                  <span className="text-muted-foreground text-xs">{slot.position}</span>
                 </div>
                 
-                {/* Points - fixed width */}
-                <div className="w-12 flex-shrink-0 flex items-center justify-end gap-1 text-primary">
-                  <span className="text-sm font-medium">{slot.player.points}</span>
-                </div>
+                {/* Points */}
+                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{slot.player.points}</span>
                 
-                {/* Price - fixed width */}
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">
+                {/* Price */}
+                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
                   {slot.player.price?.toFixed(1)}
                 </span>
                 
-                {/* Remove button - fixed width */}
+                {/* Remove button */}
                 {onRemovePlayer && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onRemovePlayer(slot.player!.id);
                     }}
-                    className="w-6 h-6 ml-2 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors flex-shrink-0"
+                    className="w-8 h-8 ml-2 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors flex-shrink-0"
                   >
-                    <X className="w-3 h-3 text-muted-foreground" />
+                    <X className="w-4 h-4 text-foreground" />
                   </button>
                 )}
               </>
             ) : (
               <>
-                {/* Empty slot label - flexible */}
+                {/* Empty slot label */}
                 <div 
                   className="flex-1 cursor-pointer hover:opacity-80"
                   onClick={() => onEmptySlotClick?.(slot.position)}
@@ -132,13 +121,16 @@ const TeamListView = ({
                   <span className="text-muted-foreground text-sm">{slot.label}</span>
                 </div>
                 
+                {/* Placeholder for points and price columns */}
+                <span className="w-12 flex-shrink-0"></span>
+                <span className="w-10 flex-shrink-0"></span>
                 
                 {/* Add button */}
                 <button
                   onClick={() => onEmptySlotClick?.(slot.position)}
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
+                  className="w-8 h-8 ml-2 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors flex-shrink-0"
                 >
-                  <Plus className="w-3 h-3 text-primary-foreground" />
+                  <Plus className="w-4 h-4 text-primary" />
                 </button>
               </>
             )}
