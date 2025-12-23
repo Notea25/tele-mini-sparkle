@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 
 export type BoostStatus = "available" | "pending" | "used";
 
@@ -50,19 +52,41 @@ const boostDescriptions: Record<string, { title: string; description: string; ca
 };
 
 const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1 }: BoostDrawerProps) => {
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
   if (!chip) return null;
 
   const boostInfo = boostDescriptions[chip.id];
 
-  const handleApply = () => {
+  const handleApplyClick = () => {
+    // For non-cancellable boosts, show confirmation first
+    if (!boostInfo?.canCancel) {
+      setShowConfirmation(true);
+    } else {
+      onApply(chip.id);
+      onClose();
+    }
+  };
+
+  const handleConfirmApply = () => {
     onApply(chip.id);
+    setShowConfirmation(false);
     onClose();
+  };
+
+  const handleCancelConfirmation = () => {
+    setShowConfirmation(false);
   };
 
   const handleCancel = () => {
     if (onCancel) {
       onCancel(chip.id);
     }
+    onClose();
+  };
+
+  const handleClose = () => {
+    setShowConfirmation(false);
     onClose();
   };
 
@@ -77,66 +101,110 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={onClose}>
+    <Drawer open={isOpen} onOpenChange={handleClose}>
       <DrawerContent className="bg-[#1a1a2e] border-t border-gray-800">
         <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-600 mb-4 mt-2" />
-        <DrawerHeader className="flex flex-col items-center text-center px-6 pb-6">
-          <div className="mb-4">
-            <img 
-              src={chip.icon} 
-              alt={chip.label} 
-              className="w-16 h-16 object-contain"
-            />
-          </div>
-          <DrawerTitle className="text-2xl font-bold text-white mb-4">
-            {boostInfo?.title || chip.label}
-          </DrawerTitle>
-          <p className="text-gray-400 text-sm leading-relaxed whitespace-pre-line">
-            {boostInfo?.description}
-          </p>
-          {getStatusText() && (
-            <p className={`text-sm mt-4 ${chip.status === "pending" ? "text-primary" : "text-gray-500"}`}>
-              {getStatusText()}
-            </p>
-          )}
-        </DrawerHeader>
-        <div className="px-6 pb-8 space-y-3">
-          {chip.status === "available" && (
-            <Button
-              onClick={handleApply}
-              className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold"
-            >
-              Использовать
-            </Button>
-          )}
-          {chip.status === "pending" && (
-            <>
-              {onCancel && boostInfo?.canCancel && (
-                <Button
-                  onClick={handleCancel}
-                  variant="outline"
-                  className="w-full h-14 rounded-full border-destructive text-destructive hover:bg-destructive/10 text-lg font-semibold"
-                >
-                  Отменить
-                </Button>
+        
+        {showConfirmation ? (
+          // Confirmation view for non-cancellable boosts
+          <div className="px-6 pb-8">
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mb-4">
+                <AlertTriangle className="w-8 h-8 text-amber-500" />
+              </div>
+              <h2 className="text-xl font-bold text-white mb-2">Внимание!</h2>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Буст <span className="text-primary font-semibold">{boostInfo?.title}</span> нельзя будет отменить после активации.
+              </p>
+              {chip.id === "transfers" && (
+                <p className="text-gray-400 text-sm mt-2">
+                  Все накопленные бесплатные трансферы сгорят.
+                </p>
               )}
+              {chip.id === "golden" && (
+                <p className="text-gray-400 text-sm mt-2">
+                  После окончания тура ваш состав автоматически вернётся к текущему.
+                </p>
+              )}
+            </div>
+            
+            <div className="space-y-3">
               <Button
-                onClick={onClose}
+                onClick={handleConfirmApply}
+                className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold"
+              >
+                Подтвердить активацию
+              </Button>
+              <Button
+                onClick={handleCancelConfirmation}
                 className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
               >
-                Закрыть
+                Отмена
               </Button>
-            </>
-          )}
-          {chip.status === "used" && (
-            <Button
-              onClick={onClose}
-              className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
-            >
-              Закрыть
-            </Button>
-          )}
-        </div>
+            </div>
+          </div>
+        ) : (
+          // Main boost info view
+          <>
+            <DrawerHeader className="flex flex-col items-center text-center px-6 pb-6">
+              <div className="mb-4">
+                <img 
+                  src={chip.icon} 
+                  alt={chip.label} 
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+              <DrawerTitle className="text-2xl font-bold text-white mb-4">
+                {boostInfo?.title || chip.label}
+              </DrawerTitle>
+              <p className="text-gray-400 text-sm leading-relaxed whitespace-pre-line">
+                {boostInfo?.description}
+              </p>
+              {getStatusText() && (
+                <p className={`text-sm mt-4 ${chip.status === "pending" ? "text-primary" : "text-gray-500"}`}>
+                  {getStatusText()}
+                </p>
+              )}
+            </DrawerHeader>
+            <div className="px-6 pb-8 space-y-3">
+              {chip.status === "available" && (
+                <Button
+                  onClick={handleApplyClick}
+                  className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold"
+                >
+                  Использовать
+                </Button>
+              )}
+              {chip.status === "pending" && (
+                <>
+                  {onCancel && boostInfo?.canCancel && (
+                    <Button
+                      onClick={handleCancel}
+                      variant="outline"
+                      className="w-full h-14 rounded-full border-destructive text-destructive hover:bg-destructive/10 text-lg font-semibold"
+                    >
+                      Отменить
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handleClose}
+                    className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
+                  >
+                    Закрыть
+                  </Button>
+                </>
+              )}
+              {chip.status === "used" && (
+                <Button
+                  onClick={handleClose}
+                  className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
+                >
+                  Закрыть
+                </Button>
+              )}
+            </div>
+          </>
+        )}
       </DrawerContent>
     </Drawer>
   );
