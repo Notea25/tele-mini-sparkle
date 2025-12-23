@@ -418,7 +418,7 @@ const League = () => {
               className="w-full h-10 bg-secondary rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:bg-secondary/80 transition-opacity mb-8"
               onClick={() => setIsRulesDrawerOpen(true)}
             >
-              <HelpCircle className="w-4 h-4 text-primary" />
+              <HelpCircle className="w-4 h-4 text-muted-foreground" />
               <span className="text-muted-foreground font-medium text-sm">Правила игры</span>
             </div>
 
