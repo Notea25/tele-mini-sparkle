@@ -584,12 +584,6 @@ const FormationFieldManagement = ({
                   }}
                 >
                   {player ? renderPlayer(player, true, true) : renderEmptySlot("ЗАМ", true, idx)}
-                  {/* Priority indicator */}
-                  {player && onBenchReorder && (
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-secondary/80 text-[10px] px-1.5 py-0.5 rounded-full text-muted-foreground">
-                      {idx === 0 ? "1й" : `${idx + 1}й`}
-                    </div>
-                  )}
                 </div>
               );
             })}
