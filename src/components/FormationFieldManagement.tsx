@@ -360,6 +360,7 @@ interface FormationFieldManagementProps {
   onSwapPlayer?: (playerId: number) => void;
   onEmptySlotClick?: (position: string, isOnBench: boolean, slotIndex: number) => void;
   onBenchReorder?: (fromIndex: number, toIndex: number) => void;
+  onSwapMainAndBench?: (mainPlayerId: number, benchPlayerId: number) => void;
   captain?: number | null;
   viceCaptain?: number | null;
   isBenchBoostActive?: boolean;
@@ -385,6 +386,7 @@ const FormationFieldManagement = ({
   onSwapPlayer,
   onEmptySlotClick,
   onBenchReorder,
+  onSwapMainAndBench,
   captain,
   viceCaptain,
   isBenchBoostActive = false,
@@ -393,11 +395,17 @@ const FormationFieldManagement = ({
   showPrice = true,
   showPointsInsteadOfTeam = false,
 }: FormationFieldManagementProps) => {
-  // Touch drag state for mobile
+  // Touch drag state for mobile bench reorder
   const [draggedBenchIndex, setDraggedBenchIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const benchContainerRef = useRef<HTMLDivElement>(null);
+
+  // Long-press swap mode state
+  const [swapModePlayer, setSwapModePlayer] = useState<{ id: number; isOnBench: boolean } | null>(null);
+  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const longPressTriggeredRef = useRef(false);
+  const LONG_PRESS_DURATION = 500; // ms
 
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -407,7 +415,55 @@ const FormationFieldManagement = ({
     return mainSquadPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
   };
 
-  // Touch event handlers for mobile drag-and-drop
+  // Long-press handlers for swap mode
+  const handlePlayerLongPressStart = (playerId: number, isOnBench: boolean) => {
+    if (!onSwapMainAndBench) return;
+    
+    longPressTriggeredRef.current = false;
+    longPressTimerRef.current = setTimeout(() => {
+      longPressTriggeredRef.current = true;
+      setSwapModePlayer({ id: playerId, isOnBench });
+      // Haptic feedback if available
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }, LONG_PRESS_DURATION);
+  };
+
+  const handlePlayerLongPressEnd = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  };
+
+  const handlePlayerTapInSwapMode = (playerId: number, isOnBench: boolean) => {
+    if (!swapModePlayer || !onSwapMainAndBench) return;
+    
+    // Can only swap between main squad and bench (not same area)
+    if (swapModePlayer.isOnBench === isOnBench) {
+      // Tapped on same area - cancel swap mode or select new player
+      if (swapModePlayer.id === playerId) {
+        setSwapModePlayer(null);
+      } else {
+        setSwapModePlayer({ id: playerId, isOnBench });
+      }
+      return;
+    }
+    
+    // Perform the swap
+    const mainPlayerId = isOnBench ? swapModePlayer.id : playerId;
+    const benchPlayerId = isOnBench ? playerId : swapModePlayer.id;
+    
+    onSwapMainAndBench(mainPlayerId, benchPlayerId);
+    setSwapModePlayer(null);
+  };
+
+  const cancelSwapMode = () => {
+    setSwapModePlayer(null);
+  };
+
+  // Touch event handlers for mobile drag-and-drop (bench reorder)
   const handleTouchStart = (e: React.TouchEvent, idx: number, isGoalkeeper: boolean) => {
     if (!onBenchReorder || isGoalkeeper) return;
     
@@ -470,29 +526,63 @@ const FormationFieldManagement = ({
   };
 
   const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => {
-    const isCaptain = captain === player.id;
-    const isViceCaptain = viceCaptain === player.id;
-    const isCaptainOrVice = isCaptain || isViceCaptain;
+    const isCaptainPlayer = captain === player.id;
+    const isViceCaptainPlayer = viceCaptain === player.id;
+    const isCaptainOrVice = isCaptainPlayer || isViceCaptainPlayer;
     const showDoublePowerBorder = isDoublePowerBoostActive && isCaptainOrVice;
     const showDoublePowerIcon = isDoublePowerBoostActive && isCaptainOrVice && !isOnBench;
-    const showCaptain3xBorder = isCaptain3xBoostActive && isCaptain;
-    const showCaptain3xIcon = isCaptain3xBoostActive && isCaptain && !isOnBench;
+    const showCaptain3xBorder = isCaptain3xBoostActive && isCaptainPlayer;
+    const showCaptain3xIcon = isCaptain3xBoostActive && isCaptainPlayer && !isOnBench;
     const hasGreenBorder = showDoublePowerBorder || showCaptain3xBorder;
     const hasRedCard = player.hasRedCard;
     const isInjured = player.isInjured;
 
-    // Border color priority: red card/injury > green boost > default white
-    const borderClass =
-      hasRedCard || isInjured ? "border-red-500" : hasGreenBorder ? "border-primary" : "border-white/60";
+    // Swap mode styling
+    const isSelectedForSwap = swapModePlayer?.id === player.id;
+    const isSwapTarget = swapModePlayer && swapModePlayer.isOnBench !== isOnBench;
+
+    // Border color priority: swap selection > red card/injury > green boost > default white
+    let borderClass = "border-white/60";
+    if (isSelectedForSwap) {
+      borderClass = "border-amber-400 border-2";
+    } else if (hasRedCard || isInjured) {
+      borderClass = "border-red-500";
+    } else if (hasGreenBorder) {
+      borderClass = "border-primary";
+    }
+
+    const handleClick = (e: React.MouseEvent) => {
+      // If in swap mode, handle swap logic
+      if (swapModePlayer) {
+        e.stopPropagation();
+        handlePlayerTapInSwapMode(player.id, isOnBench);
+        return;
+      }
+      // Normal click behavior
+      onPlayerClick?.(player);
+    };
 
     return (
       <div
-        className={`w-[70px] h-[84px] relative flex flex-col cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] ${borderClass}`}
-        onClick={() => onPlayerClick?.(player)}
+        className={`w-[70px] h-[84px] relative flex flex-col cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] transition-all duration-200 ${borderClass} ${
+          isSelectedForSwap ? "scale-105 shadow-lg shadow-amber-400/30" : ""
+        } ${isSwapTarget ? "ring-2 ring-amber-400/50 ring-offset-1 ring-offset-transparent" : ""}`}
+        onClick={handleClick}
+        onTouchStart={() => handlePlayerLongPressStart(player.id, isOnBench)}
+        onTouchEnd={handlePlayerLongPressEnd}
+        onTouchCancel={handlePlayerLongPressEnd}
+        onMouseDown={() => handlePlayerLongPressStart(player.id, isOnBench)}
+        onMouseUp={handlePlayerLongPressEnd}
+        onMouseLeave={handlePlayerLongPressEnd}
       >
+        {/* Swap mode indicator */}
+        {isSelectedForSwap && (
+          <div className="absolute inset-0 bg-amber-400/20 z-40 pointer-events-none" />
+        )}
+
         {/* Captain/Vice-Captain badge - absolute in left corner, only for main squad */}
-        {isCaptain && !isOnBench && <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />}
-        {isViceCaptain && !isOnBench && (
+        {isCaptainPlayer && !isOnBench && <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />}
+        {isViceCaptainPlayer && !isOnBench && (
           <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
         )}
 
@@ -503,7 +593,7 @@ const FormationFieldManagement = ({
           <img src={icon2x} alt="2x" className="absolute top-1 right-1 z-50 w-3 h-3" />
         ) : showActionButton && isOnBench && isBenchBoostActive ? (
           <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
-        ) : showActionButton && onSwapPlayer ? (
+        ) : showActionButton && onSwapPlayer && !swapModePlayer ? (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -670,11 +760,27 @@ const FormationFieldManagement = ({
             })}
           </div>
           <p className="text-center text-muted-foreground text-sm mt-4">Замены</p>
-          {onBenchReorder && (
+          {swapModePlayer ? (
+            <div className="flex flex-col items-center gap-2 mt-2">
+              <p className="text-center text-amber-400 text-xs animate-pulse">
+                Выберите игрока для замены
+              </p>
+              <button
+                onClick={cancelSwapMode}
+                className="text-xs text-muted-foreground underline hover:text-foreground"
+              >
+                Отмена
+              </button>
+            </div>
+          ) : onBenchReorder ? (
             <p className="text-center text-muted-foreground text-xs mt-1">
               Перетащите игроков для изменения приоритета выхода на поле
             </p>
-          )}
+          ) : onSwapMainAndBench ? (
+            <p className="text-center text-muted-foreground text-xs mt-1">
+              Удерживайте игрока для замены
+            </p>
+          ) : null}
         </div>
       </div>
     </div>

@@ -384,6 +384,73 @@ const TeamManagement = () => {
     toast.success("Порядок игроков изменён");
   };
 
+  // Handle swapping a main squad player with a bench player via long-press
+  const handleSwapMainAndBench = (mainPlayerId: number, benchPlayerId: number) => {
+    const mainPlayer = mainSquadPlayers.find(p => p.id === mainPlayerId);
+    const benchPlayer = benchPlayers.find(p => p.id === benchPlayerId);
+    
+    if (!mainPlayer || !benchPlayer) {
+      toast.error("Игрок не найден");
+      return;
+    }
+
+    // Check if positions are compatible for swap
+    // Goalkeepers can only swap with goalkeepers
+    if (mainPlayer.position === "ВР" && benchPlayer.position !== "ВР") {
+      toast.error("Вратарь может меняться только с вратарём");
+      return;
+    }
+    if (benchPlayer.position === "ВР" && mainPlayer.position !== "ВР") {
+      toast.error("Вратарь может меняться только с вратарём");
+      return;
+    }
+
+    // Track if captain/vice-captain is being moved to bench
+    let newCaptain = captain;
+    let newViceCaptain = viceCaptain;
+
+    // If the main player being replaced is captain/vice-captain, transfer the role to incoming bench player
+    if (captain === mainPlayerId) {
+      newCaptain = benchPlayerId;
+    }
+    if (viceCaptain === mainPlayerId) {
+      newViceCaptain = benchPlayerId;
+    }
+
+    // Create new main squad: replace main player with bench player
+    const newMainSquad = mainSquadPlayers.map((p) => 
+      p.id === mainPlayerId ? { ...benchPlayer, isOnBench: false, slotIndex: p.slotIndex } : p
+    );
+
+    // Create new bench: replace bench player with main player
+    const newBench = benchPlayers.map((p) =>
+      p.id === benchPlayerId ? { ...mainPlayer, isOnBench: true, slotIndex: undefined } : p
+    );
+
+    // Reassign slot indices based on positions
+    const reassignedMainSquad = reassignSlotIndices(newMainSquad);
+
+    setMainSquadPlayers(reassignedMainSquad);
+    setBenchPlayers(newBench);
+
+    // Ensure same player is not both captain and vice-captain after swap
+    if (newCaptain === newViceCaptain && newCaptain !== null) {
+      newViceCaptain = null;
+    }
+
+    // Update captain/vice-captain if they changed
+    if (newCaptain !== captain) {
+      setCaptain(newCaptain);
+      localStorage.setItem("fantasyTeamCaptain", JSON.stringify(newCaptain));
+    }
+    if (newViceCaptain !== viceCaptain) {
+      setViceCaptain(newViceCaptain);
+      localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(newViceCaptain));
+    }
+
+    toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
+  };
+
   // Get valid swap options based on formation rules
   const getValidSwapOptionsForPlayer = () => {
     if (!playerToSwap) return [];
@@ -675,6 +742,7 @@ const TeamManagement = () => {
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onSwapPlayer={handlePlayerSwap}
             onBenchReorder={handleBenchReorder}
+            onSwapMainAndBench={handleSwapMainAndBench}
             captain={captain}
             showPrice={false}
             viceCaptain={viceCaptain}
