@@ -8,6 +8,7 @@ import { PlayerData, allPlayers, allTeams } from "@/lib/teamData";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import { clubLogos } from "@/lib/clubLogos";
+import PlayerCard from "@/components/PlayerCard";
 
 
 const ITEMS_PER_PAGE = 6;
@@ -56,6 +57,7 @@ const BuyPlayerDrawer = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | null>(null);
 
   // Apply initial position filter when drawer opens
   useEffect(() => {
@@ -312,7 +314,8 @@ const BuyPlayerDrawer = ({
               return (
                 <div
                   key={player.id}
-                  className={`bg-card rounded-full px-3 py-2 flex items-center ${!canBuy ? "opacity-50" : ""}`}
+                  className={`bg-card rounded-full px-3 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${!canBuy ? "opacity-50" : ""}`}
+                  onClick={() => setSelectedPlayer(player as PlayerData)}
                 >
                   <div className="flex-1 flex items-center gap-2 min-w-0">
                     {clubIcons[player.team] && (
@@ -335,7 +338,10 @@ const BuyPlayerDrawer = ({
                   </span>
                   
                   <button
-                    onClick={() => canBuy && onBuyPlayer(player as PlayerData)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (canBuy) onBuyPlayer(player as PlayerData);
+                    }}
                     disabled={!canBuy}
                     className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       canBuy
@@ -372,6 +378,23 @@ const BuyPlayerDrawer = ({
               </button>
             </div>
           )}
+
+          {/* Player Card Modal */}
+          <PlayerCard
+            player={selectedPlayer}
+            isOpen={!!selectedPlayer}
+            onClose={() => setSelectedPlayer(null)}
+            variant="buy"
+            hidePointsBreakdown={true}
+            canBuy={selectedPlayer ? canBuyPlayer(selectedPlayer) : false}
+            onBuy={(playerId) => {
+              const player = sortedPlayers.find(p => p.id === playerId);
+              if (player && canBuyPlayer(player)) {
+                onBuyPlayer(player as PlayerData);
+                setSelectedPlayer(null);
+              }
+            }}
+          />
         </div>
       </DrawerContent>
     </Drawer>
