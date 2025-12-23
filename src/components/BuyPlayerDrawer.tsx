@@ -326,9 +326,9 @@ const BuyPlayerDrawer = ({
                     <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
                   </div>
                   
-                  <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-                    <span className="text-foreground text-sm">{player.points}</span>
-                  </div>
+                  <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">
+                    {player.points}
+                  </span>
                   
                   <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">
                     {player.price}
