@@ -427,8 +427,8 @@ const TeamManagement = () => {
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
         <span className="flex-1">Игрок</span>
-        <span className="w-12 text-center">Очки</span>
-        <span className="w-14 text-center">Сл. матч</span>
+        <div className="w-12 flex justify-center">Очки</div>
+        <div className="w-14 flex justify-center ml-2">Сл. матч</div>
         <span className="w-10"></span>
       </div>
 
@@ -471,10 +471,10 @@ const TeamManagement = () => {
               </div>
 
               {/* Points */}
-              <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+              <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.points}</div>
 
               {/* Next match opponent */}
-              <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center">{getNextOpponent(player.team)}</span>
+              <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">{getNextOpponent(player.team)}</div>
 
               {/* Swap button */}
               <button
@@ -696,8 +696,8 @@ const TeamManagement = () => {
           {/* Column headers */}
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
             <span className="flex-1">Игрок</span>
-            <span className="w-12 text-center">Очки</span>
-            <span className="w-14 text-center">Сл. матч</span>
+            <div className="w-12 flex justify-center">Очки</div>
+            <div className="w-14 flex justify-center">Сл. матч</div>
             <span className="w-10"></span>
           </div>
 
@@ -708,8 +708,7 @@ const TeamManagement = () => {
               
               return (
                 <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-                  {/* Priority number */}
-                  <span className="w-5 text-muted-foreground text-xs flex-shrink-0">{index + 1}</span>
+                  {/* Club logo + Player name + position + badges */}
                   
                   {/* Club logo + Player name + position + badges */}
                   <div
@@ -732,10 +731,10 @@ const TeamManagement = () => {
                   </div>
 
                   {/* Points */}
-                  <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+                  <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.points}</div>
 
                   {/* Next match opponent */}
-                  <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center">{getNextOpponent(player.team)}</span>
+                  <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm">{getNextOpponent(player.team)}</div>
 
                   {/* Swap button */}
                   <button
