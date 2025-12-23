@@ -98,19 +98,26 @@ const CreateLeague = () => {
     setShowInviteDrawer(true);
   };
 
-  // Mock standings data for the league
-  const leagueStandings = [
-    { position: 1, change: "same", name: "Dream team", tourPoints: 32, totalPoints: 3123 },
-    { position: 2, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 3, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 4, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 5, change: "up", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 6, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 7, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 8, change: "up", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 9, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-    { position: 10, change: "same", name: "Lucky Team", tourPoints: 32, totalPoints: 3123 },
-  ];
+  // Get team name from localStorage
+  const teamName = localStorage.getItem("fantasyTeamName") || "Моя команда";
+
+  // League standings - for a new league, only the user is there
+  const getUserLeagueStandings = (): Array<{
+    position: number;
+    change: "up" | "down" | "same";
+    name: string;
+    tourPoints: number;
+    totalPoints: number;
+    isUser: boolean;
+  }> => {
+    if (!viewingLeague) return [];
+    // For a newly created league, only the owner (user) is a participant
+    return [
+      { position: 1, change: "same", name: teamName, tourPoints: 55, totalPoints: 3123, isUser: true },
+    ];
+  };
+
+  const leagueStandings = getUserLeagueStandings();
 
   // If viewing a specific league, show the league management view
   if (viewingLeague) {
@@ -150,17 +157,21 @@ const CreateLeague = () => {
           {/* League Standings */}
           <div className="space-y-2 mb-6">
             {leagueStandings.map((row, idx) => (
-              <div key={idx} className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full">
+              <div 
+                key={idx} 
+                className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
+                  row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
+                }`}
+              >
                 <div className="col-span-2 flex items-center gap-1">
                   {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
                   {row.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
                   {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                  <span className="text-foreground font-medium">{row.position}</span>
-                  {row.position <= 3 && <span className="text-yellow-500">🏆</span>}
+                  <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
                 </div>
-                <span className="col-span-4 text-foreground text-sm truncate">{row.name}</span>
-                <span className="col-span-3 text-center text-foreground text-sm">{row.tourPoints}</span>
-                <span className="col-span-3 text-right text-foreground text-sm font-medium">
+                <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+                <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+                <span className={`col-span-3 text-right text-sm font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
                   {row.totalPoints.toLocaleString().replace(",", " ")}
                 </span>
               </div>
@@ -177,11 +188,11 @@ const CreateLeague = () => {
             Пригласить друзей
           </Button>
           <Button
-            onClick={handleDeleteLeague}
+            onClick={() => navigate("/league")}
             variant="outline"
             className="w-full rounded-full py-6 font-semibold border-border text-foreground"
           >
-            ✕ Удалить лигу
+            Закрыть
           </Button>
         </div>
 
