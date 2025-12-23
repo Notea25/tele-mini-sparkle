@@ -42,6 +42,7 @@ const ViewLeague = () => {
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
   const [showLeaveConfirmDrawer, setShowLeaveConfirmDrawer] = useState(false);
+  const [showDeleteConfirmDrawer, setShowDeleteConfirmDrawer] = useState(false);
 
   // Restore scroll position when returning to this page
   useEffect(() => {
@@ -324,7 +325,7 @@ const ViewLeague = () => {
               <>
                 {canDeleteLeague && (
                   <Button
-                    onClick={handleDeleteLeague}
+                    onClick={() => setShowDeleteConfirmDrawer(true)}
                     variant="outline"
                     className="w-full rounded-full py-6 font-semibold border-destructive text-destructive hover:bg-destructive/10"
                   >
@@ -434,6 +435,43 @@ const ViewLeague = () => {
               </Button>
               <Button
                 onClick={() => setShowLeaveConfirmDrawer(false)}
+                variant="outline"
+                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+              >
+                Отмена
+              </Button>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Delete League Confirmation Drawer */}
+      <Drawer open={showDeleteConfirmDrawer} onOpenChange={setShowDeleteConfirmDrawer}>
+        <DrawerContent className="bg-background border-t border-border">
+          <DrawerHeader className="text-center">
+            <DrawerTitle className="text-xl font-bold text-foreground">
+              Удалить лигу?
+            </DrawerTitle>
+          </DrawerHeader>
+          
+          <div className="px-6 pb-6 space-y-6">
+            <p className="text-center text-muted-foreground">
+              Лига «{leagueName}» будет безвозвратно удалена.
+            </p>
+
+            <div className="space-y-3">
+              <Button
+                onClick={() => {
+                  setShowDeleteConfirmDrawer(false);
+                  handleDeleteLeague();
+                }}
+                variant="destructive"
+                className="w-full rounded-full py-6 font-semibold"
+              >
+                Удалить
+              </Button>
+              <Button
+                onClick={() => setShowDeleteConfirmDrawer(false)}
                 variant="outline"
                 className="w-full rounded-full py-6 font-semibold border-border text-foreground"
               >
