@@ -1051,7 +1051,7 @@ const TeamBuilder = () => {
         </button>
         <button
           onClick={() => handleSort("points")}
-          className={`w-12 flex items-center justify-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
+          className={`w-14 flex items-center justify-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Очки</span>
           {sortField === "points" ? (
@@ -1066,7 +1066,7 @@ const TeamBuilder = () => {
         </button>
         <button
           onClick={() => handleSort("price")}
-          className={`w-12 flex items-center justify-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
+          className={`w-14 mr-8 flex items-center justify-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Цена</span>
           {sortField === "price" ? (
@@ -1079,7 +1079,6 @@ const TeamBuilder = () => {
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
           )}
         </button>
-        <span className="w-8"></span>
       </div>
 
       {/* Players List */}
@@ -1103,12 +1102,14 @@ const TeamBuilder = () => {
               </div>
 
               {/* Points - fixed width, centered, white text */}
-              <div className="w-12 flex-shrink-0 flex items-center justify-center">
+              <div className="w-14 flex-shrink-0 flex items-center justify-center">
                 <span className="text-sm font-medium text-foreground">{player.points}</span>
               </div>
 
               {/* Price - fixed width, centered */}
-              <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
+              <div className="w-14 flex-shrink-0 flex items-center justify-center">
+                <span className="text-foreground text-sm">{player.price.toFixed(1)}</span>
+              </div>
 
               {/* Add/Remove button */}
               <button
