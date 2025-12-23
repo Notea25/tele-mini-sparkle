@@ -319,7 +319,7 @@ const PlayerCard = ({
                   onSell?.(player.id);
                   onClose();
                 }}
-                className="flex-1 rounded-full py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="flex-1 rounded-full py-6 font-semibold text-lg bg-red-500 hover:bg-red-600 text-white"
               >
                 Продать
               </Button>
