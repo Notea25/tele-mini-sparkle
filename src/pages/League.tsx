@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, ChevronDown, ChevronUp, User, ArrowRight, HelpCircle } from "lucide-react";
+import { Pencil, ChevronDown, ChevronUp, User, ArrowRight, HelpCircle, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -282,9 +282,22 @@ const League = () => {
       change: "same" as const,
       isOwner: true,
       id: league.id,
+      participants: league.participants,
     })),
-    ...staticLeagues,
+    ...staticLeagues.map((league) => ({
+      ...league,
+      participants: parseInt(league.place.split(" / ")[1]) || 1,
+    })),
   ];
+
+  const handleDeleteLeague = (leagueId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const existingLeagues = JSON.parse(localStorage.getItem("userCreatedLeagues") || "[]");
+    const updatedLeagues = existingLeagues.filter((l: { id: string }) => l.id !== leagueId);
+    localStorage.setItem("userCreatedLeagues", JSON.stringify(updatedLeagues));
+    setUserCreatedLeagues(updatedLeagues);
+    toast.success("Лига удалена");
+  };
 
   const tabs = [
     { id: "main", label: "Главная" },
@@ -674,29 +687,42 @@ const League = () => {
 
             {/* My leagues rows */}
             <div className="space-y-2 mb-4">
-              {(showAllMyLeagues ? myLeagues : myLeagues.slice(0, 5)).map((league, idx) => (
-                <div
-                  key={idx}
-                  className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
-                  onClick={() => {
-                    handleNavigate(
-                      `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=${league.isOwner}`,
-                    );
-                  }}
-                >
-                  <div className="col-span-4 flex items-center gap-1">
-                    {league.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
-                    {league.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
-                    {league.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                    <span className="text-foreground text-sm">{league.place}</span>
+              {(showAllMyLeagues ? myLeagues : myLeagues.slice(0, 5)).map((league, idx) => {
+                const canDelete = league.isOwner && league.participants === 1 && league.id.startsWith("league-");
+                return (
+                  <div
+                    key={idx}
+                    className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
+                    onClick={() => {
+                      handleNavigate(
+                        `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=${league.isOwner}`,
+                      );
+                    }}
+                  >
+                    <div className="col-span-4 flex items-center gap-1">
+                      {league.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                      {league.change === "down" && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
+                      {league.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
+                      <span className="text-foreground text-sm">{league.place}</span>
+                    </div>
+                    <span className="col-span-5 text-foreground text-sm truncate">{league.name}</span>
+                    <div className="col-span-3 flex items-center justify-end gap-2">
+                      {league.isOwner && <User className="w-4 h-4 text-primary" />}
+                      {canDelete ? (
+                        <button
+                          onClick={(e) => handleDeleteLeague(league.id, e)}
+                          className="p-1 hover:bg-destructive/20 rounded-full transition-colors"
+                          title="Удалить лигу"
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </button>
+                      ) : (
+                        <span className="text-muted-foreground">→</span>
+                      )}
+                    </div>
                   </div>
-                  <span className="col-span-5 text-foreground text-sm truncate">{league.name}</span>
-                  <div className="col-span-3 flex items-center justify-end gap-2">
-                    {league.isOwner && <User className="w-4 h-4 text-primary" />}
-                    <span className="text-muted-foreground">→</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* See all my leagues button */}
