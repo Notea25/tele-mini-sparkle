@@ -37,7 +37,6 @@ import FormationField from "@/components/FormationField";
 import TeamListView from "@/components/TeamListView";
 import PlayerCard from "@/components/PlayerCard";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
-import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
 import { clubLogos } from "@/lib/clubLogos";
@@ -46,9 +45,9 @@ import { allPlayers, allTeams } from "@/lib/teamData";
 
 const ITEMS_PER_PAGE = 8;
 
-// Club icons mapping - default logo for all teams
+// Use clubLogos from lib, with fallback to default logo
 const clubIcons: Record<string, string> = Object.fromEntries(
-  allTeams.map((team) => [team, team === "Белшина" ? clubBelshina : clubLogo]),
+  allTeams.map((team) => [team, clubLogos[team] || clubLogo]),
 );
 
 const TeamBuilder = () => {
