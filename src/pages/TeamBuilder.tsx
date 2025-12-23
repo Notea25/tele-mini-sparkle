@@ -1043,14 +1043,14 @@ const TeamBuilder = () => {
         </button>
         <button
           onClick={() => handleSort("points")}
-          className={`w-12 flex items-center justify-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
+          className={`w-12 flex items-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Очки</span>
           <ChevronsUpDown className={`w-3 h-3 ${sortField === "points" ? "text-primary" : "opacity-50"}`} />
         </button>
         <button
           onClick={() => handleSort("price")}
-          className={`w-10 flex items-center justify-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
+          className={`w-12 flex items-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Цена</span>
           <ChevronsUpDown className={`w-3 h-3 ${sortField === "price" ? "text-primary" : "opacity-50"}`} />
@@ -1075,10 +1075,10 @@ const TeamBuilder = () => {
               </div>
 
               {/* Points - fixed width */}
-              <span className="w-12 flex-shrink-0 text-primary text-sm font-medium text-center">{player.points}</span>
+              <span className="w-12 flex-shrink-0 text-primary text-sm font-medium">{player.points}</span>
 
               {/* Price - fixed width */}
-              <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
+              <span className="w-12 flex-shrink-0 text-foreground text-sm">{player.price.toFixed(1)}</span>
 
               {/* Add/Remove button */}
               <button
