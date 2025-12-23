@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import playerPhoto from "@/assets/player-photo.png";
 import clubLogo from "@/assets/club-logo.png";
 import clubBelshina from "@/assets/club-belshina.png";
+import { clubLogos } from "@/lib/clubLogos";
 
 interface PlayerData {
   id: number;
@@ -184,7 +185,7 @@ const PlayerCard = ({
 
               {/* Team */}
               <div className="flex items-center gap-2 mt-1">
-                <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
+                <img src={clubLogos[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
                 <span className="text-primary">{player.team}</span>
               </div>
             </div>

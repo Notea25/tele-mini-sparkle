@@ -75,6 +75,7 @@ const Transfers = () => {
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
+  const [buyPlayerForCard, setBuyPlayerForCard] = useState<PlayerData | null>(null);
   const [teamName] = useState(() => getSavedTeam().teamName);
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
     // Load initial state from localStorage
@@ -719,6 +720,30 @@ const Transfers = () => {
         </div>
       </div>
 
+      {/* Buy Player Card Drawer */}
+      {buyPlayerForCard && (
+        <PlayerCard
+          player={buyPlayerForCard}
+          isOpen={!!buyPlayerForCard}
+          onClose={() => {
+            setBuyPlayerForCard(null);
+            setBuyDrawerOpen(true);
+          }}
+          variant="buy"
+          hidePointsBreakdown
+          canBuy={
+            buyPlayerForCard.price <= budget + 0.001 &&
+            getPlayersCountByClub(buyPlayerForCard.team) < MAX_PLAYERS_PER_CLUB
+          }
+          onBuy={(playerId) => {
+            if (buyPlayerForCard && buyPlayerForCard.id === playerId) {
+              handleBuyPlayer(buyPlayerForCard);
+            }
+            setBuyPlayerForCard(null);
+          }}
+        />
+      )}
+
       {/* Player Card Drawer */}
       {selectedPlayerForCard !== null && (
         <PlayerCard
@@ -755,6 +780,10 @@ const Transfers = () => {
           setBuyPositionFilter(null);
         }}
         onBuyPlayer={handleBuyPlayer}
+        onPlayerClick={(player) => {
+          setBuyPlayerForCard(player);
+          setBuyDrawerOpen(false);
+        }}
         currentTeamPlayerIds={players.map(p => p.id)}
         currentBudget={budget}
         getPlayersCountByClub={getPlayersCountByClub}
