@@ -360,6 +360,30 @@ const TeamManagement = () => {
     }
   };
 
+  // Handle bench player reordering (swap between bench players)
+  const handleBenchReorder = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    
+    // Goalkeeper (position ВР) must always stay at index 0
+    const fromPlayer = benchPlayers[fromIndex];
+    const toPlayer = benchPlayers[toIndex];
+    
+    // Don't allow swapping goalkeeper with non-goalkeeper
+    if (fromPlayer?.position === "ВР" || toPlayer?.position === "ВР") {
+      if (fromPlayer?.position !== toPlayer?.position) {
+        toast.error("Вратарь всегда занимает первую позицию на скамейке");
+        return;
+      }
+    }
+    
+    const newBench = [...benchPlayers];
+    // Swap the two players
+    [newBench[fromIndex], newBench[toIndex]] = [newBench[toIndex], newBench[fromIndex]];
+    
+    setBenchPlayers(newBench);
+    toast.success("Порядок игроков изменён");
+  };
+
   // Get valid swap options based on formation rules
   const getValidSwapOptionsForPlayer = () => {
     if (!playerToSwap) return [];
@@ -601,6 +625,7 @@ const TeamManagement = () => {
             benchPlayers={benchPlayers}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onSwapPlayer={handlePlayerSwap}
+            onBenchReorder={handleBenchReorder}
             captain={captain}
             showPrice={false}
             viceCaptain={viceCaptain}
