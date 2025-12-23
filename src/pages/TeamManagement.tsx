@@ -390,7 +390,36 @@ const TeamManagement = () => {
     return getValidSwapOptions(mainSquadPlayers, benchPlayers, playerToSwap);
   };
 
-  const renderListSection = (position: string, players: PlayerData[]) => (
+  // Team abbreviations for next match
+  const teamAbbreviations: Record<string, string> = {
+    "Арсенал": "АРС",
+    "БАТЭ": "БАТ",
+    "Белшина": "БЕЛ",
+    "Витебск": "ВИТ",
+    "Гомель": "ГОМ",
+    "Динамо-Минск": "ДМН",
+    "Динамо-Брест": "ДБР",
+    "Днепр": "ДНП",
+    "Ислочь": "ИСЛ",
+    "МЛ Витебск": "МЛ",
+    "Минск": "МИН",
+    "Нафтан": "НАФ",
+    "Неман": "НЕМ",
+    "Славия-Мозырь": "СЛА",
+    "Торпедо-БелАЗ": "ТОР",
+    "Шахтер": "ШАХ",
+    "Барановичи": "БАР",
+  };
+
+  // Get next opponent for a team (simplified - just shows a random opponent)
+  const getNextOpponent = (team: string): string => {
+    const teams = Object.keys(teamAbbreviations).filter(t => t !== team);
+    const hash = team.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const opponent = teams[hash % teams.length];
+    return teamAbbreviations[opponent] || "—";
+  };
+
+  const renderListSection = (position: string, players: PlayerDataExt[]) => (
     <div className="mb-6" key={position}>
       {/* Position header */}
       <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
@@ -399,7 +428,7 @@ const TeamManagement = () => {
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
         <span className="flex-1">Игрок</span>
         <span className="w-12 text-center">Очки</span>
-        <span className="w-10 text-center">Цена</span>
+        <span className="w-14 text-center">Сл. матч</span>
         <span className="w-10"></span>
       </div>
 
@@ -407,9 +436,13 @@ const TeamManagement = () => {
       <div className="space-y-2">
         {players.map((player) => {
           const clubLogo = clubLogos[player.team] || clubIcons[player.team];
+          const isCaptainPlayer = captain === player.id;
+          const isViceCaptainPlayer = viceCaptain === player.id;
+          const playerExt = player as PlayerDataExt;
+          
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-              {/* Club logo + Player name + position */}
+              {/* Club logo + Player name + position + badges */}
               <div
                 className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                 onClick={() => setSelectedPlayerForCard(player.id)}
@@ -419,13 +452,29 @@ const TeamManagement = () => {
                 )}
                 <span className="text-foreground font-medium truncate">{player.name}</span>
                 <span className="text-muted-foreground text-xs">{player.position}</span>
+                {/* Captain badge */}
+                {isCaptainPlayer && (
+                  <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">К</span>
+                )}
+                {/* Vice-captain badge */}
+                {isViceCaptainPlayer && (
+                  <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">ВК</span>
+                )}
+                {/* Red card badge */}
+                {playerExt.hasRedCard && (
+                  <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">КК</span>
+                )}
+                {/* Injury badge */}
+                {playerExt.isInjured && !playerExt.hasRedCard && (
+                  <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">Т</span>
+                )}
               </div>
 
               {/* Points */}
               <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
 
-              {/* Price */}
-              <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
+              {/* Next match opponent */}
+              <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center">{getNextOpponent(player.team)}</span>
 
               {/* Swap button */}
               <button
@@ -647,48 +696,57 @@ const TeamManagement = () => {
           {/* Column headers */}
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
             <span className="flex-1">Игрок</span>
-            <span className="w-14 text-center">Клуб</span>
             <span className="w-12 text-center">Очки</span>
-            <span className="w-10 text-center">Цена</span>
+            <span className="w-14 text-center">Сл. матч</span>
             <span className="w-10"></span>
           </div>
 
           <div className="space-y-2">
-            {benchPlayers.map((player) => (
-              <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-                {/* Player name + position */}
-                <div
-                  className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-                  onClick={() => setSelectedPlayerForCard(player.id)}
-                >
-                  <span className="text-foreground font-medium truncate">{player.name}</span>
-                  <span className="text-muted-foreground text-xs">{player.position}</span>
+            {benchPlayers.map((player, index) => {
+              const clubLogo = clubLogos[player.team] || clubIcons[player.team];
+              const playerExt = player as PlayerDataExt;
+              
+              return (
+                <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
+                  {/* Priority number */}
+                  <span className="w-5 text-muted-foreground text-xs flex-shrink-0">{index + 1}</span>
+                  
+                  {/* Club logo + Player name + position + badges */}
+                  <div
+                    className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
+                    onClick={() => setSelectedPlayerForCard(player.id)}
+                  >
+                    {clubLogo && (
+                      <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                    )}
+                    <span className="text-foreground font-medium truncate">{player.name}</span>
+                    <span className="text-muted-foreground text-xs">{player.position}</span>
+                    {/* Red card badge */}
+                    {playerExt.hasRedCard && (
+                      <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">КК</span>
+                    )}
+                    {/* Injury badge */}
+                    {playerExt.isInjured && !playerExt.hasRedCard && (
+                      <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">Т</span>
+                    )}
+                  </div>
+
+                  {/* Points */}
+                  <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+
+                  {/* Next match opponent */}
+                  <span className="w-14 flex-shrink-0 text-muted-foreground text-sm text-center">{getNextOpponent(player.team)}</span>
+
+                  {/* Swap button */}
+                  <button
+                    onClick={() => handlePlayerSwap(player.id)}
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
+                  >
+                    <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
+                  </button>
                 </div>
-
-                {/* Club */}
-                <div className="w-14 flex-shrink-0 flex justify-center">
-                  {clubIcons[player.team] && (
-                    <img src={clubIcons[player.team]} alt={player.team} className="w-5 h-5 object-contain" />
-                  )}
-                </div>
-
-                {/* Points */}
-                <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
-                  <span className="text-foreground text-sm">{player.points}</span>
-                </div>
-
-                {/* Price */}
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
-
-                {/* Swap button */}
-                <button
-                  onClick={() => handlePlayerSwap(player.id)}
-                  className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
-                >
-                  <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
