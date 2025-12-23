@@ -358,6 +358,7 @@ interface FormationFieldManagementProps {
   onRemovePlayer?: (playerId: number) => void;
   onSwapPlayer?: (playerId: number) => void;
   onEmptySlotClick?: (position: string, isOnBench: boolean, slotIndex: number) => void;
+  onBenchReorder?: (fromIndex: number, toIndex: number) => void;
   captain?: number | null;
   viceCaptain?: number | null;
   isBenchBoostActive?: boolean;
@@ -382,6 +383,7 @@ const FormationFieldManagement = ({
   onRemovePlayer,
   onSwapPlayer,
   onEmptySlotClick,
+  onBenchReorder,
   captain,
   viceCaptain,
   isBenchBoostActive = false,
@@ -547,14 +549,57 @@ const FormationFieldManagement = ({
           <div className="flex gap-2 justify-between">
             {Array.from({ length: maxBenchSize }).map((_, idx) => {
               const player = benchPlayers[idx];
+              const isGoalkeeper = player?.position === "ВР";
               return (
-                <div key={idx} className="flex flex-col items-center flex-1">
+                <div 
+                  key={idx} 
+                  className={`flex flex-col items-center flex-1 relative ${
+                    onBenchReorder && !isGoalkeeper ? "cursor-grab active:cursor-grabbing" : ""
+                  }`}
+                  draggable={!!onBenchReorder && !!player && !isGoalkeeper}
+                  onDragStart={(e) => {
+                    if (!player || isGoalkeeper) return;
+                    e.dataTransfer.setData("benchIndex", idx.toString());
+                    e.currentTarget.style.opacity = "0.5";
+                  }}
+                  onDragEnd={(e) => {
+                    e.currentTarget.style.opacity = "1";
+                  }}
+                  onDragOver={(e) => {
+                    if (!onBenchReorder || isGoalkeeper) return;
+                    e.preventDefault();
+                    e.currentTarget.classList.add("ring-2", "ring-primary");
+                  }}
+                  onDragLeave={(e) => {
+                    e.currentTarget.classList.remove("ring-2", "ring-primary");
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove("ring-2", "ring-primary");
+                    if (!onBenchReorder) return;
+                    const fromIndex = parseInt(e.dataTransfer.getData("benchIndex"));
+                    if (!isNaN(fromIndex) && fromIndex !== idx) {
+                      onBenchReorder(fromIndex, idx);
+                    }
+                  }}
+                >
                   {player ? renderPlayer(player, true, true) : renderEmptySlot("ЗАМ", true, idx)}
+                  {/* Priority indicator */}
+                  {player && onBenchReorder && (
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-secondary/80 text-[10px] px-1.5 py-0.5 rounded-full text-muted-foreground">
+                      {idx === 0 ? "1й" : `${idx + 1}й`}
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
           <p className="text-center text-muted-foreground text-sm mt-4">Замены</p>
+          {onBenchReorder && (
+            <p className="text-center text-muted-foreground text-xs mt-1">
+              Перетащите игроков для изменения приоритета выхода на поле
+            </p>
+          )}
         </div>
       </div>
     </div>
