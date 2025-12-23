@@ -13,7 +13,8 @@ import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
 import leagueCreationPlayers from "@/assets/league-creation-players.png";
 
-const MAX_LEAGUES = 10;
+const MAX_CREATED_LEAGUES = 5;
+const MAX_JOINED_LEAGUES = 10;
 
 interface CreatedLeague {
   id: string;
@@ -59,11 +60,11 @@ const CreateLeague = () => {
     toast.success("Ссылка скопирована");
   };
 
-  const isLimitReached = userLeaguesCount >= MAX_LEAGUES;
+  const isLimitReached = userLeaguesCount >= MAX_CREATED_LEAGUES;
 
   const handleCreateLeague = () => {
     if (isLimitReached) {
-      toast.error("Ты не можешь создать более 10 лиг, где являешься владельцем");
+      toast.error("Ты не можешь создать более 5 лиг, где являешься владельцем");
       return;
     }
 
