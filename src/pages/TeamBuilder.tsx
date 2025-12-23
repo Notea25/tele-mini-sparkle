@@ -1049,11 +1049,9 @@ const TeamBuilder = () => {
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
           )}
         </button>
-        <span className="w-8"></span>
-        <span className="w-6"></span>
         <button
           onClick={() => handleSort("points")}
-          className={`w-14 flex items-center justify-end gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
+          className={`w-12 flex items-center justify-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Очки</span>
           {sortField === "points" ? (
@@ -1068,7 +1066,7 @@ const TeamBuilder = () => {
         </button>
         <button
           onClick={() => handleSort("price")}
-          className={`w-12 flex items-center justify-end gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
+          className={`w-10 flex items-center justify-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Цена</span>
           {sortField === "price" ? (
@@ -1090,29 +1088,21 @@ const TeamBuilder = () => {
           const isSelected = selectedPlayerIds.includes(player.id);
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-              {/* Player name - flexible */}
+              {/* Club logo + Player name + Position - flexible */}
               <div
                 className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                 onClick={() => setSelectedPlayerForCard(player.id)}
               >
+                <img src={clubIcons[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
                 <span className="text-foreground font-medium truncate">{player.name}</span>
-              </div>
-
-              {/* Position - fixed width */}
-              <span className="w-8 text-center text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
-
-              {/* Club icon - fixed width */}
-              <div className="w-6 flex-shrink-0 flex justify-center">
-                <img src={clubIcons[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
+                <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
               </div>
 
               {/* Points - fixed width */}
-              <div className="w-12 flex-shrink-0 flex items-center justify-end gap-1 text-primary">
-                <span className="text-sm font-medium">{player.points}</span>
-              </div>
+              <span className="w-12 flex-shrink-0 text-primary text-sm font-medium text-center">{player.points}</span>
 
               {/* Price - fixed width */}
-              <span className="w-10 flex-shrink-0 text-foreground text-sm text-right">{player.price.toFixed(1)}</span>
+              <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
 
               {/* Add/Remove button */}
               <button
