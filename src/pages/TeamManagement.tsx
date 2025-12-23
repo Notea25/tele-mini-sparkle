@@ -697,7 +697,7 @@ const TeamManagement = () => {
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
             <span className="flex-1">Игрок</span>
             <div className="w-12 flex justify-center">Очки</div>
-            <div className="w-14 flex justify-center">Сл. матч</div>
+            <div className="w-14 flex justify-center ml-2">Сл. матч</div>
             <span className="w-10"></span>
           </div>
 
@@ -708,8 +708,6 @@ const TeamManagement = () => {
               
               return (
                 <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
-                  {/* Club logo + Player name + position + badges */}
-                  
                   {/* Club logo + Player name + position + badges */}
                   <div
                     className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
@@ -734,12 +732,12 @@ const TeamManagement = () => {
                   <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.points}</div>
 
                   {/* Next match opponent */}
-                  <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm">{getNextOpponent(player.team)}</div>
+                  <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">{getNextOpponent(player.team)}</div>
 
                   {/* Swap button */}
                   <button
                     onClick={() => handlePlayerSwap(player.id)}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
+                    className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
                   >
                     <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
                   </button>
