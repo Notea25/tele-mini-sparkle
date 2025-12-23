@@ -34,6 +34,11 @@ const ViewLeague = () => {
   const startTour = parseInt(searchParams.get("startTour") || "1");
   const isRegistrationOpen = searchParams.get("registrationOpen") === "true";
   const isBeforeRegistration = searchParams.get("beforeRegistration") === "true";
+  const participants = parseInt(searchParams.get("participants") || "0");
+  
+  // Check if league can be deleted (owner is only participant)
+  const isUserCreatedLeague = leagueId.startsWith("league-");
+  const canDeleteLeague = isOwner && isUserCreatedLeague && participants === 1;
   
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
   const [showLeaveConfirmDrawer, setShowLeaveConfirmDrawer] = useState(false);
@@ -316,13 +321,24 @@ const ViewLeague = () => {
               Пригласить друзей
             </Button>
             {isOwner ? (
-              <Button
-                onClick={handleClose}
-                variant="outline"
-                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
-              >
-                Закрыть
-              </Button>
+              <>
+                {canDeleteLeague && (
+                  <Button
+                    onClick={handleDeleteLeague}
+                    variant="outline"
+                    className="w-full rounded-full py-6 font-semibold border-destructive text-destructive hover:bg-destructive/10"
+                  >
+                    Удалить лигу
+                  </Button>
+                )}
+                <Button
+                  onClick={handleClose}
+                  variant="outline"
+                  className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                >
+                  Закрыть
+                </Button>
+              </>
             ) : (
               <>
                 <Button
