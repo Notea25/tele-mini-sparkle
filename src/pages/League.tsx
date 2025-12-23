@@ -20,6 +20,8 @@ import beteraLogo from "@/assets/betera-basketball-logo.png";
 import eslLogo from "@/assets/esl-logo.png";
 import leagueLogo from "@/assets/league-logo.png";
 import aplLogo from "@/assets/apl-logo.png";
+import { getGoldenTourBackup, clearGoldenTourBackup, getBoostState, markBoostAsUsed } from "@/lib/boostState";
+import { restoreTeamFromBackup } from "@/lib/teamData";
 
 const LEAGUE_TAB_KEY = "fantasyLeagueActiveTab";
 
@@ -49,6 +51,29 @@ const League = () => {
 
   // Current tour for determining finished leagues (simulated as tour 6 for demo)
   const currentTour = isTournamentStarted ? 6 : 1;
+
+  // Check for Golden Tour restoration when tour changes
+  useEffect(() => {
+    const backup = getGoldenTourBackup();
+    const boostState = getBoostState();
+    
+    // If there's a backup and the boost was used (tour has ended), restore the squad
+    if (backup && backup.tour < currentTour) {
+      // Restore the team to the pre-Golden Tour state
+      restoreTeamFromBackup(
+        backup.mainSquad,
+        backup.bench,
+        backup.captain,
+        backup.viceCaptain
+      );
+      
+      // Mark the boost as used and clear the backup
+      markBoostAsUsed("golden", backup.tour);
+      clearGoldenTourBackup();
+      
+      toast.success("Тур завершён. Состав восстановлен после Золотого тура.");
+    }
+  }, [currentTour]);
 
   // Club to league name mapping
   const clubToLeagueName: Record<string, string> = {

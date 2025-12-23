@@ -11,7 +11,7 @@ import PlayerCard from "@/components/PlayerCard";
 import BoostDrawer from "@/components/BoostDrawer";
 import BuyPlayerDrawer from "@/components/BuyPlayerDrawer";
 import ConfirmTransfersDrawer from "@/components/ConfirmTransfersDrawer";
-import { getBoostState, setPendingBoost, clearPendingBoost, hasAnyPendingBoost, TRANSFER_BOOSTS } from "@/lib/boostState";
+import { getBoostState, setPendingBoost, clearPendingBoost, hasAnyPendingBoost, TRANSFER_BOOSTS, saveGoldenTourBackup, getGoldenTourBackup, clearGoldenTourBackup } from "@/lib/boostState";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -130,6 +130,34 @@ const Transfers = () => {
     if (hasPendingBoost || (pending && page !== "transfers")) {
       toast.error("В одном туре можно использовать только 1 буст");
       return;
+    }
+    
+    // For Golden Tour boost, save the current squad state before making any changes
+    if (chipId === "golden") {
+      const mainSquad = players.slice(0, 11).map(p => ({
+        id: p.id,
+        name: p.name,
+        team: p.team,
+        position: p.position,
+        price: p.price,
+        points: p.points,
+        slotIndex: p.slotIndex,
+        isCaptain: p.isCaptain,
+        isViceCaptain: p.isViceCaptain,
+      }));
+      const bench = players.slice(11, 15).map(p => ({
+        id: p.id,
+        name: p.name,
+        team: p.team,
+        position: p.position,
+        price: p.price,
+        points: p.points,
+        slotIndex: p.slotIndex,
+        isCaptain: p.isCaptain,
+        isViceCaptain: p.isViceCaptain,
+      }));
+      saveGoldenTourBackup(currentTour, mainSquad, bench, captain, viceCaptain);
+      toast.info("Состав сохранён. После окончания тура он будет автоматически восстановлен.");
     }
     
     setPendingBoost(chipId, "transfers");
