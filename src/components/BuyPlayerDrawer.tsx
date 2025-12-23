@@ -7,6 +7,7 @@ import { Search, Plus, Minus, ChevronLeft, ChevronRight, ChevronsUpDown, Chevron
 import { PlayerData, allPlayers, allTeams } from "@/lib/teamData";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
+import { clubLogos } from "@/lib/clubLogos";
 
 
 const ITEMS_PER_PAGE = 6;
@@ -205,7 +206,14 @@ const BuyPlayerDrawer = ({
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
                 {teams.map((team) => (
-                  <SelectItem key={team} value={team}>{team}</SelectItem>
+                  <SelectItem key={team} value={team}>
+                    <div className="flex items-center gap-2">
+                      {team !== "Все команды" && clubLogos[team] && (
+                        <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
+                      )}
+                      <span>{team}</span>
+                    </div>
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>

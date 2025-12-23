@@ -40,6 +40,7 @@ import EditTeamNameModal from "@/components/EditTeamNameModal";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
+import { clubLogos } from "@/lib/clubLogos";
 
 import { allPlayers, allTeams } from "@/lib/teamData";
 
@@ -877,7 +878,12 @@ const TeamBuilder = () => {
               <SelectContent className="bg-card border-border z-50">
                 {teams.map((team) => (
                   <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
-                    {team === "Все команды" ? "Команды" : team}
+                    <div className="flex items-center gap-2">
+                      {team !== "Все команды" && clubLogos[team] && (
+                        <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
+                      )}
+                      <span>{team === "Все команды" ? "Команды" : team}</span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -959,7 +965,12 @@ const TeamBuilder = () => {
               <SelectContent className="bg-card border-border z-50">
                 {teams.map((team) => (
                   <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
-                    {team === "Все команды" ? "Команды" : team}
+                    <div className="flex items-center gap-2">
+                      {team !== "Все команды" && clubLogos[team] && (
+                        <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
+                      )}
+                      <span>{team === "Все команды" ? "Команды" : team}</span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
