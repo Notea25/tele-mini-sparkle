@@ -451,7 +451,7 @@ const League = () => {
                     if (row.isUser) {
                       handleNavigate("/your-team");
                     } else {
-                      handleNavigate(`/view-team?id=${row.position}&name=${encodeURIComponent(row.name)}`);
+                      handleNavigate(`/view-team?id=${row.id}&name=${encodeURIComponent(row.name)}`);
                     }
                   }}
                 >
