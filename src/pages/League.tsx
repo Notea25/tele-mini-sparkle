@@ -40,6 +40,7 @@ const League = () => {
   const [showAllCommercialLeagues, setShowAllCommercialLeagues] = useState(false);
   const [showPastLeagues, setShowPastLeagues] = useState(false);
   const [showAllClubLeague, setShowAllClubLeague] = useState(false);
+  const [showAllMyLeagues, setShowAllMyLeagues] = useState(false);
   const [clubLeaguePage, setClubLeaguePage] = useState(1);
 
   // First tour deadline - before this, show "pre-tournament" UI with zeroed stats
@@ -673,7 +674,7 @@ const League = () => {
 
             {/* My leagues rows */}
             <div className="space-y-2 mb-4">
-              {myLeagues.map((league, idx) => (
+              {(showAllMyLeagues ? myLeagues : myLeagues.slice(0, 5)).map((league, idx) => (
                 <div
                   key={idx}
                   className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
@@ -698,16 +699,36 @@ const League = () => {
               ))}
             </div>
 
+            {/* See all my leagues button */}
+            {myLeagues.length > 5 && (
+              <button
+                className="w-full flex items-center justify-center gap-1 text-foreground text-sm py-3 mb-4"
+                onClick={() => setShowAllMyLeagues(!showAllMyLeagues)}
+              >
+                {showAllMyLeagues ? (
+                  <>
+                    <ChevronUp className="w-4 h-4" />
+                    Скрыть
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-4 h-4" />
+                    Смотреть все ({myLeagues.length})
+                  </>
+                )}
+              </button>
+            )}
+
             {/* Create league button */}
             <Button
               className={`w-full rounded-full py-6 font-semibold mb-8 ${
-                userCreatedLeagues.length >= 10
+                userCreatedLeagues.length >= 5
                   ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
                   : "bg-primary text-primary-foreground"
               }`}
               onClick={() => {
-                if (userCreatedLeagues.length >= 10) {
-                  toast.error("Ты не можешь создать более 10 лиг, где являешься владельцем");
+                if (userCreatedLeagues.length >= 5) {
+                  toast.error("Ты не можешь создать более 5 лиг, где являешься владельцем");
                 } else {
                   handleNavigate("/create-league");
                 }
