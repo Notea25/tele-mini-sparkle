@@ -174,7 +174,7 @@ const CreateLeague = () => {
             onClick={handleInviteFriend}
             className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
           >
-            Пригласить друга
+            Пригласить друзей
           </Button>
           <Button
             onClick={handleDeleteLeague}

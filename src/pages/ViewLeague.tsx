@@ -313,7 +313,7 @@ const ViewLeague = () => {
               onClick={handleInviteFriend}
               className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
             >
-              Пригласить друга
+              Пригласить друзей
             </Button>
             {isOwner ? (
               <Button
