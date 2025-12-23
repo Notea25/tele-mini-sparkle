@@ -281,7 +281,6 @@
 
 // export default FormationFieldManagement;
 
-import { useState, useRef } from "react";
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
 import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
@@ -359,8 +358,7 @@ interface FormationFieldManagementProps {
   onRemovePlayer?: (playerId: number) => void;
   onSwapPlayer?: (playerId: number) => void;
   onEmptySlotClick?: (position: string, isOnBench: boolean, slotIndex: number) => void;
-  onBenchReorder?: (fromIndex: number, toIndex: number) => void;
-  onSwapMainAndBench?: (mainPlayerId: number, benchPlayerId: number) => void;
+  onSwapBenchPlayers?: (fromIndex: number, toIndex: number) => void;
   captain?: number | null;
   viceCaptain?: number | null;
   isBenchBoostActive?: boolean;
@@ -385,8 +383,7 @@ const FormationFieldManagement = ({
   onRemovePlayer,
   onSwapPlayer,
   onEmptySlotClick,
-  onBenchReorder,
-  onSwapMainAndBench,
+  onSwapBenchPlayers,
   captain,
   viceCaptain,
   isBenchBoostActive = false,
@@ -395,17 +392,6 @@ const FormationFieldManagement = ({
   showPrice = true,
   showPointsInsteadOfTeam = false,
 }: FormationFieldManagementProps) => {
-  // Touch drag state for mobile bench reorder
-  const [draggedBenchIndex, setDraggedBenchIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
-  const benchContainerRef = useRef<HTMLDivElement>(null);
-
-  // Long-press swap mode state
-  const [swapModePlayer, setSwapModePlayer] = useState<{ id: number; isOnBench: boolean } | null>(null);
-  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const longPressTriggeredRef = useRef(false);
-  const LONG_PRESS_DURATION = 500; // ms
 
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
@@ -415,117 +401,7 @@ const FormationFieldManagement = ({
     return mainSquadPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
   };
 
-  // Long-press handlers for swap mode
-  const handlePlayerLongPressStart = (playerId: number, isOnBench: boolean) => {
-    if (!onSwapMainAndBench) return;
-    
-    longPressTriggeredRef.current = false;
-    longPressTimerRef.current = setTimeout(() => {
-      longPressTriggeredRef.current = true;
-      setSwapModePlayer({ id: playerId, isOnBench });
-      // Haptic feedback if available
-      if (navigator.vibrate) {
-        navigator.vibrate(50);
-      }
-    }, LONG_PRESS_DURATION);
-  };
-
-  const handlePlayerLongPressEnd = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
-  };
-
-  const handlePlayerTapInSwapMode = (playerId: number, isOnBench: boolean) => {
-    if (!swapModePlayer || !onSwapMainAndBench) return;
-    
-    // Can only swap between main squad and bench (not same area)
-    if (swapModePlayer.isOnBench === isOnBench) {
-      // Tapped on same area - cancel swap mode or select new player
-      if (swapModePlayer.id === playerId) {
-        setSwapModePlayer(null);
-      } else {
-        setSwapModePlayer({ id: playerId, isOnBench });
-      }
-      return;
-    }
-    
-    // Perform the swap
-    const mainPlayerId = isOnBench ? swapModePlayer.id : playerId;
-    const benchPlayerId = isOnBench ? playerId : swapModePlayer.id;
-    
-    onSwapMainAndBench(mainPlayerId, benchPlayerId);
-    setSwapModePlayer(null);
-  };
-
-  const cancelSwapMode = () => {
-    setSwapModePlayer(null);
-  };
-
-  // Touch event handlers for mobile drag-and-drop (bench reorder)
-  const handleTouchStart = (e: React.TouchEvent, idx: number, isGoalkeeper: boolean) => {
-    if (!onBenchReorder || isGoalkeeper) return;
-    
-    const touch = e.touches[0];
-    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
-    setDraggedBenchIndex(idx);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (draggedBenchIndex === null || !benchContainerRef.current) return;
-    
-    const touch = e.touches[0];
-    const container = benchContainerRef.current;
-    const containerRect = container.getBoundingClientRect();
-    
-    // Check if touch is within the bench container
-    if (
-      touch.clientX >= containerRect.left &&
-      touch.clientX <= containerRect.right &&
-      touch.clientY >= containerRect.top &&
-      touch.clientY <= containerRect.bottom
-    ) {
-      // Calculate which slot the touch is over
-      const slots = container.querySelectorAll('[data-bench-slot]');
-      let foundIndex: number | null = null;
-      
-      slots.forEach((slot, idx) => {
-        const slotRect = slot.getBoundingClientRect();
-        if (
-          touch.clientX >= slotRect.left &&
-          touch.clientX <= slotRect.right &&
-          touch.clientY >= slotRect.top &&
-          touch.clientY <= slotRect.bottom
-        ) {
-          foundIndex = idx;
-        }
-      });
-      
-      if (foundIndex !== null && foundIndex !== draggedBenchIndex) {
-        setDragOverIndex(foundIndex);
-      } else {
-        setDragOverIndex(null);
-      }
-    } else {
-      setDragOverIndex(null);
-    }
-    
-    // Prevent scrolling while dragging
-    e.preventDefault();
-  };
-
-  const handleTouchEnd = () => {
-    if (draggedBenchIndex !== null && dragOverIndex !== null && onBenchReorder) {
-      onBenchReorder(draggedBenchIndex, dragOverIndex);
-    }
-    
-    setDraggedBenchIndex(null);
-    setDragOverIndex(null);
-    touchStartPos.current = null;
-  };
-
-  const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => {
+  const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false, benchIndex?: number) => {
     const isCaptainPlayer = captain === player.id;
     const isViceCaptainPlayer = viceCaptain === player.id;
     const isCaptainOrVice = isCaptainPlayer || isViceCaptainPlayer;
@@ -537,49 +413,22 @@ const FormationFieldManagement = ({
     const hasRedCard = player.hasRedCard;
     const isInjured = player.isInjured;
 
-    // Swap mode styling
-    const isSelectedForSwap = swapModePlayer?.id === player.id;
-    const isSwapTarget = swapModePlayer && swapModePlayer.isOnBench !== isOnBench;
-
-    // Border color priority: swap selection > red card/injury > green boost > default white
+    // Border color priority: red card/injury > green boost > default white
     let borderClass = "border-white/60";
-    if (isSelectedForSwap) {
-      borderClass = "border-amber-400 border-2";
-    } else if (hasRedCard || isInjured) {
+    if (hasRedCard || isInjured) {
       borderClass = "border-red-500";
     } else if (hasGreenBorder) {
       borderClass = "border-primary";
     }
 
-    const handleClick = (e: React.MouseEvent) => {
-      // If in swap mode, handle swap logic
-      if (swapModePlayer) {
-        e.stopPropagation();
-        handlePlayerTapInSwapMode(player.id, isOnBench);
-        return;
-      }
-      // Normal click behavior
-      onPlayerClick?.(player);
-    };
+    // Check if bench player can be swapped (not goalkeeper and not first position)
+    const canSwapOnBench = isOnBench && benchIndex !== undefined && benchIndex > 0 && player.position !== "ВР";
 
     return (
       <div
-        className={`w-[70px] h-[84px] relative flex flex-col cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] transition-all duration-200 ${borderClass} ${
-          isSelectedForSwap ? "scale-105 shadow-lg shadow-amber-400/30" : ""
-        } ${isSwapTarget ? "ring-2 ring-amber-400/50 ring-offset-1 ring-offset-transparent" : ""}`}
-        onClick={handleClick}
-        onTouchStart={() => handlePlayerLongPressStart(player.id, isOnBench)}
-        onTouchEnd={handlePlayerLongPressEnd}
-        onTouchCancel={handlePlayerLongPressEnd}
-        onMouseDown={() => handlePlayerLongPressStart(player.id, isOnBench)}
-        onMouseUp={handlePlayerLongPressEnd}
-        onMouseLeave={handlePlayerLongPressEnd}
+        className={`w-[70px] h-[84px] relative flex flex-col cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] transition-all duration-200 ${borderClass}`}
+        onClick={() => onPlayerClick?.(player)}
       >
-        {/* Swap mode indicator */}
-        {isSelectedForSwap && (
-          <div className="absolute inset-0 bg-amber-400/20 z-40 pointer-events-none" />
-        )}
-
         {/* Captain/Vice-Captain badge - absolute in left corner, only for main squad */}
         {isCaptainPlayer && !isOnBench && <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />}
         {isViceCaptainPlayer && !isOnBench && (
@@ -593,7 +442,7 @@ const FormationFieldManagement = ({
           <img src={icon2x} alt="2x" className="absolute top-1 right-1 z-50 w-3 h-3" />
         ) : showActionButton && isOnBench && isBenchBoostActive ? (
           <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
-        ) : showActionButton && onSwapPlayer && !swapModePlayer ? (
+        ) : showActionButton && onSwapPlayer ? (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -604,6 +453,22 @@ const FormationFieldManagement = ({
             <img src={swapArrows} alt="Swap" className="w-3 h-3" />
           </button>
         ) : null}
+
+        {/* Bench swap button - swap with player above */}
+        {canSwapOnBench && onSwapBenchPlayers && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onSwapBenchPlayers(benchIndex, benchIndex - 1);
+            }}
+            className="absolute top-1 left-1 z-50 bg-primary/80 rounded-sm p-0.5"
+            title="Поднять в очереди"
+          >
+            <svg className="w-2 h-2 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+          </button>
+        )}
 
         {/* Price centered */}
         {showPrice && (
@@ -705,82 +570,26 @@ const FormationFieldManagement = ({
       {/* Bench section */}
       <div className="-mt-8 pb-6">
         <div className="bg-card/50 rounded-2xl p-4">
-          <div 
-            ref={benchContainerRef}
-            className="flex gap-2 justify-between"
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
+          <div className="flex gap-2 justify-between">
             {Array.from({ length: maxBenchSize }).map((_, idx) => {
               const player = benchPlayers[idx];
-              const isGoalkeeper = player?.position === "ВР";
-              const isDragging = draggedBenchIndex === idx;
-              const isDragOver = dragOverIndex === idx && draggedBenchIndex !== idx;
               
               return (
                 <div 
                   key={idx}
-                  data-bench-slot={idx}
-                  className={`flex flex-col items-center flex-1 relative transition-all duration-150 ${
-                    onBenchReorder && !isGoalkeeper ? "cursor-grab active:cursor-grabbing touch-none" : ""
-                  } ${isDragging ? "opacity-50 scale-95" : ""} ${
-                    isDragOver ? "ring-2 ring-primary rounded-lg" : ""
-                  }`}
-                  draggable={!!onBenchReorder && !!player && !isGoalkeeper}
-                  onDragStart={(e) => {
-                    if (!player || isGoalkeeper) return;
-                    e.dataTransfer.setData("benchIndex", idx.toString());
-                    e.currentTarget.style.opacity = "0.5";
-                  }}
-                  onDragEnd={(e) => {
-                    e.currentTarget.style.opacity = "1";
-                  }}
-                  onDragOver={(e) => {
-                    if (!onBenchReorder || isGoalkeeper) return;
-                    e.preventDefault();
-                    e.currentTarget.classList.add("ring-2", "ring-primary");
-                  }}
-                  onDragLeave={(e) => {
-                    e.currentTarget.classList.remove("ring-2", "ring-primary");
-                  }}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    e.currentTarget.classList.remove("ring-2", "ring-primary");
-                    if (!onBenchReorder) return;
-                    const fromIndex = parseInt(e.dataTransfer.getData("benchIndex"));
-                    if (!isNaN(fromIndex) && fromIndex !== idx) {
-                      onBenchReorder(fromIndex, idx);
-                    }
-                  }}
-                  onTouchStart={(e) => handleTouchStart(e, idx, isGoalkeeper)}
+                  className="flex flex-col items-center flex-1 relative"
                 >
-                  {player ? renderPlayer(player, true, true) : renderEmptySlot("ЗАМ", true, idx)}
+                  {player ? renderPlayer(player, true, true, idx) : renderEmptySlot("ЗАМ", true, idx)}
                 </div>
               );
             })}
           </div>
           <p className="text-center text-muted-foreground text-sm mt-4">Замены</p>
-          {swapModePlayer ? (
-            <div className="flex flex-col items-center gap-2 mt-2">
-              <p className="text-center text-amber-400 text-xs animate-pulse">
-                Выберите игрока для замены
-              </p>
-              <button
-                onClick={cancelSwapMode}
-                className="text-xs text-muted-foreground underline hover:text-foreground"
-              >
-                Отмена
-              </button>
-            </div>
-          ) : onBenchReorder ? (
+          {onSwapBenchPlayers && (
             <p className="text-center text-muted-foreground text-xs mt-1">
-              Перетащите игроков для изменения приоритета выхода на поле
+              Используйте стрелку для изменения приоритета выхода на поле
             </p>
-          ) : onSwapMainAndBench ? (
-            <p className="text-center text-muted-foreground text-xs mt-1">
-              Удерживайте игрока для замены
-            </p>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

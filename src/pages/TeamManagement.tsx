@@ -741,8 +741,7 @@ const TeamManagement = () => {
             benchPlayers={benchPlayers}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onSwapPlayer={handlePlayerSwap}
-            onBenchReorder={handleBenchReorder}
-            onSwapMainAndBench={handleSwapMainAndBench}
+            onSwapBenchPlayers={handleBenchReorder}
             captain={captain}
             showPrice={false}
             viceCaptain={viceCaptain}
