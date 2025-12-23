@@ -1049,36 +1049,40 @@ const TeamBuilder = () => {
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
           )}
         </button>
-        <button
-          onClick={() => handleSort("points")}
-          className={`w-14 flex items-center justify-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
-        >
-          <span>Очки</span>
-          {sortField === "points" ? (
-            sortDirection === "desc" ? (
-              <ChevronDown className="w-3 h-3 text-primary" />
+        <div className="w-14 flex items-center justify-center">
+          <button
+            onClick={() => handleSort("points")}
+            className={`flex items-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
+          >
+            <span>Очки</span>
+            {sortField === "points" ? (
+              sortDirection === "desc" ? (
+                <ChevronDown className="w-3 h-3 text-primary" />
+              ) : (
+                <ChevronUp className="w-3 h-3 text-primary" />
+              )
             ) : (
-              <ChevronUp className="w-3 h-3 text-primary" />
-            )
-          ) : (
-            <ChevronsUpDown className="w-3 h-3 opacity-50" />
-          )}
-        </button>
-        <button
-          onClick={() => handleSort("price")}
-          className={`w-14 mr-8 flex items-center justify-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
-        >
-          <span>Цена</span>
-          {sortField === "price" ? (
-            sortDirection === "desc" ? (
-              <ChevronDown className="w-3 h-3 text-primary" />
+              <ChevronsUpDown className="w-3 h-3 opacity-50" />
+            )}
+          </button>
+        </div>
+        <div className="w-14 flex items-center justify-center mr-8">
+          <button
+            onClick={() => handleSort("price")}
+            className={`flex items-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
+          >
+            <span>Цена</span>
+            {sortField === "price" ? (
+              sortDirection === "desc" ? (
+                <ChevronDown className="w-3 h-3 text-primary" />
+              ) : (
+                <ChevronUp className="w-3 h-3 text-primary" />
+              )
             ) : (
-              <ChevronUp className="w-3 h-3 text-primary" />
-            )
-          ) : (
-            <ChevronsUpDown className="w-3 h-3 opacity-50" />
-          )}
-        </button>
+              <ChevronsUpDown className="w-3 h-3 opacity-50" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Players List */}
