@@ -1043,19 +1043,19 @@ const TeamBuilder = () => {
         </button>
         <button
           onClick={() => handleSort("points")}
-          className={`w-12 flex items-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
+          className={`w-12 flex items-center justify-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Очки</span>
           <ChevronsUpDown className={`w-3 h-3 ${sortField === "points" ? "text-primary" : "opacity-50"}`} />
         </button>
         <button
           onClick={() => handleSort("price")}
-          className={`w-12 flex items-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
+          className={`w-10 flex items-center justify-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
         >
           <span>Цена</span>
           <ChevronsUpDown className={`w-3 h-3 ${sortField === "price" ? "text-primary" : "opacity-50"}`} />
         </button>
-        <span className="w-6 ml-2"></span>
+        <span className="w-8 ml-2"></span>
       </div>
 
       {/* Players List */}
@@ -1075,22 +1075,22 @@ const TeamBuilder = () => {
               </div>
 
               {/* Points - fixed width */}
-              <span className="w-12 flex-shrink-0 text-primary text-sm font-medium">{player.points}</span>
+              <span className="w-12 flex-shrink-0 text-primary text-sm font-medium text-center">{player.points}</span>
 
               {/* Price - fixed width */}
-              <span className="w-12 flex-shrink-0 text-foreground text-sm">{player.price.toFixed(1)}</span>
+              <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
 
               {/* Add/Remove button */}
               <button
                 onClick={() => togglePlayer(player.id)}
-                className={`w-6 h-6 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
+                className={`w-8 h-8 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
                   isSelected ? "bg-muted hover:bg-muted/80" : "bg-primary hover:bg-primary/90"
                 }`}
               >
                 {isSelected ? (
-                  <X className="w-3 h-3 text-muted-foreground" />
+                  <X className="w-4 h-4 text-muted-foreground" />
                 ) : (
-                  <Plus className="w-3 h-3 text-primary-foreground" />
+                  <Plus className="w-4 h-4 text-primary-foreground" />
                 )}
               </button>
             </div>
