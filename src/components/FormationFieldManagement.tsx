@@ -281,6 +281,7 @@
 
 // export default FormationFieldManagement;
 
+import { useState, useRef } from "react";
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
 import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
@@ -392,12 +393,80 @@ const FormationFieldManagement = ({
   showPrice = true,
   showPointsInsteadOfTeam = false,
 }: FormationFieldManagementProps) => {
+  // Touch drag state for mobile
+  const [draggedBenchIndex, setDraggedBenchIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
+  const benchContainerRef = useRef<HTMLDivElement>(null);
+
   // Detect current formation based on players
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
   const formation = getFormationSlots(currentFormation);
 
   const getPlayerForSlot = (position: string, slotIndex: number) => {
     return mainSquadPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
+  };
+
+  // Touch event handlers for mobile drag-and-drop
+  const handleTouchStart = (e: React.TouchEvent, idx: number, isGoalkeeper: boolean) => {
+    if (!onBenchReorder || isGoalkeeper) return;
+    
+    const touch = e.touches[0];
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    setDraggedBenchIndex(idx);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (draggedBenchIndex === null || !benchContainerRef.current) return;
+    
+    const touch = e.touches[0];
+    const container = benchContainerRef.current;
+    const containerRect = container.getBoundingClientRect();
+    
+    // Check if touch is within the bench container
+    if (
+      touch.clientX >= containerRect.left &&
+      touch.clientX <= containerRect.right &&
+      touch.clientY >= containerRect.top &&
+      touch.clientY <= containerRect.bottom
+    ) {
+      // Calculate which slot the touch is over
+      const slots = container.querySelectorAll('[data-bench-slot]');
+      let foundIndex: number | null = null;
+      
+      slots.forEach((slot, idx) => {
+        const slotRect = slot.getBoundingClientRect();
+        if (
+          touch.clientX >= slotRect.left &&
+          touch.clientX <= slotRect.right &&
+          touch.clientY >= slotRect.top &&
+          touch.clientY <= slotRect.bottom
+        ) {
+          foundIndex = idx;
+        }
+      });
+      
+      if (foundIndex !== null && foundIndex !== draggedBenchIndex) {
+        setDragOverIndex(foundIndex);
+      } else {
+        setDragOverIndex(null);
+      }
+    } else {
+      setDragOverIndex(null);
+    }
+    
+    // Prevent scrolling while dragging
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = () => {
+    if (draggedBenchIndex !== null && dragOverIndex !== null && onBenchReorder) {
+      onBenchReorder(draggedBenchIndex, dragOverIndex);
+    }
+    
+    setDraggedBenchIndex(null);
+    setDragOverIndex(null);
+    touchStartPos.current = null;
   };
 
   const renderPlayer = (player: PlayerData, showActionButton = true, isOnBench = false) => {
@@ -546,15 +615,26 @@ const FormationFieldManagement = ({
       {/* Bench section */}
       <div className="-mt-8 pb-6">
         <div className="bg-card/50 rounded-2xl p-4">
-          <div className="flex gap-2 justify-between">
+          <div 
+            ref={benchContainerRef}
+            className="flex gap-2 justify-between"
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             {Array.from({ length: maxBenchSize }).map((_, idx) => {
               const player = benchPlayers[idx];
               const isGoalkeeper = player?.position === "ВР";
+              const isDragging = draggedBenchIndex === idx;
+              const isDragOver = dragOverIndex === idx && draggedBenchIndex !== idx;
+              
               return (
                 <div 
-                  key={idx} 
-                  className={`flex flex-col items-center flex-1 relative ${
-                    onBenchReorder && !isGoalkeeper ? "cursor-grab active:cursor-grabbing" : ""
+                  key={idx}
+                  data-bench-slot={idx}
+                  className={`flex flex-col items-center flex-1 relative transition-all duration-150 ${
+                    onBenchReorder && !isGoalkeeper ? "cursor-grab active:cursor-grabbing touch-none" : ""
+                  } ${isDragging ? "opacity-50 scale-95" : ""} ${
+                    isDragOver ? "ring-2 ring-primary rounded-lg" : ""
                   }`}
                   draggable={!!onBenchReorder && !!player && !isGoalkeeper}
                   onDragStart={(e) => {
@@ -582,6 +662,7 @@ const FormationFieldManagement = ({
                       onBenchReorder(fromIndex, idx);
                     }
                   }}
+                  onTouchStart={(e) => handleTouchStart(e, idx, isGoalkeeper)}
                 >
                   {player ? renderPlayer(player, true, true) : renderEmptySlot("ЗАМ", true, idx)}
                 </div>
