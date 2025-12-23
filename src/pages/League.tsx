@@ -426,10 +426,17 @@ const League = () => {
             <h2 className="text-2xl font-bold text-foreground mb-4">Турнирная таблица</h2>
 
             {/* Table header */}
-            <div className="flex px-4 py-2 text-xs text-muted-foreground">
-              <span className="w-[100px]">Место</span>
-              <span className="flex-1">Название</span>
-              <span className="text-right">Всего</span>
+            <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">
+              <span className="col-span-3 text-xs">Место</span>
+              <span className="col-span-4 text-xs">Название</span>
+              <span className="col-span-3 text-center">
+                <span className="text-xs block whitespace-nowrap">29-й тур</span>
+                <span className="text-[10px] italic block">(очки)</span>
+              </span>
+              <span className="col-span-2 text-right">
+                <span className="text-xs block">Всего</span>
+                <span className="text-[10px] italic block">(очков)</span>
+              </span>
             </div>
 
             {/* Table rows */}
@@ -437,7 +444,7 @@ const League = () => {
               {tableData.map((row, idx) => (
                 <div
                   key={idx}
-                  className={`flex items-center px-4 py-3 rounded-full cursor-pointer transition-opacity hover:opacity-80 ${
+                  className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
                     row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                   }`}
                   onClick={() => {
@@ -448,29 +455,21 @@ const League = () => {
                     }
                   }}
                 >
-                  <div className="w-[100px] flex items-center gap-1.5">
-                    {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-2.5 h-2.5 rotate-180" />}
-                    {row.change === "down" && (
-                      <img
-                        src={row.isUser ? arrowDownBlack : arrowUpRed}
-                        alt="down"
-                        className="w-2.5 h-2.5 rotate-180"
-                      />
+                  <div className="col-span-3 flex items-center gap-1">
+                    {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                    {row.change === "down" && !row.isUser && (
+                      <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
                     )}
-                    {row.change === "same" && <img src={arrowSame} alt="same" className="w-2.5 h-2.5" />}
-                    <span
-                      className={`text-sm font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
-                    >
-                      {row.position}
-                    </span>
+                    {row.change === "down" && row.isUser && (
+                      <img src={arrowDownBlack} alt="down" className="w-3 h-3" />
+                    )}
+                    {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
+                    <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
                   </div>
-                  <span
-                    className={`flex-1 text-sm font-medium truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
-                  >
-                    {row.name}
-                  </span>
-                  <span className={`text-sm font-bold ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                    {row.totalPoints.toLocaleString().replace(",", " ")}
+                  <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+                  <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+                  <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                    {row.totalPoints.toLocaleString()}
                   </span>
                 </div>
               ))}
