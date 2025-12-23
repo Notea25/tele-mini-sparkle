@@ -290,7 +290,6 @@ const BuyPlayerDrawer = ({
             >
               Игрок {getSortIcon("name")}
             </button>
-            <span className="w-12 text-center">Клуб</span>
             <button
               className={`w-12 flex items-center justify-center gap-1 ${sortField === "points" ? "text-primary" : ""}`}
               onClick={() => handleSort("points")}
@@ -316,18 +315,15 @@ const BuyPlayerDrawer = ({
                   className={`bg-card rounded-full px-3 py-2 flex items-center ${!canBuy ? "opacity-50" : ""}`}
                 >
                   <div className="flex-1 flex items-center gap-2 min-w-0">
-                    <span className="text-foreground font-medium text-sm truncate">{player.name}</span>
-                    <span className="text-muted-foreground text-xs">{player.position}</span>
-                  </div>
-                  
-                  <div className="w-12 flex-shrink-0 flex justify-center">
                     {clubIcons[player.team] && (
                       <img 
                         src={clubIcons[player.team]} 
                         alt={player.team}
-                        className="w-5 h-5 object-contain"
+                        className="w-5 h-5 object-contain flex-shrink-0"
                       />
                     )}
+                    <span className="text-foreground font-medium text-sm truncate">{player.name}</span>
+                    <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
                   </div>
                   
                   <div className="w-12 flex-shrink-0 flex items-center justify-center gap-1">
