@@ -1216,8 +1216,8 @@ const TeamBuilder = () => {
       {/* Warning */}
       <div className="px-4 mt-4 mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-6 h-6 rounded-full bg-[#6B6B8D] flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-sm font-bold">!</span>
+          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+            <span className="text-foreground text-sm font-bold">!</span>
           </div>
           <p className="text-muted-foreground text-sm">
             Ты не можешь добавлять более трёх игроков из одного клуба в свою команду
@@ -1241,8 +1241,8 @@ const TeamBuilder = () => {
         {/* Squad Error Message */}
         {showSquadError && selectedPlayers.length < 15 && (
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-6 h-6 rounded-full bg-[#6B6B8D] flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-sm font-bold">!</span>
+            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+              <span className="text-foreground text-sm font-bold">!</span>
             </div>
             <p className="text-muted-foreground text-sm">
               Состав не сформирован. Выбрано {selectedPlayers.length} из 15 игроков
@@ -1254,7 +1254,7 @@ const TeamBuilder = () => {
         <div className="flex gap-3 mb-3">
           <Button
             onClick={handleAutoFill}
-            className="flex-1 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white font-semibold rounded-full py-3"
+            className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-full py-3"
           >
             Автосбор
           </Button>
@@ -1263,8 +1263,8 @@ const TeamBuilder = () => {
             disabled={selectedPlayers.length === 0}
             className={`flex-1 font-semibold rounded-full py-3 ${
               selectedPlayers.length === 0
-                ? "bg-[#1A1A2E] text-muted-foreground opacity-50 cursor-not-allowed"
-                : "bg-[#2A2A3E] hover:bg-[#3A3A4E] text-white"
+                ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
+                : "bg-secondary hover:bg-secondary/80 text-foreground"
             }`}
           >
             Сбросить
@@ -1279,8 +1279,10 @@ const TeamBuilder = () => {
               setShowSaveConfirmation(true);
             }
           }}
-          className={`w-full rounded-full py-3 font-semibold text-black ${
-            selectedPlayers.length < 15 ? "bg-[#4A5D23]" : "bg-[#A8FF00] hover:bg-[#98EE00]"
+          className={`w-full rounded-full py-3 font-semibold transition-all ${
+            selectedPlayers.length < 15 
+              ? "bg-primary/30 text-muted-foreground" 
+              : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
           }`}
         >
           Сохранить
@@ -1289,7 +1291,7 @@ const TeamBuilder = () => {
 
       {/* Save Confirmation Dialog */}
       <AlertDialog open={showSaveConfirmation} onOpenChange={setShowSaveConfirmation}>
-        <AlertDialogContent className="bg-[#1A1A2E] border-border rounded-2xl max-w-[320px]">
+        <AlertDialogContent className="bg-card border-border rounded-2xl max-w-[320px]">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground text-center">Сохранить команду?</AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground text-center">
@@ -1297,7 +1299,7 @@ const TeamBuilder = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-row gap-3 justify-center mt-2">
-            <AlertDialogCancel className="flex-1 m-0 bg-[#2A2A3E] hover:bg-[#3A3A4E] text-foreground border-none rounded-full h-11">
+            <AlertDialogCancel className="flex-1 m-0 bg-secondary hover:bg-secondary/80 text-foreground border-none rounded-full h-11">
               Вернуться
             </AlertDialogCancel>
             <AlertDialogAction
@@ -1308,7 +1310,7 @@ const TeamBuilder = () => {
                 localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
                 navigate("/league");
               }}
-              className="flex-1 m-0 bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-full h-11"
+              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-full h-11 shadow-neon"
             >
               Подтвердить
             </AlertDialogAction>

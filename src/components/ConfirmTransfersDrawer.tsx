@@ -217,7 +217,7 @@ const ConfirmTransfersDrawer = ({
             </Button>
             <Button
               onClick={onConfirm}
-              className="flex-1 bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-full h-12"
+              className="flex-1 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-full h-12 shadow-neon"
             >
               Подтвердить
             </Button>
