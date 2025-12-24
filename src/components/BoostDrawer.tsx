@@ -102,7 +102,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
 
   return (
     <Drawer open={isOpen} onOpenChange={handleClose}>
-      <DrawerContent className="bg-[#1a1a2e] border-t border-gray-800">
+      <DrawerContent className="bg-card border-t border-border">
         
         {showConfirmation ? (
           // Confirmation view for non-cancellable boosts
@@ -111,17 +111,17 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mb-4">
                 <AlertTriangle className="w-8 h-8 text-amber-500" />
               </div>
-              <h2 className="text-xl font-bold text-white mb-2">Внимание!</h2>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <h2 className="text-xl font-bold text-foreground mb-2">Внимание!</h2>
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 Буст <span className="text-primary font-semibold">{boostInfo?.title}</span> нельзя будет отменить после активации.
               </p>
               {chip.id === "transfers" && (
-                <p className="text-gray-400 text-sm mt-2">
+                <p className="text-muted-foreground text-sm mt-2">
                   Все накопленные бесплатные трансферы сгорят.
                 </p>
               )}
               {chip.id === "golden" && (
-                <p className="text-gray-400 text-sm mt-2">
+                <p className="text-muted-foreground text-sm mt-2">
                   После окончания тура ваш состав автоматически вернётся к текущему.
                 </p>
               )}
@@ -130,13 +130,13 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
             <div className="space-y-3">
               <Button
                 onClick={handleConfirmApply}
-                className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold"
+                className="w-full h-14 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-lg font-semibold shadow-neon"
               >
                 Подтвердить активацию
               </Button>
               <Button
                 onClick={handleCancelConfirmation}
-                className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
+                className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
               >
                 Отмена
               </Button>
@@ -153,14 +153,14 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                   className="w-16 h-16 object-contain"
                 />
               </div>
-              <DrawerTitle className="text-2xl font-bold text-white mb-4">
+              <DrawerTitle className="text-2xl font-bold text-foreground mb-4">
                 {boostInfo?.title || chip.label}
               </DrawerTitle>
-              <p className="text-gray-400 text-sm leading-relaxed whitespace-pre-line">
+              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
                 {boostInfo?.description}
               </p>
               {getStatusText() && (
-                <p className={`text-sm mt-4 ${chip.status === "pending" ? "text-primary" : "text-gray-500"}`}>
+                <p className={`text-sm mt-4 ${chip.status === "pending" ? "text-primary" : "text-muted-foreground"}`}>
                   {getStatusText()}
                 </p>
               )}
@@ -169,7 +169,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               {chip.status === "available" && (
                 <Button
                   onClick={handleApplyClick}
-                  className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold"
+                  className="w-full h-14 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-lg font-semibold shadow-neon"
                 >
                   Использовать
                 </Button>
@@ -187,7 +187,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                   )}
                   <Button
                     onClick={handleClose}
-                    className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
+                    className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
                   >
                     Закрыть
                   </Button>
@@ -196,7 +196,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               {chip.status === "used" && (
                 <Button
                   onClick={handleClose}
-                  className="w-full h-14 rounded-full bg-[#2a2a3e] hover:bg-[#3a3a4e] text-white text-lg font-semibold"
+                  className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
                 >
                   Закрыть
                 </Button>

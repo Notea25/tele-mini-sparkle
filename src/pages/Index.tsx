@@ -266,26 +266,15 @@ const Index = () => {
         <div className="relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center justify-between w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-            style={{
-              height: "40px",
-              backgroundColor: "#1A1924",
-              borderColor: isDropdownOpen ? "rgba(255, 255, 255, 0.2)" : "#2D2B3E",
-            }}
+            className={`flex items-center justify-between w-full px-4 py-2.5 bg-card border rounded-2xl focus:outline-none focus:ring-2 focus:ring-ring transition-all ${
+              isDropdownOpen ? "border-border" : "border-border/50"
+            }`}
           >
-            <span
-              className="font-medium text-[12px]"
-              style={{
-                color: isDropdownOpen ? "#FFFFFF" : "#4B485F",
-              }}
-            >
+            <span className={`font-medium text-sm ${isDropdownOpen ? "text-foreground" : "text-muted-foreground"}`}>
               {selectedSort}
             </span>
             <ChevronDown
-              className={`w-4 h-4 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
-              style={{
-                color: isDropdownOpen ? "#FFFFFF" : "#4B485F",
-              }}
+              className={`w-4 h-4 transition-transform ${isDropdownOpen ? "rotate-180 text-foreground" : "text-muted-foreground"}`}
             />
           </button>
 
@@ -293,25 +282,14 @@ const Index = () => {
             <>
               <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)} />
 
-              <div
-                className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50"
-                style={{
-                  backgroundColor: "#1A1924",
-                  borderColor: "rgba(255, 255, 255, 0.2)",
-                }}
-              >
-                {sortOptions.map((option) => (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-2xl shadow-lg z-50 overflow-hidden">
+                {sortOptions.map((option, idx) => (
                   <button
                     key={option}
                     onClick={() => handleSelect(option)}
-                    className={`w-full px-4 py-3 text-left transition-colors hover:bg-accent/10 ${
-                      selectedSort === option ? "font-medium" : ""
-                    } ${option !== sortOptions[sortOptions.length - 1] ? "border-b border-border" : ""}`}
-                    style={{
-                      fontSize: "14px",
-                      color: "#FFFFFF",
-                      borderBottomColor: "rgba(255, 255, 255, 0.1)",
-                    }}
+                    className={`w-full px-4 py-3 text-left text-sm transition-colors hover:bg-secondary ${
+                      selectedSort === option ? "text-primary font-medium" : "text-foreground"
+                    } ${idx !== sortOptions.length - 1 ? "border-b border-border/50" : ""}`}
                   >
                     {option}
                   </button>
