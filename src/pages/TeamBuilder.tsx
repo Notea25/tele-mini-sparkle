@@ -776,27 +776,29 @@ const TeamBuilder = () => {
       </div>
 
       {/* Tabs */}
-      <div className="px-4 mt-6 flex gap-2">
-        <Button
-          onClick={() => setActiveTab("formation")}
-          className={`flex-1 ${
-            activeTab === "formation"
-              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-          }`}
-        >
-          Расстановка
-        </Button>
-        <Button
-          onClick={() => setActiveTab("list")}
-          className={`flex-1 ${
-            activeTab === "list"
-              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-          }`}
-        >
-          Список
-        </Button>
+      <div className="px-4 mt-4">
+        <div className="flex bg-secondary rounded-full p-1">
+          <Button
+            onClick={() => setActiveTab("formation")}
+            className={`flex-1 rounded-full ${
+              activeTab === "formation"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            }`}
+          >
+            Расстановка
+          </Button>
+          <Button
+            onClick={() => setActiveTab("list")}
+            className={`flex-1 rounded-full ${
+              activeTab === "list"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            }`}
+          >
+            Список
+          </Button>
+        </div>
       </div>
 
       {activeTab === "formation" && (
@@ -899,6 +901,9 @@ const TeamBuilder = () => {
 
       {activeTab === "list" && (
         <>
+          <div className="px-4 mt-6">
+            <h2 className="text-foreground text-xl font-bold mb-4">Состав команды</h2>
+          </div>
           <TeamListView
             selectedPlayers={selectedPlayersData}
             onRemovePlayer={(id) => togglePlayer(id)}
