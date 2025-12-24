@@ -814,6 +814,12 @@ const TeamBuilder = () => {
             />
           </div>
 
+          {/* Divider between selected players and available players */}
+          <div className="mx-4 mt-6 mb-2 border-t border-border" />
+          <div className="px-4 mb-4">
+            <h3 className="text-foreground text-base font-semibold">Доступные игроки</h3>
+          </div>
+
           {/* Price Range */}
           <div className="px-4 relative z-10">
             <div className="flex items-center justify-between mb-3">
