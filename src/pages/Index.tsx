@@ -31,7 +31,7 @@ import { Card } from "@/components/ui/card";
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 const TEAM_PLAYERS_KEY = "fantasyTeamPlayers";
 const FAVORITES_STORAGE_KEY = "fantasyFavoriteLeagues";
-//
+
 const Index = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
