@@ -234,7 +234,7 @@ const FormationField = ({
         </button>
       )}
 
-      <div className="absolute top-[4px] left-0 right-0 flex items-center justify-center z-30">
+      <div className="absolute top-1 left-0 right-0 flex items-center justify-center z-30">
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
           style={{
