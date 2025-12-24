@@ -134,14 +134,9 @@ const FormationField = ({
 
       let cardWidth;
 
-      if (width <= 480) {
+      if (width <= 768) {
         // Для ширины экрана до 480px фиксированные 70x84
         cardWidth = 70;
-      } else if (width <= 768) {
-        const minWidth = 70;
-        const maxWidth = 96;
-        const scale = (width - 480) / (768 - 480);
-        cardWidth = minWidth + (maxWidth - minWidth) * scale;
       } else if (width <= 1024) {
         const minWidth = 96;
         const maxWidth = 128;
@@ -234,7 +229,7 @@ const FormationField = ({
         </button>
       )}
 
-      <div className="absolute top-1.5 left-0 right-0 flex items-center justify-center z-30">
+      <div className="absolute top-1 left-0 right-0 flex items-center justify-center z-30">
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
           style={{
