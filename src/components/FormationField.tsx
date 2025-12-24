@@ -133,33 +133,38 @@ const FormationField = ({
       setScreenWidth(width);
 
       let cardWidth;
+      let cardHeight;
 
       if (width <= 480) {
         // Для ширины экрана до 480px фиксированные 70x84
-        const minWidth = 70;
-        const maxWidth = 84;
+        cardWidth = 70;
+        cardHeight = 84; // Жестко фиксируем высоту
       } else if (width <= 768) {
         const minWidth = 70;
         const maxWidth = 96;
         const scale = (width - 480) / (768 - 480);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
+        cardHeight = cardWidth * 1.2;
       } else if (width <= 1024) {
         const minWidth = 96;
         const maxWidth = 128;
         const scale = (width - 768) / (1024 - 768);
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
+        cardHeight = cardWidth * 1.2;
       } else {
         const minWidth = 128;
         const maxWidth = 160;
         const maxScreen = 1920;
         const scale = Math.min(1, (width - 1024) / (maxScreen - 1024));
         cardWidth = minWidth + (maxWidth - minWidth) * scale;
+        cardHeight = cardWidth * 1.2;
       }
 
       cardWidth = Math.max(56, Math.min(160, cardWidth));
-
-      // Высота рассчитывается с соотношением 84/70 = 1.2
-      const cardHeight = cardWidth * 1.2;
+      // Для мобильных также ограничиваем высоту
+      if (width <= 480) {
+        cardHeight = Math.min(84, cardHeight);
+      }
 
       setCardSize({ width: cardWidth, height: cardHeight });
     };
