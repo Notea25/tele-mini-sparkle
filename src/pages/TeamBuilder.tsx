@@ -901,8 +901,14 @@ const TeamBuilder = () => {
             clubIcons={clubIcons}
           />
 
+          {/* Divider between selected players and available players */}
+          <div className="mx-4 mt-6 mb-2 border-t border-border" />
+          <div className="px-4 mb-4">
+            <h3 className="text-foreground text-base font-semibold">Доступные игроки</h3>
+          </div>
+
           {/* Price Range for List View */}
-          <div className="px-4 mt-4">
+          <div className="px-4">
             <div className="flex items-center justify-between mb-3">
               <span className="text-foreground text-sm">Цена</span>
               {hasActiveFilters && (
