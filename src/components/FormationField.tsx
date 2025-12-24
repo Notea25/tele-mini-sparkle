@@ -218,7 +218,8 @@ const FormationField = ({
             e.stopPropagation();
             onRemovePlayer(player.id);
           }}
-          className="absolute top-1 right-1 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
+          className="absolute top-1 left-1 z-50"
+          {/* className="absolute top-1 right-1 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full" */}
           style={{
             width: `${cardSize.width * 0.18}px`,
             height: `${cardSize.width * 0.18}px`,
