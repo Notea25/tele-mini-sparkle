@@ -250,10 +250,9 @@ const FormationField = ({
         <img
           src={getJerseyForTeam(player.team, player.position)}
           alt={player.name}
-          className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
+          className="h-auto object-contain top-2 absolute left-1/2 transform -translate-x-1/2"
           style={{
             width: `${cardSize.width * 1.5}px`,
-            top: `-${cardSize.height * 0.12}px`,
           }}
         />
       </div>
