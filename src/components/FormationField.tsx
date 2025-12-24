@@ -218,7 +218,7 @@ const FormationField = ({
             e.stopPropagation();
             onRemovePlayer(player.id);
           }}
-          className="absolute top-1.5 right-1 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
+          className="absolute top-1 right-1 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
           style={{
             width: `${cardSize.width * 0.18}px`,
             height: `${cardSize.width * 0.18}px`,
@@ -234,7 +234,7 @@ const FormationField = ({
         </button>
       )}
 
-      <div className="absolute top-1 left-0 right-0 flex items-center justify-center z-30">
+      <div className="absolute top-[15px] left-0 right-0 flex items-center justify-center z-30">
         <span
           className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
           style={{
