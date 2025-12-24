@@ -103,7 +103,6 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
   return (
     <Drawer open={isOpen} onOpenChange={handleClose}>
       <DrawerContent className="bg-[#1a1a2e] border-t border-gray-800">
-        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-600 mb-4 mt-2" />
         
         {showConfirmation ? (
           // Confirmation view for non-cancellable boosts
