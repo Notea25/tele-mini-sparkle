@@ -137,6 +137,11 @@ const FormationField = ({
       if (width <= 768) {
         // Для ширины экрана до 480px фиксированные 70x84
         cardWidth = 70;
+      } else if (width <= 768) {
+        const minWidth = 70;
+        const maxWidth = 96;
+        const scale = (width - 480) / (768 - 480);
+        cardWidth = minWidth + (maxWidth - minWidth) * scale;
       } else if (width <= 1024) {
         const minWidth = 96;
         const maxWidth = 128;
