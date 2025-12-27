@@ -569,6 +569,12 @@ const FormationFieldManagement = ({
 
       {/* Bench section */}
       <div className="-mt-8 pb-6">
+        {/* Bench header label */}
+        <div className="flex justify-center mb-3">
+          <div className="bg-foreground text-background px-6 py-2 rounded-full">
+            <span className="font-semibold text-base">Скамейка</span>
+          </div>
+        </div>
         <div className="bg-card/50 rounded-2xl p-4">
           <div className="flex gap-2 justify-between">
             {Array.from({ length: maxBenchSize }).map((_, idx) => {
@@ -584,9 +590,8 @@ const FormationFieldManagement = ({
               );
             })}
           </div>
-          <p className="text-center text-muted-foreground text-sm mt-4">Замены</p>
           {onSwapBenchPlayers && (
-            <p className="text-center text-muted-foreground text-xs mt-1">
+            <p className="text-center text-muted-foreground text-xs mt-4">
               Используйте стрелку для изменения приоритета выхода на поле
             </p>
           )}
