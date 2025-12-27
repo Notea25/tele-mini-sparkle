@@ -15,9 +15,7 @@ import bannerBg from "@/assets/beterra-banner-bg-2.webp";
 import createTeamBannerLogo from "@/assets/create-team-banner-logo.png";
 import scoringExample from "@/assets/scoring-example.png";
 import leaderboardExample from "@/assets/leaderboard-example.png";
-import prize3rdPlace from "@/assets/prize-3rd-place.png";
-import prize2ndPlace from "@/assets/prize-2nd-place.png";
-import prize1stPlace from "@/assets/prize-1st-place.png";
+import prizesBanner from "@/assets/prizes-banner.png";
 import playerBykov from "@/assets/player-bykov.png";
 import playerKozlov from "@/assets/player-kozlov.png";
 import clubDinamoBrest from "@/assets/club-dinamo-brest.png";
@@ -361,12 +359,8 @@ const CreateTeam = () => {
           Самые успешные менеджеры получат крутые призы от <span className="text-primary font-semibold">Fantasy Sports</span>.
         </p>
 
-        {/* Prize Cards */}
-        <div className="space-y-4">
-          <img src={prize3rdPlace} alt="3rd Place Prize" className="w-full rounded-xl" />
-          <img src={prize2ndPlace} alt="2nd Place Prize" className="w-full rounded-xl" />
-          <img src={prize1stPlace} alt="1st Place Prize" className="w-full rounded-xl" />
-        </div>
+        {/* Prize Image */}
+        <img src={prizesBanner} alt="Prizes" className="w-full rounded-xl" />
       </div>
 
       <FooterNav />
