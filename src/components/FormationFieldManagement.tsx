@@ -569,32 +569,32 @@ const FormationFieldManagement = ({
 
       {/* Bench section */}
       <div className="-mt-8 pb-6">
-        {/* Bench header label */}
-        <div className="flex justify-center mb-3">
-          <div className="bg-foreground text-background px-6 py-2 rounded-full">
+        <div className="bg-card/50 rounded-2xl overflow-hidden">
+          {/* Bench header label - full width thin bar */}
+          <div className="bg-foreground text-background py-1.5 text-center">
             <span className="font-semibold text-base">Скамейка</span>
           </div>
-        </div>
-        <div className="bg-card/50 rounded-2xl p-4">
-          <div className="flex gap-2 justify-between">
-            {Array.from({ length: maxBenchSize }).map((_, idx) => {
-              const player = benchPlayers[idx];
-              
-              return (
-                <div 
-                  key={idx}
-                  className="flex flex-col items-center flex-1 relative"
-                >
-                  {player ? renderPlayer(player, true, true, idx) : renderEmptySlot("ЗАМ", true, idx)}
-                </div>
-              );
-            })}
+          <div className="p-4">
+            <div className="flex gap-2 justify-between">
+              {Array.from({ length: maxBenchSize }).map((_, idx) => {
+                const player = benchPlayers[idx];
+                
+                return (
+                  <div 
+                    key={idx}
+                    className="flex flex-col items-center flex-1 relative"
+                  >
+                    {player ? renderPlayer(player, true, true, idx) : renderEmptySlot("ЗАМ", true, idx)}
+                  </div>
+                );
+              })}
+            </div>
+            {onSwapBenchPlayers && (
+              <p className="text-center text-muted-foreground text-xs mt-4">
+                Используйте стрелку для изменения приоритета выхода на поле
+              </p>
+            )}
           </div>
-          {onSwapBenchPlayers && (
-            <p className="text-center text-muted-foreground text-xs mt-4">
-              Используйте стрелку для изменения приоритета выхода на поле
-            </p>
-          )}
         </div>
       </div>
     </div>
