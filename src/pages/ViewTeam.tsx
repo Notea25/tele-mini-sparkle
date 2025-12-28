@@ -287,18 +287,20 @@ const ViewTeam = () => {
 
           {/* Grouped by position */}
           {(["ВР", "ЗЩ", "ПЗ", "НП"] as const).map((position) => {
-            const positionLabels: Record<string, string> = {
-              ВР: "Вратари",
-              ЗЩ: "Защита",
-              ПЗ: "Полузащита",
-              НП: "Нападение",
-            };
             const playersInPosition = mainSquadPlayers.filter(p => p.position === position);
             if (playersInPosition.length === 0) return null;
 
+            const getPositionLabel = (pos: string, count: number): string => {
+              if (pos === "ВР") return count === 1 ? "Вратарь" : "Вратари";
+              if (pos === "ЗЩ") return "Защита";
+              if (pos === "ПЗ") return "Полузащита";
+              if (pos === "НП") return "Нападение";
+              return pos;
+            };
+
             return (
               <div className="mb-6" key={position}>
-                <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
+                <h3 className="text-primary font-medium mb-2">{getPositionLabel(position, playersInPosition.length)}</h3>
                 <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
                   <span className="flex-1">Игрок</span>
                   <div className="w-12 flex justify-center">Очки</div>

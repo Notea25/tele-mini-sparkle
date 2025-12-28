@@ -243,11 +243,12 @@ const TeamManagement = () => {
     НП: mainSquadPlayers.filter((p) => p.position === "НП"),
   };
 
-  const positionLabels: Record<string, string> = {
-    ВР: "Вратари",
-    ЗЩ: "Защита",
-    ПЗ: "Полузащита",
-    НП: "Нападение",
+  const getPositionLabel = (pos: string, count: number): string => {
+    if (pos === "ВР") return count === 1 ? "Вратарь" : "Вратари";
+    if (pos === "ЗЩ") return "Защита";
+    if (pos === "ПЗ") return "Полузащита";
+    if (pos === "НП") return "Нападение";
+    return pos;
   };
 
   const handlePlayerSwap = (playerId: number) => {
@@ -495,7 +496,7 @@ const TeamManagement = () => {
   const renderListSection = (position: string, players: PlayerDataExt[]) => (
     <div className="mb-6" key={position}>
       {/* Position header */}
-      <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
+      <h3 className="text-primary font-medium mb-2">{getPositionLabel(position, players.length)}</h3>
 
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
