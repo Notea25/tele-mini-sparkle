@@ -257,28 +257,32 @@ const CreateLeague = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl font-bold text-foreground mb-4">Создай свою лигу</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-6">Создай свою лигу</h1>
 
         {/* Players Image */}
-        <img src={leagueCreationPlayers} alt="League players" className="w-full mb-6" />
+        <div className="flex justify-center mb-8">
+          <img src={leagueCreationPlayers} alt="League players" className="w-full max-w-md object-contain" />
+        </div>
 
         {/* League Name Input */}
-        <Input
-          type="text"
-          placeholder="Название лиги"
-          value={leagueName}
-          onChange={(e) => setLeagueName(e.target.value)}
-          className="w-full bg-secondary/50 border-none rounded-xl py-6 px-4 text-foreground placeholder:text-muted-foreground mb-4"
-        />
+        <div className="space-y-4">
+          <Input
+            type="text"
+            placeholder="Название лиги"
+            value={leagueName}
+            onChange={(e) => setLeagueName(e.target.value)}
+            className="w-full bg-secondary border-none rounded-full h-14 px-6 text-foreground text-base placeholder:text-muted-foreground"
+          />
 
-        {/* Create Button */}
-        <Button
-          onClick={handleCreateLeague}
-          disabled={!leagueName.trim()}
-          className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground disabled:opacity-50"
-        >
-          Создать лигу
-        </Button>
+          {/* Create Button */}
+          <Button
+            onClick={handleCreateLeague}
+            disabled={!leagueName.trim()}
+            className="w-full rounded-full h-14 text-base font-semibold bg-primary text-primary-foreground disabled:opacity-50"
+          >
+            Создать лигу
+          </Button>
+        </div>
       </main>
     </div>
   );
