@@ -177,11 +177,18 @@ const ConfirmTransfersDrawer = ({
                       {getBoostStatusText(boost)}
                     </span>
                     {/* Alert circle indicator */}
-                    <AlertCircle
-                      className={`absolute -top-0.5 -right-0.5 w-3 h-3 ${
-                        boost.status === "pending" ? "text-primary" : "text-muted-foreground/50"
-                      }`}
-                    />
+                    <div
+                      className={
+                        "absolute top-1 right-1 rounded-full p-0.5 " +
+                        (boost.status === "pending" ? "bg-card" : "bg-card/70")
+                      }
+                    >
+                      <AlertCircle
+                        className={`w-3 h-3 ${
+                          boost.status === "pending" ? "text-primary" : "text-muted-foreground/50"
+                        }`}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
