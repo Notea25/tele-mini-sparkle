@@ -278,6 +278,7 @@ const Transfers = () => {
   // Buy player drawer state
   const [buyDrawerOpen, setBuyDrawerOpen] = useState(false);
   const [buyPositionFilter, setBuyPositionFilter] = useState<string | null>(null);
+  const [buyTargetSlotIndex, setBuyTargetSlotIndex] = useState<number | null>(null);
 
   // Calculate removed players with their original slot info for visual hints
   const getRemovedPlayersInfo = () => {
@@ -466,6 +467,7 @@ const Transfers = () => {
 
   const handleEmptySlotClick = (position: string, slotIndex: number) => {
     setBuyPositionFilter(position);
+    setBuyTargetSlotIndex(slotIndex);
     setBuyDrawerOpen(true);
   };
 
@@ -828,8 +830,15 @@ const Transfers = () => {
         onClose={() => {
           setBuyDrawerOpen(false);
           setBuyPositionFilter(null);
+          setBuyTargetSlotIndex(null);
         }}
-        onBuyPlayer={handleBuyPlayer}
+        onBuyPlayer={(player) => {
+          if (buyPositionFilter && buyTargetSlotIndex !== null) {
+            handleBuyPlayer(player, buyPositionFilter, false, buyTargetSlotIndex);
+          } else {
+            handleBuyPlayer(player);
+          }
+        }}
         onPlayerClick={(player) => {
           setBuyPlayerForCard(player);
           setBuyDrawerOpen(false);
