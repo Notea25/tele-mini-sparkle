@@ -130,16 +130,13 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
             <div className="space-y-3">
               <Button
                 onClick={handleConfirmApply}
-                size="lg"
-                className="w-full"
+                className="w-full h-14 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-lg font-semibold shadow-neon"
               >
                 Подтвердить активацию
               </Button>
               <Button
                 onClick={handleCancelConfirmation}
-                variant="secondary"
-                size="lg"
-                className="w-full"
+                className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
               >
                 Отмена
               </Button>
@@ -172,8 +169,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               {chip.status === "available" && (
                 <Button
                   onClick={handleApplyClick}
-                  size="lg"
-                  className="w-full"
+                  className="w-full h-14 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-lg font-semibold shadow-neon"
                 >
                   Использовать
                 </Button>
@@ -184,17 +180,14 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                     <Button
                       onClick={handleCancel}
                       variant="outline"
-                      size="lg"
-                      className="w-full border-destructive text-destructive hover:bg-destructive/10"
+                      className="w-full h-14 rounded-full border-destructive text-destructive hover:bg-destructive/10 text-lg font-semibold"
                     >
                       Отменить
                     </Button>
                   )}
                   <Button
                     onClick={handleClose}
-                    variant="secondary"
-                    size="lg"
-                    className="w-full"
+                    className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
                   >
                     Закрыть
                   </Button>
@@ -203,9 +196,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               {chip.status === "used" && (
                 <Button
                   onClick={handleClose}
-                  variant="secondary"
-                  size="lg"
-                  className="w-full"
+                  className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
                 >
                   Закрыть
                 </Button>

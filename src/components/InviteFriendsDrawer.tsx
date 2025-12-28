@@ -64,8 +64,7 @@ const InviteFriendsDrawer = ({ open, onOpenChange, userId = "user231" }: InviteF
           <Button
             onClick={() => onOpenChange(false)}
             variant="outline"
-            size="lg"
-            className="w-full"
+            className="w-full rounded-full h-12 border-border text-foreground hover:bg-background"
           >
             Закрыть
           </Button>

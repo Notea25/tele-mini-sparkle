@@ -53,13 +53,13 @@ const ConfirmBoostDrawer = ({
             <Button
               onClick={onChangeBoost}
               variant="outline"
-              className="flex-1"
+              className="flex-1 rounded-full h-12 border-border text-foreground hover:bg-secondary"
             >
               Изменить
             </Button>
             <Button
               onClick={onConfirm}
-              className="flex-1"
+              className="flex-1 rounded-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
             >
               Подтвердить
             </Button>
