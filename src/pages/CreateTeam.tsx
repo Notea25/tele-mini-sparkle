@@ -28,12 +28,12 @@ import playerKhvashchinskyTransfer from "@/assets/player-khvashchinsky-transfer.
 import swapArrowsGreen from "@/assets/swap-arrows-green.png";
 
 // Player card images for carousel
-import playerVakulichNew from "@/assets/player-vakulich-new.png";
-import playerKozlovNew from "@/assets/player-kozlov-new.png";
-import playerBykovNew from "@/assets/player-bykov-new.png";
-import playerKarpovichNew from "@/assets/player-karpovich-new.png";
-import playerKhvashchinskyNew from "@/assets/player-khvashchinsky-new.png";
-import playerGutorNew from "@/assets/player-gutor-new.png";
+import vakulichCard from "@/assets/cards/vakulich-card.png";
+import kozlovCard from "@/assets/cards/kozlov-card.png";
+import bykovCard from "@/assets/cards/bykov-card.png";
+import karpovichCard from "@/assets/cards/karpovich-card.png";
+import khvashchinskyCard from "@/assets/cards/khvashchinsky-card.png";
+import gutorCard from "@/assets/cards/gutor-card.png";
 
 // Club logo imports
 import arsenalLogo from "@/assets/clubs/arsenalLogo.png";
@@ -279,20 +279,20 @@ const CreateTeam = () => {
 
         {/* Scrollable Player Cards */}
         <div className="mt-6 overflow-x-auto scrollbar-hide">
-          <div className="flex gap-1 px-4 pb-2" style={{ width: "max-content" }}>
+          <div className="flex gap-3 px-4 pb-2" style={{ width: "max-content" }}>
             {[
-              playerVakulichNew,
-              playerKozlovNew,
-              playerBykovNew,
-              playerKarpovichNew,
-              playerKhvashchinskyNew,
-              playerGutorNew,
-            ].map((playerImg, index) => (
+              vakulichCard,
+              kozlovCard,
+              bykovCard,
+              karpovichCard,
+              khvashchinskyCard,
+              gutorCard,
+            ].map((cardImg, index) => (
               <img
                 key={index}
-                src={playerImg}
+                src={cardImg}
                 alt={`Player ${index + 1}`}
-                className="w-52 h-auto rounded-xl flex-shrink-0"
+                className="w-40 h-auto rounded-xl flex-shrink-0"
               />
             ))}
           </div>
