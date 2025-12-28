@@ -509,8 +509,7 @@ const Transfers = () => {
                   onClick={() => handleEmptySlotClick(position, slot.slotIndex)}
                 >
                   <div className="flex-1 flex items-center gap-2 min-w-0">
-                    <span className="text-muted-foreground">Пустой слот</span>
-                    <span className="text-muted-foreground text-xs">{position}</span>
+                    <span className="text-muted-foreground">{positionLabels[position]}</span>
                   </div>
                   <span className="w-12 flex-shrink-0"></span>
                   <span className="w-10 flex-shrink-0"></span>
