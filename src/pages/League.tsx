@@ -267,8 +267,25 @@ const League = () => {
   const activeLeagues = commercialLeagues.filter(league => currentTour <= league.endTour);
   const finishedLeagues = commercialLeagues.filter(league => currentTour > league.endTour);
 
-  // Determine which active leagues to display (3 by default, all on expand)
-  const displayedActiveLeagues = showAllCommercialLeagues ? activeLeagues : activeLeagues.slice(0, 3);
+  // Split active leagues into open and upcoming
+  const now = new Date();
+  const openLeagues = activeLeagues.filter(league => {
+    const [startDay, startMonth, startYear] = league.registrationStart.split(".");
+    const [endDay, endMonth, endYear] = league.deadline.split(".");
+    const registrationStartDate = new Date(`${startYear}-${startMonth}-${startDay}T00:00:00`);
+    const deadlineDate = new Date(`${endYear}-${endMonth}-${endDay}T19:00:00`);
+    return now >= registrationStartDate && now < deadlineDate;
+  });
+  const upcomingLeagues = activeLeagues.filter(league => {
+    const [startDay, startMonth, startYear] = league.registrationStart.split(".");
+    const registrationStartDate = new Date(`${startYear}-${startMonth}-${startDay}T00:00:00`);
+    return now < registrationStartDate;
+  });
+
+  // Show 1 open + 1 upcoming by default, all on expand
+  const displayedActiveLeagues = showAllCommercialLeagues 
+    ? activeLeagues 
+    : [...openLeagues.slice(0, 1), ...upcomingLeagues.slice(0, 1)];
 
   // My leagues data - combine static data with user-created leagues
   const staticLeagues: Array<{
@@ -655,7 +672,7 @@ const League = () => {
 
                         {/* Overlay text */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <p className="text-foreground text-base font-bold font-unbounded mb-1">Скоро откроем</p>
+                          <p className="text-foreground text-base font-bold font-unbounded mb-1">Регистрация откроется</p>
                           <p className="text-primary text-sm font-black">{league.registrationStart}</p>
                         </div>
                       </Card>
