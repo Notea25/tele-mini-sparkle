@@ -253,11 +253,10 @@ const FormationField = ({
       </div>
 
       <div className="w-full relative z-20">
-        {/* Белый бекграунд для фамилии */}
         <div
           className="bg-white flex items-center justify-center"
           style={{
-            minHeight: `${cardSize.height * 0.12}px`, // Одинаковая минимальная высота
+            minHeight: `${cardSize.height * 0.12}px`,
             paddingTop: `${cardSize.height * 0.02}px`,
             paddingBottom: `${cardSize.height * 0.02}px`,
           }}
