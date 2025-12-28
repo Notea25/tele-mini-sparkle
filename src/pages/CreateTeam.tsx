@@ -23,8 +23,8 @@ import clubNeman from "@/assets/club-neman.png";
 import bgImage from "@/assets/bg_image.png";
 
 // Transfer section images
-import playerKarpovichTransfer from "@/assets/player-karpovich-transfer.png";
-import playerKhvashchinskyTransfer from "@/assets/player-khvashchinsky-transfer.png";
+import karpovichTransferCard from "@/assets/cards/karpovich-transfer.png";
+import khvashchinskyTransferCard from "@/assets/cards/khvashchinsky-transfer.png";
 import swapArrowsGreen from "@/assets/swap-arrows-green.png";
 
 // Player card images for carousel
@@ -320,21 +320,21 @@ const CreateTeam = () => {
         </p>
 
         {/* Transfer Player Cards with Arrows */}
-        <div className="mt-6 flex justify-center items-center gap-1">
+        <div className="mt-6 flex justify-center items-center gap-2">
           <img 
-            src={playerKarpovichTransfer} 
+            src={karpovichTransferCard} 
             alt="Карпович" 
-            className="w-36 h-auto rounded-xl flex-shrink-0"
+            className="w-32 h-auto rounded-xl flex-shrink-0"
           />
           <img 
             src={swapArrowsGreen} 
             alt="Swap" 
-            className="w-10 h-auto flex-shrink-0"
+            className="w-8 h-auto flex-shrink-0"
           />
           <img 
-            src={playerKhvashchinskyTransfer} 
+            src={khvashchinskyTransferCard} 
             alt="Хващинский" 
-            className="w-36 h-auto rounded-xl flex-shrink-0"
+            className="w-32 h-auto rounded-xl flex-shrink-0"
           />
         </div>
       </div>
