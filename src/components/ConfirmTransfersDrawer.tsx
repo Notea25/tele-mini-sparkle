@@ -218,13 +218,14 @@ const ConfirmTransfersDrawer = ({
           <div className="flex gap-3">
             <Button
               onClick={onClose}
-              className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-full h-12"
+              variant="secondary"
+              className="flex-1"
             >
               Изменить
             </Button>
             <Button
               onClick={onConfirm}
-              className="flex-1 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-full h-12 shadow-neon"
+              className="flex-1"
             >
               Подтвердить
             </Button>

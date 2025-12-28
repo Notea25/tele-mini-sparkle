@@ -310,7 +310,9 @@ const PlayerCard = ({
             <div className="flex gap-3 w-full">
               <Button
                 onClick={onClose}
-                className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
+                variant="outline"
+                size="lg"
+                className="flex-1"
               >
                 Закрыть
               </Button>
@@ -319,7 +321,9 @@ const PlayerCard = ({
                   onSell?.(player.id);
                   onClose();
                 }}
-                className="flex-1 rounded-full py-6 font-semibold text-lg bg-red-500 hover:bg-red-600 text-white"
+                variant="destructive"
+                size="lg"
+                className="flex-1"
               >
                 Продать
               </Button>
@@ -328,7 +332,9 @@ const PlayerCard = ({
             <div className="flex gap-3 w-full">
               <Button
                 onClick={onClose}
-                className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
+                variant="outline"
+                size="lg"
+                className="flex-1"
               >
                 Закрыть
               </Button>
@@ -337,7 +343,8 @@ const PlayerCard = ({
                   onSwap?.(player.id);
                   onClose();
                 }}
-                className="flex-1 rounded-full py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+                size="lg"
+                className="flex-1"
               >
                 Заменить
               </Button>
@@ -346,7 +353,9 @@ const PlayerCard = ({
             <div className="flex gap-3 w-full">
               <Button
                 onClick={onClose}
-                className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
+                variant="outline"
+                size="lg"
+                className="flex-1"
               >
                 Закрыть
               </Button>
@@ -358,11 +367,8 @@ const PlayerCard = ({
                   }
                 }}
                 disabled={!canBuy}
-                className={`flex-1 rounded-full py-6 font-semibold text-lg ${
-                  canBuy 
-                    ? "bg-primary hover:bg-primary/90 text-primary-foreground" 
-                    : "bg-muted text-muted-foreground cursor-not-allowed"
-                }`}
+                size="lg"
+                className="flex-1"
               >
                 Купить
               </Button>
@@ -373,8 +379,9 @@ const PlayerCard = ({
                 onToggleSelect?.(player.id);
                 onClose();
               }}
-              className={`w-full rounded-full py-6 font-semibold text-lg ${
-                isSelected ? "bg-red-500 hover:bg-red-600 text-white" : "bg-[#A8FF00] hover:bg-[#98EE00] text-black"
+              size="lg"
+              className={`w-full ${
+                isSelected ? "bg-red-500 hover:bg-red-600 text-white shadow-none" : ""
               }`}
             >
               {isSelected ? "Убрать" : "Выбрать"}

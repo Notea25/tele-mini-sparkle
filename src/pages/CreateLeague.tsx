@@ -184,14 +184,16 @@ const CreateLeague = () => {
         <div className="sticky bottom-0 left-0 right-0 bg-background px-4 pb-6 pt-2 space-y-3">
           <Button
             onClick={handleInviteFriend}
-            className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
+            size="lg"
+            className="w-full"
           >
             Пригласить друзей
           </Button>
           <Button
             onClick={() => navigate("/league")}
             variant="outline"
-            className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+            size="lg"
+            className="w-full"
           >
             Закрыть
           </Button>
@@ -227,7 +229,8 @@ const CreateLeague = () => {
               {/* Close Button */}
               <Button
                 onClick={() => setShowInviteDrawer(false)}
-                className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
+                size="lg"
+                className="w-full"
               >
                 Закрыть
               </Button>
@@ -288,8 +291,8 @@ const CreateLeague = () => {
         <Button
           onClick={handleCreateLeague}
           disabled={!leagueName.trim()}
-          className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] rounded-[24px] disabled:opacity-50"
-          style={{ boxShadow: leagueName.trim() ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
+          size="lg"
+          className={`w-full ${!leagueName.trim() ? "shadow-none" : ""}`}
         >
           Создать лигу
         </Button>
