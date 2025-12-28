@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import onboardingField from "@/assets/onboarding-field.png";
 import onboardingTransfers from "@/assets/onboarding-transfers.png";
 import onboardingPrizes from "@/assets/onboarding-prizes.png";
+import logo from "@/assets/logo.png";
 
 interface OnboardingSlide {
   image: string;
@@ -61,8 +62,13 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
 
   return (
     <div className="fixed inset-0 z-[9998] flex flex-col bg-background">
+      {/* Logo */}
+      <div className="px-4 pt-3 pb-4 flex justify-center">
+        <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
+      </div>
+
       {/* Content area */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16">
+      <div className="flex-1 flex flex-col items-center justify-center px-6">
         {/* Image card */}
         <div className="w-full max-w-sm mb-8">
           <div className="relative rounded-2xl overflow-hidden border border-border/30 bg-card/50">
