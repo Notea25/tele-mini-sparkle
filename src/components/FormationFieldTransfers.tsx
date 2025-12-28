@@ -299,6 +299,13 @@ interface PlayerData {
   isViceCaptain?: boolean;
 }
 
+interface RemovedPlayerInfo {
+  position: string;
+  slotIndex: number;
+  name: string;
+  team: string;
+}
+
 interface FormationFieldTransfersProps {
   players: PlayerData[];
   onPlayerClick?: (player: PlayerData) => void;
@@ -306,6 +313,7 @@ interface FormationFieldTransfersProps {
   onEmptySlotClick?: (position: string, slotIndex: number) => void;
   captain?: number | null;
   viceCaptain?: number | null;
+  removedPlayers?: RemovedPlayerInfo[];
 }
 
 // Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
@@ -363,9 +371,14 @@ const FormationFieldTransfers = ({
   onEmptySlotClick,
   captain,
   viceCaptain,
+  removedPlayers = [],
 }: FormationFieldTransfersProps) => {
   const getPlayerForSlot = (position: string, slotIndex: number) => {
     return players.find((p) => p.position === position && p.slotIndex === slotIndex);
+  };
+
+  const getRemovedPlayerForSlot = (position: string, slotIndex: number) => {
+    return removedPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
   };
 
   const renderPlayer = (player: PlayerData) => (
@@ -426,17 +439,41 @@ const FormationFieldTransfers = ({
     </div>
   );
 
-  const renderEmptySlot = (position: string, slotIndex: number) => (
-    <div
-      className="w-[70px] h-[84px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
-      onClick={() => onEmptySlotClick?.(position, slotIndex)}
-    >
-      <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">{position}</span>
-      <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
-        <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
+  const renderEmptySlot = (position: string, slotIndex: number) => {
+    const removedPlayer = getRemovedPlayerForSlot(position, slotIndex);
+    
+    return (
+      <div
+        className="w-[70px] h-[84px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-[#3a5a28]/80 transition-colors relative"
+        onClick={() => onEmptySlotClick?.(position, slotIndex)}
+      >
+        {removedPlayer ? (
+          <>
+            {/* Removed player hint */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center opacity-40">
+              <span className="text-white/80 text-[9px] font-medium text-center px-1 truncate max-w-full">
+                {truncateName(removedPlayer.name, 8)}
+              </span>
+              <span className="text-white/60 text-[7px] text-center px-1 truncate max-w-full">
+                {truncateName(removedPlayer.team, 8)}
+              </span>
+            </div>
+            {/* Plus button overlay */}
+            <div className="z-10 w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
+              <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
+            </div>
+          </>
+        ) : (
+          <>
+            <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">{position}</span>
+            <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
+              <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
+            </div>
+          </>
+        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   // Generate all slots for the fixed formation
   const generateSlots = () => {
