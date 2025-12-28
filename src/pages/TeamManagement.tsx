@@ -9,7 +9,7 @@ import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import { getValidSwapOptions, detectFormation, FORMATION_LABELS, FormationKey } from "@/lib/formationUtils";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
-// SwapPlayerDrawer removed - swap functionality now in PlayerCard
+import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import ConfirmBoostDrawer from "@/components/ConfirmBoostDrawer";
 import {
@@ -229,6 +229,10 @@ const TeamManagement = () => {
     }
   }, []);
 
+  // Swap drawer state
+  const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
+  const [playerToSwap, setPlayerToSwap] = useState<PlayerData | null>(null);
+
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
 
   // Group players by position for list view
@@ -245,6 +249,14 @@ const TeamManagement = () => {
     if (pos === "ПЗ") return "Полузащита";
     if (pos === "НП") return "Нападение";
     return pos;
+  };
+
+  const handlePlayerSwap = (playerId: number) => {
+    const player = allPlayers.find((p) => p.id === playerId);
+    if (player) {
+      setPlayerToSwap(player);
+      setSwapDrawerOpen(true);
+    }
   };
 
   const handleSwapConfirm = (fromPlayerId: number, toPlayerId: number) => {
@@ -342,6 +354,18 @@ const TeamManagement = () => {
     });
   };
 
+  // Get available players for swap (all players from opposite side)
+  const getAvailableSwapPlayers = () => {
+    if (!playerToSwap) return [];
+
+    if (playerToSwap.isOnBench) {
+      // Bench player - return all field players
+      return mainSquadPlayers;
+    } else {
+      // Field player - return all bench players
+      return benchPlayers;
+    }
+  };
 
   // Handle bench player reordering (swap between bench players)
   const handleBenchReorder = (fromIndex: number, toIndex: number) => {
@@ -434,6 +458,11 @@ const TeamManagement = () => {
     toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
   };
 
+  // Get valid swap options based on formation rules
+  const getValidSwapOptionsForPlayer = () => {
+    if (!playerToSwap) return [];
+    return getValidSwapOptions(mainSquadPlayers, benchPlayers, playerToSwap);
+  };
 
   // Team abbreviations for next match
   const teamAbbreviations: Record<string, string> = {
@@ -531,7 +560,7 @@ const TeamManagement = () => {
 
               {/* Swap button */}
               <button
-                onClick={() => setSelectedPlayerForCard(player.id)}
+                onClick={() => handlePlayerSwap(player.id)}
                 className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
               >
                 <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
@@ -730,7 +759,7 @@ const TeamManagement = () => {
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
-            onSwapPlayer={(playerId) => setSelectedPlayerForCard(playerId)}
+            onSwapPlayer={handlePlayerSwap}
             onSwapBenchPlayers={handleBenchReorder}
             captain={captain}
             showPrice={false}
@@ -799,7 +828,7 @@ const TeamManagement = () => {
 
                   {/* Swap button */}
                   <button
-                    onClick={() => setSelectedPlayerForCard(player.id)}
+                    onClick={() => handlePlayerSwap(player.id)}
                     className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
                   >
                     <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
@@ -833,37 +862,37 @@ const TeamManagement = () => {
       <div className="h-24" />
 
       {/* Player Card Drawer */}
-      {selectedPlayerForCard !== null && (() => {
-        const currentPlayer = allPlayers.find((p) => p.id === selectedPlayerForCard);
-        const availableForSwap = currentPlayer?.isOnBench ? mainSquadPlayers : benchPlayers;
-        const validOptions = currentPlayer ? getValidSwapOptions(mainSquadPlayers, benchPlayers, currentPlayer) : [];
-        const validIds = new Set(validOptions.map(opt => opt.id));
-        
-        const swapPlayersData = availableForSwap.map(p => ({
-          ...p,
-          isValid: validIds.has(p.id)
-        }));
-        
-        return (
-          <PlayerCard
-            player={currentPlayer || null}
-            isOpen={selectedPlayerForCard !== null}
-            onClose={() => setSelectedPlayerForCard(null)}
-            isSelected={true}
-            onToggleSelect={() => {}}
-            isCaptain={captain === selectedPlayerForCard}
-            isViceCaptain={viceCaptain === selectedPlayerForCard}
-            onSetCaptain={setCaptain}
-            onSetViceCaptain={setViceCaptain}
-            variant="management"
-            onSwap={(fromPlayerId, toPlayerId) => {
-              handleSwapConfirm(fromPlayerId, toPlayerId);
-              setSelectedPlayerForCard(null);
-            }}
-            swapPlayers={swapPlayersData}
-          />
-        );
-      })()}
+      {selectedPlayerForCard !== null && (
+        <PlayerCard
+          player={allPlayers.find((p) => p.id === selectedPlayerForCard) || null}
+          isOpen={selectedPlayerForCard !== null}
+          onClose={() => setSelectedPlayerForCard(null)}
+          isSelected={true}
+          onToggleSelect={() => {}}
+          isCaptain={captain === selectedPlayerForCard}
+          isViceCaptain={viceCaptain === selectedPlayerForCard}
+          onSetCaptain={setCaptain}
+          onSetViceCaptain={setViceCaptain}
+          variant="management"
+          onSwap={(playerId) => {
+            setSelectedPlayerForCard(null);
+            handlePlayerSwap(playerId);
+          }}
+        />
+      )}
+
+      {/* Swap Player Drawer */}
+      <SwapPlayerDrawer
+        isOpen={swapDrawerOpen}
+        onClose={() => {
+          setSwapDrawerOpen(false);
+          setPlayerToSwap(null);
+        }}
+        selectedPlayer={playerToSwap}
+        availablePlayers={getAvailableSwapPlayers()}
+        validSwapOptions={getValidSwapOptionsForPlayer()}
+        onSwap={handleSwapConfirm}
+      />
 
       {/* Boost Drawer */}
       <BoostDrawer
