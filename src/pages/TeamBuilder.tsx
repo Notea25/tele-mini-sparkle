@@ -1065,7 +1065,7 @@ const TeamBuilder = () => {
             <ChevronsUpDown className="w-3 h-3 opacity-50" />
           )}
         </button>
-        <div className="w-12 text-center">
+        <div className="w-14 flex items-center justify-center">
           <button
             onClick={() => handleSort("points")}
             className={`flex items-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
@@ -1082,7 +1082,7 @@ const TeamBuilder = () => {
             )}
           </button>
         </div>
-        <div className="w-10 text-center mr-10">
+        <div className="w-14 flex items-center justify-center mr-8">
           <button
             onClick={() => handleSort("price")}
             className={`flex items-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
@@ -1122,24 +1122,26 @@ const TeamBuilder = () => {
               </div>
 
               {/* Points - fixed width, centered */}
-              <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+              <div className="w-14 flex-shrink-0 flex items-center justify-center">
+                <span className="text-sm font-medium text-foreground">{player.points}</span>
+              </div>
 
               {/* Price - fixed width, centered */}
-              <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">
-                {player.price.toFixed(1)}
-              </span>
+              <div className="w-14 flex-shrink-0 flex items-center justify-center">
+                <span className="text-foreground text-sm">{player.price.toFixed(1)}</span>
+              </div>
 
               {/* Add/Remove button */}
               <button
                 onClick={() => togglePlayer(player.id)}
-                className={`w-8 h-8 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
-                  isSelected ? "bg-white/10 hover:bg-white/20" : "bg-primary hover:bg-primary/90"
+                className={`w-6 h-6 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
+                  isSelected ? "bg-muted hover:bg-muted/80" : "bg-primary hover:bg-primary/90"
                 }`}
               >
                 {isSelected ? (
-                  <X className="w-4 h-4 text-foreground" />
+                  <X className="w-3 h-3 text-muted-foreground" />
                 ) : (
-                  <Plus className="w-4 h-4 text-primary-foreground" />
+                  <Plus className="w-3 h-3 text-primary-foreground" />
                 )}
               </button>
             </div>
