@@ -613,12 +613,59 @@ const League = () => {
                   const isRegistrationOpen = now >= registrationStartDate && now < deadlineDate;
                   const isBeforeRegistration = now < registrationStartDate;
 
+                  // Render blurred card for leagues before registration
+                  if (isBeforeRegistration && !isParticipating) {
+                    return (
+                      <Card
+                        key={idx}
+                        className="relative bg-secondary/50 border-border/50 overflow-hidden"
+                      >
+                        {/* Blurred content */}
+                        <div className="p-4 opacity-25 blur-[4px]">
+                          {/* League Logo + Arrow */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden">
+                                <img src={league.logo} alt={league.name} className="w-8 h-8 object-contain" />
+                              </div>
+                              <span className="text-foreground text-lg font-bold">{league.name}</span>
+                            </div>
+                            <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                          </div>
+
+                          {/* Table Header */}
+                          <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-2">
+                            <span>Приз</span>
+                            <span>Отрезок</span>
+                          </div>
+
+                          {/* Table Values */}
+                          <div className="grid grid-cols-2 gap-2 text-sm text-foreground mb-3">
+                            <span className="font-medium">{league.prize}</span>
+                            <span>{league.period}</span>
+                          </div>
+
+                          {/* Registration Info */}
+                          <div className="pt-3 border-t border-border/30">
+                            <span className="text-xs text-muted-foreground">
+                              Регистрация: {league.registrationStart} – {league.deadline}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Overlay text */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <p className="text-foreground text-base font-bold font-unbounded mb-1">Скоро откроем</p>
+                          <p className="text-primary text-sm font-black">{league.registrationStart}</p>
+                        </div>
+                      </Card>
+                    );
+                  }
+
                   return (
                     <Card
                       key={idx}
-                      className={`bg-secondary/50 border-border/50 overflow-hidden cursor-pointer hover:bg-secondary/70 transition-colors ${
-                        !isRegistrationOpen && !isParticipating ? "opacity-60" : ""
-                      }`}
+                      className="bg-secondary/50 border-border/50 overflow-hidden cursor-pointer hover:bg-secondary/70 transition-colors"
                       onClick={() =>
                         handleNavigate(
                           `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=false&commercial=true&finished=false&startTour=${league.startTour}&deadline=${encodeURIComponent(league.deadline)}&registrationOpen=${isRegistrationOpen}&beforeRegistration=${isBeforeRegistration}`,
