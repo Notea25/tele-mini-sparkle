@@ -688,7 +688,7 @@ const Transfers = () => {
           
           {/* Reset squad button - appears when there are changes */}
           {hasChanges && (
-            <div className="px-4 mt-3">
+            <div className="px-4 mt-3 pb-40">
               <Button
                 onClick={handleResetSquad}
                 variant="outline"
