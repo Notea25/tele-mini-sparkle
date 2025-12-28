@@ -70,10 +70,10 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground italic mb-4 px-4">{slide.title}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-4 px-4 font-display">{slide.title}</h1>
 
         {/* Subtitle */}
-        <p className="text-muted-foreground text-center text-base mb-8 px-4">{slide.subtitle}</p>
+        <p className="text-muted-foreground text-center text-base mb-8 px-4 font-sans">{slide.subtitle}</p>
 
         {/* Progress indicators */}
         <div className="flex gap-2 mb-8">
