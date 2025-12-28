@@ -246,7 +246,11 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
         {/* Button - stays visible above keyboard */}
         <div className="sticky bottom-0 w-full pb-8 pt-3 bg-background/80 backdrop-blur">
-          <Button onClick={handleSubmit} className="w-full h-14 text-lg font-semibold">
+          <Button
+            onClick={handleSubmit}
+            className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] rounded-[24px]"
+            style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
+          >
             Готово
           </Button>
         </div>
