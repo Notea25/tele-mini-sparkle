@@ -1,6 +1,7 @@
 import { Play, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { getLeagueDestination } from "@/lib/onboardingUtils";
 
 interface SportCardProps {
   title: string;
@@ -45,7 +46,9 @@ const SportCard = ({
 
   const handleClick = () => {
     if (href && !comingSoon) {
-      navigate(href);
+      // Use smart destination based on user progress
+      const destination = getLeagueDestination();
+      navigate(destination);
     }
   };
 
