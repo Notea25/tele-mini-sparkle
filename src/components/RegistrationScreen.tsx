@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import playersWelcome from "@/assets/players-welcome.png";
+import logo from "@/assets/logo.png";
 import { Filter } from "bad-words";
 import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 
@@ -190,6 +191,11 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
       className="fixed inset-0 z-[9998] flex flex-col bg-background overflow-auto overscroll-contain"
       style={{ paddingBottom: keyboardInset }}
     >
+      {/* Logo */}
+      <div className="px-4 pt-3 pb-4 flex justify-center flex-shrink-0">
+        <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
+      </div>
+
       {/* Players image - collapses when keyboard is open */}
       <div
         className="w-full flex-shrink-0 overflow-hidden transition-all duration-200"
