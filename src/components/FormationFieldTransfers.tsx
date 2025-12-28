@@ -444,32 +444,38 @@ const FormationFieldTransfers = ({
     
     return (
       <div
-        className="w-[70px] h-[84px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-[#3a5a28]/80 transition-colors relative"
+        className="w-[70px] h-[84px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col cursor-pointer hover:bg-[#3a5a28]/80 transition-colors relative overflow-hidden"
         onClick={() => onEmptySlotClick?.(position, slotIndex)}
       >
         {removedPlayer ? (
           <>
-            {/* Removed player hint */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center opacity-40">
-              <span className="text-white/80 text-[9px] font-medium text-center px-1 truncate max-w-full">
-                {truncateName(removedPlayer.name, 8)}
-              </span>
-              <span className="text-white/60 text-[7px] text-center px-1 truncate max-w-full">
-                {truncateName(removedPlayer.team, 8)}
-              </span>
+            {/* Plus button at top center */}
+            <div className="flex-1 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-full bg-white/90 flex items-center justify-center">
+                <Plus className="w-4 h-4 text-[#3a5a28]" />
+              </div>
             </div>
-            {/* Plus button overlay */}
-            <div className="z-10 w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
-              <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
+            {/* Removed player info at bottom */}
+            <div className="w-full">
+              <div className="bg-white/30 px-1 py-[2px]">
+                <span className="text-white/80 text-[7px] font-medium block truncate whitespace-nowrap text-center">
+                  {truncateName(removedPlayer.name, 9)}
+                </span>
+              </div>
+              <div className="bg-[#1a1a2e]/50 px-1 py-[2px]">
+                <span className="text-white/60 text-[6px] block truncate whitespace-nowrap text-center">
+                  {truncateName(removedPlayer.team, 10)}
+                </span>
+              </div>
             </div>
           </>
         ) : (
-          <>
+          <div className="flex-1 flex flex-col items-center justify-center gap-1">
             <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">{position}</span>
-            <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
-              <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
+            <div className="w-7 h-7 rounded-full bg-white/90 flex items-center justify-center">
+              <Plus className="w-4 h-4 text-[#3a5a28]" />
             </div>
-          </>
+          </div>
         )}
       </div>
     );
