@@ -226,25 +226,41 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
         {/* Form fields */}
         <div ref={formRef} className="w-full space-y-3 mb-8">
-          <div>
-            <Input
+          <div className="relative">
+            <input
               value={nickname}
               onChange={handleNicknameChange}
               onFocus={handleInputFocus}
               placeholder="Придумай имя пользователя"
-              className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${nicknameError ? "ring-2 ring-destructive" : ""}`}
+              maxLength={15}
+              className={`w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F] ${nicknameError ? "ring-2 ring-destructive" : ""}`}
+              style={{
+                borderColor: nickname ? "rgba(255, 255, 255, 0.2)" : "#363546",
+                color: nickname ? "#FFFFFF" : "#4B485F",
+                borderWidth: "1px",
+                borderStyle: "solid",
+              }}
             />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal text-sm text-[#4B485F] pointer-events-none">
+              {nickname.length}/15
+            </div>
             {nicknameError && <p className="text-destructive text-sm mt-1 px-1">{nicknameError}</p>}
           </div>
           <div>
-            <Input
+            <input
               value={birthDate}
               onChange={handleBirthDateChange}
               onFocus={handleInputFocus}
               placeholder="Укажи дату рождения (ДД.ММ.ГГГГ)"
-              className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${birthDateError ? "ring-2 ring-destructive" : ""}`}
               maxLength={10}
               inputMode="numeric"
+              className={`w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F] ${birthDateError ? "ring-2 ring-destructive" : ""}`}
+              style={{
+                borderColor: birthDate ? "rgba(255, 255, 255, 0.2)" : "#363546",
+                color: birthDate ? "#FFFFFF" : "#4B485F",
+                borderWidth: "1px",
+                borderStyle: "solid",
+              }}
             />
             {birthDateError && <p className="text-destructive text-sm mt-1 px-1">{birthDateError}</p>}
           </div>
