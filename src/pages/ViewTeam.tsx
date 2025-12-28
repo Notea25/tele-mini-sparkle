@@ -282,65 +282,83 @@ const ViewTeam = () => {
       {/* List View */}
       {activeTab === "list" && (
         <div className="px-4 mt-6 pb-6">
-          <div className="flex items-center px-4 py-1 text-xs text-muted-foreground mb-2">
+          {/* Main Squad */}
+          <h2 className="text-foreground text-xl font-bold mb-4">Основной состав</h2>
+
+          {/* Grouped by position */}
+          {(["ВР", "ЗЩ", "ПЗ", "НП"] as const).map((position) => {
+            const positionLabels: Record<string, string> = {
+              ВР: "Вратари",
+              ЗЩ: "Защита",
+              ПЗ: "Полузащита",
+              НП: "Нападение",
+            };
+            const playersInPosition = mainSquadPlayers.filter(p => p.position === position);
+            if (playersInPosition.length === 0) return null;
+
+            return (
+              <div className="mb-6" key={position}>
+                <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
+                <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
+                  <span className="flex-1">Игрок</span>
+                  <div className="w-12 flex justify-center">Очки</div>
+                  <div className="w-10 flex justify-center">Цена</div>
+                </div>
+                <div className="space-y-2">
+                  {playersInPosition.map((player) => {
+                    const showCaptain3xBadge = isCaptain3xBoostActive && player.isCaptain;
+                    const showDoublePowerBadge = isDoublePowerBoostActive && (player.isCaptain || player.isViceCaptain);
+                    
+                    return (
+                      <div
+                        key={player.id}
+                        onClick={() => handlePlayerClick(player)}
+                        className={`bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
+                          showCaptain3xBadge || showDoublePowerBadge ? "border border-primary" : ""
+                        } ${player.hasRedCard || player.isInjured ? "border border-red-500" : ""}`}
+                      >
+                        <div className="flex-1 flex items-center gap-2 min-w-0">
+                          {clubLogos[player.team] && (
+                            <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                          )}
+                          <span className="text-foreground font-medium truncate">{player.name}</span>
+                          <span className="text-muted-foreground text-xs">{player.position}</span>
+                          {player.isCaptain && (
+                            <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">К</span>
+                          )}
+                          {player.isViceCaptain && (
+                            <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">ВК</span>
+                          )}
+                          {showCaptain3xBadge && (
+                            <img src={icon3x} alt="3x" className="w-4 h-4" />
+                          )}
+                          {showDoublePowerBadge && !showCaptain3xBadge && (
+                            <img src={icon2x} alt="2x" className="w-4 h-4" />
+                          )}
+                          {player.hasRedCard && (
+                            <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">КК</span>
+                          )}
+                          {player.isInjured && !player.hasRedCard && (
+                            <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">ТР</span>
+                          )}
+                        </div>
+                        <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.displayedPoints}</div>
+                        <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">{player.price.toFixed(1)}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Bench */}
+          <h2 className="text-foreground text-xl font-bold mb-4 mt-8">Замены</h2>
+          <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
             <span className="flex-1">Игрок</span>
-            <span className="w-6 text-center"></span>
-            <span className="w-12 text-center">Очки</span>
-            <span className="w-10 text-center">Цена</span>
+            <div className="w-12 flex justify-center">Очки</div>
+            <div className="w-10 flex justify-center">Цена</div>
           </div>
-
-          <div className="space-y-2">
-            {[...mainSquadPlayers]
-              .sort((a, b) => {
-                const positionOrder = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
-                return (positionOrder[a.position as keyof typeof positionOrder] ?? 4) - 
-                       (positionOrder[b.position as keyof typeof positionOrder] ?? 4);
-              })
-              .map((player) => {
-                const showCaptain3xBadge = isCaptain3xBoostActive && player.isCaptain;
-                const showDoublePowerBadge = isDoublePowerBoostActive && (player.isCaptain || player.isViceCaptain);
-                
-                return (
-                  <div
-                    key={player.id}
-                    onClick={() => handlePlayerClick(player)}
-                    className={`bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
-                      showCaptain3xBadge || showDoublePowerBadge ? "border border-primary" : ""
-                    } ${player.hasRedCard || player.isInjured ? "border border-red-500" : ""}`}
-                  >
-                    <div className="flex-1 flex items-center gap-2 min-w-0">
-                      {clubLogos[player.team] && (
-                        <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
-                      )}
-                      <span className="text-foreground font-medium truncate">{player.name}</span>
-                      <span className="text-muted-foreground text-xs">{player.position}</span>
-                      {player.isCaptain && (
-                        <span className="bg-primary text-primary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">К</span>
-                      )}
-                      {player.isViceCaptain && (
-                        <span className="bg-secondary text-secondary-foreground text-[8px] px-1.5 py-0.5 rounded font-bold">ВК</span>
-                      )}
-                      {showCaptain3xBadge && (
-                        <img src={icon3x} alt="3x" className="w-4 h-4" />
-                      )}
-                      {showDoublePowerBadge && !showCaptain3xBadge && (
-                        <img src={icon2x} alt="2x" className="w-4 h-4" />
-                      )}
-                      {player.hasRedCard && (
-                        <span className="bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">КК</span>
-                      )}
-                      {player.isInjured && !player.hasRedCard && (
-                        <span className="bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold">ТР</span>
-                      )}
-                    </div>
-                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
-                    <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
-                  </div>
-                );
-              })}
-          </div>
-
-          <h3 className="text-muted-foreground text-sm mt-6 mb-2">Замены</h3>
           <div className="space-y-2">
             {benchPlayers.map((player) => (
               <div
@@ -360,8 +378,8 @@ const ViewTeam = () => {
                     <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />
                   )}
                 </div>
-                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.displayedPoints}</span>
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price.toFixed(1)}</span>
+                <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.displayedPoints}</div>
+                <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">{player.price.toFixed(1)}</div>
               </div>
             ))}
           </div>
