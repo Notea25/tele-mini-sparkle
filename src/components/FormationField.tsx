@@ -253,10 +253,11 @@ const FormationField = ({
       </div>
 
       <div className="w-full relative z-20">
+        {/* Белый бекграунд для фамилии */}
         <div
           className="bg-white flex items-center justify-center"
           style={{
-            minHeight: `${cardSize.height * 0.12}px`,
+            minHeight: `${cardSize.height * 0.115}px`,
             paddingTop: `${cardSize.height * 0.02}px`,
             paddingBottom: `${cardSize.height * 0.02}px`,
           }}
@@ -264,7 +265,7 @@ const FormationField = ({
           <span
             className="font-semibold text-black block truncate whitespace-nowrap text-center"
             style={{
-              fontSize: `${cardSize.width * 0.1}px`, // Одинаковый размер шрифта
+              fontSize: `${cardSize.width * 0.1}px`,
               lineHeight: 1.1,
             }}
           >
@@ -276,7 +277,7 @@ const FormationField = ({
         <div
           className="bg-[#1a1a2e] flex items-center justify-center"
           style={{
-            minHeight: `${cardSize.height * 0.12}px`, // Одинаковая минимальная высота
+            minHeight: `${cardSize.height * 0.15}px`,
             paddingTop: `${cardSize.height * 0.02}px`,
             paddingBottom: `${cardSize.height * 0.02}px`,
           }}
@@ -284,7 +285,7 @@ const FormationField = ({
           <span
             className="font-medium block truncate whitespace-nowrap text-center"
             style={{
-              fontSize: `${cardSize.width * 0.1}px`, // Одинаковый размер шрифта
+              fontSize: `${cardSize.width * 0.1}px`,
               lineHeight: 1.1,
             }}
           >
