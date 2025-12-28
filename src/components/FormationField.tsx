@@ -253,30 +253,41 @@ const FormationField = ({
       </div>
 
       <div className="w-full relative z-20">
+        {/* Белый бекграунд для фамилии */}
         <div
-          className="bg-white"
+          className="bg-white flex items-center justify-center"
           style={{
+            minHeight: `${cardSize.height * 0.12}px`, // Одинаковая минимальная высота
             paddingTop: `${cardSize.height * 0.02}px`,
             paddingBottom: `${cardSize.height * 0.02}px`,
           }}
         >
           <span
             className="font-semibold text-black block truncate whitespace-nowrap text-center"
-            style={{ fontSize: `${cardSize.width * 0.1}px` }}
+            style={{
+              fontSize: `${cardSize.width * 0.1}px`, // Одинаковый размер шрифта
+              lineHeight: 1.1,
+            }}
           >
             {truncateName(player.name, Math.floor(cardSize.width / 6.4))}
           </span>
         </div>
+
+        {/* Темный бекграунд для клуба */}
         <div
-          className="bg-[#1a1a2e]"
+          className="bg-[#1a1a2e] flex items-center justify-center"
           style={{
-            paddingTop: `${cardSize.height * 0.018}px`,
-            paddingBottom: `${cardSize.height * 0.018}px`,
+            minHeight: `${cardSize.height * 0.12}px`, // Одинаковая минимальная высота
+            paddingTop: `${cardSize.height * 0.02}px`,
+            paddingBottom: `${cardSize.height * 0.02}px`,
           }}
         >
           <span
             className="font-medium block truncate whitespace-nowrap text-center"
-            style={{ fontSize: `${cardSize.width * 0.085}px` }}
+            style={{
+              fontSize: `${cardSize.width * 0.1}px`, // Одинаковый размер шрифта
+              lineHeight: 1.1,
+            }}
           >
             <span className="text-[#7D7A94]">(Д)</span>
             <span className="text-white ml-[2%]">{truncateName(player.team, Math.floor(cardSize.width / 8))}</span>
