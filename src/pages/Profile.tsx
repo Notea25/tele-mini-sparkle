@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import InviteFriendsDrawer from "@/components/InviteFriendsDrawer";
 import homeIcon from "@/assets/home-icon.png";
@@ -162,26 +161,44 @@ const Profile = () => {
         </div>
 
         {/* Form Fields */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="space-y-2">
             <label className="text-sm text-foreground">Имя пользователя</label>
-            <Input
-              value={profile.userName}
-              onChange={(e) => handleUserNameChange(e.target.value)}
-              maxLength={15}
-              className="bg-secondary border-0 rounded-xl h-12 text-foreground"
-            />
+            <div className="relative">
+              <input
+                value={profile.userName}
+                onChange={(e) => handleUserNameChange(e.target.value)}
+                maxLength={15}
+                placeholder="Придумай имя пользователя"
+                className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F]"
+                style={{
+                  borderColor: profile.userName ? "rgba(255, 255, 255, 0.2)" : "#363546",
+                  color: profile.userName ? "#FFFFFF" : "#4B485F",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                }}
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal text-sm text-[#4B485F] pointer-events-none">
+                {profile.userName.length}/15
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">
             <label className="text-sm text-foreground">Дата рождения</label>
-            <Input
+            <input
               type="text"
               value={profile.birthDate}
               readOnly
               disabled
               placeholder="12.12.2000"
-              className="bg-secondary border-0 rounded-xl h-12 text-foreground placeholder:text-muted-foreground opacity-70 cursor-not-allowed"
+              className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none placeholder:text-[#4B485F] opacity-70 cursor-not-allowed"
+              style={{
+                borderColor: "#363546",
+                color: profile.birthDate ? "#FFFFFF" : "#4B485F",
+                borderWidth: "1px",
+                borderStyle: "solid",
+              }}
             />
           </div>
 
