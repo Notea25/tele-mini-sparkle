@@ -166,13 +166,13 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
   return (
     <div className="fixed inset-0 z-[9998] flex flex-col bg-background overflow-auto">
-      {/* Players image - full width at top */}
-      <div className="w-full flex-shrink-0">
+      {/* Players image - full width at top with top padding */}
+      <div className="w-full flex-shrink-0 pt-6">
         <img src={playersWelcome} alt="Welcome" className="w-full h-auto object-cover" />
       </div>
 
       {/* Content area */}
-      <div className="flex-1 flex flex-col items-center px-6 py-6 min-h-0">
+      <div className="flex-1 flex flex-col items-center px-6 py-6">
 
         {/* Title */}
         <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-2 px-4 font-display">
@@ -188,7 +188,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
         </p>
 
         {/* Form fields */}
-        <div className="w-full space-y-3 mb-8 flex-shrink-0">
+        <div className="w-full space-y-3 mb-8">
           <div>
             <Input
               value={nickname}
@@ -210,13 +210,13 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
             {birthDateError && <p className="text-destructive text-sm mt-1 px-1">{birthDateError}</p>}
           </div>
         </div>
-      </div>
 
-      {/* Button */}
-      <div className="px-6 pb-8 flex-shrink-0">
-        <Button onClick={handleSubmit} className="w-full h-14 text-lg font-semibold">
-          Готово
-        </Button>
+        {/* Button - now inside scrollable area */}
+        <div className="w-full pb-8">
+          <Button onClick={handleSubmit} className="w-full h-14 text-lg font-semibold">
+            Готово
+          </Button>
+        </div>
       </div>
     </div>
   );
