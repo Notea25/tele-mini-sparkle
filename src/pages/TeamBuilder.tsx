@@ -276,12 +276,9 @@ const TeamBuilder = () => {
     return true;
   });
 
-  // Apply sorting (default: price descending when no sort selected)
+  // Apply sorting
   const sortedPlayers = [...filteredPlayers].sort((a, b) => {
-    if (!sortField || !sortDirection) {
-      // Default sort: by price descending
-      return b.price - a.price;
-    }
+    if (!sortField || !sortDirection) return 0;
 
     if (sortField === "name") {
       const comparison = a.name.localeCompare(b.name, "ru");
@@ -822,7 +819,7 @@ const TeamBuilder = () => {
           {/* Divider between selected players and available players */}
           <div className="mx-4 mt-6 mb-2 border-t border-border" />
           <div className="px-4 mb-4">
-            <h3 className="text-foreground text-base font-semibold">Доступные игроки</h3>
+            <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
           </div>
 
           {/* Price Range */}
@@ -1283,8 +1280,8 @@ const TeamBuilder = () => {
             }
           }}
           className={`w-full rounded-full py-3 font-semibold transition-all ${
-            selectedPlayers.length < 15 
-              ? "bg-primary/30 text-muted-foreground" 
+            selectedPlayers.length < 15
+              ? "bg-primary/30 text-muted-foreground"
               : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
           }`}
         >
