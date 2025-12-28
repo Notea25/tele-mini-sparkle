@@ -675,7 +675,7 @@ const Transfers = () => {
 
       {/* Main content */}
       {activeTab === "formation" ? (
-        <div className="mt-4 pb-44">
+        <div className="mt-4 pb-36">
           <FormationFieldTransfers 
             players={players}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
@@ -687,7 +687,7 @@ const Transfers = () => {
           />
         </div>
       ) : (
-        <div className="px-4 mt-6 pb-44">
+        <div className="px-4 mt-6 pb-36">
           <h2 className="text-foreground text-xl font-bold mb-4">Состав команды</h2>
           
           {Object.entries(playersByPosition).map(([position, positionPlayers]) => 
