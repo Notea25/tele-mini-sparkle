@@ -505,14 +505,19 @@ const Transfers = () => {
               return (
                 <div
                   key={`empty-${position}-${slot.slotIndex}`}
-                  className="bg-card/50 rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
+                  className="bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
                   onClick={() => handleEmptySlotClick(position, slot.slotIndex)}
                 >
-                  <div className="flex-1 flex items-center gap-2 min-w-0">
-                    <span className="text-muted-foreground">{positionLabels[position]}</span>
+                  {/* Empty slot label */}
+                  <div className="flex-1 cursor-pointer hover:opacity-80">
+                    <span className="text-muted-foreground text-sm">{positionLabels[position]}</span>
                   </div>
+
+                  {/* Placeholder for points and price columns */}
                   <span className="w-12 flex-shrink-0"></span>
                   <span className="w-10 flex-shrink-0"></span>
+
+                  {/* Add button */}
                   <button className="w-8 h-8 ml-2 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors flex-shrink-0">
                     <Plus className="w-4 h-4 text-primary" />
                   </button>
