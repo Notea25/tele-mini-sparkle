@@ -22,6 +22,7 @@ import leagueLogo from "@/assets/league-logo.png";
 import aplLogo from "@/assets/apl-logo.png";
 import { getGoldenTourBackup, clearGoldenTourBackup, getBoostState, markBoostAsUsed } from "@/lib/boostState";
 import { restoreTeamFromBackup } from "@/lib/teamData";
+import cupComingSoon from "@/assets/cup-coming-soon.png";
 
 const LEAGUE_TAB_KEY = "fantasyLeagueActiveTab";
 
@@ -913,23 +914,12 @@ const League = () => {
             {/* Main Cup */}
             <h2 className="text-2xl font-bold text-foreground mb-4">Кубок</h2>
 
-            {/* Coming soon card with blur effect */}
-            <Card className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50">
-              <div className="relative py-5 px-4 flex flex-col gap-4">
-                {/* Blurred text behind */}
-                <div className="opacity-25 blur-[4px] px-2">
-                  <p className="text-white/70 text-sm leading-relaxed">
-                    Соперники будут определены в конце 33-й игровой недели. Если в лиге 32 команды, то у каждой из них будет свой соперник в 54-й игровой неделе. Если в лиге от 17 до 31 команды, то некоторые команды получат пропуск в 34-й игровой неделе в зависимости от их результатов в 33-й игровой неделе.
-                  </p>
-                </div>
-
-                {/* Overlay text */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
-                  <p className="text-primary text-lg font-black">2026</p>
-                </div>
-              </div>
-            </Card>
+            {/* Coming soon image */}
+            <img 
+              src={cupComingSoon} 
+              alt="Скоро запустим 2026" 
+              className="w-full rounded-2xl"
+            />
           </div>
         )}
       </main>
