@@ -98,7 +98,7 @@ const Profile = () => {
   };
 
   const handleUserNameChange = (value: string) => {
-    setProfile(prev => ({ ...prev, userName: value }));
+    setProfile(prev => ({ ...prev, userName: value.slice(0, 15) }));
   };
 
   return (
@@ -168,6 +168,7 @@ const Profile = () => {
             <Input
               value={profile.userName}
               onChange={(e) => handleUserNameChange(e.target.value)}
+              maxLength={15}
               className="bg-secondary border-0 rounded-xl h-12 text-foreground"
             />
           </div>
