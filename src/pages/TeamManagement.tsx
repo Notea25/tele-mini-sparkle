@@ -12,7 +12,13 @@ import PlayerCard from "@/components/PlayerCard";
 import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import ConfirmBoostDrawer from "@/components/ConfirmBoostDrawer";
-import { getBoostState, setPendingBoost, clearPendingBoost, hasAnyPendingBoost, TEAM_MANAGEMENT_BOOSTS } from "@/lib/boostState";
+import {
+  getBoostState,
+  setPendingBoost,
+  clearPendingBoost,
+  hasAnyPendingBoost,
+  TEAM_MANAGEMENT_BOOSTS,
+} from "@/lib/boostState";
 import { clubLogos } from "@/lib/clubLogos";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
@@ -67,11 +73,11 @@ const TeamManagement = () => {
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
     // Load initial state from localStorage
     const boostState = getBoostState();
-    return initialChips.map(chip => {
+    return initialChips.map((chip) => {
       if (boostState.pendingBoostId === chip.id) {
         return { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" };
       }
-      const usedBoost = boostState.usedBoosts.find(b => b.id === chip.id);
+      const usedBoost = boostState.usedBoosts.find((b) => b.id === chip.id);
       if (usedBoost) {
         return { ...chip, status: "used" as BoostStatus, usedInTour: usedBoost.tour };
       }
@@ -95,11 +101,11 @@ const TeamManagement = () => {
       }
     };
     checkOtherPageBoost();
-    
+
     // Listen for storage changes from other tabs/pages
     const handleStorageChange = () => checkOtherPageBoost();
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const openBoostDrawer = (chip: BoostChip) => {
@@ -116,7 +122,7 @@ const TeamManagement = () => {
     // Check if another boost is already pending (local or from other page)
     const hasPendingBoost = specialChips.some((chip) => chip.status === "pending");
     const { pending, page } = hasAnyPendingBoost();
-    
+
     if (hasPendingBoost || (pending && page !== "team-management")) {
       toast.error("В одном туре можно использовать только 1 буст");
       return;
@@ -238,7 +244,7 @@ const TeamManagement = () => {
   };
 
   const positionLabels: Record<string, string> = {
-    ВР: "Вратарь",
+    ВР: "Вратари",
     ЗЩ: "Защита",
     ПЗ: "Полузащита",
     НП: "Нападение",
@@ -363,11 +369,11 @@ const TeamManagement = () => {
   // Handle bench player reordering (swap between bench players)
   const handleBenchReorder = (fromIndex: number, toIndex: number) => {
     if (fromIndex === toIndex) return;
-    
+
     // Goalkeeper (position ВР) must always stay at index 0
     const fromPlayer = benchPlayers[fromIndex];
     const toPlayer = benchPlayers[toIndex];
-    
+
     // Don't allow swapping goalkeeper with non-goalkeeper
     if (fromPlayer?.position === "ВР" || toPlayer?.position === "ВР") {
       if (fromPlayer?.position !== toPlayer?.position) {
@@ -375,20 +381,20 @@ const TeamManagement = () => {
         return;
       }
     }
-    
+
     const newBench = [...benchPlayers];
     // Swap the two players
     [newBench[fromIndex], newBench[toIndex]] = [newBench[toIndex], newBench[fromIndex]];
-    
+
     setBenchPlayers(newBench);
     toast.success("Порядок игроков изменён");
   };
 
   // Handle swapping a main squad player with a bench player via long-press
   const handleSwapMainAndBench = (mainPlayerId: number, benchPlayerId: number) => {
-    const mainPlayer = mainSquadPlayers.find(p => p.id === mainPlayerId);
-    const benchPlayer = benchPlayers.find(p => p.id === benchPlayerId);
-    
+    const mainPlayer = mainSquadPlayers.find((p) => p.id === mainPlayerId);
+    const benchPlayer = benchPlayers.find((p) => p.id === benchPlayerId);
+
     if (!mainPlayer || !benchPlayer) {
       toast.error("Игрок не найден");
       return;
@@ -418,13 +424,13 @@ const TeamManagement = () => {
     }
 
     // Create new main squad: replace main player with bench player
-    const newMainSquad = mainSquadPlayers.map((p) => 
-      p.id === mainPlayerId ? { ...benchPlayer, isOnBench: false, slotIndex: p.slotIndex } : p
+    const newMainSquad = mainSquadPlayers.map((p) =>
+      p.id === mainPlayerId ? { ...benchPlayer, isOnBench: false, slotIndex: p.slotIndex } : p,
     );
 
     // Create new bench: replace bench player with main player
     const newBench = benchPlayers.map((p) =>
-      p.id === benchPlayerId ? { ...mainPlayer, isOnBench: true, slotIndex: undefined } : p
+      p.id === benchPlayerId ? { ...mainPlayer, isOnBench: true, slotIndex: undefined } : p,
     );
 
     // Reassign slot indices based on positions
@@ -459,29 +465,29 @@ const TeamManagement = () => {
 
   // Team abbreviations for next match
   const teamAbbreviations: Record<string, string> = {
-    "Арсенал": "АРС",
-    "БАТЭ": "БАТ",
-    "Белшина": "БЕЛ",
-    "Витебск": "ВИТ",
-    "Гомель": "ГОМ",
+    Арсенал: "АРС",
+    БАТЭ: "БАТ",
+    Белшина: "БЕЛ",
+    Витебск: "ВИТ",
+    Гомель: "ГОМ",
     "Динамо-Минск": "ДМН",
     "Динамо-Брест": "ДБР",
-    "Днепр": "ДНП",
-    "Ислочь": "ИСЛ",
+    Днепр: "ДНП",
+    Ислочь: "ИСЛ",
     "МЛ Витебск": "МЛ",
-    "Минск": "МИН",
-    "Нафтан": "НАФ",
-    "Неман": "НЕМ",
+    Минск: "МИН",
+    Нафтан: "НАФ",
+    Неман: "НЕМ",
     "Славия-Мозырь": "СЛА",
     "Торпедо-БелАЗ": "ТОР",
-    "Шахтер": "ШАХ",
-    "Барановичи": "БАР",
+    Шахтер: "ШАХ",
+    Барановичи: "БАР",
   };
 
   // Get next opponent for a team (simplified - just shows a random opponent)
   const getNextOpponent = (team: string): string => {
-    const teams = Object.keys(teamAbbreviations).filter(t => t !== team);
-    const hash = team.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const teams = Object.keys(teamAbbreviations).filter((t) => t !== team);
+    const hash = team.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const opponent = teams[hash % teams.length];
     return teamAbbreviations[opponent] || "—";
   };
@@ -506,7 +512,7 @@ const TeamManagement = () => {
           const isCaptainPlayer = captain === player.id;
           const isViceCaptainPlayer = viceCaptain === player.id;
           const playerExt = player as PlayerDataExt;
-          
+
           return (
             <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
               {/* Club logo + Player name + position + badges */}
@@ -514,26 +520,32 @@ const TeamManagement = () => {
                 className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                 onClick={() => setSelectedPlayerForCard(player.id)}
               >
-                {clubLogo && (
-                  <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
-                )}
+                {clubLogo && <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />}
                 <span className="text-foreground font-medium truncate">{player.name}</span>
                 <span className="text-muted-foreground text-xs">{player.position}</span>
                 {/* Captain badge */}
                 {isCaptainPlayer && (
-                  <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">К</span>
+                  <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                    К
+                  </span>
                 )}
                 {/* Vice-captain badge */}
                 {isViceCaptainPlayer && (
-                  <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">ВК</span>
+                  <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                    ВК
+                  </span>
                 )}
                 {/* Red card badge */}
                 {playerExt.hasRedCard && (
-                  <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">КК</span>
+                  <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                    КК
+                  </span>
                 )}
                 {/* Injury badge */}
                 {playerExt.isInjured && !playerExt.hasRedCard && (
-                  <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">Т</span>
+                  <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                    Т
+                  </span>
                 )}
               </div>
 
@@ -541,7 +553,9 @@ const TeamManagement = () => {
               <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.points}</div>
 
               {/* Next match opponent */}
-              <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">{getNextOpponent(player.team)}</div>
+              <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">
+                {getNextOpponent(player.team)}
+              </div>
 
               {/* Swap button */}
               <button
@@ -624,9 +638,9 @@ const TeamManagement = () => {
               ? "bg-primary text-primary-foreground hover:bg-primary/90"
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
-          >
-            Список
-          </Button>
+        >
+          Список
+        </Button>
       </div>
 
       {/* Special Chips */}
@@ -655,9 +669,13 @@ const TeamManagement = () => {
                     isBlocked || chip.status === "used" ? "grayscale opacity-50" : ""
                   }`}
                 />
-                <span className={`text-[10px] font-medium text-center leading-tight ${
-                  isBlocked ? "text-muted-foreground" : "text-foreground"
-                }`}>{chip.label}</span>
+                <span
+                  className={`text-[10px] font-medium text-center leading-tight ${
+                    isBlocked ? "text-muted-foreground" : "text-foreground"
+                  }`}
+                >
+                  {chip.label}
+                </span>
                 <span
                   className={`text-[8px] ${
                     isBlocked
@@ -772,7 +790,7 @@ const TeamManagement = () => {
             {benchPlayers.map((player, index) => {
               const clubLogo = clubLogos[player.team] || clubIcons[player.team];
               const playerExt = player as PlayerDataExt;
-              
+
               return (
                 <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
                   {/* Club logo + Player name + position + badges */}
@@ -787,11 +805,15 @@ const TeamManagement = () => {
                     <span className="text-muted-foreground text-xs">{player.position}</span>
                     {/* Red card badge */}
                     {playerExt.hasRedCard && (
-                      <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">КК</span>
+                      <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                        КК
+                      </span>
                     )}
                     {/* Injury badge */}
                     {playerExt.isInjured && !playerExt.hasRedCard && (
-                      <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">Т</span>
+                      <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                        Т
+                      </span>
                     )}
                   </div>
 
@@ -799,7 +821,9 @@ const TeamManagement = () => {
                   <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.points}</div>
 
                   {/* Next match opponent */}
-                  <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">{getNextOpponent(player.team)}</div>
+                  <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">
+                    {getNextOpponent(player.team)}
+                  </div>
 
                   {/* Swap button */}
                   <button
