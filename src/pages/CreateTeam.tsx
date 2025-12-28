@@ -167,7 +167,7 @@ const CreateTeam = () => {
       <SportHeader />
 
       {/* Breadcrumbs */}
-      <div className="px-4 mt-4">
+      <div className="px-4 mt-10">
         <Breadcrumbs
           items={[{ label: "Футбол", path: "/" }, { label: "Беларусь", path: "/" }, { label: "Создание команды" }]}
         />
