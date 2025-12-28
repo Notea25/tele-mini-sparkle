@@ -675,7 +675,7 @@ const Transfers = () => {
 
       {/* Main content */}
       {activeTab === "formation" ? (
-        <div className="mt-4">
+        <div className="mt-4 pb-44">
           <FormationFieldTransfers 
             players={players}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
@@ -685,22 +685,9 @@ const Transfers = () => {
             viceCaptain={viceCaptain}
             removedPlayers={removedPlayersInfo}
           />
-          
-          {/* Reset squad button - appears when there are changes */}
-          {hasChanges && (
-            <div className="px-4 mt-3 pb-40">
-              <Button
-                onClick={handleResetSquad}
-                variant="outline"
-                className="w-full rounded-full h-10 border-border text-muted-foreground hover:text-foreground"
-              >
-                Вернуть исходный состав
-              </Button>
-            </div>
-          )}
         </div>
       ) : (
-        <div className="px-4 mt-6 pb-6">
+        <div className="px-4 mt-6 pb-44">
           <h2 className="text-foreground text-xl font-bold mb-4">Состав команды</h2>
           
           {Object.entries(playersByPosition).map(([position, positionPlayers]) => 
@@ -710,9 +697,20 @@ const Transfers = () => {
       )}
 
       {/* Fixed Bottom Section */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-3 z-50">
+        {/* Reset squad button - appears when there are changes */}
+        {hasChanges && (
+          <Button
+            onClick={handleResetSquad}
+            variant="outline"
+            className="w-full rounded-full h-10 border-border text-muted-foreground hover:text-foreground mb-3"
+          >
+            Вернуть исходный состав
+          </Button>
+        )}
+        
         {/* Stats Row */}
-        <div className="flex justify-between mb-4">
+        <div className="flex justify-between mb-3">
           <div className="text-center">
             <span className="text-muted-foreground text-xs block">Бесплатные трансферы</span>
             <span className="text-foreground text-2xl font-bold">{freeTransfers}</span>
