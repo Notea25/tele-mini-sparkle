@@ -98,8 +98,8 @@ const TeamBuilder = () => {
   const [showSquadError, setShowSquadError] = useState(false);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
   // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
-  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
+  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
 
   // Check for unsaved changes
   const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
@@ -276,9 +276,12 @@ const TeamBuilder = () => {
     return true;
   });
 
-  // Apply sorting
+  // Apply sorting (default: price descending when no sort selected)
   const sortedPlayers = [...filteredPlayers].sort((a, b) => {
-    if (!sortField || !sortDirection) return 0;
+    if (!sortField || !sortDirection) {
+      // Default sort: by price descending
+      return b.price - a.price;
+    }
 
     if (sortField === "name") {
       const comparison = a.name.localeCompare(b.name, "ru");
