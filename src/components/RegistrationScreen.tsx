@@ -166,12 +166,13 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
   return (
     <div className="fixed inset-0 z-[9998] flex flex-col bg-background overflow-auto">
+      {/* Players image - full width at top */}
+      <div className="w-full flex-shrink-0">
+        <img src={playersWelcome} alt="Welcome" className="w-full h-auto object-cover" />
+      </div>
+
       {/* Content area */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 min-h-0">
-        {/* Players image */}
-        <div className="w-full max-w-sm mb-8 flex-shrink-0">
-          <img src={playersWelcome} alt="Welcome" className="w-full h-auto object-cover rounded-2xl" />
-        </div>
+      <div className="flex-1 flex flex-col items-center px-6 py-6 min-h-0">
 
         {/* Title */}
         <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground italic mb-2 px-4">
