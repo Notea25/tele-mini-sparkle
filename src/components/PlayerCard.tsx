@@ -1,9 +1,82 @@
 import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { ArrowLeftRight } from "lucide-react";
+import { useState } from "react";
 import playerPhoto from "@/assets/player-photo.png";
 import clubLogo from "@/assets/club-logo.png";
 import clubBelshina from "@/assets/club-belshina.png";
 import { clubLogos } from "@/lib/clubLogos";
+import flameIcon from "@/assets/flame-icon.png";
+
+// Import jerseys
+import arsenalJersey from "@/assets/jerseys/arsenalJersey.png";
+import bateJersey from "@/assets/jerseys/bateJersey.png";
+import brestJersey from "@/assets/jerseys/brestJersey.png";
+import dinamoJersey from "@/assets/jerseys/dinamoJersey.png";
+import gomelJersey from "@/assets/jerseys/gomelJersey.png";
+import minskJersey from "@/assets/jerseys/minskJersey.png";
+import mlJersey from "@/assets/jerseys/mlJersey.png";
+import naftanJersey from "@/assets/jerseys/naftanJersey.png";
+import nemanJersey from "@/assets/jerseys/nemanJersey.png";
+import slaviaJersey from "@/assets/jerseys/slaviaJersey.png";
+import torpedoJersey from "@/assets/jerseys/torpedoJersey.png";
+import vitebskJersey from "@/assets/jerseys/vitebskJersey.png";
+
+// Goalkeeper jerseys
+import arsenalGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
+import bateGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
+import gomelGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/gomelGoalkeeperJersey.png";
+import mlGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
+import slaviaGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/slaviaGoalkeeperJersey.png";
+import vitebskGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
+
+// Helper function to get jersey based on team and position
+const getJerseyForTeam = (team: string, position?: string) => {
+  const isGoalkeeper = position === "ВР";
+  const normalizedTeam = team.toLowerCase();
+  
+  if (normalizedTeam.includes("динамо") && normalizedTeam.includes("минск")) {
+    return dinamoJersey;
+  }
+  if (normalizedTeam.includes("динамо") && normalizedTeam.includes("брест")) {
+    return brestJersey;
+  }
+  if (normalizedTeam.includes("батэ") || normalizedTeam === "bate") {
+    return isGoalkeeper ? bateGoalkeeperJersey : bateJersey;
+  }
+  if (normalizedTeam.includes("мл") || normalizedTeam.includes("витебск") && normalizedTeam.includes("мл")) {
+    return isGoalkeeper ? mlGoalkeeperJersey : mlJersey;
+  }
+  if (normalizedTeam.includes("витебск") && !normalizedTeam.includes("мл")) {
+    return isGoalkeeper ? vitebskGoalkeeperJersey : vitebskJersey;
+  }
+  if (normalizedTeam.includes("славия") || normalizedTeam.includes("мозырь")) {
+    return isGoalkeeper ? slaviaGoalkeeperJersey : slaviaJersey;
+  }
+  if (normalizedTeam.includes("арсенал")) {
+    return isGoalkeeper ? arsenalGoalkeeperJersey : arsenalJersey;
+  }
+  if (normalizedTeam.includes("неман")) {
+    return nemanJersey;
+  }
+  if (normalizedTeam.includes("минск") && !normalizedTeam.includes("динамо")) {
+    return minskJersey;
+  }
+  if (normalizedTeam.includes("торпедо") || normalizedTeam.includes("белаз")) {
+    return torpedoJersey;
+  }
+  if (normalizedTeam.includes("гомель")) {
+    return isGoalkeeper ? gomelGoalkeeperJersey : gomelJersey;
+  }
+  if (normalizedTeam.includes("нафтан") || normalizedTeam.includes("новополоцк")) {
+    return naftanJersey;
+  }
+  if (normalizedTeam.includes("белшина")) {
+    return slaviaJersey;
+  }
+  
+  return dinamoJersey;
+};
 
 interface PlayerData {
   id: number;
@@ -12,6 +85,11 @@ interface PlayerData {
   position: string;
   points: number;
   price: number;
+  isOnBench?: boolean;
+}
+
+interface SwapPlayerData extends PlayerData {
+  isValid: boolean;
 }
 
 interface PlayerCardProps {
@@ -26,10 +104,11 @@ interface PlayerCardProps {
   onSetViceCaptain?: (playerId: number) => void;
   variant?: "default" | "transfers" | "management" | "view" | "buy";
   onSell?: (playerId: number) => void;
-  onSwap?: (playerId: number) => void;
+  onSwap?: (fromPlayerId: number, toPlayerId: number) => void;
   onBuy?: (playerId: number) => void;
   hidePointsBreakdown?: boolean;
   canBuy?: boolean;
+  swapPlayers?: SwapPlayerData[];
 }
 
 const PlayerCard = ({
@@ -48,7 +127,10 @@ const PlayerCard = ({
   onBuy,
   hidePointsBreakdown = false,
   canBuy = true,
+  swapPlayers = [],
 }: PlayerCardProps) => {
+  const [selectedSwapPlayer, setSelectedSwapPlayer] = useState<number | null>(null);
+  
   if (!player) return null;
 
   const positionNames: Record<string, string> = {
@@ -298,6 +380,64 @@ const PlayerCard = ({
           )}
         </div>
 
+        {/* Swap section for management variant */}
+        {variant === "management" && swapPlayers.length > 0 && (
+          <div className="px-6 pb-4">
+            {/* Column headers */}
+            <div className="flex items-center px-2 py-2 text-xs text-muted-foreground">
+              <span className="flex-1">Игрок</span>
+              <div className="w-12 text-center">Клуб</div>
+              <div className="w-12 text-center">Очки</div>
+              <div className="w-10 text-center">Цена</div>
+              <span className="w-10"></span>
+            </div>
+
+            {/* Swap players list */}
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {swapPlayers.filter(p => p.isValid).map((swapPlayer) => (
+                <div
+                  key={swapPlayer.id}
+                  className={`flex items-center bg-secondary rounded-full px-3 py-2 transition-all ${
+                    selectedSwapPlayer === swapPlayer.id 
+                      ? "ring-2 ring-primary" 
+                      : ""
+                  }`}
+                >
+                  {/* Player name and position */}
+                  <div className="flex-1 flex items-center gap-2 min-w-0">
+                    <span className="text-foreground font-medium truncate">{swapPlayer.name}</span>
+                    <span className="text-muted-foreground text-xs flex-shrink-0">{swapPlayer.position}</span>
+                  </div>
+
+                  {/* Club with flame icon */}
+                  <div className="w-12 flex items-center justify-center gap-0.5 flex-shrink-0">
+                    <span className="text-primary text-xs truncate">{swapPlayer.team.length > 8 ? swapPlayer.team.substring(0, 8) + "…" : swapPlayer.team}</span>
+                    <img src={flameIcon} alt="" className="w-3 h-3" />
+                  </div>
+
+                  {/* Points */}
+                  <div className="w-12 text-center text-foreground text-sm flex-shrink-0">{swapPlayer.points}</div>
+
+                  {/* Price */}
+                  <div className="w-10 text-center text-foreground text-sm flex-shrink-0">{swapPlayer.price}</div>
+
+                  {/* Swap button */}
+                  <button
+                    onClick={() => setSelectedSwapPlayer(swapPlayer.id)}
+                    className={`w-8 h-8 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
+                      selectedSwapPlayer === swapPlayer.id
+                        ? "bg-primary"
+                        : "bg-primary"
+                    }`}
+                  >
+                    <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <DrawerFooter className="px-6 pb-6">
           {variant === "view" ? (
             <Button
@@ -327,17 +467,28 @@ const PlayerCard = ({
           ) : variant === "management" ? (
             <div className="flex gap-3 w-full">
               <Button
-                onClick={onClose}
+                onClick={() => {
+                  setSelectedSwapPlayer(null);
+                  onClose();
+                }}
                 className="flex-1 rounded-full py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
               >
-                Закрыть
+                Отмена
               </Button>
               <Button
                 onClick={() => {
-                  onSwap?.(player.id);
-                  onClose();
+                  if (selectedSwapPlayer) {
+                    onSwap?.(player.id, selectedSwapPlayer);
+                    setSelectedSwapPlayer(null);
+                    onClose();
+                  }
                 }}
-                className="flex-1 rounded-full py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+                disabled={!selectedSwapPlayer}
+                className={`flex-1 rounded-full py-6 font-semibold text-lg ${
+                  selectedSwapPlayer 
+                    ? "bg-primary hover:bg-primary/90 text-primary-foreground" 
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                }`}
               >
                 Заменить
               </Button>
