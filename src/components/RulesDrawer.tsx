@@ -1,7 +1,7 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { X } from "lucide-react";
-import scoringExample from "@/assets/scoring-example.png";
+import scoringExample from "@/assets/scoring-example-new.png";
 
 interface RulesDrawerProps {
   isOpen: boolean;
@@ -29,30 +29,27 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
             {/* How to play section */}
             <AccordionItem value="how-to-play" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Как играть</span>
+                <span className="text-foreground font-medium">Создавай команду</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
+                  <p>
+                    Мы выделим тебе бюджет в <span className="text-primary font-semibold">100 миллионов</span> — собери команду своей мечты!
+                  </p>
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">1. Собирай команду</h4>
-                    <p>
-                      Воспользуйся бюджетом в <span className="text-primary font-semibold">100 миллионов</span> и
-                      собери команду лучших игроков чемпионата. Команда состоит из 15 игроков: 11 в основном
-                      составе и 4 на скамейке запасных.
-                    </p>
+                    <h4 className="text-foreground font-medium mb-2">Состав команды</h4>
+                    <ul className="space-y-1">
+                      <li>• 15 игроков в команде</li>
+                      <li>• 11 в основном составе</li>
+                      <li>• 4 на скамейке запасных</li>
+                      <li>• Максимум 3 игрока из одного клуба</li>
+                    </ul>
                   </div>
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">2. Выбери капитана</h4>
+                    <h4 className="text-foreground font-medium mb-2">Капитан и вице-капитан</h4>
                     <p>
                       Капитан получает <span className="text-primary font-semibold">×2 очков</span> за свои
                       действия. Вице-капитан получит ×2 очков, если капитан не выйдет на поле.
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="text-foreground font-medium mb-2">3. Соревнуйся</h4>
-                    <p>
-                      Соревнуйся с другими пользователями в общей лиге или создай свою собственную лигу для
-                      друзей.
                     </p>
                   </div>
                 </div>
@@ -62,14 +59,15 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
             {/* Points scoring section */}
             <AccordionItem value="points" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Начисление очков</span>
+                <span className="text-foreground font-medium">Набирай очки</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
                 <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
                   <p>
-                    Каждый игрок получает или теряет очки за свои действия в реальных матчах. Количество очков
-                    зависит от амплуа футболиста.
+                    Каждый игрок на своей позиции получает виртуальные очки за <span className="text-primary font-semibold">реальные действия</span> на футбольном поле. Количество очков зависит от амплуа.
                   </p>
+
+                  <img src={scoringExample} alt="Scoring Example" className="w-full rounded-xl" />
 
                   <div className="space-y-3">
                     <div>
@@ -150,21 +148,20 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
             {/* Transfers section */}
             <AccordionItem value="transfers" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Трансферы</span>
+                <span className="text-foreground font-medium">Делай трансферы</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
                   <p>
-                    Если кто-то из футболистов твоей команды получил травму или плохо играет — каждый тур ты
-                    можешь сделать <span className="text-primary font-semibold">до 3-х бесплатных трансферов</span>.
+                    Не нравится игрок? Смело отправляй его на скамейку или продавай. Перед каждым туром у тебя есть <span className="text-primary font-semibold">2 бесплатных трансфера</span>. Если команда совсем не радует — активируй буст и меняй всех, кого подскажет сердце и интуиция.
                   </p>
 
                   <div>
                     <h4 className="text-foreground font-medium mb-2">Правила трансферов</h4>
                     <ul className="space-y-2">
-                      <li>• 3 бесплатных трансфера каждый тур</li>
+                      <li>• 2 бесплатных трансфера каждый тур</li>
                       <li>• Неиспользованные трансферы не переносятся</li>
-                      <li>• За каждый дополнительный трансфер: -4 очка</li>
+                      <li>• За каждый дополнительный трансфер: −4 очка</li>
                       <li>• Максимум 3 игрока из одного клуба</li>
                     </ul>
                   </div>
@@ -172,8 +169,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                   <div>
                     <h4 className="text-foreground font-medium mb-2">Дедлайн</h4>
                     <p>
-                      Все трансферы должны быть сделаны до начала первого матча тура. После дедлайна изменения
-                      невозможны.
+                      Все трансферы должны быть сделаны до начала первого матча тура. После дедлайна изменения невозможны.
                     </p>
                   </div>
                 </div>
@@ -186,10 +182,9 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                 <span className="text-foreground font-medium">Замены</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
                   <p>
-                    Игроки со скамейки могут автоматически заменить игроков основного состава, если те не вышли
-                    на поле.
+                    Игроки со скамейки могут автоматически заменить игроков основного состава, если те не вышли на поле.
                   </p>
 
                   <div>
@@ -205,8 +200,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                   <div>
                     <h4 className="text-foreground font-medium mb-2">Ручные замены</h4>
                     <p>
-                      До дедлайна вы можете вручную менять местами игроков основного состава и скамейки в разделе
-                      «Моя команда».
+                      До дедлайна вы можете вручную менять местами игроков основного состава и скамейки в разделе «Моя команда».
                     </p>
                   </div>
                 </div>
@@ -219,10 +213,9 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                 <span className="text-foreground font-medium">Бусты</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
                   <p>
-                    Бусты — это специальные усиления, которые можно использовать один раз за сезон. Каждый буст
-                    активируется на один тур.
+                    Бусты — это специальные усиления, которые можно использовать один раз за сезон. Каждый буст активируется на один тур.
                   </p>
 
                   <div className="space-y-3">
@@ -242,7 +235,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium mb-1">⭐ Трансферы+</h4>
+                      <h4 className="text-foreground font-medium mb-1">⭐ Безлимитные трансферы</h4>
                       <p className="text-xs">Неограниченное количество бесплатных трансферов в этом туре</p>
                     </div>
 
@@ -262,15 +255,18 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
             {/* Leagues section */}
             <AccordionItem value="leagues" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Лиги</span>
+                <span className="text-foreground font-medium">Соревнуйся</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
+                  <p>
+                    Играй против других пользователей в общей лиге, <span className="text-primary font-semibold">борись с друзьями</span> в частных лигах и выигрывай призы в коммерческих.
+                  </p>
+
                   <div>
                     <h4 className="text-foreground font-medium mb-2">Общая лига</h4>
                     <p>
-                      Все пользователи автоматически участвуют в общей лиге. Соревнуйся со всеми игроками
-                      фэнтези-футбола.
+                      Все пользователи автоматически участвуют в общей лиге. Соревнуйся со всеми игроками фэнтези-футбола.
                     </p>
                   </div>
 
@@ -284,15 +280,14 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                   <div>
                     <h4 className="text-foreground font-medium mb-2">Коммерческие лиги</h4>
                     <p>
-                      Участвуй в специальных лигах от спонсоров с реальными призами: фрибеты, техника, VIP-абонементы
-                      и многое другое.
+                      Участвуй в специальных лигах от спонсоров с реальными призами: фрибеты, техника, VIP-абонементы и многое другое.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="text-foreground font-medium mb-2">Клубные лиги</h4>
                     <p>
-                      Соревнуйся с другими болельщиками твоей любимой команды в специальной клубной лиге.
+                      Мы добавим тебя в лигу твоего любимого клуба — там свои.
                     </p>
                   </div>
                 </div>
@@ -302,13 +297,12 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
             {/* Prizes section */}
             <AccordionItem value="prizes" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Призы</span>
+                <span className="text-foreground font-medium">Получай призы</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
                   <p>
-                    Пользователи, набравшие наибольшее количество очков, получат призы от{" "}
-                    <span className="text-primary font-semibold">Fantasy.sports.by</span>
+                    Самые успешные менеджеры получат крутые призы от <span className="text-primary font-semibold">Fantasy Sports</span>.
                   </p>
 
                   <div>
@@ -323,8 +317,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                   <div>
                     <h4 className="text-foreground font-medium mb-2">Еженедельные призы</h4>
                     <p>
-                      Лучший менеджер каждого тура получает специальный приз. Следи за коммерческими лигами для
-                      дополнительных возможностей!
+                      Лучший менеджер каждого тура получает специальный приз. Следи за коммерческими лигами для дополнительных возможностей!
                     </p>
                   </div>
                 </div>
