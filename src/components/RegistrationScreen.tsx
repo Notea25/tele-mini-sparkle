@@ -203,7 +203,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
       </div>
 
       {/* Content area */}
-      <div className="flex-1 flex flex-col items-center px-6 py-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-6">
 
         {/* Title */}
         <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-2 px-4 font-display">
@@ -219,7 +219,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
         </p>
 
         {/* Form fields */}
-        <div ref={formRef} className="w-full space-y-3 mb-8">
+        <div ref={formRef} className="w-full space-y-3">
           <div>
             <Input
               value={nickname}
@@ -243,17 +243,17 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
             {birthDateError && <p className="text-destructive text-sm mt-1 px-1">{birthDateError}</p>}
           </div>
         </div>
+      </div>
 
-        {/* Button - stays visible above keyboard */}
-        <div className="sticky bottom-0 w-full pb-8 pt-3 bg-background/80 backdrop-blur">
-          <Button
-            onClick={handleSubmit}
-            className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] rounded-[24px]"
-            style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
-          >
-            Готово
-          </Button>
-        </div>
+      {/* Buttons - fixed at bottom like onboarding */}
+      <div className="px-6 pb-8 space-y-3">
+        <Button
+          onClick={handleSubmit}
+          className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] rounded-[24px]"
+          style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
+        >
+          Готово
+        </Button>
       </div>
     </div>
   );
