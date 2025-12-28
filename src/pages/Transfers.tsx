@@ -270,6 +270,29 @@ const Transfers = () => {
   const [buyDrawerOpen, setBuyDrawerOpen] = useState(false);
   const [buyPositionFilter, setBuyPositionFilter] = useState<string | null>(null);
 
+  // Calculate removed players with their original slot info for visual hints
+  const getRemovedPlayersInfo = () => {
+    const currentPlayerIds = new Set(players.map(p => p.id));
+    return initialPlayersRef.current
+      .filter(p => !currentPlayerIds.has(p.id))
+      .map(p => ({
+        position: p.position,
+        slotIndex: p.slotIndex ?? 0,
+        name: p.name,
+        team: p.team,
+      }));
+  };
+
+  const removedPlayersInfo = getRemovedPlayersInfo();
+
+  // Reset squad to initial state
+  const handleResetSquad = () => {
+    if (initialPlayersRef.current.length > 0) {
+      setPlayers([...initialPlayersRef.current]);
+      toast.success("Состав восстановлен");
+    }
+  };
+
   // Calculate transfer records for confirmation
   const getTransferRecords = () => {
     const currentPlayerIds = new Set(players.map(p => p.id));
@@ -660,7 +683,21 @@ const Transfers = () => {
             onEmptySlotClick={handleEmptySlotClick}
             captain={captain}
             viceCaptain={viceCaptain}
+            removedPlayers={removedPlayersInfo}
           />
+          
+          {/* Reset squad button - appears when there are changes */}
+          {hasChanges && (
+            <div className="px-4 mt-3">
+              <Button
+                onClick={handleResetSquad}
+                variant="outline"
+                className="w-full rounded-full h-10 border-border text-muted-foreground hover:text-foreground"
+              >
+                Вернуть исходный состав
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="px-4 mt-6 pb-6">
