@@ -257,7 +257,9 @@ const CreateLeague = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl font-bold text-foreground mb-6">Создай свою лигу</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-6 px-4 font-display">
+          Создай свою лигу
+        </h1>
 
         {/* Players Image */}
         <div className="flex justify-center mb-8">
@@ -265,24 +267,32 @@ const CreateLeague = () => {
         </div>
 
         {/* League Name Input */}
-        <div className="space-y-4">
-          <Input
+        <div className="space-y-3 mb-8">
+          <input
             type="text"
             placeholder="Название лиги"
             value={leagueName}
-            onChange={(e) => setLeagueName(e.target.value)}
-            className="w-full bg-secondary border-none rounded-full h-14 px-6 text-foreground text-base placeholder:text-muted-foreground"
+            onChange={(e) => setLeagueName(e.target.value.slice(0, 30))}
+            maxLength={30}
+            className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F]"
+            style={{
+              borderColor: leagueName ? "rgba(255, 255, 255, 0.2)" : "#363546",
+              color: leagueName ? "#FFFFFF" : "#4B485F",
+              borderWidth: "1px",
+              borderStyle: "solid",
+            }}
           />
-
-          {/* Create Button */}
-          <Button
-            onClick={handleCreateLeague}
-            disabled={!leagueName.trim()}
-            className="w-full rounded-full h-14 text-base font-semibold bg-primary text-primary-foreground disabled:opacity-50"
-          >
-            Создать лигу
-          </Button>
         </div>
+
+        {/* Create Button */}
+        <Button
+          onClick={handleCreateLeague}
+          disabled={!leagueName.trim()}
+          className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] rounded-[24px] disabled:opacity-50"
+          style={{ boxShadow: leagueName.trim() ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
+        >
+          Создать лигу
+        </Button>
       </main>
     </div>
   );
