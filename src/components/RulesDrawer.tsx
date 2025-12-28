@@ -289,36 +289,6 @@ const RulesDrawer = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-
-            {/* Prizes section */}
-            <AccordionItem value="prizes" className="border border-border rounded-xl overflow-hidden">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Получай призы</span>
-              </AccordionTrigger>
-              <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
-                  <p>
-                    Самые успешные менеджеры получат крутые призы от <span className="text-primary font-semibold">Fantasy Sports</span>.
-                  </p>
-
-                  <div>
-                    <h4 className="text-foreground font-medium mb-2">Призы сезона</h4>
-                    <ul className="space-y-2">
-                      <li>🥇 1 место: Главный приз сезона</li>
-                      <li>🥈 2 место: Ценный приз</li>
-                      <li>🥉 3 место: Памятный приз</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h4 className="text-foreground font-medium mb-2">Еженедельные призы</h4>
-                    <p>
-                      Лучший менеджер каждого тура получает специальный приз. Следи за коммерческими лигами для дополнительных возможностей!
-                    </p>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
           </Accordion>
 
           {/* Bottom padding */}
