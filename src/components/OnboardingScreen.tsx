@@ -30,9 +30,9 @@ const slides: OnboardingSlide[] = [
     title: "Борись за ценные призы",
     subtitle: (
       <>
-        Участвуй в основной и коммерческой лигах,
+        Участвуй в основной и коммерческой
         <br />
-        создавай частные
+        лигах, создавай частные
       </>
     ),
   },
@@ -74,7 +74,7 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
         <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-4 px-4 font-display">{slide.title}</h1>
 
         {/* Subtitle */}
-        <p className="text-muted-foreground text-center text-base mb-8 px-4 font-sans">{slide.subtitle}</p>
+        <p className="text-muted-foreground text-center text-base mb-8 px-4 font-sans whitespace-pre-line">{slide.subtitle}</p>
 
         {/* Progress indicators */}
         <div className="flex gap-2 mb-8">
