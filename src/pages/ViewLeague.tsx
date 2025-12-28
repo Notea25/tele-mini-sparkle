@@ -259,7 +259,8 @@ const ViewLeague = () => {
             <Button
               onClick={handleClose}
               variant="outline"
-              className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+              size="lg"
+              className="w-full"
             >
               Закрыть
             </Button>
@@ -267,14 +268,16 @@ const ViewLeague = () => {
             <>
               <Button
                 disabled
-                className="w-full rounded-full py-6 font-semibold bg-muted text-muted-foreground cursor-not-allowed"
+                size="lg"
+                className="w-full"
               >
                 Регистрация ещё не началась
               </Button>
               <Button
                 onClick={handleClose}
                 variant="outline"
-                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                size="lg"
+                className="w-full"
               >
                 Закрыть
               </Button>
@@ -283,14 +286,16 @@ const ViewLeague = () => {
             <>
               <Button
                 onClick={handleParticipate}
-                className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
+                size="lg"
+                className="w-full"
               >
                 Участвовать
               </Button>
               <Button
                 onClick={handleClose}
                 variant="outline"
-                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                size="lg"
+                className="w-full"
               >
                 Закрыть
               </Button>
@@ -299,14 +304,16 @@ const ViewLeague = () => {
             <>
               <Button
                 disabled
-                className="w-full rounded-full py-6 font-semibold bg-muted text-muted-foreground cursor-not-allowed"
+                size="lg"
+                className="w-full"
               >
                 Регистрация закрыта
               </Button>
               <Button
                 onClick={handleClose}
                 variant="outline"
-                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                size="lg"
+                className="w-full"
               >
                 Закрыть
               </Button>
@@ -317,7 +324,8 @@ const ViewLeague = () => {
           <>
             <Button
               onClick={handleInviteFriend}
-              className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
+              size="lg"
+              className="w-full"
             >
               Пригласить друзей
             </Button>
@@ -327,7 +335,8 @@ const ViewLeague = () => {
                   <Button
                     onClick={() => setShowDeleteConfirmDrawer(true)}
                     variant="outline"
-                    className="w-full rounded-full py-6 font-semibold border-destructive text-destructive hover:bg-destructive/10"
+                    size="lg"
+                    className="w-full border-destructive text-destructive hover:bg-destructive/10"
                   >
                     Удалить лигу
                   </Button>
@@ -335,7 +344,8 @@ const ViewLeague = () => {
                 <Button
                   onClick={handleClose}
                   variant="outline"
-                  className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                  size="lg"
+                  className="w-full"
                 >
                   Закрыть
                 </Button>
@@ -345,14 +355,16 @@ const ViewLeague = () => {
                 <Button
                   onClick={handleLeaveLeague}
                   variant="outline"
-                  className="w-full rounded-full py-6 font-semibold border-destructive text-destructive hover:bg-destructive/10"
+                  size="lg"
+                  className="w-full border-destructive text-destructive hover:bg-destructive/10"
                 >
                   Покинуть лигу
                 </Button>
                 <Button
                   onClick={handleClose}
                   variant="outline"
-                  className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                  size="lg"
+                  className="w-full"
                 >
                   Закрыть
                 </Button>
@@ -403,7 +415,8 @@ const ViewLeague = () => {
             {/* Close Button */}
             <Button
               onClick={() => setShowInviteDrawer(false)}
-              className="w-full rounded-full py-6 font-semibold bg-primary text-primary-foreground"
+              size="lg"
+              className="w-full"
             >
               Закрыть
             </Button>
@@ -429,14 +442,16 @@ const ViewLeague = () => {
               <Button
                 onClick={confirmLeaveLeague}
                 variant="destructive"
-                className="w-full rounded-full py-6 font-semibold"
+                size="lg"
+                className="w-full"
               >
                 Покинуть лигу
               </Button>
               <Button
                 onClick={() => setShowLeaveConfirmDrawer(false)}
                 variant="outline"
-                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                size="lg"
+                className="w-full"
               >
                 Отмена
               </Button>
@@ -466,14 +481,16 @@ const ViewLeague = () => {
                   handleDeleteLeague();
                 }}
                 variant="destructive"
-                className="w-full rounded-full py-6 font-semibold"
+                size="lg"
+                className="w-full"
               >
                 Удалить
               </Button>
               <Button
                 onClick={() => setShowDeleteConfirmDrawer(false)}
                 variant="outline"
-                className="w-full rounded-full py-6 font-semibold border-border text-foreground"
+                size="lg"
+                className="w-full"
               >
                 Отмена
               </Button>
