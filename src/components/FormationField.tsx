@@ -136,7 +136,7 @@ const FormationField = ({
 
       if (width <= 480) {
         // Для ширины экрана до 480px фиксированные 70x84
-        cardWidth = 72;
+        cardWidth = 66;
       } else if (width <= 768) {
         const minWidth = 96;
         const maxWidth = 128;
@@ -319,9 +319,8 @@ const FormationField = ({
 
   const mobileBaseWidth = 320;
   const mobilePadding = 4;
-  // Уменьшили отступы между карточками в два раза
-  const mobileGapFor2 = 8; // было 16
-  const mobileGapFor5 = 4; // было 8
+  const mobileGapFor2 = 8;
+  const mobileGapFor5 = 4;
 
   const baseScaleFactor = screenWidth / mobileBaseWidth;
 
@@ -334,7 +333,25 @@ const FormationField = ({
 
   const containerPadding = mobilePadding * baseScaleFactor;
 
-  const rowSpacing = screenWidth < 768 ? cardSize.height * 0.1 : cardSize.height * 0.5;
+  // РАЗНЫЕ ВЕРТИКАЛЬНЫЕ ГЭПЫ ДЛЯ КАЖДОГО РЯДА
+  const getVerticalSpacing = (rowIndex: number) => {
+    // Базовые гэпы для мобильных и десктопа
+    const baseMobileSpacing = cardSize.height * 0.1;
+    const baseDesktopSpacing = cardSize.height * 0.5;
+
+    // Разные множители для разных рядов (чем дальше, тем больше гэп)
+    const rowMultipliers = [0.8, 1.0, 1.2]; // Для рядов 1, 2, 3
+
+    const baseSpacing = screenWidth < 768 ? baseMobileSpacing : baseDesktopSpacing;
+    const multiplier = rowMultipliers[rowIndex] || 1.0;
+
+    return baseSpacing * multiplier;
+  };
+
+  // Вычисляем гэпы для каждого ряда заранее
+  const verticalSpacing1 = getVerticalSpacing(0); // После вратарей
+  const verticalSpacing2 = getVerticalSpacing(1); // После защитников
+  const verticalSpacing3 = getVerticalSpacing(2); // После полузащитников
 
   return (
     <div className="relative w-full">
@@ -358,6 +375,7 @@ const FormationField = ({
           paddingBottom: `${containerPadding}px`,
         }}
       >
+        {/* Вратари - самый верх */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
@@ -381,10 +399,11 @@ const FormationField = ({
           })}
         </div>
 
+        {/* Защитники - чуть ниже с маленьким гэпом */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: `calc(4% + ${cardSize.height}px + ${rowSpacing}px)`,
+            top: `calc(4% + ${cardSize.height}px + ${verticalSpacing1}px)`,
             gap: `${getRowGap(5)}px`,
           }}
         >
@@ -404,10 +423,11 @@ const FormationField = ({
           })}
         </div>
 
+        {/* Полузащитники - ниже с средним гэпом */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: `calc(4% + ${cardSize.height * 2}px + ${rowSpacing * 2}px)`,
+            top: `calc(4% + ${cardSize.height * 2}px + ${verticalSpacing1 + verticalSpacing2}px)`,
             gap: `${getRowGap(5)}px`,
           }}
         >
@@ -427,10 +447,11 @@ const FormationField = ({
           })}
         </div>
 
+        {/* Нападающие - самый низ с большим гэпом */}
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: `calc(4% + ${cardSize.height * 3}px + ${rowSpacing * 3}px)`,
+            top: `calc(4% + ${cardSize.height * 3}px + ${verticalSpacing1 + verticalSpacing2 + verticalSpacing3}px)`,
             gap: `${getRowGap(3)}px`,
           }}
         >
