@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import playersWelcome from "@/assets/players-welcome.png";
@@ -42,6 +42,13 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
   const [birthDate, setBirthDate] = useState("");
   const [nicknameError, setNicknameError] = useState<string | null>(null);
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const scrollToForm = () => {
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  };
 
   const validateNickname = (name: string): boolean => {
     if (name.length === 0) {
@@ -188,11 +195,12 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
         </p>
 
         {/* Form fields */}
-        <div className="w-full space-y-3 mb-8">
+        <div ref={formRef} className="w-full space-y-3 mb-8">
           <div>
             <Input
               value={nickname}
               onChange={handleNicknameChange}
+              onFocus={scrollToForm}
               placeholder="Придумай имя пользователя"
               className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${nicknameError ? "ring-2 ring-destructive" : ""}`}
             />
@@ -202,6 +210,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
             <Input
               value={birthDate}
               onChange={handleBirthDateChange}
+              onFocus={scrollToForm}
               placeholder="Укажи дату рождения (ДД.ММ.ГГГГ)"
               className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${birthDateError ? "ring-2 ring-destructive" : ""}`}
               maxLength={10}
