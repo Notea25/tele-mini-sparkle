@@ -51,6 +51,11 @@ const Profile = () => {
 
   // Save changes to localStorage
   const handleSaveChanges = () => {
+    // Validate minimum length
+    if (profile.userName.trim().length < 2) {
+      toast.error("Имя должно содержать минимум 2 символа");
+      return;
+    }
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
     setSavedProfile(profile);
     toast.success("Изменения сохранены");
@@ -169,7 +174,7 @@ const Profile = () => {
                 value={profile.userName}
                 onChange={(e) => handleUserNameChange(e.target.value)}
                 maxLength={15}
-                placeholder="Придумай имя пользователя"
+                placeholder={savedProfile.userName}
                 className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F]"
                 style={{
                   borderColor: profile.userName ? "rgba(255, 255, 255, 0.2)" : "#363546",
