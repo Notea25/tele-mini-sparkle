@@ -175,15 +175,15 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
       <div className="flex-1 flex flex-col items-center px-6 py-6 min-h-0">
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground italic mb-2 px-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-2 px-4 font-display">
           Добро пожаловать
         </h1>
-        <h2 className="text-2xl md:text-3xl font-bold text-center text-foreground italic mb-4 px-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-4 px-4 font-display">
           в Fantasy Sports
         </h2>
 
         {/* Subtitle */}
-        <p className="text-muted-foreground text-center text-base mb-8 px-4">
+        <p className="text-muted-foreground text-center text-base mb-8 px-4 font-sans">
           До старта твоих побед остался всего один шаг
         </p>
 
