@@ -102,7 +102,7 @@ const ConfirmTransfersDrawer = ({
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-card border-border max-h-[85vh]">
         <DrawerHeader>
-          <DrawerTitle className="text-foreground text-center text-xl">Подтвердите замены</DrawerTitle>
+          <DrawerTitle className="text-foreground text-center text-xl">Подтверди замены</DrawerTitle>
         </DrawerHeader>
 
         <div className="px-4 pb-6 overflow-y-auto">
