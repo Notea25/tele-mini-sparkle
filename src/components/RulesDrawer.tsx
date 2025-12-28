@@ -231,13 +231,13 @@ const RulesDrawer = ({
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium mb-1">⭐ Безлимитные трансферы</h4>
-                      <p className="text-xs">Неограниченное количество бесплатных трансферов в этом туре</p>
+                      <h4 className="text-foreground font-medium mb-1">⭐ Трансферы+</h4>
+                      <p className="text-xs">Неограниченные трансферы без штрафа. Изменения постоянные, бесплатные трансферы сгорают</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
                       <h4 className="text-foreground font-medium mb-1">🏆 Золотой тур</h4>
-                      <p className="text-xs">Очки удваиваются для всей команды в этом туре</p>
+                      <p className="text-xs">Неограниченные трансферы на один тур. После тура состав возвращается, бесплатные трансферы сохраняются</p>
                     </div>
                   </div>
 
