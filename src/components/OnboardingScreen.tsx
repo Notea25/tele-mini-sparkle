@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import onboardingField from "@/assets/onboarding-field.png";
-import fieldWithPlayers from "@/assets/field-with-players.png";
+import onboardingTransfers from "@/assets/onboarding-transfers.png";
+import onboardingPrizes from "@/assets/onboarding-prizes.png";
 
 interface OnboardingSlide {
   image: string;
@@ -20,12 +21,12 @@ const slides: OnboardingSlide[] = [
     ),
   },
   {
-    image: fieldWithPlayers,
+    image: onboardingTransfers,
     title: "Определи основной состав",
     subtitle: "Делай трансферы, замены, выбирай капитана и используй бусты",
   },
   {
-    image: fieldWithPlayers,
+    image: onboardingPrizes,
     title: "Борись за ценные призы",
     subtitle: (
       <>
