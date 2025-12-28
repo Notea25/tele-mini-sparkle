@@ -145,7 +145,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
         ) : (
           // Main boost info view
           <>
-            <DrawerHeader className="flex flex-col items-center text-center px-6 pb-6">
+            <DrawerHeader className="flex flex-col items-center px-6 pb-6">
               <div className="mb-4">
                 <img 
                   src={chip.icon} 
@@ -153,10 +153,10 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                   className="w-16 h-16 object-contain"
                 />
               </div>
-              <DrawerTitle className="text-2xl font-bold text-foreground mb-4">
+              <DrawerTitle className="text-2xl font-bold text-foreground mb-4 text-center">
                 {boostInfo?.title || chip.label}
               </DrawerTitle>
-              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line text-left w-full">
                 {boostInfo?.description}
               </p>
               {getStatusText() && (
