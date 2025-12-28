@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import onboardingField from "@/assets/onboarding-field.png";
 import fieldWithPlayers from "@/assets/field-with-players.png";
 
 interface OnboardingSlide {
@@ -10,7 +11,7 @@ interface OnboardingSlide {
 
 const slides: OnboardingSlide[] = [
   {
-    image: fieldWithPlayers,
+    image: onboardingField,
     title: "Создай свою команду",
     subtitle: (
       <>
