@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import playersWelcome from "@/assets/players-welcome.png";
 import { Filter } from "bad-words";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 
@@ -43,12 +44,25 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
   const [nicknameError, setNicknameError] = useState<string | null>(null);
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
+  const keyboardInset = useKeyboardInset();
 
-  const scrollToForm = () => {
+  const scrollToElement = (el: HTMLElement | null) => {
+    if (!el) return;
+    // Delay a bit so the keyboard/viewport has time to settle.
     setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 100);
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 120);
   };
+
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Ensure the focused input is visible above the keyboard.
+    scrollToElement(e.currentTarget);
+  };
+
+  useEffect(() => {
+    // When keyboard opens, prefer showing the form area.
+    if (keyboardInset > 0) scrollToElement(formRef.current);
+  }, [keyboardInset]);
 
   const validateNickname = (name: string): boolean => {
     if (name.length === 0) {
@@ -172,9 +186,19 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[9998] flex flex-col bg-background overflow-auto">
-      {/* Players image - full width at top with top padding */}
-      <div className="w-full flex-shrink-0 pt-6">
+    <div
+      className="fixed inset-0 z-[9998] flex flex-col bg-background overflow-auto overscroll-contain"
+      style={{ paddingBottom: keyboardInset }}
+    >
+      {/* Players image - collapses when keyboard is open */}
+      <div
+        className="w-full flex-shrink-0 overflow-hidden transition-all duration-200"
+        style={{
+          maxHeight: keyboardInset > 0 ? 0 : 320,
+          paddingTop: keyboardInset > 0 ? 0 : 24,
+          opacity: keyboardInset > 0 ? 0 : 1,
+        }}
+      >
         <img src={playersWelcome} alt="Welcome" className="w-full h-auto object-cover" />
       </div>
 
@@ -200,7 +224,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
             <Input
               value={nickname}
               onChange={handleNicknameChange}
-              onFocus={scrollToForm}
+              onFocus={handleInputFocus}
               placeholder="Придумай имя пользователя"
               className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${nicknameError ? "ring-2 ring-destructive" : ""}`}
             />
@@ -210,7 +234,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
             <Input
               value={birthDate}
               onChange={handleBirthDateChange}
-              onFocus={scrollToForm}
+              onFocus={handleInputFocus}
               placeholder="Укажи дату рождения (ДД.ММ.ГГГГ)"
               className={`w-full h-14 bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground text-base px-4 ${birthDateError ? "ring-2 ring-destructive" : ""}`}
               maxLength={10}
@@ -220,8 +244,8 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
           </div>
         </div>
 
-        {/* Button - now inside scrollable area */}
-        <div className="w-full pb-8">
+        {/* Button - stays visible above keyboard */}
+        <div className="sticky bottom-0 w-full pb-8 pt-3 bg-background/80 backdrop-blur">
           <Button onClick={handleSubmit} className="w-full h-14 text-lg font-semibold">
             Готово
           </Button>
