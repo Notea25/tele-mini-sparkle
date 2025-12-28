@@ -155,7 +155,8 @@ const CreateTeam = () => {
       // If filter fails, allow navigation
     }
 
-    // Save favorite team to localStorage for club league display
+    // Save team name and favorite team to localStorage
+    localStorage.setItem("fantasyTeamName", name);
     localStorage.setItem("fantasyFavoriteTeam", favoriteTeam);
 
     navigate("/team-builder", { state: { teamName: name } });

@@ -9,6 +9,7 @@ import FooterNav from "@/components/FooterNav";
 import LeagueInviteModal from "@/components/LeagueInviteModal";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
+import { hasCreatedTeam } from "@/lib/onboardingUtils";
 import leagueLogo from "@/assets/league-logo.png";
 import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
@@ -28,8 +29,8 @@ import rplLogo from "@/assets/rpl-logo.png";
 import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
+
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
-const TEAM_PLAYERS_KEY = "fantasyTeamPlayers";
 const FAVORITES_STORAGE_KEY = "fantasyFavoriteLeagues";
 //
 const Index = () => {
@@ -99,17 +100,9 @@ const Index = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Check if user has a team
+  // Check if user has a complete team (15 players)
   useEffect(() => {
-    const teamPlayers = localStorage.getItem(TEAM_PLAYERS_KEY);
-    if (teamPlayers) {
-      try {
-        const parsed = JSON.parse(teamPlayers);
-        setHasTeam(Array.isArray(parsed) && parsed.length > 0);
-      } catch {
-        setHasTeam(false);
-      }
-    }
+    setHasTeam(hasCreatedTeam());
   }, []);
 
   // Check for league invite
