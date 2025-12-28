@@ -192,10 +192,10 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
     >
       {/* Players image - collapses when keyboard is open */}
       <div
-        className="w-full flex-shrink-0 overflow-hidden transition-all duration-200"
+        className="w-full flex-shrink-0 overflow-hidden transition-all duration-200 flex items-end"
         style={{
           maxHeight: keyboardInset > 0 ? 0 : 320,
-          paddingTop: keyboardInset > 0 ? 0 : 24,
+          paddingTop: keyboardInset > 0 ? 0 : 80,
           opacity: keyboardInset > 0 ? 0 : 1,
         }}
       >
@@ -203,7 +203,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
       </div>
 
       {/* Content area */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-6">
+      <div className="flex-1 flex flex-col items-center px-6 pt-6">
 
         {/* Title */}
         <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-2 px-4 font-display">
