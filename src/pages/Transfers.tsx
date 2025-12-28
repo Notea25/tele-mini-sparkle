@@ -312,8 +312,8 @@ const Transfers = () => {
 
     const transfers: Array<{
       type: "swap" | "buy" | "sell";
-      playerOut?: { id: number; name: string; points: number };
-      playerIn?: { id: number; name: string; points: number };
+      playerOut?: { id: number; name: string; points: number; team?: string; position?: string };
+      playerIn?: { id: number; name: string; points: number; team?: string; position?: string };
     }> = [];
 
     const maxPairs = Math.max(playersOut.length, playersIn.length);
@@ -323,8 +323,8 @@ const Transfers = () => {
 
       transfers.push({
         type: pOut && pIn ? "swap" : pOut ? "sell" : "buy",
-        playerOut: pOut ? { id: pOut.id, name: pOut.name, points: pOut.points } : undefined,
-        playerIn: pIn ? { id: pIn.id, name: pIn.name, points: pIn.points } : undefined,
+        playerOut: pOut ? { id: pOut.id, name: pOut.name, points: pOut.points, team: pOut.team, position: pOut.position } : undefined,
+        playerIn: pIn ? { id: pIn.id, name: pIn.name, points: pIn.points, team: pIn.team, position: pIn.position } : undefined,
       });
     }
 
@@ -613,11 +613,11 @@ const Transfers = () => {
               <div
                 key={chip.id}
                 onClick={() => openBoostDrawer(chip)}
-                className={`flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all ${
+                className={`flex flex-col items-center justify-center py-4 px-2 rounded-2xl cursor-pointer transition-all ${
                   isBlocked
                     ? "bg-card/30 opacity-50"
                     : chip.status === "pending"
-                      ? "bg-card border-2 border-primary hover:bg-card/80"
+                      ? "bg-card border-2 border-primary"
                       : chip.status === "used"
                         ? "bg-card/50 border border-border"
                         : "bg-card border border-border hover:bg-card/80"
