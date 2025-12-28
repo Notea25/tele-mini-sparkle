@@ -687,7 +687,7 @@ const Transfers = () => {
           />
         </div>
       ) : (
-        <div className="px-4 mt-6 pb-36">
+        <div className="px-4 mt-6 pb-28">
           <h2 className="text-foreground text-xl font-bold mb-4">Состав команды</h2>
           
           {Object.entries(playersByPosition).map(([position, positionPlayers]) => 
