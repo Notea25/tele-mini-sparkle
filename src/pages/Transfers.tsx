@@ -324,8 +324,12 @@ const Transfers = () => {
 
       transfers.push({
         type: pOut && pIn ? "swap" : pOut ? "sell" : "buy",
-        playerOut: pOut ? { id: pOut.id, name: pOut.name, points: pOut.points, team: pOut.team, position: pOut.position } : undefined,
-        playerIn: pIn ? { id: pIn.id, name: pIn.name, points: pIn.points, team: pIn.team, position: pIn.position } : undefined,
+        playerOut: pOut
+          ? { id: pOut.id, name: pOut.name, points: pOut.points, team: pOut.team, position: pOut.position }
+          : undefined,
+        playerIn: pIn
+          ? { id: pIn.id, name: pIn.name, points: pIn.points, team: pIn.team, position: pIn.position }
+          : undefined,
       });
     }
 
@@ -751,7 +755,7 @@ const Transfers = () => {
             }}
             className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-full h-12"
           >
-            + Добавить игрока
+            + Доступные игроки
           </Button>
           <Button
             onClick={() => {
