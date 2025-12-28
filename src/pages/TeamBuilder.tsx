@@ -819,7 +819,7 @@ const TeamBuilder = () => {
           {/* Divider between selected players and available players */}
           <div className="mx-4 mt-6 mb-2 border-t border-border" />
           <div className="px-4 mb-4">
-            <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
+            <h3 className="text-foreground text-base font-semibold">Доступные игроки</h3>
           </div>
 
           {/* Price Range */}
@@ -915,7 +915,7 @@ const TeamBuilder = () => {
           {/* Divider between selected players and available players */}
           <div className="mx-4 mt-6 mb-2 border-t border-border" />
           <div className="px-4 mb-4">
-            <h3 className="text-foreground text-base font-semibold">Доступные игроки</h3>
+            <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
           </div>
 
           {/* Price Range for List View */}
