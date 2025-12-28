@@ -65,56 +65,82 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                 <span className="text-foreground font-medium">Начисление очков</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
                   <p>
                     Каждый игрок получает или теряет очки за свои действия в реальных матчах. Количество очков
                     зависит от амплуа футболиста.
                   </p>
 
-                  <img src={scoringExample} alt="Scoring Example" className="w-full rounded-xl" />
-
                   <div className="space-y-3">
+                    <div>
+                      <h4 className="text-foreground font-medium mb-1">Время на поле</h4>
+                      <ul className="space-y-1">
+                        <li>• 60 и более минут: +2 очка (все позиции)</li>
+                        <li>• Менее 60 минут: +1 очко (все позиции)</li>
+                      </ul>
+                    </div>
+
                     <div>
                       <h4 className="text-foreground font-medium mb-1">Голы</h4>
                       <ul className="space-y-1">
-                        <li>• Вратарь: 10 очков</li>
-                        <li>• Защитник: 6 очков</li>
-                        <li>• Полузащитник: 5 очков</li>
-                        <li>• Нападающий: 4 очка</li>
+                        <li>• Вратарь: +6 очков</li>
+                        <li>• Защитник: +6 очков</li>
+                        <li>• Полузащитник: +5 очков</li>
+                        <li>• Нападающий: +4 очка</li>
                       </ul>
                     </div>
 
                     <div>
                       <h4 className="text-foreground font-medium mb-1">Голевые передачи</h4>
-                      <p>• Все позиции: 3 очка</p>
+                      <p>• Все позиции: +3 очка</p>
                     </div>
 
                     <div>
-                      <h4 className="text-foreground font-medium mb-1">Сухой матч (без пропущенных голов)</h4>
+                      <h4 className="text-foreground font-medium mb-1">Сухой матч (более 60 минут на поле)</h4>
                       <ul className="space-y-1">
-                        <li>• Вратарь: 4 очка</li>
-                        <li>• Защитник: 4 очка</li>
-                        <li>• Полузащитник: 1 очко</li>
+                        <li>• Вратарь: +4 очка</li>
+                        <li>• Защитник: +4 очка</li>
+                        <li>• Полузащитник: +1 очко</li>
+                        <li>• Нападающий: 0 очков</li>
                       </ul>
+                      <p className="text-xs text-muted-foreground/70 italic mt-1">*Матч, в котором команда не пропустила ни одного гола</p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-foreground font-medium mb-1">Отраженный пенальти</h4>
+                      <ul className="space-y-1">
+                        <li>• Вратарь: +5 очков</li>
+                        <li>• Остальные позиции: 0 очков</li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="text-foreground font-medium mb-1">Каждый сэйв</h4>
+                      <ul className="space-y-1">
+                        <li>• Вратарь: +0.5 очка</li>
+                        <li>• Остальные позиции: 0 очков</li>
+                      </ul>
+                      <p className="text-xs text-muted-foreground/70 italic mt-1">*Если, условно, 1.5 — считается за 2</p>
                     </div>
 
                     <div>
                       <h4 className="text-foreground font-medium mb-1">Штрафы</h4>
                       <ul className="space-y-1">
-                        <li>• Желтая карточка: -1 очко</li>
-                        <li>• Красная карточка: -3 очка</li>
-                        <li>• Пенальти не забит: -2 очка</li>
-                        <li>• Автогол: -2 очка</li>
+                        <li>• Незабитый пенальти: −2 очка (все позиции)</li>
+                        <li>• Привоз пенальти: −1 очко (все позиции)</li>
+                        <li>• Желтая карточка: −1 очко (все позиции)</li>
+                        <li>• Прямая красная карточка: −3 очка (все позиции)</li>
                       </ul>
+                      <p className="text-xs text-muted-foreground/70 italic mt-1">*Если первая желтая −1 очко, вторая желтая=красная еще −2 очка. Итого: желтая + желтая = красная (−3 очка)</p>
                     </div>
 
                     <div>
-                      <h4 className="text-foreground font-medium mb-1">Бонусы</h4>
+                      <h4 className="text-foreground font-medium mb-1">Каждые 2 пропущенных мяча</h4>
                       <ul className="space-y-1">
-                        <li>• Выход на поле: 1-2 очка</li>
-                        <li>• MVP матча: 3 очка</li>
-                        <li>• 3+ сейва (ВР): 1 очко</li>
+                        <li>• Вратарь: −1 очко</li>
+                        <li>• Защитник: −1 очко</li>
                       </ul>
+                      <p className="text-xs text-muted-foreground/70 italic mt-1">*Если пропущен 1 мяч — очки не отнимаются. Например: 1 пропущен (нет минуса), 2 пропущено (−1 очко), 3 пропущено (−1 очко), 4 пропущено (−2 очка)</p>
                     </div>
                   </div>
                 </div>
