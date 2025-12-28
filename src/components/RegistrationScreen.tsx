@@ -194,8 +194,8 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
       <div
         className="w-full flex-shrink-0 overflow-hidden transition-all duration-200 flex items-end"
         style={{
-          maxHeight: keyboardInset > 0 ? 0 : 320,
-          paddingTop: keyboardInset > 0 ? 0 : 80,
+          maxHeight: keyboardInset > 0 ? 0 : 400,
+          paddingTop: keyboardInset > 0 ? 0 : 140,
           opacity: keyboardInset > 0 ? 0 : 1,
         }}
       >
