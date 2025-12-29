@@ -59,7 +59,7 @@ const LeagueInviteModal = ({
           <p className="text-muted-foreground">
             Пользователь @{inviterName}
             <br />
-            приглашает Вас вступить в частную лигу
+            приглашает тебя вступить в частную лигу
           </p>
 
           {!hasTeam && (

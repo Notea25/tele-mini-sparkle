@@ -133,7 +133,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
     const monthDiff = today.getMonth() - birthDateObj.getMonth();
 
     if (age < 6 || (age === 6 && monthDiff < 0)) {
-      setBirthDateError("Вам должно быть не менее 6 лет");
+      setBirthDateError("Тебе должно быть не менее 6 лет");
       return false;
     }
 

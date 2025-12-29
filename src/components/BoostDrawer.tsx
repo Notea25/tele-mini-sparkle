@@ -122,7 +122,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               )}
               {chip.id === "golden" && (
                 <p className="text-muted-foreground text-sm mt-2">
-                  После окончания тура ваш состав автоматически вернётся к текущему.
+                  После окончания тура твой состав автоматически вернётся к текущему.
                 </p>
               )}
             </div>

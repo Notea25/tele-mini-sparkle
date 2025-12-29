@@ -177,7 +177,7 @@ const EmptySlotCard = () => (
     <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden border-2 border-dashed border-primary bg-primary/5 flex items-center justify-center">
       <span className="text-primary text-3xl font-light">?</span>
     </div>
-    <p className="text-muted-foreground text-[10px] mt-1 text-center">Выберите</p>
+    <p className="text-muted-foreground text-[10px] mt-1 text-center">Выбери</p>
   </div>
 );
 
