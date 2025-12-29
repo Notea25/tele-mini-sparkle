@@ -304,7 +304,7 @@ import iconBench from "@/assets/icon-bench.png";
 import icon2x from "@/assets/icon-2x-new.png";
 import icon3x from "@/assets/icon-3x-new.png";
 import redCardBadge from "@/assets/red-card-badge.png";
-import injuryBadge from "@/assets/injury-badge.png";
+import injuryBadge from "@/assets/injury-badge.svg";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
