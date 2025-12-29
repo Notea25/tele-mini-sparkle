@@ -565,7 +565,6 @@ const Transfers = () => {
   return (
     <div className="min-h-screen bg-background pb-32">
       <SportHeader
-        backTo="/league"
         hasUnsavedChanges={hasChanges}
         onSaveChanges={handleSaveAndExit}
         onDiscardChanges={handleExitWithoutSaving}

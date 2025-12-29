@@ -154,7 +154,7 @@ const DreamTeam = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SportHeader backTo="/league" />
+      <SportHeader />
 
 
       {/* Team Name */}
