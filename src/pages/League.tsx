@@ -42,9 +42,29 @@ const League = () => {
   const [isRulesDrawerOpen, setIsRulesDrawerOpen] = useState(false);
   const [showAllCommercialLeagues, setShowAllCommercialLeagues] = useState(false);
   const [showPastLeagues, setShowPastLeagues] = useState(false);
-  const [showAllClubLeague, setShowAllClubLeague] = useState(false);
-  const [showAllMyLeagues, setShowAllMyLeagues] = useState(false);
-  const [clubLeaguePage, setClubLeaguePage] = useState(1);
+  const [showAllClubLeague, setShowAllClubLeague] = useState(() => {
+    return sessionStorage.getItem("leagueShowAllClubLeague") === "true";
+  });
+  const [showAllMyLeagues, setShowAllMyLeagues] = useState(() => {
+    return sessionStorage.getItem("leagueShowAllMyLeagues") === "true";
+  });
+  const [clubLeaguePage, setClubLeaguePage] = useState(() => {
+    const savedPage = sessionStorage.getItem("leagueClubLeaguePage");
+    return savedPage ? parseInt(savedPage, 10) : 1;
+  });
+
+  // Save pagination state to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem("leagueClubLeaguePage", clubLeaguePage.toString());
+  }, [clubLeaguePage]);
+
+  useEffect(() => {
+    sessionStorage.setItem("leagueShowAllClubLeague", showAllClubLeague.toString());
+  }, [showAllClubLeague]);
+
+  useEffect(() => {
+    sessionStorage.setItem("leagueShowAllMyLeagues", showAllMyLeagues.toString());
+  }, [showAllMyLeagues]);
 
   // First tour deadline - before this, show "pre-tournament" UI with zeroed stats
   const firstTourDeadline = new Date("2025-12-14T19:00:00");
