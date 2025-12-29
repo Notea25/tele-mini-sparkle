@@ -140,7 +140,7 @@ const CreateTeam = () => {
 
   const validateAndNavigate = () => {
     if (!isFormValid) {
-      toast.error("Заполните все поля");
+      toast.error("Заполни все поля");
       return;
     }
 
@@ -167,6 +167,7 @@ const CreateTeam = () => {
       {/* Header */}
       <SportHeader />
 
+
       {/* Hero Banner с подложкой для bannerBg и текста */}
       <div className="relative mt-3">
         {/* Подложка bgImage - на всю ширину экрана */}
@@ -183,9 +184,9 @@ const CreateTeam = () => {
           />
 
           {/* Текст с отступами */}
-          <div className="text-white font-unbounded font-normal not-italic text-[28px] leading-[130%] tracking-[0%]">
-            Создай свою команду <br />в Высшей лиге <br />
-            Беларуси
+          <div className="text-white font-display font-normal not-italic text-3xl leading-[130%] tracking-[0%]">
+            <span className="hidden sm:inline">Создавай свою команду в Высшей лиге Беларуси</span>
+            <span className="sm:hidden">Создавай свою команду <br />в Высшей лиге <br />Беларуси</span>
           </div>
         </div>
       </div>
@@ -199,10 +200,7 @@ const CreateTeam = () => {
             value={teamName}
             onChange={handleNameChange}
             maxLength={MAX_NAME_LENGTH}
-            onFocus={() => {
-              setIsNameFocused(true);
-              scrollToButton();
-            }}
+            onFocus={() => { setIsNameFocused(true); scrollToButton(); }}
             onBlur={() => setTimeout(() => setIsNameFocused(false), 150)}
             className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F]"
             style={{
@@ -257,7 +255,7 @@ const CreateTeam = () => {
           ref={buttonRef}
           onClick={validateAndNavigate}
           disabled={!isFormValid}
-          className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
           style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
         >
           Создать команду
@@ -268,37 +266,39 @@ const CreateTeam = () => {
       {/* Create Team Section */}
       <div className="mt-8">
         <div className="px-4">
-          <h3 className="text-foreground text-3xl font-bold mb-4 text-left">Создавай команду</h3>
-          <p className="text-muted-foreground text-base leading-relaxed text-left">
-            Мы выделим тебе бюджет в <span className="text-primary font-semibold">100 миллионов</span> — собери команду
-            своей мечты!
+          <h3 className="text-foreground text-xl font-display mb-4 text-left">Создавай команду</h3>
+          <p className="text-muted-foreground text-base leading-relaxed text-left text-regular">
+            Мы выделим тебе бюджет в <span className="text-primary font-medium">100 миллионов</span> — собери команду своей мечты!
           </p>
         </div>
 
         {/* Scrollable Player Cards */}
         <div className="mt-6 overflow-x-auto scrollbar-hide">
           <div className="flex gap-3 px-4 pb-2" style={{ width: "max-content" }}>
-            {[vakulichCard, kozlovCard, bykovCard, karpovichCard, khvashchinskyCard, gutorCard].map(
-              (cardImg, index) => (
-                <img
-                  key={index}
-                  src={cardImg}
-                  alt={`Player ${index + 1}`}
-                  className="w-40 h-auto rounded-xl flex-shrink-0"
-                />
-              ),
-            )}
+            {[
+              vakulichCard,
+              kozlovCard,
+              bykovCard,
+              karpovichCard,
+              khvashchinskyCard,
+              gutorCard,
+            ].map((cardImg, index) => (
+              <img
+                key={index}
+                src={cardImg}
+                alt={`Player ${index + 1}`}
+                className="w-40 h-auto rounded-xl flex-shrink-0"
+              />
+            ))}
           </div>
         </div>
       </div>
 
       {/* Score Points Section */}
       <div className="px-4 mt-8 text-left">
-        <h3 className="text-foreground text-3xl font-bold mb-4">Набирай очки</h3>
-        <p className="text-muted-foreground text-base leading-relaxed">
-          Каждый игрок на своей позиции получает виртуальные очки за{" "}
-          <span className="text-primary font-semibold">реальные действия</span> на футбольном поле. Количество очков
-          зависит от амплуа: например, защитник за гол получает 6 очков, а нападающий — 4.
+        <h3 className="text-foreground text-xl font-display mb-4">Набирай очки</h3>
+        <p className="text-muted-foreground text-base leading-relaxed text-regular">
+          Каждый игрок на своей позиции получает виртуальные очки за <span className="text-primary font-medium">реальные действия</span> на футбольном поле. Количество очков зависит от амплуа: например, защитник за гол получает 6 очков, а нападающий — 4.
         </p>
 
         {/* Scoring Example Image */}
@@ -309,28 +309,36 @@ const CreateTeam = () => {
 
       {/* Transfer Details Section */}
       <div className="px-4 mt-8 text-left">
-        <h3 className="text-foreground text-3xl font-bold mb-4">Делай трансферы</h3>
-        <p className="text-muted-foreground text-base leading-relaxed">
-          Не нравится игрок? Смело отправляй его на скамейку или продавай. Перед каждым туром у тебя есть{" "}
-          <span className="text-primary font-semibold">2 бесплатных трансфера</span>. Если команда совсем не радует —
-          активируй буст и меняй всех, кого подскажет сердце и интуиция.
+        <h3 className="text-foreground text-xl font-display mb-4">Делай трансферы</h3>
+        <p className="text-muted-foreground text-base leading-relaxed text-regular">
+          Не нравится игрок? Смело отправляй его на скамейку или продавай. Перед каждым туром у тебя есть <span className="text-primary font-medium">2 бесплатных трансфера</span>. Если команда совсем не радует — активируй буст и меняй всех, кого подскажет сердце и интуиция.
         </p>
 
         {/* Transfer Player Cards with Arrows */}
         <div className="mt-6 flex justify-center items-center gap-2">
-          <img src={karpovichTransferCard} alt="Карпович" className="w-32 h-auto rounded-xl flex-shrink-0" />
-          <img src={swapArrowsGreen} alt="Swap" className="w-8 h-auto flex-shrink-0" />
-          <img src={vakulichTransferCard} alt="Вакулич" className="w-32 h-auto rounded-xl flex-shrink-0" />
+          <img 
+            src={karpovichTransferCard} 
+            alt="Карпович" 
+            className="w-32 h-auto rounded-xl flex-shrink-0"
+          />
+          <img 
+            src={swapArrowsGreen} 
+            alt="Swap" 
+            className="w-8 h-auto flex-shrink-0"
+          />
+          <img 
+            src={vakulichTransferCard} 
+            alt="Вакулич" 
+            className="w-32 h-auto rounded-xl flex-shrink-0"
+          />
         </div>
       </div>
 
       {/* Compete Section */}
       <div className="px-4 mt-8 text-left">
-        <h3 className="text-foreground text-3xl font-bold mb-4">Соревнуйся</h3>
-        <p className="text-muted-foreground text-base leading-relaxed">
-          Играй против других пользователей в общей лиге,{" "}
-          <span className="text-primary font-semibold">борись с друзьями</span> в частных лигах и выигрывай призы в
-          коммерческих. Мы также добавим тебя в лигу твоего любимого клуба — там свои.
+        <h3 className="text-foreground text-xl font-display mb-4">Соревнуйся</h3>
+        <p className="text-muted-foreground text-base leading-relaxed text-regular">
+          Играй против других пользователей в общей лиге, <span className="text-primary font-medium">борись с друзьями</span> в частных лигах и выигрывай призы в коммерческих. Мы также добавим тебя в лигу твоего любимого клуба — там свои.
         </p>
 
         {/* Leaderboard Example Image */}
@@ -341,10 +349,9 @@ const CreateTeam = () => {
 
       {/* Prizes Section */}
       <div className="px-4 mt-8 text-left">
-        <h3 className="text-foreground text-3xl font-bold mb-4">Получай призы</h3>
-        <p className="text-muted-foreground text-base leading-relaxed mb-6">
-          Самые успешные менеджеры получат крутые призы от{" "}
-          <span className="text-primary font-semibold">Fantasy Sports</span>.
+        <h3 className="text-foreground text-xl font-display mb-4">Получай призы</h3>
+        <p className="text-muted-foreground text-base leading-relaxed mb-6 text-regular">
+          Самые успешные менеджеры получат крутые призы от <span className="text-primary font-medium">Fantasy Sports</span>.
         </p>
 
         {/* Prize Image */}
