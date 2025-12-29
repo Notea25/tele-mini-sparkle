@@ -444,16 +444,16 @@ const League = () => {
             {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mb-4">
               <button
-                className="w-full h-14 bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:scale-[1.02] hover:shadow-[0_0_24px_rgba(180,255,50,0.5)] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_16px_rgba(180,255,50,0.3)]"
+                className="w-full h-12 bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/team-management")}
               >
-                <span className="text-primary-foreground font-medium text-base tracking-wide">Моя команда</span>
+                <span className="text-primary-foreground font-medium text-base">Моя команда</span>
               </button>
               <button
-                className="w-full h-14 bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:scale-[1.02] hover:shadow-[0_0_24px_rgba(180,255,50,0.5)] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_16px_rgba(180,255,50,0.3)]"
+                className="w-full h-12 bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/transfers")}
               >
-                <span className="text-primary-foreground font-medium text-base tracking-wide">Трансферы</span>
+                <span className="text-primary-foreground font-semibold text-base">Трансферы</span>
               </button>
             </div>
 
