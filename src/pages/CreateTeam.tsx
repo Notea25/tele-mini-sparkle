@@ -184,9 +184,9 @@ const CreateTeam = () => {
           />
 
           {/* Текст с отступами */}
-          <div className="text-white font-display font-normal not-italic text-[26px] leading-[130%] tracking-[0%]">
+          <div className="text-white font-display font-normal not-italic text-[24px] leading-[130%] tracking-[0%]">
             <span className="hidden sm:inline">Создай свою команду в Высшей лиге Беларуси</span>
-            <span className="sm:hidden">Создай свою команду <br />в Высшей лиге <br />Беларуси</span>
+            <span className="sm:hidden">Создай свою команду<br />в Высшей лиге Беларуси</span>
           </div>
         </div>
       </div>
