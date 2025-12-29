@@ -48,12 +48,14 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
           <div 
             className="absolute inset-0 bg-primary rounded-[3px] animate-dot-fade"
           />
-          {/* Football - fades in as it goes down */}
+          {/* Football - fades in as it goes down, scales up, green colored */}
           <img 
             src={footballBall}
             alt=""
-            className="absolute inset-0 w-full h-full object-contain animate-ball-fade"
-            style={{ transform: 'scale(1.8)' }}
+            className="absolute inset-0 w-full h-full object-contain animate-ball-morph"
+            style={{ 
+              filter: 'brightness(0) saturate(100%) invert(83%) sepia(65%) saturate(512%) hue-rotate(42deg) brightness(103%) contrast(104%)',
+            }}
           />
         </div>
       </div>
@@ -63,15 +65,21 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
           0%, 100% { opacity: 1; }
           35%, 65% { opacity: 0; }
         }
-        @keyframes ball-fade {
-          0%, 100% { opacity: 0; }
-          35%, 65% { opacity: 1; }
+        @keyframes ball-morph {
+          0%, 100% { 
+            opacity: 0; 
+            transform: scale(1.5);
+          }
+          35%, 65% { 
+            opacity: 1; 
+            transform: scale(2.5);
+          }
         }
         .animate-dot-fade {
           animation: dot-fade 0.8s ease-in-out infinite;
         }
-        .animate-ball-fade {
-          animation: ball-fade 0.8s ease-in-out infinite;
+        .animate-ball-morph {
+          animation: ball-morph 0.8s ease-in-out infinite;
         }
       `}</style>
     </div>
