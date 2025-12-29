@@ -307,7 +307,7 @@ const FormationField = ({
       }}
       onClick={() => onEmptySlotClick?.(position)}
     >
-      <span className="text-white font-bold" style={{ fontSize: `${cardSize.width * 0.2}px` }}>
+      <span className="text-white font-medium" style={{ fontSize: `${cardSize.width * 0.16}px` }}>
         {position}
       </span>
       <div
