@@ -346,7 +346,7 @@ const League = () => {
       <main className="flex-1 px-4 pb-6 overflow-x-hidden">
 
         {/* Tabs */}
-        <div className="bg-secondary/50 rounded-full p-1 flex mb-6">
+        <div className="bg-secondary/50 rounded-xl p-1 flex mb-6">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -355,7 +355,7 @@ const League = () => {
                 setActiveTab(newTab);
                 localStorage.setItem(LEAGUE_TAB_KEY, newTab);
               }}
-              className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === tab.id
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -444,13 +444,13 @@ const League = () => {
             {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mb-4">
               <button
-                className="w-full h-12 bg-primary rounded-2xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
+                className="w-full h-12 bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/team-management")}
               >
                 <span className="text-primary-foreground font-semibold text-base">Моя команда</span>
               </button>
               <button
-                className="w-full h-12 bg-primary rounded-2xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
+                className="w-full h-12 bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/transfers")}
               >
                 <span className="text-primary-foreground font-semibold text-base">Трансферы</span>
