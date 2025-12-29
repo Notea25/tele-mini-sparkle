@@ -22,7 +22,7 @@ import {
 import { clubLogos } from "@/lib/clubLogos";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
-import homeIcon from "@/assets/home-icon.png";
+
 
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon3x from "@/assets/icon-3x.png";
@@ -578,21 +578,6 @@ const TeamManagement = () => {
 
       {/* Team Header */}
       <div className="px-4 mt-6">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <img
-              src={homeIcon}
-              alt="Home"
-              className="w-5 h-5 object-contain cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => navigate("/")}
-            />
-            <span>Футбол</span>
-            <span>•</span>
-            <span>Беларусь</span>
-            <span>•</span>
-            <span className="text-foreground">Управление командой</span>
-          </div>
-        </div>
 
         {/* Team name */}
         <div className="flex items-center justify-center mb-2">
