@@ -433,14 +433,19 @@ const FormationFieldManagement = ({
       borderClass = "border-primary";
     }
 
-    // Background color: swap mode > red tint for injured/red card > default
+    // Background color: swap mode > red tint for injured/red card > green tint for boosts > default
     let bgClass = "bg-[#3a5a28]/40";
+    const hasBenchBoostOnBench = isOnBench && isBenchBoostActive;
+    const hasBoostEffect = showDoublePowerBorder || showCaptain3xBorder || hasBenchBoostOnBench;
+    
     if (isSwapSource) {
       bgClass = "bg-primary/30";
     } else if (isValidSwapTarget) {
       bgClass = "bg-primary/20";
     } else if (hasRedCard || isInjured) {
       bgClass = "bg-red-500/25";
+    } else if (hasBoostEffect) {
+      bgClass = "bg-primary/25";
     }
 
     // Opacity for non-valid targets in swap mode
