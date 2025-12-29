@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, ArrowLeftRight } from "lucide-react";
+import { ChevronDown, ArrowLeftRight, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -9,7 +9,6 @@ import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import { getValidSwapOptions, detectFormation, FORMATION_LABELS, FormationKey } from "@/lib/formationUtils";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
-import SwapPlayerDrawer from "@/components/SwapPlayerDrawer";
 import BoostDrawer from "@/components/BoostDrawer";
 import ConfirmBoostDrawer from "@/components/ConfirmBoostDrawer";
 import {
@@ -229,9 +228,9 @@ const TeamManagement = () => {
     }
   }, []);
 
-  // Swap drawer state
-  const [swapDrawerOpen, setSwapDrawerOpen] = useState(false);
-  const [playerToSwap, setPlayerToSwap] = useState<PlayerData | null>(null);
+  // Swap mode state (no drawer)
+  const [swapModePlayer, setSwapModePlayer] = useState<PlayerDataExt | null>(null);
+  const [validSwapTargetIds, setValidSwapTargetIds] = useState<Set<number>>(new Set());
 
   const allPlayers = [...mainSquadPlayers, ...benchPlayers];
 
@@ -251,12 +250,35 @@ const TeamManagement = () => {
     return pos;
   };
 
+  // Enter swap mode - highlight valid targets
   const handlePlayerSwap = (playerId: number) => {
-    const player = allPlayers.find((p) => p.id === playerId);
-    if (player) {
-      setPlayerToSwap(player);
-      setSwapDrawerOpen(true);
+    const player = allPlayers.find((p) => p.id === playerId) as PlayerDataExt | undefined;
+    if (!player) return;
+
+    // If clicking the same player, exit swap mode
+    if (swapModePlayer?.id === playerId) {
+      exitSwapMode();
+      return;
     }
+
+    // If in swap mode and clicking a valid target, perform swap
+    if (swapModePlayer && validSwapTargetIds.has(playerId)) {
+      handleSwapConfirm(swapModePlayer.id, playerId);
+      exitSwapMode();
+      return;
+    }
+
+    // Calculate valid swap targets
+    const validOptions = getValidSwapOptions(mainSquadPlayers, benchPlayers, player);
+    const validIds = new Set(validOptions.map((opt) => opt.id));
+
+    setSwapModePlayer(player);
+    setValidSwapTargetIds(validIds);
+  };
+
+  const exitSwapMode = () => {
+    setSwapModePlayer(null);
+    setValidSwapTargetIds(new Set());
   };
 
   const handleSwapConfirm = (fromPlayerId: number, toPlayerId: number) => {
@@ -354,18 +376,6 @@ const TeamManagement = () => {
     });
   };
 
-  // Get available players for swap (all players from opposite side)
-  const getAvailableSwapPlayers = () => {
-    if (!playerToSwap) return [];
-
-    if (playerToSwap.isOnBench) {
-      // Bench player - return all field players
-      return mainSquadPlayers;
-    } else {
-      // Field player - return all bench players
-      return benchPlayers;
-    }
-  };
 
   // Handle bench player reordering (swap between bench players)
   const handleBenchReorder = (fromIndex: number, toIndex: number) => {
@@ -458,11 +468,6 @@ const TeamManagement = () => {
     toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
   };
 
-  // Get valid swap options based on formation rules
-  const getValidSwapOptionsForPlayer = () => {
-    if (!playerToSwap) return [];
-    return getValidSwapOptions(mainSquadPlayers, benchPlayers, playerToSwap);
-  };
 
   // Team abbreviations for next match
   const teamAbbreviations: Record<string, string> = {
@@ -513,13 +518,30 @@ const TeamManagement = () => {
           const isCaptainPlayer = captain === player.id;
           const isViceCaptainPlayer = viceCaptain === player.id;
           const playerExt = player as PlayerDataExt;
+          
+          // Swap mode highlighting
+          const isSwapSource = swapModePlayer?.id === player.id;
+          const isValidSwapTarget = swapModePlayer && validSwapTargetIds.has(player.id);
+          const isInSwapModeButNotTarget = swapModePlayer && !isSwapSource && !isValidSwapTarget;
 
           return (
-            <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
+            <div 
+              key={player.id} 
+              className={`rounded-xl px-4 py-2 flex items-center transition-all duration-200 ${
+                isSwapSource 
+                  ? "bg-primary/30 border-2 border-primary" 
+                  : isValidSwapTarget 
+                    ? "bg-primary/20 border-2 border-primary/60 cursor-pointer" 
+                    : isInSwapModeButNotTarget 
+                      ? "bg-card/50 opacity-40" 
+                      : "bg-card"
+              }`}
+              onClick={isValidSwapTarget ? () => handlePlayerSwap(player.id) : undefined}
+            >
               {/* Club logo + Player name + position + badges */}
               <div
-                className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-                onClick={() => setSelectedPlayerForCard(player.id)}
+                className={`flex-1 flex items-center gap-2 min-w-0 ${!swapModePlayer ? 'cursor-pointer hover:opacity-80' : ''}`}
+                onClick={!swapModePlayer ? () => setSelectedPlayerForCard(player.id) : undefined}
               >
                 {clubLogo && <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />}
                 <span className="text-foreground font-medium truncate">{player.name}</span>
@@ -559,12 +581,20 @@ const TeamManagement = () => {
               </div>
 
               {/* Swap button */}
-              <button
-                onClick={() => handlePlayerSwap(player.id)}
-                className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
-              >
-                <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
-              </button>
+              {!swapModePlayer && (
+                <button
+                  onClick={() => handlePlayerSwap(player.id)}
+                  className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
+                >
+                  <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
+                </button>
+              )}
+              {isSwapSource && (
+                <span className="ml-2 text-primary text-xs font-medium">Выбран</span>
+              )}
+              {isValidSwapTarget && (
+                <span className="ml-2 text-primary text-xs font-medium animate-pulse">Заменить</span>
+              )}
             </div>
           );
         })}
@@ -745,7 +775,16 @@ const TeamManagement = () => {
           <FormationFieldManagement
             mainSquadPlayers={mainSquadPlayers}
             benchPlayers={benchPlayers}
-            onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
+            onPlayerClick={(player) => {
+              if (swapModePlayer) {
+                // In swap mode - check if valid target
+                if (validSwapTargetIds.has(player.id)) {
+                  handlePlayerSwap(player.id);
+                }
+              } else {
+                setSelectedPlayerForCard(player.id);
+              }
+            }}
             onSwapPlayer={handlePlayerSwap}
             onSwapBenchPlayers={handleBenchReorder}
             captain={captain}
@@ -754,6 +793,8 @@ const TeamManagement = () => {
             isBenchBoostActive={specialChips.find((c) => c.id === "bench")?.status === "pending"}
             isDoublePowerBoostActive={specialChips.find((c) => c.id === "double")?.status === "pending"}
             isCaptain3xBoostActive={specialChips.find((c) => c.id === "captain3x")?.status === "pending"}
+            swapModePlayerId={swapModePlayer?.id || null}
+            validSwapTargetIds={validSwapTargetIds}
           />
         </div>
       ) : (
@@ -778,13 +819,30 @@ const TeamManagement = () => {
             {benchPlayers.map((player, index) => {
               const clubLogo = clubLogos[player.team] || clubIcons[player.team];
               const playerExt = player as PlayerDataExt;
+              
+              // Swap mode highlighting
+              const isSwapSource = swapModePlayer?.id === player.id;
+              const isValidSwapTarget = swapModePlayer && validSwapTargetIds.has(player.id);
+              const isInSwapModeButNotTarget = swapModePlayer && !isSwapSource && !isValidSwapTarget;
 
               return (
-                <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
+                <div 
+                  key={player.id} 
+                  className={`rounded-xl px-4 py-2 flex items-center transition-all duration-200 ${
+                    isSwapSource 
+                      ? "bg-primary/30 border-2 border-primary" 
+                      : isValidSwapTarget 
+                        ? "bg-primary/20 border-2 border-primary/60 cursor-pointer" 
+                        : isInSwapModeButNotTarget 
+                          ? "bg-card/50 opacity-40" 
+                          : "bg-card"
+                  }`}
+                  onClick={isValidSwapTarget ? () => handlePlayerSwap(player.id) : undefined}
+                >
                   {/* Club logo + Player name + position + badges */}
                   <div
-                    className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
-                    onClick={() => setSelectedPlayerForCard(player.id)}
+                    className={`flex-1 flex items-center gap-2 min-w-0 ${!swapModePlayer ? 'cursor-pointer hover:opacity-80' : ''}`}
+                    onClick={!swapModePlayer ? () => setSelectedPlayerForCard(player.id) : undefined}
                   >
                     {clubLogo && (
                       <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
@@ -814,12 +872,20 @@ const TeamManagement = () => {
                   </div>
 
                   {/* Swap button */}
-                  <button
-                    onClick={() => handlePlayerSwap(player.id)}
-                    className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
-                  >
-                    <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
-                  </button>
+                  {!swapModePlayer && (
+                    <button
+                      onClick={() => handlePlayerSwap(player.id)}
+                      className="w-8 h-8 ml-2 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0"
+                    >
+                      <ArrowLeftRight className="w-4 h-4 text-primary-foreground" />
+                    </button>
+                  )}
+                  {isSwapSource && (
+                    <span className="ml-2 text-primary text-xs font-medium">Выбран</span>
+                  )}
+                  {isValidSwapTarget && (
+                    <span className="ml-2 text-primary text-xs font-medium animate-pulse">Заменить</span>
+                  )}
                 </div>
               );
             })}
@@ -827,23 +893,45 @@ const TeamManagement = () => {
         </div>
       )}
 
+      {/* Swap Mode Cancel Bar */}
+      {swapModePlayer && (
+        <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-primary px-4 py-4 z-50">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <p className="text-foreground font-medium">Замена: {swapModePlayer.name}</p>
+              <p className="text-muted-foreground text-sm">Выберите игрока для замены</p>
+            </div>
+            <Button
+              onClick={exitSwapMode}
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary/10"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Отмена
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Fixed Bottom Section with Save Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
-        <Button
-          onClick={() => {
-            const pendingBoost = specialChips.find((c) => c.status === "pending");
-            if (pendingBoost) {
-              setIsConfirmBoostOpen(true);
-            } else {
-              toast.success("Изменения сохранены");
-              navigate("/league");
-            }
-          }}
-          className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-lg h-12"
-        >
-          Сохранить
-        </Button>
-      </div>
+      {!swapModePlayer && (
+        <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
+          <Button
+            onClick={() => {
+              const pendingBoost = specialChips.find((c) => c.status === "pending");
+              if (pendingBoost) {
+                setIsConfirmBoostOpen(true);
+              } else {
+                toast.success("Изменения сохранены");
+                navigate("/league");
+              }
+            }}
+            className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-lg h-12"
+          >
+            Сохранить
+          </Button>
+        </div>
+      )}
 
       {/* Add padding to account for fixed bottom */}
       <div className="h-24" />
@@ -868,18 +956,6 @@ const TeamManagement = () => {
         />
       )}
 
-      {/* Swap Player Drawer */}
-      <SwapPlayerDrawer
-        isOpen={swapDrawerOpen}
-        onClose={() => {
-          setSwapDrawerOpen(false);
-          setPlayerToSwap(null);
-        }}
-        selectedPlayer={playerToSwap}
-        availablePlayers={getAvailableSwapPlayers()}
-        validSwapOptions={getValidSwapOptionsForPlayer()}
-        onSwap={handleSwapConfirm}
-      />
 
       {/* Boost Drawer */}
       <BoostDrawer
