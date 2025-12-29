@@ -366,6 +366,8 @@ interface FormationFieldManagementProps {
   isCaptain3xBoostActive?: boolean;
   showPrice?: boolean;
   showPointsInsteadOfTeam?: boolean;
+  swapModePlayerId?: number | null;
+  validSwapTargetIds?: Set<number>;
 }
 
 const truncateName = (text: string, maxLength: number) => {
@@ -391,6 +393,8 @@ const FormationFieldManagement = ({
   isCaptain3xBoostActive = false,
   showPrice = true,
   showPointsInsteadOfTeam = false,
+  swapModePlayerId = null,
+  validSwapTargetIds = new Set(),
 }: FormationFieldManagementProps) => {
 
   // Detect current formation based on players
@@ -409,29 +413,54 @@ const FormationFieldManagement = ({
     const showDoublePowerIcon = isDoublePowerBoostActive && isCaptainOrVice && !isOnBench;
     const showCaptain3xBorder = isCaptain3xBoostActive && isCaptainPlayer;
     const showCaptain3xIcon = isCaptain3xBoostActive && isCaptainPlayer && !isOnBench;
-    const hasGreenBorder = showDoublePowerBorder || showCaptain3xBorder;
     const hasRedCard = player.hasRedCard;
     const isInjured = player.isInjured;
 
-    // Border color priority: red card/injury > green boost > default white
+    // Swap mode highlighting
+    const isSwapSource = swapModePlayerId === player.id;
+    const isValidSwapTarget = swapModePlayerId && validSwapTargetIds.has(player.id);
+    const isInSwapModeButNotTarget = swapModePlayerId && !isSwapSource && !isValidSwapTarget;
+
+    // Border color priority: swap mode > red card/injury > green boost > default white
     let borderClass = "border-white/60";
-    if (hasRedCard || isInjured) {
+    if (isSwapSource) {
+      borderClass = "border-primary border-2";
+    } else if (isValidSwapTarget) {
+      borderClass = "border-primary/80 border-2";
+    } else if (hasRedCard || isInjured) {
       borderClass = "border-red-500";
-    } else if (hasGreenBorder) {
+    } else if (showDoublePowerBorder || showCaptain3xBorder) {
       borderClass = "border-primary";
     }
 
-    // Background color: red tint for injured/red card players
-    const bgClass = (hasRedCard || isInjured) ? "bg-red-500/25" : "bg-[#3a5a28]/40";
+    // Background color: swap mode > red tint for injured/red card > default
+    let bgClass = "bg-[#3a5a28]/40";
+    if (isSwapSource) {
+      bgClass = "bg-primary/30";
+    } else if (isValidSwapTarget) {
+      bgClass = "bg-primary/20";
+    } else if (hasRedCard || isInjured) {
+      bgClass = "bg-red-500/25";
+    }
+
+    // Opacity for non-valid targets in swap mode
+    const opacityClass = isInSwapModeButNotTarget ? "opacity-40" : "";
 
     // Check if bench player can be swapped (not goalkeeper and not first position)
     const canSwapOnBench = isOnBench && benchIndex !== undefined && benchIndex > 0 && player.position !== "ВР";
 
     return (
       <div
-        className={`w-[70px] h-[84px] relative flex flex-col cursor-pointer border rounded-md overflow-hidden ${bgClass} backdrop-blur-[2px] transition-all duration-200 ${borderClass}`}
+        className={`w-[70px] h-[84px] relative flex flex-col cursor-pointer border rounded-md overflow-hidden ${bgClass} backdrop-blur-[2px] transition-all duration-200 ${borderClass} ${opacityClass}`}
         onClick={() => onPlayerClick?.(player)}
       >
+        {/* Valid swap target indicator */}
+        {isValidSwapTarget && (
+          <div className="absolute inset-0 z-40 flex items-center justify-center bg-primary/10 animate-pulse">
+            <span className="text-primary text-[8px] font-bold">ЗАМЕНИТЬ</span>
+          </div>
+        )}
+        
         {/* Captain/Vice-Captain badge - absolute in left corner, only for main squad */}
         {isCaptainPlayer && !isOnBench && <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />}
         {isViceCaptainPlayer && !isOnBench && (
@@ -445,7 +474,7 @@ const FormationFieldManagement = ({
           <img src={icon2x} alt="2x" className="absolute top-1 right-1 z-50 w-3 h-3" />
         ) : showActionButton && isOnBench && isBenchBoostActive ? (
           <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
-        ) : showActionButton && onSwapPlayer ? (
+        ) : showActionButton && onSwapPlayer && !swapModePlayerId ? (
           <button
             onClick={(e) => {
               e.stopPropagation();
