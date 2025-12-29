@@ -165,8 +165,8 @@ const PlayerCard = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className="bg-card border-border">
-        <div className="px-6 pt-4 pb-2">
+      <DrawerContent className="bg-card border-border animate-fade-in">
+        <div className="px-6 pt-4 pb-2 animate-scale-in">
           {/* Header with player info */}
           <div className="flex items-start gap-4">
             {/* Player photo */}
