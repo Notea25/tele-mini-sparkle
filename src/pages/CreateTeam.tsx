@@ -184,7 +184,7 @@ const CreateTeam = () => {
           />
 
           {/* Текст с отступами */}
-          <div className="text-white font-display font-normal not-italic text-[28px] leading-[130%] tracking-[0%]">
+          <div className="text-white font-display font-normal not-italic text-[20px] leading-[130%] tracking-[0%]">
             Создавай свою команду <br />в Высшей лиге <br />
             Беларуси
           </div>
