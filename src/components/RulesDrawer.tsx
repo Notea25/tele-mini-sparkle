@@ -26,7 +26,7 @@ const RulesDrawer = ({
             {/* How to play section */}
             <AccordionItem value="how-to-play" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium text-medium">Создавай команду</span>
+                <span className="text-foreground font-display">Создавай команду</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
                 <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
@@ -56,7 +56,7 @@ const RulesDrawer = ({
             {/* Points scoring section */}
             <AccordionItem value="points" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium text-medium">Набирай очки</span>
+                <span className="text-foreground font-display">Набирай очки</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
                 <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
@@ -145,16 +145,16 @@ const RulesDrawer = ({
             {/* Transfers section */}
             <AccordionItem value="transfers" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Делай трансферы</span>
+                <span className="text-foreground font-display">Делай трансферы</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
                     Не нравится игрок? Смело отправляй его на скамейку или продавай. Перед каждым туром у тебя есть <span className="text-primary font-semibold">2 бесплатных трансфера</span>. Если команда совсем не радует — активируй буст и меняй всех, кого подскажет сердце и интуиция.
                   </p>
 
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Правила трансферов</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Правила трансферов</h4>
                     <ul className="space-y-2">
                       <li>• 2 бесплатных трансфера каждый тур</li>
                       <li>• Неиспользованные трансферы не переносятся</li>
@@ -164,7 +164,7 @@ const RulesDrawer = ({
                   </div>
 
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Дедлайн</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Дедлайн</h4>
                     <p>
                       Все трансферы должны быть сделаны до начала первого матча тура. После дедлайна изменения невозможны.
                     </p>
@@ -176,16 +176,16 @@ const RulesDrawer = ({
             {/* Substitutions section */}
             <AccordionItem value="substitutions" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Замены</span>
+                <span className="text-foreground font-display">Замены</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
                     Игроки со скамейки могут автоматически заменить игроков основного состава, если те не вышли на поле.
                   </p>
 
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Автозамены</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Автозамены</h4>
                     <ul className="space-y-2">
                       <li>• Замены происходят автоматически после матчей тура</li>
                       <li>• Приоритет замен: по порядку на скамейке</li>
@@ -194,7 +194,7 @@ const RulesDrawer = ({
                   </div>
 
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Ручные замены</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Ручные замены</h4>
                     <p>
                       До дедлайна вы можете вручную менять местами игроков основного состава и скамейки в разделе «Моя команда».
                     </p>
@@ -206,38 +206,38 @@ const RulesDrawer = ({
             {/* Boosts section */}
             <AccordionItem value="boosts" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Бусты</span>
+                <span className="text-foreground font-display">Бусты</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
                     Бусты — это специальные усиления, которые можно использовать один раз за сезон. Каждый буст активируется на один тур.
                   </p>
 
                   <div className="space-y-3">
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium mb-1">🔥 3× Капитан</h4>
-                      <p className="text-xs">Капитан получает ×3 очков вместо ×2 в этом туре</p>
+                      <h4 className="text-foreground font-medium text-medium mb-1">🔥 3× Капитан</h4>
+                      <p className="text-xs text-regular">Капитан получает ×3 очков вместо ×2 в этом туре</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium mb-1">⚡ Двойная сила</h4>
-                      <p className="text-xs">И капитан, и вице-капитан получают ×2 очков в этом туре</p>
+                      <h4 className="text-foreground font-medium text-medium mb-1">⚡ Двойная сила</h4>
+                      <p className="text-xs text-regular">И капитан, и вице-капитан получают ×2 очков в этом туре</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium mb-1">🪑 Скамейка+</h4>
-                      <p className="text-xs">Очки игроков со скамейки засчитываются в этом туре</p>
+                      <h4 className="text-foreground font-medium text-medium mb-1">🪑 Скамейка+</h4>
+                      <p className="text-xs text-regular">Очки игроков со скамейки засчитываются в этом туре</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium mb-1">⭐ Трансферы+</h4>
-                      <p className="text-xs">Неограниченные трансферы без штрафа. Изменения постоянные, бесплатные трансферы сгорают</p>
+                      <h4 className="text-foreground font-medium text-medium mb-1">⭐ Трансферы+</h4>
+                      <p className="text-xs text-regular">Неограниченные трансферы без штрафа. Изменения постоянные, бесплатные трансферы сгорают</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium mb-1">🏆 Золотой тур</h4>
-                      <p className="text-xs">Неограниченные трансферы на один тур. После тура состав возвращается, бесплатные трансферы сохраняются</p>
+                      <h4 className="text-foreground font-medium text-medium mb-1">🏆 Золотой тур</h4>
+                      <p className="text-xs text-regular">Неограниченные трансферы на один тур. После тура состав возвращается, бесплатные трансферы сохраняются</p>
                     </div>
                   </div>
 
@@ -251,37 +251,37 @@ const RulesDrawer = ({
             {/* Leagues section */}
             <AccordionItem value="leagues" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Соревнуйся</span>
+                <span className="text-foreground font-display">Соревнуйся</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
                     Играй против других пользователей в общей лиге, <span className="text-primary font-semibold">борись с друзьями</span> в частных лигах и выигрывай призы в коммерческих.
                   </p>
 
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Общая лига</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Общая лига</h4>
                     <p>
                       Все пользователи автоматически участвуют в общей лиге. Соревнуйся со всеми игроками фэнтези-футбола.
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Частные лиги</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Частные лиги</h4>
                     <p>
                       Создай свою лигу и пригласи друзей по уникальному коду. Соревнуйтесь только между собой!
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Коммерческие лиги</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Коммерческие лиги</h4>
                     <p>
                       Участвуй в специальных лигах от спонсоров с реальными призами: фрибеты, техника, VIP-абонементы и многое другое.
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Клубные лиги</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Клубные лиги</h4>
                     <p>
                       Мы добавим тебя в лигу твоего любимого клуба — там свои.
                     </p>
