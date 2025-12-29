@@ -1,5 +1,6 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
+import { getClubLogo } from "@/lib/clubLogos";
 
 // Import jerseys from proper folder
 import arsenalJersey from "@/assets/jerseys/arsenalJersey.png";
@@ -73,6 +74,12 @@ const getJerseyForTeam = (team: string, position?: string) => {
   return dinamoJersey; // default fallback
 };
 
+// Truncate team name for display
+const truncateTeamName = (name: string, maxLength: number = 10) => {
+  if (name.length <= maxLength) return name;
+  return name.substring(0, maxLength) + "...";
+};
+
 interface PlayerData {
   id: number;
   name: string;
@@ -97,6 +104,82 @@ interface SwapPlayerDrawerProps {
   validSwapOptions: ValidSwapOption[];
   onSwap: (fromPlayerId: number, toPlayerId: number) => void;
 }
+
+// Player card component for swap drawer
+const SwapPlayerCard = ({ 
+  player, 
+  onClick, 
+  disabled = false 
+}: { 
+  player: PlayerData; 
+  onClick?: () => void; 
+  disabled?: boolean;
+}) => {
+  const clubLogo = getClubLogo(player.team);
+  
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`
+        relative w-[76px] flex-shrink-0 flex flex-col items-center
+        ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-105 transition-transform'}
+      `}
+    >
+      {/* Card container */}
+      <div className={`
+        relative w-full aspect-[4/5] rounded-xl overflow-hidden
+        ${disabled ? 'bg-secondary/30' : 'bg-[#3a5a28]/40'}
+        border border-white/20 backdrop-blur-[2px]
+      `}>
+        {/* Club logo watermark */}
+        {clubLogo && (
+          <div className="absolute top-1 left-1/2 -translate-x-1/2 z-0">
+            <img 
+              src={clubLogo} 
+              alt="" 
+              className="w-6 h-6 object-contain opacity-60"
+            />
+          </div>
+        )}
+        
+        {/* Jersey */}
+        <div className="absolute inset-0 flex items-center justify-center pt-2">
+          <img 
+            src={getJerseyForTeam(player.team, player.position)} 
+            alt={player.name} 
+            className={`w-[120%] h-auto object-contain ${disabled ? 'grayscale' : ''}`}
+          />
+        </div>
+        
+        {/* Bottom info overlay */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-4 pb-1 px-1">
+          <p className="text-foreground text-[10px] font-medium text-center truncate leading-tight">
+            {player.name}
+          </p>
+          <div className="flex items-center justify-center gap-1 mt-0.5">
+            <span className="text-muted-foreground text-[8px]">
+              ({player.position})
+            </span>
+            <span className="text-muted-foreground text-[8px] truncate max-w-[50px]">
+              {truncateTeamName(player.team, 8)}
+            </span>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+};
+
+// Empty slot placeholder
+const EmptySlotCard = () => (
+  <div className="relative w-[76px] flex-shrink-0 flex flex-col items-center">
+    <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden border-2 border-dashed border-primary bg-primary/5 flex items-center justify-center">
+      <span className="text-primary text-3xl font-light">?</span>
+    </div>
+    <p className="text-muted-foreground text-[10px] mt-1 text-center">Выберите</p>
+  </div>
+);
 
 const SwapPlayerDrawer = ({ 
   isOpen, 
@@ -129,31 +212,15 @@ const SwapPlayerDrawer = ({
         
         <div className="px-4 pb-6 overflow-y-auto">
           {/* Current player and selection - card style */}
-          <div className="flex items-center justify-center gap-6 mb-8">
+          <div className="flex items-center justify-center gap-4 mb-6">
             {/* Selected player card */}
-            <div className="flex flex-col items-center">
-              <div className="relative">
-                <img 
-                  src={getJerseyForTeam(selectedPlayer.team, selectedPlayer.position)} 
-                  alt={selectedPlayer.name} 
-                  className="w-20 h-20 object-contain drop-shadow-lg" 
-                />
-              </div>
-              <span className="text-foreground font-semibold text-sm mt-2">{selectedPlayer.name}</span>
-              <span className="text-muted-foreground text-xs">{selectedPlayer.position}</span>
-            </div>
+            <SwapPlayerCard player={selectedPlayer} />
             
             {/* Swap arrows */}
-            <ArrowLeftRight className="w-8 h-8 text-primary" />
+            <ArrowLeftRight className="w-6 h-6 text-primary flex-shrink-0" />
             
             {/* Empty slot for selection */}
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 border-2 border-dashed border-primary rounded-xl flex items-center justify-center bg-primary/5">
-                <span className="text-primary text-3xl font-light">?</span>
-              </div>
-              <span className="text-muted-foreground text-sm mt-2">Выберите</span>
-              <span className="text-transparent text-xs">—</span>
-            </div>
+            <EmptySlotCard />
           </div>
 
           {/* Valid players for swap */}
@@ -173,33 +240,13 @@ const SwapPlayerDrawer = ({
                 </p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="flex flex-wrap gap-3 justify-center">
                 {validPlayers.map((player) => (
-                  <button
+                  <SwapPlayerCard 
                     key={player.id}
+                    player={player} 
                     onClick={() => handleSwap(player)}
-                    className="w-full bg-secondary rounded-xl p-4 flex items-center gap-4 hover:bg-secondary/80 hover:border-primary/50 border border-transparent transition-all"
-                  >
-                    {/* Player jersey card */}
-                    <div className="relative flex-shrink-0">
-                      <img 
-                        src={getJerseyForTeam(player.team, player.position)} 
-                        alt={player.name} 
-                        className="w-14 h-14 object-contain" 
-                      />
-                    </div>
-                    
-                    {/* Player info */}
-                    <div className="flex-1 text-left">
-                      <div className="flex items-center gap-2">
-                        <span className="text-foreground font-semibold">{player.name}</span>
-                        <span className="text-muted-foreground text-xs">{player.position}</span>
-                      </div>
-                    </div>
-                    
-                    {/* Price only */}
-                    <span className="text-foreground text-sm flex-shrink-0">{player.price}</span>
-                  </button>
+                  />
                 ))}
               </div>
             )}
@@ -210,22 +257,13 @@ const SwapPlayerDrawer = ({
                 <p className="text-muted-foreground text-xs mb-3">
                   Недоступно (нет подходящей схемы):
                 </p>
-                <div className="space-y-2">
+                <div className="flex flex-wrap gap-3 justify-center">
                   {invalidPlayers.map((player) => (
-                    <div
+                    <SwapPlayerCard 
                       key={player.id}
-                      className="w-full bg-secondary/20 rounded-xl p-3 flex items-center gap-4 opacity-50"
-                    >
-                      <img 
-                        src={getJerseyForTeam(player.team, player.position)} 
-                        alt={player.name} 
-                        className="w-10 h-10 object-contain grayscale" 
-                      />
-                      <div className="flex-1 text-left">
-                        <span className="text-muted-foreground font-medium">{player.name}</span>
-                        <span className="text-muted-foreground text-xs ml-2">{player.position}</span>
-                      </div>
-                    </div>
+                      player={player} 
+                      disabled
+                    />
                   ))}
                 </div>
               </div>
