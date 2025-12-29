@@ -606,27 +606,29 @@ const TeamManagement = () => {
       </div>
 
       {/* Tabs */}
-      <div className="px-4 mt-6 flex gap-2">
-        <Button
-          onClick={() => setActiveTab("formation")}
-          className={`flex-1 rounded-full ${
-            activeTab === "formation"
-              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-          }`}
-        >
-          Расстановка
-        </Button>
-        <Button
-          onClick={() => setActiveTab("list")}
-          className={`flex-1 rounded-full ${
-            activeTab === "list"
-              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-          }`}
-        >
-          Список
-        </Button>
+      <div className="px-4 mt-6">
+        <div className="flex bg-secondary rounded-lg p-1">
+          <Button
+            onClick={() => setActiveTab("formation")}
+            className={`flex-1 rounded-md ${
+              activeTab === "formation"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-transparent text-secondary-foreground hover:bg-secondary/80"
+            }`}
+          >
+            Расстановка
+          </Button>
+          <Button
+            onClick={() => setActiveTab("list")}
+            className={`flex-1 rounded-md ${
+              activeTab === "list"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-transparent text-secondary-foreground hover:bg-secondary/80"
+            }`}
+          >
+            Список
+          </Button>
+        </div>
       </div>
 
       {/* Special Chips */}
