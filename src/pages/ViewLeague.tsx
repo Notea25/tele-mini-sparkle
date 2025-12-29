@@ -160,7 +160,7 @@ const ViewLeague = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SportHeader backTo="/league" />
+      <SportHeader />
       
       <main className="flex-1 px-4 pb-6">
 
