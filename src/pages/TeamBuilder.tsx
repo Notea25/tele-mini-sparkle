@@ -27,7 +27,7 @@ import {
   ChevronsUpDown,
   ChevronUp,
 } from "lucide-react";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { toast } from "sonner";
@@ -731,17 +731,6 @@ const TeamBuilder = () => {
         />
       </div>
 
-      {/* Breadcrumbs */}
-      <div className="px-4 mt-4">
-        <Breadcrumbs
-          items={[
-            { label: "Футбол", path: "/" },
-            { label: "Беларусь", path: "/" },
-            { label: "Создание команды", path: "/create-team" },
-            { label: teamName },
-          ]}
-        />
-      </div>
 
       {/* Team Header */}
       <div className="px-4 mt-6">

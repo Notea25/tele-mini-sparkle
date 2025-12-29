@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeftRight } from "lucide-react";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import { useNavigate } from "react-router-dom";
 import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
@@ -167,12 +167,6 @@ const CreateTeam = () => {
       {/* Header */}
       <SportHeader />
 
-      {/* Breadcrumbs */}
-      <div className="px-4 mt-4">
-        <Breadcrumbs
-          items={[{ label: "Футбол", path: "/" }, { label: "Беларусь", path: "/" }, { label: "Создание команды" }]}
-        />
-      </div>
 
       {/* Hero Banner с подложкой для bannerBg и текста */}
       <div className="relative mt-6">

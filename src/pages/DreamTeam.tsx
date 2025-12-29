@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import PlayerCard from "@/components/PlayerCard";
 import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
 import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
@@ -156,17 +156,6 @@ const DreamTeam = () => {
     <div className="min-h-screen bg-background">
       <SportHeader backTo="/league" />
 
-      {/* Breadcrumb */}
-      <div className="px-4 mt-4">
-        <Breadcrumbs
-          items={[
-            { label: "Футбол", path: "/" },
-            { label: "Беларусь", path: "/" },
-            { label: "Лига", path: "/league" },
-            { label: teamName },
-          ]}
-        />
-      </div>
 
       {/* Team Name */}
       <div className="px-4 mt-4 flex items-center justify-center">

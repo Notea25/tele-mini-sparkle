@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 
 import icon2x from "@/assets/icon-2x.png";
 import iconStar from "@/assets/icon-star.png";
@@ -571,17 +571,6 @@ const Transfers = () => {
         onDiscardChanges={handleExitWithoutSaving}
       />
 
-      {/* Breadcrumb */}
-      <div className="px-4 mt-4">
-        <Breadcrumbs
-          items={[
-            { label: "Футбол", path: "/" },
-            { label: "Беларусь", path: "/" },
-            { label: "Лига", path: "/league" },
-            { label: "Трансферы" },
-          ]}
-        />
-      </div>
 
       {/* Team Header */}
       <div className="px-4 mt-4">
