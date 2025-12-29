@@ -178,16 +178,16 @@ const PlayerCard = ({
               {/* Player surname */}
               <h2 className="text-foreground text-2xl font-bold font-display">{player.name}</h2>
 
+              {/* Position - no border */}
+              <span className="text-foreground text-sm font-display mt-1">
+                {positionNames[player.position] || player.position}
+              </span>
+
               {/* Team with logo */}
               <div className="flex items-center gap-2 mt-1">
                 <img src={clubLogos[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
                 <span className="text-foreground text-sm font-display">{player.team}</span>
               </div>
-
-              {/* Position - no border */}
-              <span className="text-foreground text-sm font-display mt-1">
-                {positionNames[player.position] || player.position}
-              </span>
             </div>
           </div>
 
