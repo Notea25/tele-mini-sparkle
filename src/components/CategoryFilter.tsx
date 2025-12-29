@@ -55,7 +55,7 @@ const CategoryFilter = ({ activeCategory = "all", onCategoryClick }: CategoryFil
             <Button
               key={category.id}
               variant={isActive ? "default" : "secondary"}
-              className={`flex items-center gap-2 rounded-full whitespace-nowrap px-4 h-10 ${
+              className={`flex items-center gap-2 rounded-xl whitespace-nowrap px-4 h-10 ${
                 !isActive ? "border border-[#363546] bg-[#1D1C25]" : ""
               }`}
               onClick={() => handleClick(category.id, category.scrollTo)}

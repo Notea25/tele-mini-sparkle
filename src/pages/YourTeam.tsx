@@ -136,7 +136,7 @@ const YourTeam = () => {
           <ChevronLeft className="w-5 h-5" />
         </button>
         
-        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
+        <div className="bg-primary rounded-xl px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
           <span className="text-2xl font-bold text-primary-foreground">{totalTourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
           {currentBoostInfo && (
@@ -237,7 +237,7 @@ const YourTeam = () => {
                       <div
                         key={player.id}
                         onClick={() => handlePlayerClick(player)}
-                        className={`bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
+                        className={`bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
                           showCaptain3xBadge || showDoublePowerBadge ? "border border-primary" : ""
                         } ${player.hasRedCard || player.isInjured ? "border border-red-500" : ""}`}
                       >
@@ -288,7 +288,7 @@ const YourTeam = () => {
               <div
                 key={player.id}
                 onClick={() => handlePlayerClick(player)}
-                className={`bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
+                className={`bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
                   isBenchBoostActive ? "border border-primary" : "opacity-70"
                 }`}
               >

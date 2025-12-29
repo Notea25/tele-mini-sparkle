@@ -767,7 +767,7 @@ const League = () => {
               {(showAllMyLeagues ? myLeagues : myLeagues.slice(0, 5)).map((league, idx) => (
                 <div
                   key={idx}
-                  className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-full cursor-pointer hover:bg-secondary/70 transition-colors"
+                  className="grid grid-cols-12 gap-2 items-center px-4 py-3 bg-secondary/50 rounded-xl cursor-pointer hover:bg-secondary/70 transition-colors"
                   onClick={() => {
                     handleNavigate(
                       `/view-league?id=${league.id}&name=${encodeURIComponent(league.name)}&owner=${league.isOwner}&participants=${league.participants}`,
@@ -874,7 +874,7 @@ const League = () => {
                     {displayData.map((row, idx) => (
                       <div
                         key={idx}
-                        className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
+                        className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl cursor-pointer transition-colors hover:bg-secondary/70 ${
                           row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                         }`}
                         onClick={() => {

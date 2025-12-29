@@ -73,7 +73,7 @@ const TeamListView = ({
                 return (
                   <div
                     key={`${section.position}-${slot.slotIndex}`}
-                    className="bg-card rounded-full px-4 py-2 flex items-center"
+                    className="bg-card rounded-xl px-4 py-2 flex items-center"
                   >
                     {isOccupied && slot.player ? (
                       <>
