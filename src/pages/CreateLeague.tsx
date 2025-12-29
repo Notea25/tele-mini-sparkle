@@ -7,7 +7,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
@@ -127,17 +127,6 @@ const CreateLeague = () => {
         <SportHeader backTo="/league" />
 
         <main className="flex-1 px-4 pb-6">
-          {/* Breadcrumb */}
-          <div className="py-4">
-            <Breadcrumbs
-              items={[
-                { label: "Футбол", path: "/" },
-                { label: "Беларусь", path: "/" },
-                { label: "Лига", path: "/league" },
-                { label: viewingLeague.name },
-              ]}
-            />
-          </div>
 
           {/* League Title with Owner Badge */}
           <div className="flex items-center gap-3 mb-6">
@@ -244,17 +233,6 @@ const CreateLeague = () => {
       <SportHeader backTo="/league" />
 
       <main className="flex-1 px-4 pb-6">
-        {/* Breadcrumb */}
-        <div className="py-4">
-          <Breadcrumbs
-            items={[
-              { label: "Футбол", path: "/" },
-              { label: "Беларусь", path: "/" },
-              { label: "Лига", path: "/league" },
-              { label: "Создание лиги" },
-            ]}
-          />
-        </div>
 
         {/* Title */}
         <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-6 px-4 font-display">

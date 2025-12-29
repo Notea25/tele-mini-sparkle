@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Button } from "@/components/ui/button";
 import InviteFriendsDrawer from "@/components/InviteFriendsDrawer";
-import homeIcon from "@/assets/home-icon.png";
+
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 
@@ -66,9 +66,6 @@ const Profile = () => {
     setProfile(savedProfile);
   };
 
-  const handleHomeClick = () => {
-    navigate("/");
-  };
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -122,14 +119,6 @@ const Profile = () => {
         className="hidden"
       />
 
-      {/* Breadcrumb */}
-      <div className="px-4 py-3 flex items-center gap-2 text-sm">
-        <button onClick={handleHomeClick}>
-          <img src={homeIcon} alt="Home" className="w-5 h-5" />
-        </button>
-        <span className="text-muted-foreground">▸</span>
-        <span className="text-muted-foreground">Профиль</span>
-      </div>
 
       <div className="px-4 space-y-6">
         {/* Profile Header Section */}

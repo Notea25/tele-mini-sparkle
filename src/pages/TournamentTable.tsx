@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SportHeader from "@/components/SportHeader";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowSame from "@/assets/arrow-same.png";
@@ -85,17 +85,6 @@ const TournamentTable = () => {
       <SportHeader backTo="/league" />
 
       <main className="flex-1 px-4 pb-6">
-        {/* Breadcrumb */}
-        <div className="py-4">
-          <Breadcrumbs
-            items={[
-              { label: "Футбол", path: "/" },
-              { label: "Беларусь", path: "/" },
-              { label: "Лига", path: "/league" },
-              { label: "Турнирная таблица" },
-            ]}
-          />
-        </div>
 
         {/* Title */}
         <h1 className="text-3xl font-bold text-foreground mb-6">Турнирная таблица</h1>

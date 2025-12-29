@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
@@ -344,10 +344,6 @@ const League = () => {
       <SportHeader />
 
       <main className="flex-1 px-4 pb-6 overflow-x-hidden">
-        {/* Breadcrumb */}
-        <div className="py-4">
-          <Breadcrumbs items={[{ label: "Футбол", path: "/" }, { label: "Беларусь" }]} />
-        </div>
 
         {/* Tabs */}
         <div className="bg-secondary/50 rounded-full p-1 flex mb-6">

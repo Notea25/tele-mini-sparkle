@@ -11,7 +11,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowSame from "@/assets/arrow-same.png";
@@ -163,17 +163,6 @@ const ViewLeague = () => {
       <SportHeader backTo="/league" />
       
       <main className="flex-1 px-4 pb-6">
-        {/* Breadcrumb */}
-        <div className="py-4">
-          <Breadcrumbs
-            items={[
-              { label: "Футбол", path: "/" },
-              { label: "Беларусь", path: "/" },
-              { label: "Лига", path: "/league" },
-              { label: leagueName },
-            ]}
-          />
-        </div>
 
         {/* League Title with Owner Badge */}
         <div className="flex items-center justify-between mb-6">
