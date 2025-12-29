@@ -17,7 +17,7 @@ import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
@@ -83,57 +83,76 @@ const FormationField = ({
   viceCaptain,
   showCaptainBadges = true,
 }: FormationFieldProps) => {
-  const formation: FormationPosition[] = [
-    { position: "ВР", row: 1, col: 1 },
-    { position: "ВР", row: 1, col: 2 },
-    { position: "ЗЩ", row: 2, col: 1 },
-    { position: "ЗЩ", row: 2, col: 2 },
-    { position: "ЗЩ", row: 2, col: 3 },
-    { position: "ЗЩ", row: 2, col: 4 },
-    { position: "ЗЩ", row: 2, col: 5 },
-    { position: "ПЗ", row: 3, col: 1 },
-    { position: "ПЗ", row: 3, col: 2 },
-    { position: "ПЗ", row: 3, col: 3 },
-    { position: "ПЗ", row: 3, col: 4 },
-    { position: "ПЗ", row: 3, col: 5 },
-    { position: "НП", row: 4, col: 1 },
-    { position: "НП", row: 4, col: 2 },
-    { position: "НП", row: 4, col: 3 },
-  ];
+  // Мемоизированное формирование
+  const formation = useMemo(
+    (): FormationPosition[] => [
+      { position: "ВР", row: 1, col: 1 },
+      { position: "ВР", row: 1, col: 2 },
+      { position: "ЗЩ", row: 2, col: 1 },
+      { position: "ЗЩ", row: 2, col: 2 },
+      { position: "ЗЩ", row: 2, col: 3 },
+      { position: "ЗЩ", row: 2, col: 4 },
+      { position: "ЗЩ", row: 2, col: 5 },
+      { position: "ПЗ", row: 3, col: 1 },
+      { position: "ПЗ", row: 3, col: 2 },
+      { position: "ПЗ", row: 3, col: 3 },
+      { position: "ПЗ", row: 3, col: 4 },
+      { position: "ПЗ", row: 3, col: 5 },
+      { position: "НП", row: 4, col: 1 },
+      { position: "НП", row: 4, col: 2 },
+      { position: "НП", row: 4, col: 3 },
+    ],
+    [],
+  );
 
-  const truncateName = (text: string, maxLength: number) => {
-    if (text.length > maxLength) {
-      return text.slice(0, maxLength) + "...";
-    }
-    return text;
-  };
+  // Мемоизированный маппинг слотов (position-row-col -> slotIndex)
+  const slotIndexMap = useMemo(() => {
+    const map = new Map<string, number>();
+    const positionCounts = new Map<string, number>();
 
-  const getAssignedPlayer = (formationPos: FormationPosition) => {
-    const slotsForPosition = formation.filter((f) => f.position === formationPos.position);
-    const slotPositionIndex = slotsForPosition.findIndex(
-      (s) => s.row === formationPos.row && s.col === formationPos.col,
-    );
+    formation.forEach((pos) => {
+      const count = positionCounts.get(pos.position) || 0;
+      const key = `${pos.position}-${pos.row}-${pos.col}`;
+      map.set(key, count);
+      positionCounts.set(pos.position, count + 1);
+    });
 
-    return selectedPlayers.find((p) => p.position === formationPos.position && p.slotIndex === slotPositionIndex);
-  };
+    return map;
+  }, [formation]);
 
-  const rows = {
-    1: formation.filter((slot) => slot.row === 1),
-    2: formation.filter((slot) => slot.row === 2),
-    3: formation.filter((slot) => slot.row === 3),
-    4: formation.filter((slot) => slot.row === 4),
-  };
+  // Группировка по строкам с мемоизацией
+  const rows = useMemo(
+    () => ({
+      1: formation.filter((slot) => slot.row === 1),
+      2: formation.filter((slot) => slot.row === 2),
+      3: formation.filter((slot) => slot.row === 3),
+      4: formation.filter((slot) => slot.row === 4),
+    }),
+    [formation],
+  );
 
-  const [screenWidth, setScreenWidth] = useState(0);
+  // Мемоизированная функция для получения игрока по слоту
+  const getAssignedPlayer = useCallback(
+    (formationPos: FormationPosition) => {
+      const key = `${formationPos.position}-${formationPos.row}-${formationPos.col}`;
+      const slotIndex = slotIndexMap.get(key);
+
+      if (slotIndex === undefined) return undefined;
+
+      return selectedPlayers.find((p) => {
+        if (p.position !== formationPos.position) return false;
+        return p.slotIndex === slotIndex;
+      });
+    },
+    [selectedPlayers, slotIndexMap],
+  );
+
   const [cardSize, setCardSize] = useState({ width: 70, height: 84 });
 
   useEffect(() => {
     const updateCardSize = () => {
       const width = window.innerWidth;
-      setScreenWidth(width);
-
-      let cardWidth;
-      let cardHeight;
+      let cardWidth, cardHeight;
 
       if (width <= 768) {
         // Для мобильных фиксированные 70x84
@@ -153,188 +172,256 @@ const FormationField = ({
     };
 
     updateCardSize();
-    window.addEventListener("resize", updateCardSize);
 
-    return () => window.removeEventListener("resize", updateCardSize);
+    // Дебаунс для оптимизации ресайза
+    let timeoutId: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(updateCardSize, 250);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
-  const PlayerCardComponent = ({
-    player,
-    showRemoveButton = true,
-  }: {
-    player: PlayerData;
-    showRemoveButton?: boolean;
-  }) => (
-    <div
-      className="relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
-      style={{
-        width: `${cardSize.width}px`,
-        height: `${cardSize.height}px`,
-      }}
-      onClick={() => onPlayerClick?.(player)}
-    >
-      {/* Captain/Vice-Captain badge */}
-      {showCaptainBadges && captain === player.id && (
-        <img
-          src={captainBadge}
-          alt="C"
-          className="absolute top-1 left-1 z-50"
-          style={{
-            width: `${cardSize.width * 0.18}px`,
-            height: `${cardSize.width * 0.18}px`,
-          }}
-        />
-      )}
-      {showCaptainBadges && viceCaptain === player.id && (
-        <img
-          src={viceCaptainBadge}
-          alt="V"
-          className="absolute top-1 left-1 z-50"
-          style={{
-            width: `${cardSize.width * 0.18}px`,
-            height: `${cardSize.width * 0.18}px`,
-          }}
-        />
-      )}
+  const PlayerCardComponent = useCallback(
+    ({ player, showRemoveButton = true }: { player: PlayerData; showRemoveButton?: boolean }) => {
+      const jerseySrc = getJerseyForTeam(player.team, player.position);
+      const isCap = showCaptainBadges && captain === player.id;
+      const isViceCap = showCaptainBadges && viceCaptain === player.id;
 
-      {/* Delete button */}
-      {showRemoveButton && onRemovePlayer && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemovePlayer(player.id);
-          }}
-          className="absolute top-1 right-1 z-50 flex items-center justify-center bg-[#5a7a4a] rounded-full"
+      const maxNameLength = Math.floor(cardSize.width / 7);
+      const maxTeamLength = Math.floor(cardSize.width / 9);
+
+      const displayName =
+        player.name.length > maxNameLength ? player.name.slice(0, maxNameLength) + "..." : player.name;
+
+      const displayTeam =
+        player.team.length > maxTeamLength ? player.team.slice(0, maxTeamLength) + "..." : player.team;
+
+      return (
+        <div
+          className="relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] hover:bg-[#3a5a28]/60 transition-colors"
           style={{
-            width: `${cardSize.width * 0.18}px`,
-            height: `${cardSize.width * 0.18}px`,
+            width: `${cardSize.width}px`,
+            height: `${cardSize.height}px`,
+          }}
+          onClick={() => onPlayerClick?.(player)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onPlayerClick?.(player);
+            }
+          }}
+          aria-label={`Игрок ${player.name}, команда ${player.team}, позиция ${player.position}`}
+        >
+          {/* Captain/Vice-Captain badge */}
+          {isCap && (
+            <img
+              src={captainBadge}
+              alt="Капитан"
+              className="absolute top-1 left-1 z-50"
+              style={{
+                width: `${cardSize.width * 0.18}px`,
+                height: `${cardSize.width * 0.18}px`,
+              }}
+            />
+          )}
+          {isViceCap && (
+            <img
+              src={viceCaptainBadge}
+              alt="Вице-капитан"
+              className="absolute top-1 left-1 z-50"
+              style={{
+                width: `${cardSize.width * 0.18}px`,
+                height: `${cardSize.width * 0.18}px`,
+              }}
+            />
+          )}
+
+          {/* Delete button */}
+          {showRemoveButton && onRemovePlayer && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemovePlayer(player.id);
+              }}
+              className="absolute top-1 right-1 z-50 flex items-center justify-center bg-[#5a7a4a] hover:bg-[#6a8a5a] rounded-full transition-colors"
+              style={{
+                width: `${cardSize.width * 0.18}px`,
+                height: `${cardSize.width * 0.18}px`,
+              }}
+              aria-label={`Удалить ${player.name}`}
+            >
+              <X
+                className="text-[#1a2e1a]"
+                style={{
+                  width: `${cardSize.width * 0.12}px`,
+                  height: `${cardSize.width * 0.12}px`,
+                }}
+              />
+            </button>
+          )}
+
+          {/* Price centered */}
+          <div
+            className="w-full flex items-center justify-center pt-1 pb-0.5 z-30"
+            style={{ height: `${cardSize.height * 0.19}px` }}
+          >
+            <span
+              className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
+              style={{ fontSize: `${cardSize.width * 0.12}px` }}
+            >
+              ${(player.price || 0).toFixed(1)}
+            </span>
+          </div>
+
+          {/* Jersey */}
+          <div className="relative w-full flex-1 z-10 overflow-hidden">
+            <img
+              src={jerseySrc}
+              alt={player.name}
+              className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
+              style={{
+                width: `${cardSize.width * 1.5}px`,
+                top: `-${cardSize.height * 0.12}px`,
+              }}
+              onError={(e) => {
+                // Fallback на стандартную форму
+                e.currentTarget.src = playerJerseyNew;
+              }}
+            />
+          </div>
+
+          {/* Player name and club blocks */}
+          <div className="w-full relative z-20">
+            <div className="bg-white px-[4%] py-[2%]">
+              <span
+                className="font-semibold text-black block truncate whitespace-nowrap text-center"
+                style={{ fontSize: `${cardSize.width * 0.1}px` }}
+                title={player.name}
+              >
+                {displayName}
+              </span>
+            </div>
+            <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
+              <span
+                className="font-medium block truncate whitespace-nowrap text-center"
+                style={{ fontSize: `${cardSize.width * 0.085}px` }}
+                title={player.team}
+              >
+                <span className="text-[#7D7A94]">(Д)</span>
+                <span className="text-white ml-[2%]">{displayTeam}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    },
+    [cardSize, captain, viceCaptain, showCaptainBadges, onPlayerClick, onRemovePlayer],
+  );
+
+  const EmptySlotComponent = useCallback(
+    ({ position }: { position: string }) => (
+      <div
+        className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+        style={{
+          width: `${cardSize.width}px`,
+          height: `${cardSize.height}px`,
+          gap: `${cardSize.height * 0.06}px`,
+        }}
+        onClick={() => onEmptySlotClick?.(position)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onEmptySlotClick?.(position);
+          }
+        }}
+        aria-label={`Добавить игрока на позицию ${position}`}
+      >
+        <span className="text-white font-bold" style={{ fontSize: `${cardSize.width * 0.2}px` }}>
+          {position}
+        </span>
+        <div
+          className="rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors"
+          style={{
+            width: `${cardSize.width * 0.25}px`,
+            height: `${cardSize.width * 0.25}px`,
           }}
         >
-          <X
-            className="text-[#1a2e1a]"
+          <Plus
+            className="text-[#3a5a28]"
             style={{
-              width: `${cardSize.width * 0.12}px`,
-              height: `${cardSize.width * 0.12}px`,
+              width: `${cardSize.width * 0.14}px`,
+              height: `${cardSize.width * 0.14}px`,
             }}
           />
-        </button>
-      )}
-
-      {/* Price centered */}
-      <div
-        className="w-full flex items-center justify-center pt-1 pb-0.5 z-30"
-        style={{ height: `${cardSize.height * 0.19}px` }}
-      >
-        <span
-          className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
-          style={{ fontSize: `${cardSize.width * 0.12}px` }}
-        >
-          ${(player.price || 9).toFixed(1)}
-        </span>
-      </div>
-
-      {/* Jersey */}
-      <div className="relative w-full flex-1 z-10 overflow-hidden">
-        <img
-          src={getJerseyForTeam(player.team, player.position)}
-          alt={player.name}
-          className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
-          style={{
-            width: `${cardSize.width * 1.5}px`,
-            top: `-${cardSize.height * 0.12}px`,
-          }}
-        />
-      </div>
-
-      {/* Player name and club blocks */}
-      <div className="w-full relative z-20">
-        <div className="bg-white px-[4%] py-[2%]">
-          <span
-            className="font-semibold text-black block truncate whitespace-nowrap text-center"
-            style={{ fontSize: `${cardSize.width * 0.1}px` }}
-          >
-            {truncateName(player.name, Math.floor(cardSize.width / 7))}
-          </span>
-        </div>
-        <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
-          <span
-            className="font-medium block truncate whitespace-nowrap text-center"
-            style={{ fontSize: `${cardSize.width * 0.085}px` }}
-          >
-            <span className="text-[#7D7A94]">(Д)</span>
-            <span className="text-white ml-[2%]">{truncateName(player.team, Math.floor(cardSize.width / 9))}</span>
-          </span>
         </div>
       </div>
-    </div>
+    ),
+    [cardSize, onEmptySlotClick],
   );
 
-  const EmptySlotComponent = ({ position }: { position: string }) => (
-    <div
-      className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
-      style={{
-        width: `${cardSize.width}px`,
-        height: `${cardSize.height}px`,
-        gap: `${cardSize.height * 0.06}px`,
-      }}
-      onClick={() => onEmptySlotClick?.(position)}
-    >
-      <span className="text-white font-bold" style={{ fontSize: `${cardSize.width * 0.2}px` }}>
-        {position}
-      </span>
-      <div
-        className="rounded-full bg-white/90 flex items-center justify-center"
-        style={{
-          width: `${cardSize.width * 0.25}px`,
-          height: `${cardSize.width * 0.25}px`,
-        }}
-      >
-        <Plus
-          className="text-[#3a5a28]"
-          style={{
-            width: `${cardSize.width * 0.14}px`,
-            height: `${cardSize.width * 0.14}px`,
-          }}
-        />
-      </div>
-    </div>
-  );
-
-  // Calculate gaps based on screen width
-  const getRowGap = (cardsInRow: number) => {
-    if (screenWidth <= 768) {
-      // Мобильные: минимальные гэпы
+  // Мемоизированные функции для расчета отступов
+  const getRowGap = useCallback((cardsInRow: number) => {
+    const width = window.innerWidth;
+    if (width <= 768) {
       if (cardsInRow === 2) return 8;
       if (cardsInRow === 3) return 6;
       if (cardsInRow === 5) return 4;
       return 4;
     } else {
-      // Планшет и десктоп: бОльшие гэпы
       if (cardsInRow === 2) return 24;
       if (cardsInRow === 3) return 20;
       if (cardsInRow === 5) return 16;
       return 16;
     }
-  };
+  }, []);
 
-  // Calculate vertical spacing between rows
-  const getVerticalSpacing = (rowIndex: number) => {
-    if (screenWidth <= 768) {
-      // Мобильные: меньшие гэпы
-      return cardSize.height * 0.1 * (rowIndex + 1);
-    } else {
-      // Планшет и десктоп: большие гэпы
-      return cardSize.height * 0.5 * (rowIndex + 1);
-    }
-  };
+  const getVerticalSpacing = useCallback(
+    (rowIndex: number) => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        return cardSize.height * 0.1 * (rowIndex + 1);
+      } else {
+        return cardSize.height * 0.5 * (rowIndex + 1);
+      }
+    },
+    [cardSize.height],
+  );
 
-  const rowSpacing1 = getVerticalSpacing(0);
-  const rowSpacing2 = getVerticalSpacing(1);
-  const rowSpacing3 = getVerticalSpacing(2);
+  // Расчет вертикальных отступов с мемоизацией
+  const rowSpacings = useMemo(
+    () => ({
+      row1: getVerticalSpacing(0),
+      row2: getVerticalSpacing(1),
+      row3: getVerticalSpacing(2),
+    }),
+    [getVerticalSpacing],
+  );
+
+  // Рассчитываем горизонтальные гэпы для каждой строки
+  const rowGaps = useMemo(
+    () => ({
+      row1: getRowGap(2),
+      row2: getRowGap(5),
+      row3: getRowGap(5),
+      row4: getRowGap(3),
+    }),
+    [getRowGap],
+  );
 
   return (
     <div className="relative w-full">
-      <img src={footballFieldNew} alt="Football field" className="w-full" />
+      <img src={footballFieldNew} alt="Футбольное поле" className="w-full h-auto" loading="lazy" />
 
       <div className="absolute inset-0">
         {/* Вратари */}
@@ -342,17 +429,17 @@ const FormationField = ({
           className="absolute left-0 right-0 flex justify-center"
           style={{
             top: "4%",
-            gap: `${getRowGap(2)}px`,
+            gap: `${rowGaps.row1}px`,
           }}
         >
-          {rows[1].map((slot, idx) => {
+          {rows[1].map((slot) => {
             const assignedPlayer = getAssignedPlayer(slot);
-            const isOccupied = !!assignedPlayer;
+            const key = `${slot.position}-${slot.row}-${slot.col}`;
 
             return (
-              <div key={idx}>
-                {isOccupied ? (
-                  <PlayerCardComponent player={assignedPlayer!} />
+              <div key={key}>
+                {assignedPlayer ? (
+                  <PlayerCardComponent player={assignedPlayer} />
                 ) : (
                   <EmptySlotComponent position={slot.position} />
                 )}
@@ -365,18 +452,18 @@ const FormationField = ({
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: `calc(4% + ${cardSize.height}px + ${rowSpacing1}px)`,
-            gap: `${getRowGap(5)}px`,
+            top: `calc(4% + ${cardSize.height}px + ${rowSpacings.row1}px)`,
+            gap: `${rowGaps.row2}px`,
           }}
         >
-          {rows[2].map((slot, idx) => {
+          {rows[2].map((slot) => {
             const assignedPlayer = getAssignedPlayer(slot);
-            const isOccupied = !!assignedPlayer;
+            const key = `${slot.position}-${slot.row}-${slot.col}`;
 
             return (
-              <div key={idx}>
-                {isOccupied ? (
-                  <PlayerCardComponent player={assignedPlayer!} />
+              <div key={key}>
+                {assignedPlayer ? (
+                  <PlayerCardComponent player={assignedPlayer} />
                 ) : (
                   <EmptySlotComponent position={slot.position} />
                 )}
@@ -389,18 +476,18 @@ const FormationField = ({
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: `calc(4% + ${cardSize.height * 2}px + ${rowSpacing1 + rowSpacing2}px)`,
-            gap: `${getRowGap(5)}px`,
+            top: `calc(4% + ${cardSize.height * 2}px + ${rowSpacings.row1 + rowSpacings.row2}px)`,
+            gap: `${rowGaps.row3}px`,
           }}
         >
-          {rows[3].map((slot, idx) => {
+          {rows[3].map((slot) => {
             const assignedPlayer = getAssignedPlayer(slot);
-            const isOccupied = !!assignedPlayer;
+            const key = `${slot.position}-${slot.row}-${slot.col}`;
 
             return (
-              <div key={idx}>
-                {isOccupied ? (
-                  <PlayerCardComponent player={assignedPlayer!} />
+              <div key={key}>
+                {assignedPlayer ? (
+                  <PlayerCardComponent player={assignedPlayer} />
                 ) : (
                   <EmptySlotComponent position={slot.position} />
                 )}
@@ -413,18 +500,18 @@ const FormationField = ({
         <div
           className="absolute left-0 right-0 flex justify-center"
           style={{
-            top: `calc(4% + ${cardSize.height * 3}px + ${rowSpacing1 + rowSpacing2 + rowSpacing3}px)`,
-            gap: `${getRowGap(3)}px`,
+            top: `calc(4% + ${cardSize.height * 3}px + ${rowSpacings.row1 + rowSpacings.row2 + rowSpacings.row3}px)`,
+            gap: `${rowGaps.row4}px`,
           }}
         >
-          {rows[4].map((slot, idx) => {
+          {rows[4].map((slot) => {
             const assignedPlayer = getAssignedPlayer(slot);
-            const isOccupied = !!assignedPlayer;
+            const key = `${slot.position}-${slot.row}-${slot.col}`;
 
             return (
-              <div key={idx}>
-                {isOccupied ? (
-                  <PlayerCardComponent player={assignedPlayer!} />
+              <div key={key}>
+                {assignedPlayer ? (
+                  <PlayerCardComponent player={assignedPlayer} />
                 ) : (
                   <EmptySlotComponent position={slot.position} />
                 )}
