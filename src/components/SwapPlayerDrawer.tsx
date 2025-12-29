@@ -14,7 +14,6 @@ import nemanJersey from "@/assets/jerseys/nemanJersey.png";
 import slaviaJersey from "@/assets/jerseys/slaviaJersey.png";
 import torpedoJersey from "@/assets/jerseys/torpedoJersey.png";
 import vitebskJersey from "@/assets/jerseys/vitebskJersey.png";
-import islochJersey from "@/assets/jerseys/islochJersey.png";
 
 // Goalkeeper jerseys
 import arsenalGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
@@ -23,9 +22,6 @@ import gomelGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/gomelGoalk
 import mlGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
 import slaviaGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/slaviaGoalkeeperJersey.png";
 import vitebskGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
-import minskGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/minskGoalkeeperJersey.png";
-import dinamoGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/dinamoGoalkeeperJersey.png";
-import brestGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/brestGoalkeeperJersey.png";
 
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
@@ -35,10 +31,10 @@ const getJerseyForTeam = (team: string, position?: string) => {
   const normalizedTeam = team.toLowerCase();
   
   if (normalizedTeam.includes("динамо") && normalizedTeam.includes("минск")) {
-    return isGoalkeeper ? dinamoGoalkeeperJersey : dinamoJersey;
+    return dinamoJersey;
   }
   if (normalizedTeam.includes("динамо") && normalizedTeam.includes("брест")) {
-    return isGoalkeeper ? brestGoalkeeperJersey : brestJersey;
+    return brestJersey;
   }
   if (normalizedTeam.includes("батэ") || normalizedTeam === "bate") {
     return isGoalkeeper ? bateGoalkeeperJersey : bateJersey;
@@ -59,7 +55,7 @@ const getJerseyForTeam = (team: string, position?: string) => {
     return nemanJersey;
   }
   if (normalizedTeam.includes("минск") && !normalizedTeam.includes("динамо")) {
-    return isGoalkeeper ? minskGoalkeeperJersey : minskJersey;
+    return minskJersey;
   }
   if (normalizedTeam.includes("торпедо") || normalizedTeam.includes("белаз")) {
     return torpedoJersey;
@@ -69,9 +65,6 @@ const getJerseyForTeam = (team: string, position?: string) => {
   }
   if (normalizedTeam.includes("нафтан") || normalizedTeam.includes("новополоцк")) {
     return naftanJersey;
-  }
-  if (normalizedTeam.includes("ислочь")) {
-    return islochJersey;
   }
   if (normalizedTeam.includes("белшина")) {
     return slaviaJersey; // fallback

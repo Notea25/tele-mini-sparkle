@@ -297,11 +297,6 @@ import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
 import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
 import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
-import jerseyIsloch from "@/assets/jerseys/islochJersey.png";
-import jerseyNaftan from "@/assets/jerseys/naftanJersey.png";
-import jerseyMinskGk from "@/assets/jerseys/goalkeeperJerseys/minskGoalkeeperJersey.png";
-import jerseyDinamoMinskGk from "@/assets/jerseys/goalkeeperJerseys/dinamoGoalkeeperJersey.png";
-import jerseyDinamoBrestGk from "@/assets/jerseys/goalkeeperJerseys/brestGoalkeeperJersey.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
@@ -317,11 +312,11 @@ import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/for
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
     case "Динамо-Минск":
-      return position === "ВР" ? jerseyDinamoMinskGk : jerseyDinamoMinsk;
+      return jerseyDinamoMinsk;
     case "БАТЭ":
       return position === "ВР" ? jerseyBateGk : jerseyBate;
     case "Динамо-Брест":
-      return position === "ВР" ? jerseyDinamoBrestGk : jerseyDinamoBrest;
+      return jerseyDinamoBrest;
     case "МЛ Витебск":
       return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
     case "Славия-Мозырь":
@@ -331,16 +326,11 @@ const getJerseyForTeam = (team: string, position?: string) => {
     case "Неман":
       return jerseyNeman;
     case "Минск":
-      return position === "ВР" ? jerseyMinskGk : jerseyMinsk;
+      return jerseyMinsk;
     case "Торпедо-БелАЗ":
       return jerseyTorpedo;
     case "Витебск":
       return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
-    case "Ислочь":
-      return jerseyIsloch;
-    case "Нафтан":
-    case "Нафтан-Новополоцк":
-      return jerseyNaftan;
     default:
       return playerJerseyNew;
   }
