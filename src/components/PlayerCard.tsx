@@ -167,27 +167,27 @@ const PlayerCard = ({
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-card border-border">
         <div className="px-6 pt-4 pb-2">
-          {/* Header with position and player info */}
+          {/* Header with player info */}
           <div className="flex items-start gap-4">
             {/* Player photo */}
             <div className="w-24 h-28 rounded-lg overflow-hidden">
               <img src={playerPhoto} alt={player.name} className="w-full h-full object-cover" />
             </div>
 
-            <div className="flex-1">
-              {/* Position badge */}
-              <span className="inline-block bg-secondary text-secondary-foreground text-xs px-3 py-1 rounded-full mb-2">
-                {positionNames[player.position] || player.position}
-              </span>
+            <div className="flex-1 flex flex-col justify-center h-28">
+              {/* Player surname */}
+              <h2 className="text-foreground text-2xl font-bold font-display">{player.name}</h2>
 
-              {/* Player name */}
-              <h2 className="text-foreground text-2xl font-bold">{player.name}</h2>
-
-              {/* Team */}
+              {/* Team with logo */}
               <div className="flex items-center gap-2 mt-1">
                 <img src={clubLogos[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
-                <span className="text-primary">{player.team}</span>
+                <span className="text-foreground text-sm font-display">{player.team}</span>
               </div>
+
+              {/* Position - no border */}
+              <span className="text-foreground text-sm font-display mt-1">
+                {positionNames[player.position] || player.position}
+              </span>
             </div>
           </div>
 
