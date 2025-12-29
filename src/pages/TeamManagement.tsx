@@ -934,7 +934,7 @@ const TeamManagement = () => {
       )}
 
       {/* Add padding to account for fixed bottom */}
-      <div className="h-24" />
+      <div className="h-20" />
 
       {/* Player Card Drawer */}
       {selectedPlayerForCard !== null && (
