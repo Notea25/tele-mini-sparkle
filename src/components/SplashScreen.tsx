@@ -36,7 +36,20 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
           }}
         />
         
-        {/* Animated morphing element - dot to football */}
+        {/* Shadow under the ball */}
+        <div 
+          className="absolute animate-shadow-pulse"
+          style={{
+            right: '4%',
+            top: '72%',
+            width: '18%',
+            height: '4%',
+            background: 'radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%)',
+            borderRadius: '50%',
+          }}
+        />
+        
+        {/* Animated football ball */}
         <div 
           className="absolute w-[14%] h-[12%] animate-bounce-dot-to-ball"
           style={{
@@ -44,50 +57,43 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             top: '38%',
           }}
         >
-          {/* Green dot - fades out as it goes down */}
-          <div 
-            className="absolute inset-0 bg-primary rounded-[3px] animate-dot-fade"
-          />
-          {/* Football - fades in as it goes down, scales up, green colored */}
+          {/* Football - always visible, with squish effect at bottom */}
           <img 
             src={footballBall}
             alt=""
-            className="absolute inset-0 w-full h-full object-contain animate-ball-morph"
+            className="absolute inset-0 w-full h-full object-contain animate-ball-squish"
             style={{ 
               filter: 'brightness(0) saturate(100%) invert(83%) sepia(65%) saturate(512%) hue-rotate(42deg) brightness(103%) contrast(104%)',
+              transform: 'scale(1.5)',
             }}
           />
         </div>
       </div>
       
       <style>{`
-        @keyframes dot-fade {
-          0%, 100% { opacity: 1; }
-          35%, 65% { opacity: 0; }
-        }
-        @keyframes ball-morph {
+        @keyframes ball-squish {
           0%, 100% { 
-            opacity: 0; 
-            transform: scale(1.5) scaleX(1) scaleY(1);
-          }
-          30% {
-            opacity: 1;
             transform: scale(1.5) scaleX(1) scaleY(1);
           }
           45%, 55% { 
-            opacity: 1; 
             transform: scale(1.5) scaleX(1.3) scaleY(0.7);
           }
-          70% {
-            opacity: 1;
-            transform: scale(1.5) scaleX(1) scaleY(1);
+        }
+        @keyframes shadow-pulse {
+          0%, 100% { 
+            opacity: 0.3;
+            transform: scale(0.6);
+          }
+          45%, 55% { 
+            opacity: 0.8;
+            transform: scale(1.2);
           }
         }
-        .animate-dot-fade {
-          animation: dot-fade 0.8s ease-in-out infinite;
+        .animate-ball-squish {
+          animation: ball-squish 0.8s ease-in-out infinite;
         }
-        .animate-ball-morph {
-          animation: ball-morph 0.8s ease-in-out infinite;
+        .animate-shadow-pulse {
+          animation: shadow-pulse 0.8s ease-in-out infinite;
         }
       `}</style>
     </div>
