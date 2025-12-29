@@ -429,7 +429,7 @@ const FormationFieldManagement = ({
       borderClass = "border-primary/80 border-2";
     } else if (hasRedCard || isInjured) {
       borderClass = "border-red-500";
-    } else if (showDoublePowerBorder || showCaptain3xBorder) {
+    } else if (showDoublePowerBorder || showCaptain3xBorder || (isOnBench && isBenchBoostActive)) {
       borderClass = "border-primary";
     }
 
