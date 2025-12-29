@@ -200,7 +200,7 @@ const Profile = () => {
           {hasUnsavedChanges && (
             <Button
               onClick={handleSaveChanges}
-              className="w-full bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-2xl h-12 shadow-neon"
+              className="w-full bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-lg h-12 shadow-neon"
             >
               Сохранить изменения
             </Button>
@@ -210,7 +210,7 @@ const Profile = () => {
           <Button
             onClick={() => setInviteDrawerOpen(true)}
             variant={hasUnsavedChanges ? "outline" : "default"}
-            className={`w-full font-semibold rounded-2xl h-12 flex items-center justify-center gap-2 ${
+            className={`w-full font-semibold rounded-lg h-12 flex items-center justify-center gap-2 ${
               hasUnsavedChanges 
                 ? "border-border text-foreground hover:bg-secondary" 
                 : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"

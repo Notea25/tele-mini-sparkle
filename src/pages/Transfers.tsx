@@ -742,7 +742,7 @@ const Transfers = () => {
               setBuyPositionFilter(null);
               setBuyDrawerOpen(true);
             }}
-            className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-full h-12"
+            className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-lg h-12"
           >
             + Добавить игрока
           </Button>
@@ -754,7 +754,7 @@ const Transfers = () => {
               }
               setShowConfirmDrawer(true);
             }}
-            className={`flex-1 rounded-full h-12 font-semibold transition-all ${
+            className={`flex-1 rounded-lg h-12 font-semibold transition-all ${
               players.length < 15
                 ? "bg-primary/30 text-muted-foreground cursor-not-allowed"
                 : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"

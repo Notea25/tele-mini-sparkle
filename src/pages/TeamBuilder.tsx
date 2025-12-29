@@ -1243,14 +1243,14 @@ const TeamBuilder = () => {
         <div className="flex gap-3 mb-3">
           <Button
             onClick={handleAutoFill}
-            className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-full py-3"
+            className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-lg py-3"
           >
             Автосбор
           </Button>
           <Button
             onClick={handleReset}
             disabled={selectedPlayers.length === 0}
-            className={`flex-1 font-semibold rounded-full py-3 ${
+            className={`flex-1 font-semibold rounded-lg py-3 ${
               selectedPlayers.length === 0
                 ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
                 : "bg-secondary hover:bg-secondary/80 text-foreground"
@@ -1268,7 +1268,7 @@ const TeamBuilder = () => {
               setShowSaveConfirmation(true);
             }
           }}
-          className={`w-full rounded-full py-3 font-semibold transition-all ${
+          className={`w-full rounded-lg py-3 font-semibold transition-all ${
             selectedPlayers.length < 15
               ? "bg-primary/30 text-muted-foreground"
               : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
@@ -1288,7 +1288,7 @@ const TeamBuilder = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-row gap-3 justify-center mt-2">
-            <AlertDialogCancel className="flex-1 m-0 bg-secondary hover:bg-secondary/80 text-foreground border-none rounded-full h-11">
+            <AlertDialogCancel className="flex-1 m-0 bg-secondary hover:bg-secondary/80 text-foreground border-none rounded-lg h-11">
               Вернуться
             </AlertDialogCancel>
             <AlertDialogAction
@@ -1299,7 +1299,7 @@ const TeamBuilder = () => {
                 localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
                 navigate("/league");
               }}
-              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-full h-11 shadow-neon"
+              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-lg h-11 shadow-neon"
             >
               Подтвердить
             </AlertDialogAction>
