@@ -100,7 +100,7 @@ const InfinitePlayerCarousel = () => {
         {playerCards.map((card) => (
           <div
             key={card.id}
-            className="relative flex-shrink-0 rounded-2xl overflow-hidden"
+            className="relative flex-shrink-0 rounded-xl overflow-hidden"
             style={{
               width: `${CONFIG.itemWidth}px`,
             }}
@@ -108,7 +108,7 @@ const InfinitePlayerCarousel = () => {
             <img 
               src={card.image} 
               alt="Player card" 
-              className="w-full h-auto object-contain rounded-2xl"
+              className="w-full h-auto object-contain rounded-xl"
               draggable={false}
             />
           </div>

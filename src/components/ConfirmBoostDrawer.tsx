@@ -29,7 +29,7 @@ const ConfirmBoostDrawer = ({
           </h2>
 
           {/* Boost card */}
-          <div className="flex flex-col items-center justify-center p-6 bg-secondary/50 rounded-2xl mb-6">
+          <div className="flex flex-col items-center justify-center p-6 bg-secondary/50 rounded-xl mb-6">
             <img 
               src={pendingBoost.icon} 
               alt={pendingBoost.label} 

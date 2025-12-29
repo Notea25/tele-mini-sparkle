@@ -219,7 +219,7 @@ const ViewLeague = () => {
 
         {/* Prize Section for Commercial Leagues */}
         {isCommercial && currentPrize && (
-          <div className="mb-6 bg-secondary/30 rounded-2xl p-4 border border-border">
+          <div className="mb-6 bg-secondary/30 rounded-xl p-4 border border-border">
             <h3 className="text-lg font-bold text-foreground mb-3">Главный приз</h3>
             <div className="flex items-center gap-4">
               <img 

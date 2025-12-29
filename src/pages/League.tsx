@@ -978,7 +978,7 @@ const League = () => {
             <img 
               src={cupComingSoon} 
               alt="Скоро запустим 2026" 
-              className="w-full rounded-2xl"
+              className="w-full rounded-xl"
             />
           </div>
         )}

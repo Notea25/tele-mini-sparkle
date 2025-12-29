@@ -71,7 +71,7 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         {/* Image card */}
         <div className="w-full max-w-sm mb-8">
-          <div className="relative rounded-2xl overflow-hidden border border-border/30 bg-card/50">
+          <div className="relative rounded-xl overflow-hidden border border-border/30 bg-card/50">
             <img src={slide.image} alt={slide.title} className="w-full h-auto object-cover" />
           </div>
         </div>
