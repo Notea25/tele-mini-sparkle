@@ -76,10 +76,10 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             transform: scale(1.5) scaleX(1) scaleY(1) rotate(0deg);
           }
           45%, 55% { 
-            transform: scale(1.5) scaleX(1.12) scaleY(0.88) rotate(180deg);
+            transform: scale(1.5) scaleX(1.12) scaleY(0.88) rotate(45deg);
           }
           100% { 
-            transform: scale(1.5) scaleX(1) scaleY(1) rotate(360deg);
+            transform: scale(1.5) scaleX(1) scaleY(1) rotate(90deg);
           }
         }
         @keyframes shadow-pulse {
