@@ -10,8 +10,8 @@ import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/
 import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
 import { clubLogos } from "@/lib/clubLogos";
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
-import icon2x from "@/assets/icon-2x-new.png";
-import icon3x from "@/assets/icon-3x-new.png";
+import icon2x from "@/assets/icon-2x-boost.png";
+import icon3x from "@/assets/icon-3x-boost.png";
 // Random team names (same as in TournamentTable)
 const teamNames = [
   "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",

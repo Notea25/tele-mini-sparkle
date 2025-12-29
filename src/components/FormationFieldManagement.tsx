@@ -301,8 +301,8 @@ import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
 import iconBench from "@/assets/icon-bench.png";
-import icon2x from "@/assets/icon-2x-new.png";
-import icon3x from "@/assets/icon-3x-new.png";
+import icon2x from "@/assets/icon-2x-boost.png";
+import icon3x from "@/assets/icon-3x-boost.png";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.svg";
 import { Plus } from "lucide-react";
@@ -469,9 +469,9 @@ const FormationFieldManagement = ({
 
         {/* Boost badges for captain/vice-captain, or Bench boost badge, or Swap button */}
         {showCaptain3xIcon ? (
-          <img src={icon3x} alt="3x" className="absolute top-1 right-1 z-50 w-3 h-3" />
+          <img src={icon3x} alt="3x" className="absolute top-0.5 right-0.5 z-50 w-4 h-4" />
         ) : showDoublePowerIcon ? (
-          <img src={icon2x} alt="2x" className="absolute top-1 right-1 z-50 w-3 h-3" />
+          <img src={icon2x} alt="2x" className="absolute top-0.5 right-0.5 z-50 w-4 h-4" />
         ) : showActionButton && isOnBench && isBenchBoostActive ? (
           <img src={iconBench} alt="Bench+" className="absolute top-1 right-1 z-50 w-3 h-3" />
         ) : showActionButton && onSwapPlayer && !swapModePlayerId ? (
