@@ -14,19 +14,23 @@ import jerseyMinsk from "@/assets/jersey-minsk.png";
 import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
 import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
-// import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
 import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
+import jerseyIsloch from "@/assets/jerseys/islochJersey.png";
+import jerseyNaftan from "@/assets/jerseys/naftanJersey.png";
+import jerseyMinskGk from "@/assets/jerseys/goalkeeperJerseys/minskGoalkeeperJersey.png";
+import jerseyDinamoMinskGk from "@/assets/jerseys/goalkeeperJerseys/dinamoGoalkeeperJersey.png";
+import jerseyDinamoBrestGk from "@/assets/jerseys/goalkeeperJerseys/brestGoalkeeperJersey.png";
 import { BoostChip } from "@/components/BoostDrawer";
 
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
     case "Динамо-Минск":
-      return jerseyDinamoMinsk;
+      return position === "ВР" ? jerseyDinamoMinskGk : jerseyDinamoMinsk;
     case "БАТЭ":
       return position === "ВР" ? jerseyBateGk : jerseyBate;
     case "Динамо-Брест":
-      return jerseyDinamoBrest;
+      return position === "ВР" ? jerseyDinamoBrestGk : jerseyDinamoBrest;
     case "МЛ Витебск":
       return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
     case "Славия-Мозырь":
@@ -36,11 +40,16 @@ const getJerseyForTeam = (team: string, position?: string) => {
     case "Неман":
       return jerseyNeman;
     case "Минск":
-      return jerseyMinsk;
+      return position === "ВР" ? jerseyMinskGk : jerseyMinsk;
     case "Торпедо-БелАЗ":
       return jerseyTorpedo;
     case "Витебск":
       return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
+    case "Ислочь":
+      return jerseyIsloch;
+    case "Нафтан":
+    case "Нафтан-Новополоцк":
+      return jerseyNaftan;
     default:
       return jerseySlavia;
   }
