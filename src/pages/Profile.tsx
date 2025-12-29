@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, UserPlus } from "lucide-react";
+import { Pencil, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Button } from "@/components/ui/button";
@@ -98,6 +98,10 @@ const Profile = () => {
     reader.readAsDataURL(file);
   };
 
+  const handleRemoveImage = () => {
+    setProfile(prev => ({ ...prev, profileImage: null }));
+  };
+
   const handleUserNameChange = (value: string) => {
     setProfile(prev => ({ ...prev, userName: value.slice(0, 15) }));
   };
@@ -138,12 +142,22 @@ const Profile = () => {
                 </div>
               )}
             </div>
+            {/* Edit button */}
             <button 
               onClick={handleImageClick}
               className="absolute bottom-2 right-2 w-8 h-8 bg-background rounded-full flex items-center justify-center border border-border shadow-lg hover:bg-secondary transition-colors"
             >
               <Pencil className="w-4 h-4 text-foreground" />
             </button>
+            {/* Remove button - only show when there's an image */}
+            {profile.profileImage && (
+              <button 
+                onClick={handleRemoveImage}
+                className="absolute top-2 right-2 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity"
+              >
+                <X className="w-3 h-3 text-destructive-foreground" />
+              </button>
+            )}
           </div>
 
           {/* User Info */}
