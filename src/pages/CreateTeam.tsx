@@ -140,7 +140,7 @@ const CreateTeam = () => {
 
   const validateAndNavigate = () => {
     if (!isFormValid) {
-      toast.error("Заполните все поля");
+      toast.error("Заполни все поля");
       return;
     }
 

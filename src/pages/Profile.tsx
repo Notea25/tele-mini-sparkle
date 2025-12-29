@@ -83,7 +83,7 @@ const Profile = () => {
 
     // Check file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Пожалуйста, выберите изображение");
+      toast.error("Пожалуйста, выбери изображение");
       return;
     }
 

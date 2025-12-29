@@ -623,7 +623,7 @@ const FormationFieldManagement = ({
             </div>
             {onSwapBenchPlayers && (
               <p className="text-center text-muted-foreground text-xs mt-4">
-                Используйте стрелку для изменения приоритета выхода на поле
+                Используй стрелку для изменения приоритета выхода на поле
               </p>
             )}
           </div>

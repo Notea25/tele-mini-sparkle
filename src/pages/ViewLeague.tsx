@@ -411,7 +411,7 @@ const ViewLeague = () => {
           
           <div className="px-6 pb-6 space-y-6">
             <p className="text-center text-muted-foreground">
-              Весь ваш прогресс в данной лиге будет безвозвратно удален.
+              Весь твой прогресс в данной лиге будет безвозвратно удален.
             </p>
 
             <div className="space-y-3">

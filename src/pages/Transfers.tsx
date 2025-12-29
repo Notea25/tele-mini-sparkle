@@ -849,7 +849,7 @@ const Transfers = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground">Несохранённые изменения</AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground">
-              У вас есть несохранённые изменения в составе команды. Хотите сохранить их перед выходом?
+              У тебя есть несохранённые изменения в составе команды. Хочешь сохранить их перед выходом?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-col gap-2 sm:flex-col">

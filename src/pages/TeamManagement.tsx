@@ -899,7 +899,7 @@ const TeamManagement = () => {
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1">
               <p className="text-foreground font-medium">Замена: {swapModePlayer.name}</p>
-              <p className="text-muted-foreground text-sm">Выберите игрока для замены</p>
+              <p className="text-muted-foreground text-sm">Выбери игрока для замены</p>
             </div>
             <Button
               onClick={exitSwapMode}

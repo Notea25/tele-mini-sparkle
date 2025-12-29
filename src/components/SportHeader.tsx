@@ -173,7 +173,7 @@ const SportHeader = ({
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground">Несохраненные изменения</AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground">
-              У вас есть несохраненные изменения. Что вы хотите сделать?
+              У тебя есть несохраненные изменения. Что ты хочешь сделать?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-col">

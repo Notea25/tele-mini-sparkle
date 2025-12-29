@@ -57,7 +57,7 @@ const EditTeamNameModal = ({
 
   const validateName = (value: string): string | null => {
     if (!value.trim()) {
-      return "Введите название команды";
+      return "Введи название команды";
     }
     
     try {
