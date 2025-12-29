@@ -13,7 +13,7 @@ const RulesDrawer = ({
   return <Drawer open={isOpen} onOpenChange={onClose}>
       <DrawerContent className="bg-background border-t border-border max-h-[90vh] flex flex-col">
         <DrawerHeader className="border-b border-border pb-4 flex-shrink-0 relative">
-          <DrawerTitle className="text-foreground text-xl font-bold text-center">
+          <DrawerTitle className="text-foreground text-xl font-display text-center">
             Правила игры
           </DrawerTitle>
           <button onClick={() => onClose()} className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors">
@@ -26,15 +26,15 @@ const RulesDrawer = ({
             {/* How to play section */}
             <AccordionItem value="how-to-play" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Создавай команду</span>
+                <span className="text-foreground font-medium text-medium">Создавай команду</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
                     Мы выделим тебе бюджет в <span className="text-primary font-semibold">100 миллионов</span> — собери команду своей мечты!
                   </p>
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Состав команды</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Состав команды</h4>
                     <ul className="space-y-1">
                       <li>• 15 игроков в команде</li>
                       <li>• 11 в основном составе</li>
@@ -43,7 +43,7 @@ const RulesDrawer = ({
                     </ul>
                   </div>
                   <div>
-                    <h4 className="text-foreground font-medium mb-2">Капитан и вице-капитан</h4>
+                    <h4 className="text-foreground font-medium text-medium mb-2">Капитан и вице-капитан</h4>
                     <p>
                       Капитан получает <span className="text-primary font-semibold">×2 очков</span> за свои
                       действия. Вице-капитан получит ×2 очков, если капитан не выйдет на поле.
@@ -56,10 +56,10 @@ const RulesDrawer = ({
             {/* Points scoring section */}
             <AccordionItem value="points" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
-                <span className="text-foreground font-medium">Набирай очки</span>
+                <span className="text-foreground font-medium text-medium">Набирай очки</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
-                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
                     Каждый игрок на своей позиции получает виртуальные очки за <span className="text-primary font-semibold">реальные действия</span> на футбольном поле. Количество очков зависит от амплуа.
                   </p>
