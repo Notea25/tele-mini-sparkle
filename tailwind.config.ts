@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         display: ['Unbounded', 'sans-serif'],
+        rubik: ['Rubik', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
