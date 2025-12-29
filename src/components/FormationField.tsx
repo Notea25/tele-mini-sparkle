@@ -17,9 +17,7 @@ import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
-import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
-// Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
     case "Динамо-Минск":
@@ -59,46 +57,100 @@ interface PlayerData {
   isViceCaptain?: boolean;
 }
 
+interface FormationPosition {
+  position: string;
+  row: number;
+  col: number;
+}
+
 interface FormationFieldProps {
-  selectedPlayers: PlayerData[];
-  onPlayerClick?: (player: PlayerData) => void;
+  selectedPlayers?: PlayerData[];
   onRemovePlayer?: (playerId: number) => void;
-  onEmptySlotClick?: (position: string, slotIndex: number) => void;
+  onPlayerClick?: (player: PlayerData) => void;
+  onEmptySlotClick?: (position: string) => void;
   captain?: number | null;
   viceCaptain?: number | null;
   showCaptainBadges?: boolean;
 }
 
-const truncateName = (text: string, maxLength: number) => {
-  if (text.length > maxLength) {
-    return text.slice(0, maxLength) + "...";
-  }
-  return text;
-};
-
 const FormationField = ({
-  selectedPlayers,
-  onPlayerClick,
+  selectedPlayers = [],
   onRemovePlayer,
+  onPlayerClick,
   onEmptySlotClick,
   captain,
   viceCaptain,
   showCaptainBadges = true,
 }: FormationFieldProps) => {
-  // Detect current formation based on players
-  const currentFormation = detectFormation(selectedPlayers) || "1-4-4-2";
-  const formation = getFormationSlots(currentFormation);
+  const formation: FormationPosition[] = [
+    { position: "ВР", row: 1, col: 1 },
+    { position: "ВР", row: 1, col: 2 },
+    { position: "ЗЩ", row: 2, col: 1 },
+    { position: "ЗЩ", row: 2, col: 2 },
+    { position: "ЗЩ", row: 2, col: 3 },
+    { position: "ЗЩ", row: 2, col: 4 },
+    { position: "ЗЩ", row: 2, col: 5 },
+    { position: "ПЗ", row: 3, col: 1 },
+    { position: "ПЗ", row: 3, col: 2 },
+    { position: "ПЗ", row: 3, col: 3 },
+    { position: "ПЗ", row: 3, col: 4 },
+    { position: "ПЗ", row: 3, col: 5 },
+    { position: "НП", row: 4, col: 1 },
+    { position: "НП", row: 4, col: 2 },
+    { position: "НП", row: 4, col: 3 },
+  ];
 
-  const getPlayerForSlot = (position: string, slotIndex: number) => {
-    return selectedPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
+  const truncateName = (text: string, maxLength: number) => {
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + "...";
+    }
+    return text;
   };
 
-  const renderPlayer = (player: PlayerData) => (
+  const getAssignedPlayer = (formationPos: FormationPosition) => {
+    const slotsForPosition = formation.filter((f) => f.position === formationPos.position);
+    const slotPositionIndex = slotsForPosition.findIndex(
+      (s) => s.row === formationPos.row && s.col === formationPos.col,
+    );
+
+    return selectedPlayers.find((p) => p.position === formationPos.position && p.slotIndex === slotPositionIndex);
+  };
+
+  // Фиксированные позиции карточек на поле
+  const getPlayerPosition = (row: number, col: number) => {
+    const topPositions: Record<number, string> = {
+      1: "2%",
+      2: "22%",
+      3: "44%",
+      4: "66%",
+    };
+
+    // Позиции для каждой позиции в ряду
+    const colPositions: Record<number, Record<number, string>> = {
+      1: { 1: "30%", 2: "70%" },
+      2: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" },
+      3: { 1: "10%", 2: "30%", 3: "50%", 4: "70%", 5: "90%" },
+      4: { 1: "25%", 2: "50%", 3: "75%" },
+    };
+
+    return {
+      top: topPositions[row],
+      left: colPositions[row]?.[col] || "50%",
+    };
+  };
+
+  const PlayerCardComponent = ({
+    player,
+    showRemoveButton = true,
+  }: {
+    player: PlayerData;
+    showRemoveButton?: boolean;
+  }) => (
     <div
-      className="w-[62px] relative flex flex-col items-center cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
+      className="w-[70px] h-[84px] relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
       onClick={() => onPlayerClick?.(player)}
     >
-      {/* Captain/Vice-Captain badge - absolute in left corner */}
+      {/* Captain/Vice-Captain badge */}
       {showCaptainBadges && captain === player.id && (
         <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
@@ -106,8 +158,8 @@ const FormationField = ({
         <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
       )}
 
-      {/* Delete button - absolute in corner */}
-      {onRemovePlayer && (
+      {/* Delete button */}
+      {showRemoveButton && onRemovePlayer && (
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -120,23 +172,24 @@ const FormationField = ({
       )}
 
       {/* Price centered */}
-      <div className="w-full flex items-center justify-center pt-1 pb-0.5">
+      <div className="w-full flex items-center justify-center pt-1 pb-0.5 z-30 h-[16px]">
         <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
           ${(player.price || 9).toFixed(1)}
         </span>
       </div>
 
-      {/* Jersey - larger size, overlaps name/club below */}
-      <div className="relative">
+      {/* Jersey */}
+      <div className="relative w-full flex-1 z-10 overflow-hidden">
         <img
           src={getJerseyForTeam(player.team, player.position)}
           alt={player.name}
-          className="w-[100%] h-auto object-contain mb-[-50%] z-0"
+          className="w-[120%] h-auto object-contain absolute -top-[12px] left-1/2 transform -translate-x-1/2"
+          style={{ maxWidth: "none" }}
         />
       </div>
 
-      {/* Player name and club blocks - jersey overlaps from above */}
-      <div className="w-full relative z-10">
+      {/* Player name and club blocks */}
+      <div className="w-full relative z-20">
         <div className="bg-white px-[4%] py-[2%]">
           <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
             {truncateName(player.name, 9)}
@@ -152,14 +205,16 @@ const FormationField = ({
     </div>
   );
 
-  const renderEmptySlot = (position: string, slotIndex: number) => (
+  const EmptySlotComponent = ({ position }: { position: string }) => (
     <div
-      className="w-[62px] h-[85px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center gap-[8%] cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
-      onClick={() => onEmptySlotClick?.(position, slotIndex)}
+      className="w-[70px] h-[84px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
+      onClick={() => onEmptySlotClick?.(position)}
     >
-      <span className="text-white font-medium text-[clamp(11px,3vw,17px)]">{position}</span>
-      <div className="w-[28%] aspect-square rounded-full bg-white/90 flex items-center justify-center">
-        <Plus className="w-[60%] h-[60%] text-[#3a5a28]" />
+      <div className="flex-1 flex flex-col items-center justify-center gap-1">
+        <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">{position}</span>
+        <div className="w-7 h-7 rounded-full bg-white/90 flex items-center justify-center">
+          <Plus className="w-4 h-4 text-[#3a5a28]" />
+        </div>
       </div>
     </div>
   );
@@ -170,8 +225,8 @@ const FormationField = ({
 
       {formation.map((slot, idx) => {
         const style = getPlayerPosition(slot.row, slot.col);
-        const player = getPlayerForSlot(slot.position, slot.slotIndex);
-        const isOccupied = !!player;
+        const assignedPlayer = getAssignedPlayer(slot);
+        const isOccupied = !!assignedPlayer;
 
         return (
           <div
@@ -183,7 +238,11 @@ const FormationField = ({
               transform: "translateX(-50%)",
             }}
           >
-            {player ? renderPlayer(player) : renderEmptySlot(slot.position, slot.slotIndex)}
+            {isOccupied ? (
+              <PlayerCardComponent player={assignedPlayer!} />
+            ) : (
+              <EmptySlotComponent position={slot.position} />
+            )}
           </div>
         );
       })}
