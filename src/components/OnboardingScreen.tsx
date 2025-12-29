@@ -99,7 +99,7 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
       <div className="px-6 pb-8 space-y-3">
         <Button
           onClick={handleNext}
-          className="w-full h-[44px] font-rubik text-[16px] font-bold bg-primary hover:bg-primary/90 text-[#212121] rounded-lg"
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] rounded-lg"
           style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
         >
           Далее
@@ -107,7 +107,7 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
         <Button
           variant="secondary"
           onClick={handleSkip}
-          className="w-full h-[44px] font-rubik text-[16px] font-bold bg-muted hover:bg-muted/80 rounded-lg"
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-muted hover:bg-muted/80 rounded-lg"
         >
           Пропустить
         </Button>

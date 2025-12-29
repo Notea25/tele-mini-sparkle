@@ -1299,7 +1299,7 @@ const TeamBuilder = () => {
                 localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
                 navigate("/league");
               }}
-              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-lg h-11 shadow-neon"
+              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
             >
               Подтвердить
             </AlertDialogAction>
