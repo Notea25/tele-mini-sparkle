@@ -421,12 +421,15 @@ const FormationFieldManagement = ({
       borderClass = "border-primary";
     }
 
+    // Background color: red tint for injured/red card players
+    const bgClass = (hasRedCard || isInjured) ? "bg-red-500/85" : "bg-[#3a5a28]/40";
+
     // Check if bench player can be swapped (not goalkeeper and not first position)
     const canSwapOnBench = isOnBench && benchIndex !== undefined && benchIndex > 0 && player.position !== "ВР";
 
     return (
       <div
-        className={`w-[70px] h-[84px] relative flex flex-col cursor-pointer border rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] transition-all duration-200 ${borderClass}`}
+        className={`w-[70px] h-[84px] relative flex flex-col cursor-pointer border rounded-md overflow-hidden ${bgClass} backdrop-blur-[2px] transition-all duration-200 ${borderClass}`}
         onClick={() => onPlayerClick?.(player)}
       >
         {/* Captain/Vice-Captain badge - absolute in left corner, only for main squad */}
