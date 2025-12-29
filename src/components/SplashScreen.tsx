@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import logoSymbol from "@/assets/logo-symbol.png";
+import footballBall from "@/assets/football-ball.png";
 
 interface SplashScreenProps {
   onComplete?: () => void;
@@ -35,15 +36,44 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
           }}
         />
         
-        {/* Animated dot */}
+        {/* Animated morphing element - dot to football */}
         <div 
-          className="absolute w-[14%] h-[12%] bg-primary rounded-[3px] animate-bounce-dot"
+          className="absolute w-[14%] h-[12%] animate-bounce-dot-to-ball"
           style={{
             right: '6%',
             top: '38%',
           }}
-        />
+        >
+          {/* Green dot - fades out as it goes down */}
+          <div 
+            className="absolute inset-0 bg-primary rounded-[3px] animate-dot-fade"
+          />
+          {/* Football - fades in as it goes down */}
+          <img 
+            src={footballBall}
+            alt=""
+            className="absolute inset-0 w-full h-full object-contain animate-ball-fade"
+            style={{ transform: 'scale(1.8)' }}
+          />
+        </div>
       </div>
+      
+      <style>{`
+        @keyframes dot-fade {
+          0%, 100% { opacity: 1; }
+          35%, 65% { opacity: 0; }
+        }
+        @keyframes ball-fade {
+          0%, 100% { opacity: 0; }
+          35%, 65% { opacity: 1; }
+        }
+        .animate-dot-fade {
+          animation: dot-fade 0.8s ease-in-out infinite;
+        }
+        .animate-ball-fade {
+          animation: ball-fade 0.8s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 };
