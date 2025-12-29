@@ -68,11 +68,19 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
         @keyframes ball-morph {
           0%, 100% { 
             opacity: 0; 
-            transform: scale(1.5);
+            transform: scale(1.5) scaleX(1) scaleY(1);
           }
-          35%, 65% { 
+          30% {
+            opacity: 1;
+            transform: scale(1.5) scaleX(1) scaleY(1);
+          }
+          45%, 55% { 
             opacity: 1; 
-            transform: scale(2.5);
+            transform: scale(1.5) scaleX(1.3) scaleY(0.7);
+          }
+          70% {
+            opacity: 1;
+            transform: scale(1.5) scaleX(1) scaleY(1);
           }
         }
         .animate-dot-fade {
