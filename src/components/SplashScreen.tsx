@@ -72,11 +72,14 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
       
       <style>{`
         @keyframes ball-squish {
-          0%, 100% { 
-            transform: scale(1.5) scaleX(1) scaleY(1);
+          0% { 
+            transform: scale(1.5) scaleX(1) scaleY(1) rotate(0deg);
           }
           45%, 55% { 
-            transform: scale(1.5) scaleX(1.3) scaleY(0.7);
+            transform: scale(1.5) scaleX(1.12) scaleY(0.88) rotate(180deg);
+          }
+          100% { 
+            transform: scale(1.5) scaleX(1) scaleY(1) rotate(360deg);
           }
         }
         @keyframes shadow-pulse {
