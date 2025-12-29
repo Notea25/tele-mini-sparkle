@@ -422,7 +422,7 @@ const FormationFieldManagement = ({
     }
 
     // Background color: red tint for injured/red card players
-    const bgClass = (hasRedCard || isInjured) ? "bg-red-500/85" : "bg-[#3a5a28]/40";
+    const bgClass = (hasRedCard || isInjured) ? "bg-red-500/15" : "bg-[#3a5a28]/40";
 
     // Check if bench player can be swapped (not goalkeeper and not first position)
     const canSwapOnBench = isOnBench && benchIndex !== undefined && benchIndex > 0 && player.position !== "ВР";
