@@ -23,8 +23,6 @@ import aplLogo from "@/assets/apl-logo.png";
 import { getGoldenTourBackup, clearGoldenTourBackup, getBoostState, markBoostAsUsed } from "@/lib/boostState";
 import { restoreTeamFromBackup } from "@/lib/teamData";
 import cupComingSoon from "@/assets/cup-coming-soon.png";
-import btnTeam from "@/assets/btn-team.png";
-import btnTransfers from "@/assets/btn-transfers.png";
 
 const LEAGUE_TAB_KEY = "fantasyLeagueActiveTab";
 
@@ -446,18 +444,16 @@ const League = () => {
             {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mb-4">
               <button
-                className="relative w-full h-12 bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
+                className="w-full h-12 bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/team-management")}
               >
-                <span className="text-primary-foreground font-medium text-base">Команда</span>
-                <img src={btnTeam} alt="" className="absolute bottom-0 right-0 w-8 h-8" />
+                <span className="text-primary-foreground font-medium text-base">Моя команда</span>
               </button>
               <button
-                className="relative w-full h-12 bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
+                className="w-full h-12 bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/transfers")}
               >
-                <span className="text-primary-foreground font-medium text-base">Трансферы</span>
-                <img src={btnTransfers} alt="" className="absolute bottom-0 right-0 w-8 h-8" />
+                <span className="text-primary-foreground font-semibold text-base">Трансферы</span>
               </button>
             </div>
 
