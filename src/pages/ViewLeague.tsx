@@ -193,7 +193,7 @@ const ViewLeague = () => {
           {leagueStandings.map((row) => (
             <div
               key={row.id}
-              className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
+              className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl cursor-pointer transition-colors hover:bg-secondary/70 ${
                 row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
               }`}
               onClick={() => handleTeamClick(row)}

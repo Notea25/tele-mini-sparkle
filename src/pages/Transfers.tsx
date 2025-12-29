@@ -505,7 +505,7 @@ const Transfers = () => {
               return (
                 <div
                   key={`empty-${position}-${slot.slotIndex}`}
-                  className="bg-card rounded-full px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
+                  className="bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
                   onClick={() => handleEmptySlotClick(position, slot.slotIndex)}
                 >
                   {/* Empty slot label */}
@@ -528,7 +528,7 @@ const Transfers = () => {
             const player = slot;
             const clubLogo = clubIcons[player.team];
             return (
-              <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
+              <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
                 {/* Club logo + Player name + position */}
                 <div
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
@@ -713,7 +713,7 @@ const Transfers = () => {
           <Button
             onClick={handleResetSquad}
             variant="outline"
-            className="w-full rounded-full h-10 border-border text-muted-foreground hover:text-foreground mb-3"
+            className="w-full rounded-xl h-10 border-border text-muted-foreground hover:text-foreground mb-3"
           >
             Вернуть исходный состав
           </Button>

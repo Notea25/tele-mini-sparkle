@@ -60,7 +60,7 @@ const TournamentTable = () => {
     return (
       <div className="flex items-center justify-center gap-2">
         <button
-          className="px-3 py-1 rounded-full bg-secondary/50 text-foreground text-sm disabled:opacity-40"
+          className="px-3 py-1 rounded-xl bg-secondary/50 text-foreground text-sm disabled:opacity-40"
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
         >
@@ -70,7 +70,7 @@ const TournamentTable = () => {
           {currentPage} / {totalPages}
         </span>
         <button
-          className="px-3 py-1 rounded-full bg-secondary/50 text-foreground text-sm disabled:opacity-40"
+          className="px-3 py-1 rounded-xl bg-secondary/50 text-foreground text-sm disabled:opacity-40"
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}
         >
@@ -108,7 +108,7 @@ const TournamentTable = () => {
           {currentPageData.map((row) => (
             <div
               key={row.id}
-              className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
+              className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl cursor-pointer transition-colors hover:bg-secondary/70 ${
                 row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
               }`}
               onClick={() => handleTeamClick(row)}

@@ -515,7 +515,7 @@ const TeamManagement = () => {
           const playerExt = player as PlayerDataExt;
 
           return (
-            <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
+            <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
               {/* Club logo + Player name + position + badges */}
               <div
                 className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
@@ -780,7 +780,7 @@ const TeamManagement = () => {
               const playerExt = player as PlayerDataExt;
 
               return (
-                <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
+                <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
                   {/* Club logo + Player name + position + badges */}
                   <div
                     className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"

@@ -149,7 +149,7 @@ const CreateLeague = () => {
             {leagueStandings.map((row, idx) => (
               <div 
                 key={idx} 
-                className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-full ${
+                className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-xl ${
                   row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                 }`}
               >

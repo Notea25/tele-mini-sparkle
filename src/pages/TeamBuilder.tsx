@@ -828,7 +828,7 @@ const TeamBuilder = () => {
             <div className="flex gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground text-sm">от</span>
-                <div className="bg-card border border-border rounded-full px-2 py-1.5 flex items-center gap-2">
+                <div className="bg-card border border-border rounded-xl px-2 py-1.5 flex items-center gap-2">
                   <button
                     onClick={handlePriceFromDecrease}
                     className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
@@ -846,7 +846,7 @@ const TeamBuilder = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground text-sm">до</span>
-                <div className="bg-card border border-border rounded-full px-2 py-1.5 flex items-center gap-2">
+                <div className="bg-card border border-border rounded-xl px-2 py-1.5 flex items-center gap-2">
                   <button
                     onClick={handlePriceToDecrease}
                     className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
@@ -924,7 +924,7 @@ const TeamBuilder = () => {
             <div className="flex gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground text-sm">от</span>
-                <div className="bg-card border border-border rounded-full px-2 py-1.5 flex items-center gap-2">
+                <div className="bg-card border border-border rounded-xl px-2 py-1.5 flex items-center gap-2">
                   <button
                     onClick={handlePriceFromDecrease}
                     className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
@@ -942,7 +942,7 @@ const TeamBuilder = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground text-sm">до</span>
-                <div className="bg-card border border-border rounded-full px-2 py-1.5 flex items-center gap-2">
+                <div className="bg-card border border-border rounded-xl px-2 py-1.5 flex items-center gap-2">
                   <button
                     onClick={handlePriceToDecrease}
                     className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
@@ -991,7 +991,7 @@ const TeamBuilder = () => {
             key={filter}
             onClick={() => handleFilterChange(filter)}
             size="sm"
-            className={`flex-shrink-0 rounded-full px-5 ${
+            className={`flex-shrink-0 rounded-xl px-5 ${
               activeFilter === filter
                 ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent"
                 : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
@@ -1095,7 +1095,7 @@ const TeamBuilder = () => {
         {paginatedPlayers.map((player) => {
           const isSelected = selectedPlayerIds.includes(player.id);
           return (
-            <div key={player.id} className="bg-card rounded-full px-4 py-2 flex items-center">
+            <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
               {/* Club icon */}
               <div className="w-6 flex-shrink-0 flex justify-center mr-2">
                 <img src={clubIcons[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />

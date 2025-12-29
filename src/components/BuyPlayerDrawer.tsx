@@ -313,7 +313,7 @@ const BuyPlayerDrawer = ({
               return (
                 <div
                   key={player.id}
-                  className={`bg-card rounded-full px-3 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${!canBuy ? "opacity-50" : ""}`}
+                  className={`bg-card rounded-xl px-3 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${!canBuy ? "opacity-50" : ""}`}
                   onClick={() => onPlayerClick?.(player as PlayerData)}
                 >
                   <div className="flex-1 flex items-center gap-2 min-w-0">
