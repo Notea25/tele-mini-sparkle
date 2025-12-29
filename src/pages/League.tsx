@@ -522,7 +522,7 @@ const League = () => {
             {/* View all button */}
             <Button
               variant="outline"
-              className="w-full mt-6 rounded-full py-6 font-semibold border-border"
+              className="w-full mt-6 rounded-lg py-6 font-semibold border-border"
               onClick={() => handleNavigate("/tournament-table")}
             >
               Смотреть все
@@ -811,7 +811,7 @@ const League = () => {
 
             {/* Create league button */}
             <Button
-              className={`w-full rounded-full py-6 font-semibold mb-8 ${
+              className={`w-full rounded-lg py-6 font-semibold mb-8 ${
                 userCreatedLeagues.length >= 5
                   ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
                   : "bg-primary text-primary-foreground"
