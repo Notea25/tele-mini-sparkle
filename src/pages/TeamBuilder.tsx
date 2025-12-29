@@ -1280,7 +1280,7 @@ const TeamBuilder = () => {
 
       {/* Save Confirmation Dialog */}
       <AlertDialog open={showSaveConfirmation} onOpenChange={setShowSaveConfirmation}>
-        <AlertDialogContent className="bg-card border-border rounded-2xl max-w-[320px]">
+        <AlertDialogContent className="bg-card border-border rounded-xl max-w-[320px]">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground text-center">Сохранить команду?</AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground text-center">

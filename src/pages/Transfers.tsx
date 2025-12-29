@@ -608,7 +608,7 @@ const Transfers = () => {
               <div
                 key={chip.id}
                 onClick={() => openBoostDrawer(chip)}
-                className={`flex flex-col items-center justify-center py-4 px-2 rounded-2xl cursor-pointer transition-all ${
+                className={`flex flex-col items-center justify-center py-4 px-2 rounded-xl cursor-pointer transition-all ${
                   isBlocked
                     ? "bg-card/30 opacity-50"
                     : chip.status === "pending"

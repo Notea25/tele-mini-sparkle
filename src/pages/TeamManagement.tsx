@@ -640,7 +640,7 @@ const TeamManagement = () => {
               <div
                 key={chip.id}
                 onClick={() => openBoostDrawer(chip)}
-                className={`flex flex-col items-center justify-center py-4 rounded-2xl cursor-pointer transition-all ${
+                className={`flex flex-col items-center justify-center py-4 rounded-xl cursor-pointer transition-all ${
                   isBlocked
                     ? "bg-card/30 opacity-50"
                     : chip.status === "pending"
@@ -695,7 +695,7 @@ const TeamManagement = () => {
           <div>
             <label className="text-muted-foreground text-sm mb-2 block">Капитан</label>
             <Select value={captain?.toString() || ""} onValueChange={(v) => setCaptain(Number(v))}>
-              <SelectTrigger className="w-full bg-card border-border text-foreground rounded-full">
+              <SelectTrigger className="w-full bg-card border-border text-foreground rounded-xl">
                 <SelectValue placeholder="Выбрать">
                   {captain ? allPlayers.find((p) => p.id === captain)?.name : "Плотников"}
                 </SelectValue>
@@ -717,7 +717,7 @@ const TeamManagement = () => {
           <div>
             <label className="text-muted-foreground text-sm mb-2 block">Вице-капитан</label>
             <Select value={viceCaptain?.toString() || ""} onValueChange={(v) => setViceCaptain(Number(v))}>
-              <SelectTrigger className="w-full bg-card border-border text-foreground rounded-full">
+              <SelectTrigger className="w-full bg-card border-border text-foreground rounded-xl">
                 <SelectValue placeholder="Выбрать">
                   {viceCaptain ? allPlayers.find((p) => p.id === viceCaptain)?.name : "Чиж"}
                 </SelectValue>

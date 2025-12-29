@@ -259,7 +259,7 @@ const Index = () => {
         <div className="relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className={`flex items-center justify-between w-full px-4 py-2.5 bg-card border rounded-2xl focus:outline-none focus:ring-2 focus:ring-ring transition-all ${
+            className={`flex items-center justify-between w-full px-4 py-2.5 bg-card border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all ${
               isDropdownOpen ? "border-border" : "border-border/50"
             }`}
           >
@@ -275,7 +275,7 @@ const Index = () => {
             <>
               <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)} />
 
-              <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-2xl shadow-lg z-50 overflow-hidden">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-lg z-50 overflow-hidden">
                 {sortOptions.map((option, idx) => (
                   <button
                     key={option}

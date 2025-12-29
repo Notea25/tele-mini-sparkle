@@ -572,7 +572,7 @@ const FormationFieldManagement = ({
 
       {/* Bench section */}
       <div className="-mt-8 pb-6 px-3">
-        <div className="bg-card/50 rounded-2xl overflow-hidden">
+        <div className="bg-card/50 rounded-xl overflow-hidden">
           {/* Bench header label - full width thin bar */}
           <div className="bg-foreground text-background py-1.5 text-center">
             <span className="font-semibold text-base">Скамейка</span>

@@ -125,7 +125,7 @@ const Profile = () => {
         <div className="flex items-start gap-4">
           {/* Profile Image with Edit Button */}
           <div className="relative">
-            <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-primary/30 to-accent/30 overflow-hidden">
+            <div className="w-28 h-28 rounded-xl bg-gradient-to-br from-primary/30 to-accent/30 overflow-hidden">
               {profile.profileImage ? (
                 <img 
                   src={profile.profileImage} 

@@ -178,7 +178,7 @@ const SwapPlayerDrawer = ({
                   <button
                     key={player.id}
                     onClick={() => handleSwap(player)}
-                    className="w-full bg-secondary rounded-2xl p-4 flex items-center gap-4 hover:bg-secondary/80 hover:border-primary/50 border border-transparent transition-all"
+                    className="w-full bg-secondary rounded-xl p-4 flex items-center gap-4 hover:bg-secondary/80 hover:border-primary/50 border border-transparent transition-all"
                   >
                     {/* Player jersey card */}
                     <div className="relative flex-shrink-0">
@@ -214,7 +214,7 @@ const SwapPlayerDrawer = ({
                   {invalidPlayers.map((player) => (
                     <div
                       key={player.id}
-                      className="w-full bg-secondary/20 rounded-2xl p-3 flex items-center gap-4 opacity-50"
+                      className="w-full bg-secondary/20 rounded-xl p-3 flex items-center gap-4 opacity-50"
                     >
                       <img 
                         src={getJerseyForTeam(player.team, player.position)} 
