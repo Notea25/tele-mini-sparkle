@@ -178,8 +178,8 @@ const PlayerCard = ({
               {/* Player surname */}
               <h2 className="text-foreground text-2xl font-bold font-display">{player.name}</h2>
 
-              {/* Position - no border */}
-              <span className="text-foreground text-sm font-display mt-1">
+              {/* Position - muted color like "Цена" */}
+              <span className="text-muted-foreground text-sm font-display mt-1">
                 {positionNames[player.position] || player.position}
               </span>
 
