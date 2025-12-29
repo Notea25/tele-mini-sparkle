@@ -111,9 +111,9 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mb-4">
                 <AlertTriangle className="w-8 h-8 text-amber-500" />
               </div>
-              <h2 className="text-xl font-bold text-foreground mb-2">Внимание!</h2>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Буст <span className="text-primary font-semibold">{boostInfo?.title}</span> нельзя будет отменить после активации.
+              <h2 className="text-xl font-display text-foreground mb-2">Внимание!</h2>
+              <p className="text-muted-foreground text-sm text-medium leading-relaxed">
+                Буст <span className="text-primary font-medium">{boostInfo?.title}</span> нельзя будет отменить после активации.
               </p>
               {chip.id === "transfers" && (
                 <p className="text-muted-foreground text-sm mt-2">
@@ -153,7 +153,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                   className="w-16 h-16 object-contain"
                 />
               </div>
-              <DrawerTitle className="text-2xl font-bold text-foreground mb-4 text-center">
+              <DrawerTitle className="text-2xl font-display text-foreground mb-4 text-center">
                 {boostInfo?.title || chip.label}
               </DrawerTitle>
               <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line text-left w-full">

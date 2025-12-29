@@ -370,7 +370,7 @@ const League = () => {
           <>
             {/* Team Name */}
             <div className="flex items-center justify-center gap-2 mb-4">
-              <h1 className="text-2xl font-bold text-foreground">{teamName}</h1>
+              <h1 className="text-2xl font-display text-foreground">{teamName}</h1>
               <Pencil
                 className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground"
                 onClick={() => setIsEditTeamNameModalOpen(true)}
@@ -380,7 +380,7 @@ const League = () => {
             {/* Current/First Tour Stats */}
             <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
-              <span className="text-muted-foreground text-sm whitespace-nowrap">
+              <span className="text-muted-foreground text-sm whitespace-nowrap text-regular">
                 {isTournamentStarted ? "29 тур" : "1 тур"}
               </span>
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
@@ -391,25 +391,25 @@ const League = () => {
                 className="bg-secondary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all"
                 onClick={() => handleNavigate("/tournament-table")}
               >
-                <span className="text-xl font-bold text-foreground">{isTournamentStarted ? "40" : "0"}</span>
-                <span className="text-[9px] text-muted-foreground whitespace-nowrap">Средний результат</span>
-                <span className="text-muted-foreground text-xs">→</span>
+                <span className="text-xl font-medium text-foreground">{isTournamentStarted ? "40" : "0"}</span>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Средний результат</span>
+                <span className="text-muted-foreground text-xs text-regular">→</span>
               </div>
               <div
                 className="bg-primary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-all"
                 onClick={() => handleNavigate("/your-team")}
               >
-                <span className="text-2xl font-bold text-primary-foreground">{isTournamentStarted ? "55" : "0"}</span>
-                <span className="text-[10px] text-primary-foreground/70 whitespace-nowrap">Мои очки</span>
-                <span className="text-primary-foreground text-xs">→</span>
+                <span className="text-2xl font-medium text-primary-foreground">{isTournamentStarted ? "55" : "0"}</span>
+                <span className="text-[10px] text-primary-foreground/70 whitespace-nowrap text-regular">Мои очки</span>
+                <span className="text-primary-foreground text-xs text-regular">→</span>
               </div>
               <div
                 className="bg-secondary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all"
                 onClick={() => handleNavigate("/dream-team")}
               >
-                <span className="text-xl font-bold text-foreground">{isTournamentStarted ? "129" : "0"}</span>
-                <span className="text-[9px] text-muted-foreground whitespace-nowrap">Лучший результат</span>
-                <span className="text-muted-foreground text-xs">→</span>
+                <span className="text-xl font-medium text-foreground">{isTournamentStarted ? "129" : "0"}</span>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Лучший результат</span>
+                <span className="text-muted-foreground text-xs text-regular">→</span>
               </div>
             </div>
 
@@ -423,9 +423,9 @@ const League = () => {
             )}
 
             {/* Deadline */}
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center mb-2 text-regular">
               <span className="text-muted-foreground text-sm">
-                Дедлайн: <span className="text-foreground">04.04 в 19.00</span>
+                Дедлайн: <span className="text-foreground font-medium">04.04 в 19.00</span>
               </span>
               <span className="text-foreground text-sm">
                 {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:
@@ -447,7 +447,7 @@ const League = () => {
                 className="w-full h-12 bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/team-management")}
               >
-                <span className="text-primary-foreground font-semibold text-base">Моя команда</span>
+                <span className="text-primary-foreground font-medium text-base">Моя команда</span>
               </button>
               <button
                 className="w-full h-12 bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"

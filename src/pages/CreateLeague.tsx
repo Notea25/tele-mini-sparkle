@@ -130,14 +130,14 @@ const CreateLeague = () => {
 
           {/* League Title with Owner Badge */}
           <div className="flex items-center gap-3 mb-6">
-            <h1 className="text-3xl font-bold text-foreground">{viewingLeague.name}</h1>
+            <h1 className="text-3xl font-display text-foreground">{viewingLeague.name}</h1>
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
               <User className="w-4 h-4 text-primary" />
             </div>
           </div>
 
           {/* Table Header */}
-          <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground">
+          <div className="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-muted-foreground text-regular">
             <span className="col-span-2">Позиция</span>
             <span className="col-span-4">Команда</span>
             <span className="col-span-3 text-center">Очки / тур 29</span>
@@ -159,9 +159,9 @@ const CreateLeague = () => {
                   {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
                   <span className={`font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
                 </div>
-                <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-                <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-                <span className={`col-span-3 text-right text-sm font-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                <span className={`col-span-4 text-sm truncate text-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+                <span className={`col-span-3 text-center text-sm text-regular ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+                <span className={`col-span-3 text-right text-sm font-medium text-medium ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
                   {row.totalPoints.toLocaleString().replace(",", " ")}
                 </span>
               </div>
@@ -190,13 +190,13 @@ const CreateLeague = () => {
         <Drawer open={showInviteDrawer} onOpenChange={setShowInviteDrawer}>
           <DrawerContent className="bg-background border-t border-border">
             <DrawerHeader className="text-center">
-              <DrawerTitle className="text-xl font-bold text-foreground">Пригласить друзей</DrawerTitle>
+              <DrawerTitle className="text-xl font-display text-foreground">Пригласить друзей</DrawerTitle>
             </DrawerHeader>
 
             <div className="px-6 pb-6 space-y-6">
               {/* QR Code Section */}
               <div className="flex flex-col items-center gap-3">
-                <span className="text-sm text-muted-foreground">QR</span>
+                <span className="text-sm text-muted-foreground text-regular">QR</span>
                 <div className="bg-white p-4 rounded-lg">
                   <QRCodeSVG value={getInviteLink()} size={180} level="M" />
                 </div>
@@ -204,7 +204,7 @@ const CreateLeague = () => {
 
               {/* Invite Link Section */}
               <div className="space-y-2">
-                <span className="text-sm text-muted-foreground">Ссылка приглашения</span>
+                <span className="text-sm text-muted-foreground text-regular">Ссылка приглашения</span>
                 <div className="flex items-center gap-2 bg-secondary/50 rounded-xl px-4 py-3">
                   <span className="flex-1 text-foreground text-sm truncate">{getInviteLink()}</span>
                   <button onClick={handleCopyLink} className="p-2 hover:bg-secondary rounded-lg transition-colors">

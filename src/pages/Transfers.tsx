@@ -537,8 +537,8 @@ const Transfers = () => {
                   {clubLogo && (
                     <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
                   )}
-                  <span className="text-foreground font-medium truncate">{player.name}</span>
-                  <span className="text-muted-foreground text-xs">{player.position}</span>
+                  <span className="text-foreground font-medium text-medium truncate">{player.name}</span>
+                  <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
                 </div>
 
                 {/* Points */}
@@ -575,12 +575,12 @@ const Transfers = () => {
       {/* Team Header */}
       <div className="px-4 mt-4">
         <div className="flex items-center justify-center mb-2">
-          <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
+          <h1 className="text-foreground text-3xl font-display">{teamName}</h1>
         </div>
 
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between text-sm text-regular">
           <span className="text-muted-foreground">
-            Дедлайн: <span className="text-foreground">04.04 в 19.00</span>
+            Дедлайн: <span className="text-foreground font-medium">04.04 в 19.00</span>
           </span>
           <span className="text-foreground">
             {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:

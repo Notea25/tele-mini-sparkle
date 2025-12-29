@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Rubik', 'sans-serif'],
         display: ['Unbounded', 'sans-serif'],
         rubik: ['Rubik', 'sans-serif'],
       },

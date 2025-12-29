@@ -501,10 +501,10 @@ const TeamManagement = () => {
   const renderListSection = (position: string, players: PlayerDataExt[]) => (
     <div className="mb-6" key={position}>
       {/* Position header */}
-      <h3 className="text-primary font-medium mb-2">{getPositionLabel(position, players.length)}</h3>
+      <h3 className="text-primary font-medium text-medium mb-2">{getPositionLabel(position, players.length)}</h3>
 
       {/* Column headers */}
-      <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
+      <div className="flex items-center px-4 py-1 text-xs text-muted-foreground text-regular">
         <span className="flex-1">Игрок</span>
         <div className="w-12 flex justify-center">Очки</div>
         <div className="w-14 flex justify-center ml-2">Сл. матч</div>
@@ -544,8 +544,8 @@ const TeamManagement = () => {
                 onClick={!swapModePlayer ? () => setSelectedPlayerForCard(player.id) : undefined}
               >
                 {clubLogo && <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />}
-                <span className="text-foreground font-medium truncate">{player.name}</span>
-                <span className="text-muted-foreground text-xs">{player.position}</span>
+                <span className="text-foreground font-medium text-medium truncate">{player.name}</span>
+                <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
                 {/* Captain badge */}
                 {isCaptainPlayer && (
                   <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
@@ -611,12 +611,12 @@ const TeamManagement = () => {
 
         {/* Team name */}
         <div className="flex items-center justify-center mb-2">
-          <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
+          <h1 className="text-foreground text-3xl font-display">{teamName}</h1>
         </div>
 
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between text-sm text-regular">
           <span className="text-muted-foreground">
-            Дедлайн: <span className="text-foreground">04.04 в 19.00</span>
+            Дедлайн: <span className="text-foreground font-medium">04.04 в 19.00</span>
           </span>
           <span className="text-foreground">
             {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:

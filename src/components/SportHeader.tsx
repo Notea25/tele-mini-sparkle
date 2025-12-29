@@ -171,8 +171,8 @@ const SportHeader = ({
       <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
         <AlertDialogContent className="bg-background border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground">Несохраненные изменения</AlertDialogTitle>
-            <AlertDialogDescription className="text-muted-foreground">
+            <AlertDialogTitle className="text-foreground font-display">Несохраненные изменения</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground text-medium">
               У тебя есть несохраненные изменения. Что ты хочешь сделать?
             </AlertDialogDescription>
           </AlertDialogHeader>

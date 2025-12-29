@@ -8,7 +8,7 @@
  * All colors MUST be HSL.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
@@ -85,8 +85,11 @@
 
     /* Typography */
     --font-display: 'Unbounded', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --font-body: 'Rubik', sans-serif;
+    --font-body-medium: 500;
+    --font-body-regular: 400;
   }
+
 }
 
 @layer base {
@@ -102,23 +105,37 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    font-weight: 400;
   }
 
-  /* Typography Scale */
+  /* Typography Scale - Unbounded for headings */
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
+    font-weight: 400;
   }
 
   h1 {
-    @apply text-2xl font-bold tracking-tight;
+    @apply text-2xl tracking-tight;
   }
 
   h2 {
-    @apply text-xl font-bold tracking-tight;
+    @apply text-xl tracking-tight;
   }
 
   h3 {
-    @apply text-lg font-semibold;
+    @apply text-lg;
+  }
+
+  /* Rubik Medium - for descriptions and medium text */
+  .text-medium {
+    font-family: var(--font-body);
+    font-weight: 500;
+  }
+
+  /* Rubik Regular - for small descriptions */
+  .text-regular {
+    font-family: var(--font-body);
+    font-weight: 400;
   }
 }
 

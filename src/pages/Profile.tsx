@@ -148,16 +148,16 @@ const Profile = () => {
 
           {/* User Info */}
           <div className="flex flex-col pt-2">
-            <h1 className="text-2xl font-bold text-foreground">{profile.userName}</h1>
-            <span className="text-muted-foreground text-sm">@riches</span>
-            <span className="text-muted-foreground text-sm mt-1">Создан {profile.createdAt}</span>
+            <h1 className="text-2xl font-display text-foreground">{profile.userName}</h1>
+            <span className="text-muted-foreground text-sm text-regular">@riches</span>
+            <span className="text-muted-foreground text-sm mt-1 text-regular">Создан {profile.createdAt}</span>
           </div>
         </div>
 
         {/* Form Fields */}
         <div className="space-y-3">
           <div className="space-y-2">
-            <label className="text-sm text-foreground">Имя пользователя</label>
+            <label className="text-sm text-foreground text-medium">Имя пользователя</label>
             <div className="relative">
               <input
                 value={profile.userName}
@@ -179,7 +179,7 @@ const Profile = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-foreground">Дата рождения</label>
+            <label className="text-sm text-foreground text-medium">Дата рождения</label>
             <input
               type="text"
               value={profile.birthDate}

@@ -24,7 +24,7 @@ const ConfirmBoostDrawer = ({
       <DrawerContent className="bg-card border-t border-border">
         <div className="px-6 py-6">
           {/* Title */}
-          <h2 className="text-foreground text-xl font-bold text-center mb-6">
+          <h2 className="text-foreground text-xl font-display text-center mb-6">
             Подтверждение буста
           </h2>
 
@@ -35,7 +35,7 @@ const ConfirmBoostDrawer = ({
               alt={pendingBoost.label} 
               className="w-16 h-16 object-contain mb-3"
             />
-            <span className="text-foreground text-lg font-semibold text-center">
+            <span className="text-foreground text-lg font-medium text-center">
               {pendingBoost.label}
             </span>
             <span className="text-primary text-sm mt-1">
@@ -44,7 +44,7 @@ const ConfirmBoostDrawer = ({
           </div>
 
           {/* Warning text */}
-          <p className="text-muted-foreground text-sm text-center mb-6">
+          <p className="text-muted-foreground text-sm text-center mb-6 text-regular">
             После подтверждения буст нельзя будет отменить. Буст можно использовать только один раз за сезон.
           </p>
 
