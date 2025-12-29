@@ -13,7 +13,10 @@ import { tournamentTeams } from "@/lib/tournamentData";
 
 const TournamentTable = () => {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const savedPage = sessionStorage.getItem("tournamentTableCurrentPage");
+    return savedPage ? parseInt(savedPage, 10) : 1;
+  });
   const itemsPerPage = 10;
 
   const allTeams = tournamentTeams;
@@ -30,9 +33,10 @@ const TournamentTable = () => {
     }
   }, []);
 
-  // Save scroll position before navigating away
+  // Save scroll position and current page before navigating away
   const handleNavigate = (path: string) => {
     sessionStorage.setItem("tournamentTableScrollPosition", window.scrollY.toString());
+    sessionStorage.setItem("tournamentTableCurrentPage", currentPage.toString());
     navigate(path);
   };
 
