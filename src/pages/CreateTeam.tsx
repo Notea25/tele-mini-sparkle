@@ -169,7 +169,7 @@ const CreateTeam = () => {
 
 
       {/* Hero Banner с подложкой для bannerBg и текста */}
-      <div className="relative mt-6">
+      <div className="relative mt-3">
         {/* Подложка bgImage - на всю ширину экрана */}
         <img src={bgImage} alt="Background" className="absolute inset-0 w-full h-full object-cover" />
 
