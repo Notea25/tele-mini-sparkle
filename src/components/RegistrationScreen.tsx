@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import playersWelcome from "@/assets/players-welcome.png";
 import logo from "@/assets/logo.png";
 import { Filter } from "bad-words";
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 
@@ -44,26 +42,15 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
   const [birthDate, setBirthDate] = useState("");
   const [nicknameError, setNicknameError] = useState<string | null>(null);
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
-  const formRef = useRef<HTMLDivElement>(null);
-  const keyboardInset = useKeyboardInset();
+  const [isNicknameFocused, setIsNicknameFocused] = useState(false);
+  const [isBirthDateFocused, setIsBirthDateFocused] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const scrollToElement = (el: HTMLElement | null) => {
-    if (!el) return;
-    // Delay a bit so the keyboard/viewport has time to settle.
+  const scrollToButton = () => {
     setTimeout(() => {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 120);
+      buttonRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 300);
   };
-
-  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    // Ensure the focused input is visible above the keyboard.
-    scrollToElement(e.currentTarget);
-  };
-
-  useEffect(() => {
-    // When keyboard opens, prefer showing the form area.
-    if (keyboardInset > 0) scrollToElement(formRef.current);
-  }, [keyboardInset]);
 
   const validateNickname = (name: string): boolean => {
     if (name.length === 0) {
@@ -187,29 +174,19 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[9998] flex flex-col bg-background overflow-auto overscroll-contain"
-      style={{ paddingBottom: keyboardInset }}
-    >
+    <div className="min-h-screen bg-background overflow-auto">
       {/* Logo */}
-      <div className="px-4 pt-3 pb-4 flex justify-center flex-shrink-0">
+      <div className="px-4 pt-3 pb-4 flex justify-center">
         <img src={logo} alt="Fantasy Sports" className="w-[175px] h-6" />
       </div>
 
-      {/* Players image - collapses when keyboard is open */}
-      <div
-        className="w-full flex-shrink-0 overflow-hidden transition-all duration-200"
-        style={{
-          maxHeight: keyboardInset > 0 ? 0 : 320,
-          paddingTop: keyboardInset > 0 ? 0 : 24,
-          opacity: keyboardInset > 0 ? 0 : 1,
-        }}
-      >
+      {/* Players image */}
+      <div className="w-full pt-6">
         <img src={playersWelcome} alt="Welcome" className="w-full h-auto object-cover" />
       </div>
 
       {/* Content area */}
-      <div className="flex-1 flex flex-col items-center px-6 py-6">
+      <div className="flex flex-col items-center px-6 py-6">
 
         {/* Title */}
         <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-2 px-4 font-display">
@@ -225,18 +202,19 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
         </p>
 
         {/* Form fields */}
-        <div ref={formRef} className="w-full space-y-3 mb-8">
+        <div className="w-full space-y-3 mb-8">
           <div className="relative">
             <input
               value={nickname}
               onChange={handleNicknameChange}
-              onFocus={handleInputFocus}
+              onFocus={() => { setIsNicknameFocused(true); scrollToButton(); }}
+              onBlur={() => setTimeout(() => setIsNicknameFocused(false), 150)}
               placeholder="Придумай имя пользователя"
               maxLength={15}
               className={`w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F] ${nicknameError ? "ring-2 ring-destructive" : ""}`}
               style={{
-                borderColor: nickname ? "rgba(255, 255, 255, 0.2)" : "#363546",
-                color: nickname ? "#FFFFFF" : "#4B485F",
+                borderColor: isNicknameFocused ? "rgba(255, 255, 255, 0.2)" : "#363546",
+                color: isNicknameFocused || nickname ? "#FFFFFF" : "#4B485F",
                 borderWidth: "1px",
                 borderStyle: "solid",
               }}
@@ -250,14 +228,15 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
             <input
               value={birthDate}
               onChange={handleBirthDateChange}
-              onFocus={handleInputFocus}
+              onFocus={() => { setIsBirthDateFocused(true); scrollToButton(); }}
+              onBlur={() => setTimeout(() => setIsBirthDateFocused(false), 150)}
               placeholder="Укажи дату рождения (ДД.ММ.ГГГГ)"
               maxLength={10}
               inputMode="numeric"
               className={`w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F] ${birthDateError ? "ring-2 ring-destructive" : ""}`}
               style={{
-                borderColor: birthDate ? "rgba(255, 255, 255, 0.2)" : "#363546",
-                color: birthDate ? "#FFFFFF" : "#4B485F",
+                borderColor: isBirthDateFocused ? "rgba(255, 255, 255, 0.2)" : "#363546",
+                color: isBirthDateFocused || birthDate ? "#FFFFFF" : "#4B485F",
                 borderWidth: "1px",
                 borderStyle: "solid",
               }}
@@ -266,16 +245,15 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
           </div>
         </div>
 
-        {/* Button - stays visible above keyboard */}
-        <div className="sticky bottom-0 w-full pb-8 pt-3 bg-background/80 backdrop-blur">
-          <Button
-            onClick={handleSubmit}
-            className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] rounded-lg"
-            style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
-          >
-            Готово
-          </Button>
-        </div>
+        {/* Button */}
+        <Button
+          ref={buttonRef}
+          onClick={handleSubmit}
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] rounded-lg"
+          style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
+        >
+          Готово
+        </Button>
       </div>
     </div>
   );
