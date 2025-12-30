@@ -396,15 +396,17 @@ const Transfers = () => {
   const hasGoldenTourBoost = specialChips.some(c => c.id === "golden" && c.status === "pending");
   const hasAnyTransferBoost = hasTransfersBoost || hasGoldenTourBoost;
   
-  // Calculate free transfers remaining
-  const transferState = getTransferState();
-  const freeTransfersRemaining = hasAnyTransferBoost 
-    ? "∞" 
-    : Math.max(0, TRANSFERS_CONFIG.FREE_PER_TOUR - transferState.transfersUsedThisTour);
-  
-  // Calculate pending transfer costs
+  // Calculate pending transfer costs first (needed for free transfers calculation)
   const pendingTransferCount = getTransferRecords().length;
   const transferCosts = calculateTransferCosts(pendingTransferCount, hasTransfersBoost, hasGoldenTourBoost);
+  
+  // Calculate free transfers remaining - account for pending transfers
+  const transferState = getTransferState();
+  const alreadyUsed = transferState.transfersUsedThisTour;
+  const totalUsedIncludingPending = alreadyUsed + pendingTransferCount;
+  const freeTransfersRemaining = hasAnyTransferBoost 
+    ? "∞" 
+    : Math.max(0, TRANSFERS_CONFIG.FREE_PER_TOUR - totalUsedIncludingPending);
 
   const getPlayersCountByClub = (clubName: string) => {
     return players.filter((p) => p.team === clubName).length;
@@ -746,7 +748,16 @@ const Transfers = () => {
               {freeTransfersRemaining}
             </span>
           </div>
-          <div className="text-center">
+          <div 
+            className="text-center cursor-pointer"
+            onClick={() => {
+              if (transferCosts.pointsPenalty > 0) {
+                toast.info(`У тебя ${TRANSFERS_CONFIG.FREE_PER_TOUR} бесплатных трансфера за тур. Каждый дополнительный стоит -${TRANSFERS_CONFIG.PENALTY_PER_EXTRA} очка. Платных трансферов: ${transferCosts.paidTransfers}`);
+              } else {
+                toast.info(`У тебя ${TRANSFERS_CONFIG.FREE_PER_TOUR} бесплатных трансфера за тур. Каждый дополнительный стоит -${TRANSFERS_CONFIG.PENALTY_PER_EXTRA} очка.`);
+              }
+            }}
+          >
             <span className="text-muted-foreground text-xs block">Штраф</span>
             <span className={`text-2xl font-bold ${transferCosts.pointsPenalty > 0 ? "text-red-500" : "text-foreground"}`}>
               {transferCosts.pointsPenalty > 0 ? `-${transferCosts.pointsPenalty}` : "0"}
