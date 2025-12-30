@@ -201,27 +201,27 @@ const ConfirmTransfersDrawer = ({
 
           {/* Stats Section */}
           <div className="mb-6">
-            <h3 className="text-foreground text-lg font-semibold mb-4">Детали</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-border">
-                <span className="text-muted-foreground">Бесплатных трансферов использовано</span>
-                <span className={`font-semibold ${hasTransferBoost ? "text-primary" : "text-foreground"}`}>
+            <h3 className="text-foreground text-base font-semibold mb-3">Детали</h3>
+            <div className="space-y-0">
+              <div className="flex justify-between items-center py-1.5 border-b border-border">
+                <span className="text-muted-foreground text-sm">Бесплатных трансферов использовано</span>
+                <span className={`text-sm font-medium ${hasTransferBoost ? "text-primary" : "text-foreground"}`}>
                   {hasTransferBoost ? "∞" : freeTransfersUsed}
                 </span>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-border">
-                <span className="text-muted-foreground">Платных трансферов</span>
-                <span className="text-foreground font-semibold">{additionalTransfersUsed}</span>
+              <div className="flex justify-between items-center py-1.5 border-b border-border">
+                <span className="text-muted-foreground text-sm">Платных трансферов</span>
+                <span className="text-foreground text-sm font-medium">{additionalTransfersUsed}</span>
               </div>
               {pointsPenalty > 0 && (
-                <div className="flex justify-between items-center py-2 border-b border-border">
-                  <span className="text-muted-foreground">Штраф за трансферы</span>
-                  <span className="text-red-500 font-semibold">-{pointsPenalty} очков</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-border">
+                  <span className="text-muted-foreground text-sm">Штраф за трансферы</span>
+                  <span className="text-red-500 text-sm font-medium">-{pointsPenalty} очков</span>
                 </div>
               )}
-              <div className="flex justify-between items-center py-2 border-b border-border">
-                <span className="text-muted-foreground">Остаток бюджета</span>
-                <span className="text-foreground font-semibold">{remainingBudget}</span>
+              <div className="flex justify-between items-center py-1.5 border-b border-border">
+                <span className="text-muted-foreground text-sm">Остаток бюджета</span>
+                <span className="text-foreground text-sm font-medium">{remainingBudget}</span>
               </div>
             </div>
           </div>
