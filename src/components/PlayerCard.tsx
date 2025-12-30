@@ -391,7 +391,7 @@ const PlayerCard = ({
           {variant === "view" ? (
             <Button
               onClick={onClose}
-              className="w-full rounded-lg h-12 font-medium bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+              className="w-full rounded-lg py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               Закрыть
             </Button>
@@ -399,7 +399,7 @@ const PlayerCard = ({
             <div className="flex gap-3 w-full">
               <Button
                 onClick={onClose}
-                className="flex-1 rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
+                className="flex-1 rounded-lg py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
               >
                 Закрыть
               </Button>
@@ -408,7 +408,7 @@ const PlayerCard = ({
                   onSell?.(player.id);
                   onClose();
                 }}
-                className="flex-1 rounded-lg h-12 font-medium bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                className="flex-1 rounded-lg py-6 font-semibold text-lg bg-red-500 hover:bg-red-600 text-white"
               >
                 Продать
               </Button>
@@ -417,7 +417,7 @@ const PlayerCard = ({
             <div className="flex gap-3 w-full">
               <Button
                 onClick={onClose}
-                className="flex-1 rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
+                className="flex-1 rounded-lg py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
               >
                 Закрыть
               </Button>
@@ -426,7 +426,7 @@ const PlayerCard = ({
                   onSwap?.(player.id);
                   onClose();
                 }}
-                className="flex-1 rounded-lg h-12 font-medium bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+                className="flex-1 rounded-lg py-6 font-semibold text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 Заменить
               </Button>
@@ -435,7 +435,7 @@ const PlayerCard = ({
             <div className="flex gap-3 w-full">
               <Button
                 onClick={onClose}
-                className="flex-1 rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
+                className="flex-1 rounded-lg py-6 font-semibold text-lg bg-card hover:bg-card/80 text-foreground border border-border"
               >
                 Закрыть
               </Button>
@@ -447,9 +447,9 @@ const PlayerCard = ({
                   }
                 }}
                 disabled={!canBuy}
-                className={`flex-1 rounded-lg h-12 font-medium ${
+                className={`flex-1 rounded-lg py-6 font-semibold text-lg ${
                   canBuy 
-                    ? "bg-primary hover:opacity-90 text-primary-foreground shadow-neon" 
+                    ? "bg-primary hover:bg-primary/90 text-primary-foreground" 
                     : "bg-muted text-muted-foreground cursor-not-allowed"
                 }`}
               >
@@ -462,10 +462,8 @@ const PlayerCard = ({
                 onToggleSelect?.(player.id);
                 onClose();
               }}
-              className={`w-full rounded-lg h-12 font-medium ${
-                isSelected 
-                  ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground" 
-                  : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+              className={`w-full rounded-lg py-6 font-semibold text-lg ${
+                isSelected ? "bg-red-500 hover:bg-red-600 text-white" : "bg-[#A8FF00] hover:bg-[#98EE00] text-black"
               }`}
             >
               {isSelected ? "Убрать" : "Выбрать"}

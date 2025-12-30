@@ -173,13 +173,14 @@ const CreateLeague = () => {
         <div className="sticky bottom-0 left-0 right-0 bg-background px-4 pb-6 pt-2 space-y-3">
           <Button
             onClick={handleInviteFriend}
-            className="w-full rounded-lg h-12 font-medium bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+            className="w-full rounded-lg py-6 font-semibold bg-primary text-primary-foreground"
           >
             Пригласить друзей
           </Button>
           <Button
             onClick={() => navigate("/league")}
-            className="w-full rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
+            variant="outline"
+            className="w-full rounded-lg py-6 font-semibold border-border text-foreground"
           >
             Закрыть
           </Button>
@@ -215,7 +216,7 @@ const CreateLeague = () => {
               {/* Close Button */}
               <Button
                 onClick={() => setShowInviteDrawer(false)}
-                className="w-full rounded-lg h-12 font-medium bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+                className="w-full rounded-lg py-6 font-semibold bg-primary text-primary-foreground"
               >
                 Закрыть
               </Button>
