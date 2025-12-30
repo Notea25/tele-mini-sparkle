@@ -266,7 +266,11 @@ const CreateLeague = () => {
         <Button
           onClick={handleCreateLeague}
           disabled={!leagueName.trim()}
-          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] rounded-lg disabled:opacity-50"
+          className={`w-full rounded-lg py-6 font-semibold ${
+            !leagueName.trim()
+              ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
+              : "bg-primary text-primary-foreground"
+          }`}
           style={{ boxShadow: leagueName.trim() ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
         >
           Создать лигу
