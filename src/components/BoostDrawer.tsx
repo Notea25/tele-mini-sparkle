@@ -169,7 +169,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               {chip.status === "available" && (
                 <Button
                   onClick={handleApplyClick}
-                  className="w-full h-14 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-lg font-semibold shadow-neon"
+                  className="w-full h-12 rounded-lg bg-primary hover:opacity-90 text-primary-foreground font-medium shadow-neon"
                 >
                   Использовать
                 </Button>
@@ -180,14 +180,14 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                     <Button
                       onClick={handleCancel}
                       variant="outline"
-                      className="w-full h-14 rounded-full border-destructive text-destructive hover:bg-destructive/10 text-lg font-semibold"
+                      className="w-full h-12 rounded-lg border-destructive text-destructive hover:bg-destructive/10 font-medium"
                     >
                       Отменить
                     </Button>
                   )}
                   <Button
                     onClick={handleClose}
-                    className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
+                    className="w-full h-12 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground font-medium"
                   >
                     Закрыть
                   </Button>
@@ -196,7 +196,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               {chip.status === "used" && (
                 <Button
                   onClick={handleClose}
-                  className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
+                  className="w-full h-12 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground font-medium"
                 >
                   Закрыть
                 </Button>
