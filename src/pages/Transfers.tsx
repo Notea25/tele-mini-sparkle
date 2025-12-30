@@ -744,7 +744,7 @@ const Transfers = () => {
         <div className="flex justify-between mb-3">
           <div className="text-center">
             <span className="text-muted-foreground text-xs block">Бесплатные трансферы</span>
-            <span className={`text-2xl font-bold ${hasAnyTransferBoost ? "text-primary" : "text-foreground"}`}>
+            <span className={`text-xl font-bold ${hasAnyTransferBoost ? "text-primary" : "text-foreground"}`}>
               {freeTransfersRemaining}
             </span>
           </div>
@@ -759,13 +759,13 @@ const Transfers = () => {
             }}
           >
             <span className="text-muted-foreground text-xs block">Штраф</span>
-            <span className={`text-2xl font-bold ${transferCosts.pointsPenalty > 0 ? "text-red-500" : "text-foreground"}`}>
+            <span className={`text-xl font-bold ${transferCosts.pointsPenalty > 0 ? "text-red-500" : "text-foreground"}`}>
               {transferCosts.pointsPenalty > 0 ? `-${transferCosts.pointsPenalty}` : "0"}
             </span>
           </div>
           <div className="text-center">
             <span className="text-muted-foreground text-xs block">Бюджет</span>
-            <span className="text-foreground text-2xl font-bold">{budget.toFixed(1)}</span>
+            <span className="text-foreground text-xl font-bold">{budget.toFixed(1)}</span>
           </div>
         </div>
 
