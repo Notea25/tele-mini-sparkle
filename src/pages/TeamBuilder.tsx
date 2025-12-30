@@ -811,65 +811,45 @@ const TeamBuilder = () => {
             <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
           </div>
 
-          {/* Price Range */}
+          {/* Search */}
           <div className="px-4 relative z-10">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-foreground text-sm">Цена</span>
-              {hasActiveFilters && (
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                ref={searchInputRef}
+                placeholder="Поиск"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onFocus={() => {
+                  setIsSearchFocused(true);
+                  window.setTimeout(() => {
+                    ensureSearchVisible("smooth");
+                  }, 350);
+                }}
+                onBlur={() => setIsSearchFocused(false)}
+                className="pl-10 pr-10 h-10 bg-card border-border rounded-xl text-foreground placeholder:text-muted-foreground"
+              />
+              {searchQuery && (
                 <button
-                  onClick={handleResetFilters}
-                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  type="button"
+                  aria-label="Очистить поиск"
+                  onClick={() => {
+                    handleSearchChange("");
+                    searchInputRef.current?.focus();
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Сбросить фильтры
                   <X className="w-4 h-4" />
                 </button>
               )}
             </div>
-            <div className="flex gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground text-sm">от</span>
-                <div className="bg-card border border-border rounded-xl px-2 py-1.5 flex items-center gap-2">
-                  <button
-                    onClick={handlePriceFromDecrease}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-                  >
-                    <Minus className="w-4 h-4 text-primary-foreground" />
-                  </button>
-                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceFrom.toFixed(1)}</span>
-                  <button
-                    onClick={handlePriceFromIncrease}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-                  >
-                    <Plus className="w-4 h-4 text-primary-foreground" />
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground text-sm">до</span>
-                <div className="bg-card border border-border rounded-xl px-2 py-1.5 flex items-center gap-2">
-                  <button
-                    onClick={handlePriceToDecrease}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-                  >
-                    <Minus className="w-4 h-4 text-primary-foreground" />
-                  </button>
-                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceTo.toFixed(1)}</span>
-                  <button
-                    onClick={handlePriceToIncrease}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-                  >
-                    <Plus className="w-4 h-4 text-primary-foreground" />
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Teams Filter */}
-          <div className="px-4 mt-4 relative z-20">
+          <div className="px-4 mt-2 relative z-20">
             <Select value={selectedTeam} onValueChange={handleTeamChange}>
-              <SelectTrigger className="w-full bg-card border-border text-foreground cursor-pointer">
-                <SelectValue placeholder="Команды" />
+              <SelectTrigger className="w-full h-10 bg-card border-border rounded-xl text-foreground cursor-pointer">
+                <SelectValue placeholder="Все команды" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border z-50">
                 {teams.map((team) => (
@@ -878,12 +858,76 @@ const TeamBuilder = () => {
                       {team !== "Все команды" && clubLogos[team] && (
                         <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
                       )}
-                      <span>{team === "Все команды" ? "Команды" : team}</span>
+                      <span>{team}</span>
                     </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Position Filters */}
+          <div ref={playerListRef} className="px-4 mt-2 flex gap-2 overflow-x-auto pb-1">
+            {filters.map((filter) => (
+              <Button
+                key={filter}
+                onClick={() => handleFilterChange(filter)}
+                size="sm"
+                className={`flex-shrink-0 rounded-full h-8 px-4 ${
+                  activeFilter === filter
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent"
+                    : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
+                }`}
+              >
+                {filter}
+              </Button>
+            ))}
+          </div>
+
+          {/* Price Range */}
+          <div className="px-4 mt-2">
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground text-sm">Цена:</span>
+              <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+                <button
+                  onClick={handlePriceFromDecrease}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Minus className="w-3 h-3 text-primary-foreground" />
+                </button>
+                <span className="text-foreground text-sm w-9 text-center">{priceFrom.toFixed(1)}</span>
+                <button
+                  onClick={handlePriceFromIncrease}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Plus className="w-3 h-3 text-primary-foreground" />
+                </button>
+              </div>
+              <span className="text-muted-foreground text-sm">—</span>
+              <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+                <button
+                  onClick={handlePriceToDecrease}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Minus className="w-3 h-3 text-primary-foreground" />
+                </button>
+                <span className="text-foreground text-sm w-9 text-center">{priceTo.toFixed(1)}</span>
+                <button
+                  onClick={handlePriceToIncrease}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Plus className="w-3 h-3 text-primary-foreground" />
+                </button>
+              </div>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           </div>
         </>
       )}
@@ -907,65 +951,34 @@ const TeamBuilder = () => {
             <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
           </div>
 
-          {/* Price Range for List View */}
-          <div className="px-4">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-foreground text-sm">Цена</span>
-              {hasActiveFilters && (
+          {/* Search for List View */}
+          <div className="px-4 relative z-10">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Поиск"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="pl-10 pr-10 h-10 bg-card border-border rounded-xl text-foreground placeholder:text-muted-foreground"
+              />
+              {searchQuery && (
                 <button
-                  onClick={handleResetFilters}
-                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  type="button"
+                  aria-label="Очистить поиск"
+                  onClick={() => handleSearchChange("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Сбросить фильтры
                   <X className="w-4 h-4" />
                 </button>
               )}
             </div>
-            <div className="flex gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground text-sm">от</span>
-                <div className="bg-card border border-border rounded-xl px-2 py-1.5 flex items-center gap-2">
-                  <button
-                    onClick={handlePriceFromDecrease}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-                  >
-                    <Minus className="w-4 h-4 text-primary-foreground" />
-                  </button>
-                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceFrom.toFixed(1)}</span>
-                  <button
-                    onClick={handlePriceFromIncrease}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-                  >
-                    <Plus className="w-4 h-4 text-primary-foreground" />
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground text-sm">до</span>
-                <div className="bg-card border border-border rounded-xl px-2 py-1.5 flex items-center gap-2">
-                  <button
-                    onClick={handlePriceToDecrease}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-                  >
-                    <Minus className="w-4 h-4 text-primary-foreground" />
-                  </button>
-                  <span className="text-foreground font-medium min-w-[40px] text-center">{priceTo.toFixed(1)}</span>
-                  <button
-                    onClick={handlePriceToIncrease}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
-                  >
-                    <Plus className="w-4 h-4 text-primary-foreground" />
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Teams Filter for List View */}
-          <div className="px-4 mt-4 relative z-20">
+          <div className="px-4 mt-2 relative z-20">
             <Select value={selectedTeam} onValueChange={handleTeamChange}>
-              <SelectTrigger className="w-full bg-card border-border text-foreground cursor-pointer">
-                <SelectValue placeholder="Команды" />
+              <SelectTrigger className="w-full h-10 bg-card border-border rounded-xl text-foreground cursor-pointer">
+                <SelectValue placeholder="Все команды" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border z-50">
                 {teams.map((team) => (
@@ -974,69 +987,80 @@ const TeamBuilder = () => {
                       {team !== "Все команды" && clubLogos[team] && (
                         <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
                       )}
-                      <span>{team === "Все команды" ? "Команды" : team}</span>
+                      <span>{team}</span>
                     </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
+
+          {/* Position Filters for List View */}
+          <div className="px-4 mt-2 flex gap-2 overflow-x-auto pb-1">
+            {filters.map((filter) => (
+              <Button
+                key={filter}
+                onClick={() => handleFilterChange(filter)}
+                size="sm"
+                className={`flex-shrink-0 rounded-full h-8 px-4 ${
+                  activeFilter === filter
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent"
+                    : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
+                }`}
+              >
+                {filter}
+              </Button>
+            ))}
+          </div>
+
+          {/* Price Range for List View */}
+          <div className="px-4 mt-2">
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground text-sm">Цена:</span>
+              <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+                <button
+                  onClick={handlePriceFromDecrease}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Minus className="w-3 h-3 text-primary-foreground" />
+                </button>
+                <span className="text-foreground text-sm w-9 text-center">{priceFrom.toFixed(1)}</span>
+                <button
+                  onClick={handlePriceFromIncrease}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Plus className="w-3 h-3 text-primary-foreground" />
+                </button>
+              </div>
+              <span className="text-muted-foreground text-sm">—</span>
+              <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+                <button
+                  onClick={handlePriceToDecrease}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Minus className="w-3 h-3 text-primary-foreground" />
+                </button>
+                <span className="text-foreground text-sm w-9 text-center">{priceTo.toFixed(1)}</span>
+                <button
+                  onClick={handlePriceToIncrease}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Plus className="w-3 h-3 text-primary-foreground" />
+                </button>
+              </div>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
         </>
       )}
 
-      {/* Position Filters */}
-      <div ref={playerListRef} className="px-4 mt-6 flex gap-2 overflow-x-auto pb-2">
-        {filters.map((filter) => (
-          <Button
-            key={filter}
-            onClick={() => handleFilterChange(filter)}
-            size="sm"
-            className={`flex-shrink-0 rounded-xl px-5 ${
-              activeFilter === filter
-                ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent"
-                : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
-            }`}
-          >
-            {filter}
-          </Button>
-        ))}
-      </div>
-
-      {/* Search */}
-      <div className="px-4 mt-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            ref={searchInputRef}
-            placeholder="Поиск"
-            value={searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            onFocus={() => {
-              setIsSearchFocused(true);
-              window.setTimeout(() => {
-                ensureSearchVisible("smooth");
-              }, 350);
-            }}
-            onBlur={() => setIsSearchFocused(false)}
-            className="pl-10 pr-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
-          />
-
-          {/* Clear button */}
-          {searchQuery && (
-            <button
-              type="button"
-              aria-label="Очистить поиск"
-              onClick={() => {
-                handleSearchChange("");
-                searchInputRef.current?.focus();
-              }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      </div>
 
       {/* Players List Header */}
       <div className="px-4 mt-6 flex items-center text-xs text-muted-foreground">
