@@ -111,9 +111,12 @@ const FormationFieldManagement = ({
   const currentFormation = detectFormation(mainSquadPlayers) || "1-4-4-2";
   const formation = getFormationSlots(currentFormation);
 
-  const getPlayerForSlot = (position: string, slotIndex: number) => {
-    return mainSquadPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
-  };
+  const getPlayerForSlot = useCallback(
+    (position: string, slotIndex: number) => {
+      return mainSquadPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
+    },
+    [mainSquadPlayers],
+  );
 
   const [cardSize, setCardSize] = useState({ width: 70, height: 84 });
 
@@ -255,22 +258,22 @@ const FormationFieldManagement = ({
           {isCaptainPlayer && !isOnBench && (
             <img
               src={captainBadge}
-              alt="C"
+              alt="Капитан"
               className="absolute top-1 left-1 z-50"
               style={{
-                width: `${cardSize.width * 0.15}px`,
-                height: `${cardSize.width * 0.15}px`,
+                width: `${cardSize.width * 0.18}px`,
+                height: `${cardSize.width * 0.18}px`,
               }}
             />
           )}
           {isViceCaptainPlayer && !isOnBench && (
             <img
               src={viceCaptainBadge}
-              alt="V"
+              alt="Вице-капитан"
               className="absolute top-1 left-1 z-50"
               style={{
-                width: `${cardSize.width * 0.15}px`,
-                height: `${cardSize.width * 0.15}px`,
+                width: `${cardSize.width * 0.18}px`,
+                height: `${cardSize.width * 0.18}px`,
               }}
             />
           )}
@@ -371,7 +374,7 @@ const FormationFieldManagement = ({
             </div>
           )}
 
-          {/* Jersey */}
+          {/* Jersey - ПРАВИЛЬНО ПОЗИЦИОНИРОВАННОЕ КАК В ПЕРВОМ КОМПОНЕНТЕ */}
           <div className="relative w-full flex-1 z-10 overflow-hidden">
             <img
               src={getJerseyForTeam(player.team, player.position)}
@@ -386,7 +389,7 @@ const FormationFieldManagement = ({
               }}
             />
 
-            {/* Red card badge */}
+            {/* Red card badge - позиционирование должно быть относительно джерси */}
             {hasRedCard && (
               <img
                 src={redCardBadge}
@@ -399,7 +402,7 @@ const FormationFieldManagement = ({
               />
             )}
 
-            {/* Injury badge */}
+            {/* Injury badge - позиционирование должно быть относительно джерси */}
             {isInjured && !hasRedCard && (
               <img
                 src={injuryBadge}
@@ -524,6 +527,16 @@ const FormationFieldManagement = ({
   // Мемоизированный расчет отступа для скамейки
   const benchGap = useMemo(() => getBenchGap(), [getBenchGap]);
 
+  // Адаптация позиций под разные размеры карточек
+  const getAdaptedPlayerPosition = useCallback((row: number, col: number) => {
+    // Используем getPlayerPosition из formationUtils
+    const basePosition = getPlayerPosition(row, col);
+
+    // Для корректного позиционирования джерси не нужно масштабировать,
+    // так как getPlayerPosition уже возвращает правильные проценты
+    return basePosition;
+  }, []);
+
   return (
     <div>
       {/* Football Field */}
@@ -531,26 +544,18 @@ const FormationFieldManagement = ({
         <img src={footballFieldNew} alt="Football field" className="w-full h-auto" loading="lazy" />
 
         {formation.map((slot, idx) => {
-          const style = getPlayerPosition(slot.row, slot.col);
+          const style = getAdaptedPlayerPosition(slot.row, slot.col);
           const player = getPlayerForSlot(slot.position, slot.slotIndex);
           const isOccupied = !!player;
-
-          // Адаптируем позиции под разные размеры экрана
-          const adaptedStyle = useMemo(() => {
-            const scaleFactor = cardSize.width / 70; // 70 - базовый размер для мобильных
-            return {
-              top: `calc(${style.top} * ${scaleFactor})`,
-              left: `calc(${style.left} * ${scaleFactor})`,
-            };
-          }, [style, cardSize.width]);
+          const key = `${slot.position}-${slot.slotIndex}-${idx}`;
 
           return (
             <div
-              key={`${slot.position}-${slot.slotIndex}-${idx}`}
+              key={key}
               className={`absolute flex flex-col items-center ${isOccupied ? "z-20" : "z-10"}`}
               style={{
-                top: adaptedStyle.top,
-                left: adaptedStyle.left,
+                top: style.top,
+                left: style.left,
                 transform: "translateX(-50%)",
               }}
             >
@@ -585,9 +590,10 @@ const FormationFieldManagement = ({
             <div className="flex gap-2 justify-between" style={{ gap: `${benchGap}px` }}>
               {Array.from({ length: maxBenchSize }).map((_, idx) => {
                 const player = benchPlayers[idx];
+                const key = `bench-${idx}`;
 
                 return (
-                  <div key={idx} className="flex flex-col items-center flex-1 relative">
+                  <div key={key} className="flex flex-col items-center flex-1 relative">
                     {player ? renderPlayer(player, true, true, idx) : renderEmptySlot("ЗАМ", true, idx)}
                   </div>
                 );
