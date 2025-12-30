@@ -48,8 +48,10 @@ const BuyPlayerDrawer = ({
   const [priceFrom, setPriceFrom] = useState(3);
   const [priceTo, setPriceTo] = useState(14);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
+  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
+  // Default sort by price desc without showing UI indicator
+  const [isDefaultSort, setIsDefaultSort] = useState(true);
 
   // Apply initial position filter when drawer opens
   useEffect(() => {
@@ -66,6 +68,9 @@ const BuyPlayerDrawer = ({
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
   const handleSort = (field: "name" | "points" | "price") => {
+    // When user clicks sort, disable default sort
+    setIsDefaultSort(false);
+    
     if (sortField !== field) {
       setSortField(field);
       setSortDirection(field === "name" ? "asc" : "desc");
@@ -73,9 +78,10 @@ const BuyPlayerDrawer = ({
       // Second click: switch to ascending
       setSortDirection("asc");
     } else if (sortDirection === "asc") {
-      // Third click: clear sort
+      // Third click: clear sort, restore default
       setSortField(null);
       setSortDirection(null);
+      setIsDefaultSort(true);
     }
     setCurrentPage(1);
   };
@@ -114,6 +120,11 @@ const BuyPlayerDrawer = ({
   // Apply sorting
   const sortedPlayers = useMemo(() => {
     return [...filteredPlayers].sort((a, b) => {
+      // Default sort: by price descending (without UI indicator)
+      if (isDefaultSort && !sortField) {
+        return b.price - a.price;
+      }
+      
       if (!sortField || !sortDirection) return 0;
 
       if (sortField === "name") {
@@ -128,7 +139,7 @@ const BuyPlayerDrawer = ({
       }
       return 0;
     });
-  }, [filteredPlayers, sortField, sortDirection]);
+  }, [filteredPlayers, sortField, sortDirection, isDefaultSort]);
 
   // Pagination
   const totalPages = Math.ceil(sortedPlayers.length / ITEMS_PER_PAGE);
