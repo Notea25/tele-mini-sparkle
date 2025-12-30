@@ -245,10 +245,7 @@ const Index = () => {
       <PromoBanner />
 
       <div className="px-4 mt-6">
-        <h2
-          className="text-foreground text-[28px] font-normal leading-[130%] tracking-normal mb-4"
-          style={{ fontFamily: "Unbounded, sans-serif" }}
-        >
+        <h2 className="text-foreground text-[24px] font-display font-normal leading-[130%] tracking-normal mb-4">
           Чемпионаты
         </h2>
       </div>
@@ -303,7 +300,7 @@ const Index = () => {
               <div className="px-4 mb-4">
                 <div className="flex items-center gap-2 mb-3">
                   <img src={leagueData.iconImage} alt={leagueData.title} className="w-7 h-7 object-contain" />
-                  <h3 className="text-foreground text-lg font-bold">{leagueData.title}</h3>
+                  <h3 className="text-foreground text-xl font-display">{leagueData.title}</h3>
                 </div>
               </div>
             ) : (
@@ -398,8 +395,8 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
-                      <p className="text-primary text-lg font-black">2027</p>
+                      <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
+                      <p className="text-primary text-lg font-bold">2027</p>
                     </div>
                   </div>
                 </Card>
@@ -462,8 +459,8 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
-                      <p className="text-primary text-lg font-black">2026</p>
+                      <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
+                      <p className="text-primary text-lg font-bold">2026</p>
                     </div>
                   </div>
                 </Card>
@@ -526,8 +523,8 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
-                      <p className="text-primary text-lg font-black">2028</p>
+                      <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
+                      <p className="text-primary text-lg font-bold">2028</p>
                     </div>
                   </div>
                 </Card>
@@ -590,8 +587,8 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-xl font-bold font-unbounded mb-2">Скоро запустим</p>
-                      <p className="text-primary text-lg font-black">2029</p>
+                      <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
+                      <p className="text-primary text-lg font-bold">2029</p>
                     </div>
                   </div>
                 </Card>

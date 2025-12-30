@@ -71,7 +71,7 @@ const SportCard = ({
         ) : (
           <span className="text-2xl">{icon}</span>
         )}
-        <h3 className="text-foreground text-lg font-bold">{title}</h3>
+        <h3 className="text-foreground text-xl font-display">{title}</h3>
       </div>
 
       <Card
@@ -82,8 +82,8 @@ const SportCard = ({
         {comingSoon ? (
           <div className="relative p-6 flex flex-col items-center justify-center min-h-[180px]">
             <div className="relative text-center">
-              <p className="text-foreground text-xl font-bold mb-2">Скоро запустим</p>
-              <p className="text-primary text-2xl font-black">{comingSoonYear}</p>
+              <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
+              <p className="text-primary text-lg font-bold">{comingSoonYear}</p>
             </div>
           </div>
         ) : (
@@ -114,7 +114,7 @@ const SportCard = ({
                 )}
               </div>
               <div>
-                <h4 className="text-foreground font-bold text-xl">{league}</h4>
+                <h4 className="text-foreground font-bold text-lg">{league}</h4>
                 {participants !== undefined && (
                   <p className="text-sm">
                     {hasTeam && userRank !== undefined ? (
