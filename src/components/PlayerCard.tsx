@@ -2,8 +2,108 @@ import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import playerPhoto from "@/assets/player-photo.png";
 import clubLogo from "@/assets/club-logo.png";
-import clubBelshina from "@/assets/club-belshina.png";
-import { clubLogos } from "@/lib/clubLogos";
+import { clubLogos, getClubLogo } from "@/lib/clubLogos";
+
+// Club abbreviations for form/calendar display
+const clubAbbreviations: Record<string, string> = {
+  "Арсенал": "АРС",
+  "Барановичи": "БАР",
+  "БАТЭ": "БАТ",
+  "Белшина": "БЕЛ",
+  "Витебск": "ВИТ",
+  "Гомель": "ГОМ",
+  "Динамо-Брест": "ДБР",
+  "Динамо Брест": "ДБР",
+  "Динамо-Минск": "ДМН",
+  "Динамо Минск": "ДМН",
+  "Днепр-Могилев": "ДНП",
+  "Ислочь": "ИСЛ",
+  "Минск": "МИН",
+  "МЛ Витебск": "МЛ",
+  "Нафтан-Новополоцк": "НАФ",
+  "Нафтан": "НАФ",
+  "Неман": "НЕМ",
+  "Славия-Мозырь": "СЛА",
+  "Славия": "СЛА",
+  "Торпедо-БелАЗ": "ТОР",
+  "Торпедо": "ТОР",
+};
+
+// All clubs in the league for generating schedules
+const allClubs = [
+  "Арсенал", "БАТЭ", "Белшина", "Витебск", "Гомель",
+  "Динамо-Брест", "Динамо-Минск", "Днепр-Могилев", "Ислочь",
+  "Минск", "МЛ Витебск", "Нафтан", "Неман", "Славия", "Торпедо-БелАЗ"
+];
+
+// Generate deterministic schedule based on team name
+function generateClubSchedule(teamName: string, playerId: number) {
+  // Get opponents (all clubs except player's team)
+  const opponents = allClubs.filter(club => !teamName.includes(club.split("-")[0]) && !club.includes(teamName.split("-")[0]));
+  
+  // Create a seed from team name and player id for deterministic randomness
+  let seed = playerId;
+  for (let i = 0; i < teamName.length; i++) {
+    seed += teamName.charCodeAt(i);
+  }
+  
+  const seededRandom = (s: number) => {
+    const x = Math.sin(s) * 10000;
+    return x - Math.floor(x);
+  };
+  
+  // Shuffle opponents deterministically
+  const shuffled = [...opponents].sort((a, b) => seededRandom(seed + a.charCodeAt(0)) - seededRandom(seed + b.charCodeAt(0)));
+  
+  // Generate form (last 3 matches)
+  const recentForm = [
+    { 
+      tour: 24, 
+      opponent: clubAbbreviations[shuffled[0]] || shuffled[0].substring(0, 3).toUpperCase(), 
+      home: seededRandom(seed + 1) > 0.5, 
+      points: Math.floor(seededRandom(seed + 10) * 10) - 2,
+      logo: getClubLogo(shuffled[0]) || clubLogo
+    },
+    { 
+      tour: 25, 
+      opponent: clubAbbreviations[shuffled[1]] || shuffled[1].substring(0, 3).toUpperCase(), 
+      home: seededRandom(seed + 2) > 0.5, 
+      points: Math.floor(seededRandom(seed + 11) * 10) - 2,
+      logo: getClubLogo(shuffled[1]) || clubLogo
+    },
+    { 
+      tour: 26, 
+      opponent: clubAbbreviations[shuffled[2]] || shuffled[2].substring(0, 3).toUpperCase(), 
+      home: seededRandom(seed + 3) > 0.5, 
+      points: Math.floor(seededRandom(seed + 12) * 10) - 2,
+      logo: getClubLogo(shuffled[2]) || clubLogo
+    },
+  ];
+  
+  // Generate calendar (next 3 matches)
+  const upcomingMatches = [
+    { 
+      tour: 27, 
+      opponent: clubAbbreviations[shuffled[3]] || shuffled[3].substring(0, 3).toUpperCase(), 
+      home: seededRandom(seed + 4) > 0.5,
+      logo: getClubLogo(shuffled[3]) || clubLogo
+    },
+    { 
+      tour: 28, 
+      opponent: clubAbbreviations[shuffled[4]] || shuffled[4].substring(0, 3).toUpperCase(), 
+      home: seededRandom(seed + 5) > 0.5,
+      logo: getClubLogo(shuffled[4]) || clubLogo
+    },
+    { 
+      tour: 29, 
+      opponent: clubAbbreviations[shuffled[5]] || shuffled[5].substring(0, 3).toUpperCase(), 
+      home: seededRandom(seed + 6) > 0.5,
+      logo: getClubLogo(shuffled[5]) || clubLogo
+    },
+  ];
+  
+  return { recentForm, upcomingMatches };
+}
 
 interface PlayerData {
   id: number;
@@ -58,19 +158,8 @@ const PlayerCard = ({
     НП: "Нападающий",
   };
 
-  // Mock form data - last 3 matches
-  const recentForm = [
-    { tour: 24, opponent: "БАТ", home: true, points: 4, logo: clubLogo },
-    { tour: 25, opponent: "ТОР", home: false, points: -1, logo: clubBelshina },
-    { tour: 26, opponent: "АРС", home: true, points: 2, logo: clubLogo },
-  ];
-
-  // Mock calendar data - next 3 matches
-  const upcomingMatches = [
-    { tour: 27, opponent: "МОЛ", home: false, logo: clubBelshina },
-    { tour: 28, opponent: "ВИТ", home: true, logo: clubLogo },
-    { tour: 29, opponent: "НЕМ", home: false, logo: clubBelshina },
-  ];
+  // Generate club-specific form and calendar data
+  const { recentForm, upcomingMatches } = generateClubSchedule(player.team, player.id);
 
   // Generate point breakdown that sums up to the player's actual points
   const getPointBreakdown = () => {
