@@ -359,11 +359,11 @@ const FormationFieldManagement = ({
             </button>
           )}
 
-          {/* Price centered */}
+          {/* Price centered - ИЗМЕНИЛ ВЫСОТУ НА ФИКСИРОВАННУЮ */}
           {showPrice && (
             <div
               className="w-full flex items-center justify-center pt-1 pb-0.5 z-30"
-              style={{ height: `${cardSize.height * 0.19}px` }}
+              style={{ height: `${Math.max(16, cardSize.height * 0.16)}px` }}
             >
               <span
                 className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
@@ -374,22 +374,22 @@ const FormationFieldManagement = ({
             </div>
           )}
 
-          {/* Jersey - ПРАВИЛЬНО ПОЗИЦИОНИРОВАННОЕ КАК В ПЕРВОМ КОМПОНЕНТЕ */}
-          <div className="relative w-full flex-1 z-10 overflow-hidden">
+          {/* Jersey - ИСПРАВЛЕН КОНТЕЙНЕР */}
+          <div className="relative w-full flex-1 z-10 overflow-hidden min-h-0">
             <img
               src={getJerseyForTeam(player.team, player.position)}
               alt={player.name}
               className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
               style={{
                 width: `${cardSize.width * 1.5}px`,
-                top: `-${cardSize.height * 0.12}px`,
+                top: `${-cardSize.height * 0.12}px`,
               }}
               onError={(e) => {
                 e.currentTarget.src = playerJerseyNew;
               }}
             />
 
-            {/* Red card badge - позиционирование должно быть относительно джерси */}
+            {/* Red card badge */}
             {hasRedCard && (
               <img
                 src={redCardBadge}
@@ -402,7 +402,7 @@ const FormationFieldManagement = ({
               />
             )}
 
-            {/* Injury badge - позиционирование должно быть относительно джерси */}
+            {/* Injury badge */}
             {isInjured && !hasRedCard && (
               <img
                 src={injuryBadge}
