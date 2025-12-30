@@ -17,6 +17,7 @@ import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
@@ -116,13 +117,6 @@ const getPlayerPosition = (row: number, col: number) => {
   };
 };
 
-const truncateName = (text: string, maxLength: number) => {
-  if (text.length > maxLength) {
-    return text.slice(0, maxLength) + "...";
-  }
-  return text;
-};
-
 const FormationFieldTransfers = ({
   players,
   onPlayerClick,
@@ -132,116 +126,301 @@ const FormationFieldTransfers = ({
   viceCaptain,
   removedPlayers = [],
 }: FormationFieldTransfersProps) => {
-  const getPlayerForSlot = (position: string, slotIndex: number) => {
-    return players.find((p) => p.position === position && p.slotIndex === slotIndex);
-  };
+  const [cardSize, setCardSize] = useState({ width: 70, height: 84 });
 
-  const getRemovedPlayerForSlot = (position: string, slotIndex: number) => {
-    return removedPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
-  };
+  useEffect(() => {
+    const updateCardSize = () => {
+      const width = window.innerWidth;
+      let cardWidth, cardHeight;
 
-  const renderPlayer = (player: PlayerData) => (
-    <div
-      className="w-[70px] h-[84px] relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px]"
-      onClick={() => onPlayerClick?.(player)}
-    >
-      {/* Captain/Vice-Captain badge - absolute in left corner */}
-      {captain === player.id && <img src={captainBadge} alt="C" className="absolute top-1 left-1 z-50 w-3 h-3" />}
-      {viceCaptain === player.id && (
-        <img src={viceCaptainBadge} alt="V" className="absolute top-1 left-1 z-50 w-3 h-3" />
-      )}
+      if (width <= 768) {
+        // Для мобильных фиксированные 70x84
+        cardWidth = 70;
+        cardHeight = 84;
+      } else if (width <= 1024) {
+        // Для планшетов
+        cardWidth = 96;
+        cardHeight = 115; // 96 * 1.2 ≈ 115
+      } else {
+        // Для десктопа
+        cardWidth = 128;
+        cardHeight = 154; // 128 * 1.2 ≈ 154
+      }
 
-      {/* Delete button - absolute in corner */}
-      {onRemovePlayer && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemovePlayer(player.id);
-          }}
-          className="absolute top-1 right-1 z-50 w-3 h-3 flex items-center justify-center bg-[#5a7a4a] rounded-full"
-        >
-          <X className="w-2 h-2 text-[#1a2e1a]" />
-        </button>
-      )}
+      setCardSize({ width: cardWidth, height: cardHeight });
+    };
 
-      {/* Price centered */}
-      <div className="w-full flex items-center justify-center pt-1 pb-0.5 z-30 h-[16px]">
-        <span className="text-white text-[clamp(8px,2.2vw,12px)] font-medium drop-shadow-md whitespace-nowrap leading-tight">
-          ${(player.price || 9).toFixed(1)}
-        </span>
-      </div>
+    updateCardSize();
 
-      {/* Jersey - начинается сразу под ценой */}
-      <div className="relative w-full flex-1 z-10 overflow-hidden">
-        <img
-          src={getJerseyForTeam(player.team, player.position)}
-          alt={player.name}
-          className="w-[120%] h-auto object-contain absolute -top-[12px] left-1/2 transform -translate-x-1/2"
-          style={{ maxWidth: "none" }}
-        />
-      </div>
+    // Дебаунс для оптимизации ресайза
+    let timeoutId: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(updateCardSize, 250);
+    };
 
-      {/* Player name and club blocks */}
-      <div className="w-full relative z-20">
-        <div className="bg-white px-[4%] py-[2%]">
-          <span className="text-[clamp(5px,1.8vw,7px)] font-semibold text-black block truncate whitespace-nowrap text-center">
-            {truncateName(player.name, 9)}
-          </span>
-        </div>
-        <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
-          <span className="text-[clamp(4px,1.5vw,6px)] font-medium block truncate whitespace-nowrap text-center">
-            <span className="text-[#7D7A94]">(Д)</span>
-            <span className="text-white ml-[2%]">{truncateName(player.team, 7)}</span>
-          </span>
-        </div>
-      </div>
-    </div>
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  const getPlayerForSlot = useCallback(
+    (position: string, slotIndex: number) => {
+      return players.find((p) => p.position === position && p.slotIndex === slotIndex);
+    },
+    [players],
   );
 
-  const renderEmptySlot = (position: string, slotIndex: number) => {
-    const removedPlayer = getRemovedPlayerForSlot(position, slotIndex);
+  const getRemovedPlayerForSlot = useCallback(
+    (position: string, slotIndex: number) => {
+      return removedPlayers.find((p) => p.position === position && p.slotIndex === slotIndex);
+    },
+    [removedPlayers],
+  );
 
-    return (
-      <div
-        className="w-[70px] h-[84px] rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col cursor-pointer hover:bg-[#3a5a28]/80 transition-colors relative overflow-hidden"
-        onClick={() => onEmptySlotClick?.(position, slotIndex)}
-      >
-        {removedPlayer ? (
-          <>
-            {/* Plus button at top center */}
-            <div className="flex-1 flex items-center justify-center">
-              <div className="w-7 h-7 rounded-full bg-white/90 flex items-center justify-center">
-                <Plus className="w-4 h-4 text-[#3a5a28]" />
-              </div>
+  const truncateName = useCallback((text: string, maxLength: number) => {
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + "...";
+    }
+    return text;
+  }, []);
+
+  const renderPlayer = useCallback(
+    (player: PlayerData) => {
+      const isCap = captain === player.id;
+      const isViceCap = viceCaptain === player.id;
+
+      const maxNameLength = Math.floor(cardSize.width / 7);
+      const maxTeamLength = Math.floor(cardSize.width / 9);
+
+      const displayName = truncateName(player.name, maxNameLength);
+      const displayTeam = truncateName(player.team, maxTeamLength);
+
+      return (
+        <div
+          className="relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] hover:bg-[#3a5a28]/60 transition-colors"
+          style={{
+            width: `${cardSize.width}px`,
+            height: `${cardSize.height}px`,
+          }}
+          onClick={() => onPlayerClick?.(player)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onPlayerClick?.(player);
+            }
+          }}
+          aria-label={`Игрок ${player.name}, команда ${player.team}, позиция ${player.position}`}
+        >
+          {/* Captain/Vice-Captain badge */}
+          {isCap && (
+            <img
+              src={captainBadge}
+              alt="Капитан"
+              className="absolute top-1 left-1 z-50"
+              style={{
+                width: `${cardSize.width * 0.18}px`,
+                height: `${cardSize.width * 0.18}px`,
+              }}
+            />
+          )}
+          {isViceCap && (
+            <img
+              src={viceCaptainBadge}
+              alt="Вице-капитан"
+              className="absolute top-1 left-1 z-50"
+              style={{
+                width: `${cardSize.width * 0.18}px`,
+                height: `${cardSize.width * 0.18}px`,
+              }}
+            />
+          )}
+
+          {/* Delete button */}
+          {onRemovePlayer && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemovePlayer(player.id);
+              }}
+              className="absolute top-1 right-1 z-50 flex items-center justify-center bg-[#5a7a4a] hover:bg-[#6a8a5a] rounded-full transition-colors"
+              style={{
+                width: `${cardSize.width * 0.18}px`,
+                height: `${cardSize.width * 0.18}px`,
+              }}
+              aria-label={`Удалить ${player.name}`}
+            >
+              <X
+                className="text-[#1a2e1a]"
+                style={{
+                  width: `${cardSize.width * 0.12}px`,
+                  height: `${cardSize.width * 0.12}px`,
+                }}
+              />
+            </button>
+          )}
+
+          {/* Price centered */}
+          <div
+            className="w-full flex items-center justify-center pt-1 pb-0.5 z-30"
+            style={{ height: `${cardSize.height * 0.19}px` }}
+          >
+            <span
+              className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
+              style={{ fontSize: `${cardSize.width * 0.12}px` }}
+            >
+              ${(player.price || 0).toFixed(1)}
+            </span>
+          </div>
+
+          {/* Jersey - правильно позиционированная как в первом компоненте */}
+          <div className="relative w-full flex-1 z-10 overflow-hidden">
+            <img
+              src={getJerseyForTeam(player.team, player.position)}
+              alt={player.name}
+              className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
+              style={{
+                width: `${cardSize.width * 1.5}px`,
+                top: `-${cardSize.height * 0.12}px`,
+              }}
+              onError={(e) => {
+                e.currentTarget.src = playerJerseyNew;
+              }}
+            />
+          </div>
+
+          {/* Player name and club blocks */}
+          <div className="w-full relative z-20">
+            <div className="bg-white px-[4%] py-[2%]">
+              <span
+                className="font-semibold text-black block truncate whitespace-nowrap text-center"
+                style={{ fontSize: `${cardSize.width * 0.1}px` }}
+                title={player.name}
+              >
+                {displayName}
+              </span>
             </div>
-            {/* Removed player info at bottom */}
-            <div className="w-full">
-              <div className="bg-white/30 px-1 py-[2px]">
-                <span className="text-white/80 text-[7px] font-medium block truncate whitespace-nowrap text-center">
-                  {truncateName(removedPlayer.name, 9)}
-                </span>
-              </div>
-              <div className="bg-[#1a1a2e]/50 px-1 py-[2px]">
-                <span className="text-white/60 text-[6px] block truncate whitespace-nowrap text-center">
-                  {truncateName(removedPlayer.team, 10)}
-                </span>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center gap-1">
-            <span className="text-white font-bold text-[clamp(11px,3vw,17px)]">{position}</span>
-            <div className="w-7 h-7 rounded-full bg-white/90 flex items-center justify-center">
-              <Plus className="w-4 h-4 text-[#3a5a28]" />
+            <div className="bg-[#1a1a2e] px-[4%] py-[2%]">
+              <span
+                className="font-medium block truncate whitespace-nowrap text-center"
+                style={{ fontSize: `${cardSize.width * 0.085}px` }}
+                title={player.team}
+              >
+                <span className="text-[#7D7A94]">(Д)</span>
+                <span className="text-white ml-[2%]">{displayTeam}</span>
+              </span>
             </div>
           </div>
-        )}
-      </div>
-    );
-  };
+        </div>
+      );
+    },
+    [cardSize, captain, viceCaptain, onPlayerClick, onRemovePlayer, truncateName],
+  );
+
+  const renderEmptySlot = useCallback(
+    (position: string, slotIndex: number) => {
+      const removedPlayer = getRemovedPlayerForSlot(position, slotIndex);
+
+      return (
+        <div
+          className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors relative overflow-hidden"
+          style={{
+            width: `${cardSize.width}px`,
+            height: `${cardSize.height}px`,
+            gap: `${cardSize.height * 0.06}px`,
+          }}
+          onClick={() => onEmptySlotClick?.(position, slotIndex)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onEmptySlotClick?.(position, slotIndex);
+            }
+          }}
+          aria-label={
+            removedPlayer
+              ? `Заменить ${removedPlayer.name} на позиции ${position}`
+              : `Добавить игрока на позицию ${position}`
+          }
+        >
+          {removedPlayer ? (
+            <>
+              {/* Plus button at top center */}
+              <div className="flex-1 flex items-center justify-center">
+                <div
+                  className="rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors"
+                  style={{
+                    width: `${cardSize.width * 0.28}px`,
+                    height: `${cardSize.width * 0.28}px`,
+                  }}
+                >
+                  <Plus
+                    className="text-[#3a5a28]"
+                    style={{
+                      width: `${cardSize.width * 0.16}px`,
+                      height: `${cardSize.width * 0.16}px`,
+                    }}
+                  />
+                </div>
+              </div>
+              {/* Removed player info at bottom */}
+              <div className="w-full">
+                <div className="bg-white/30 px-1 py-[2px]">
+                  <span
+                    className="text-white/80 font-medium block truncate whitespace-nowrap text-center"
+                    style={{ fontSize: `${cardSize.width * 0.08}px` }}
+                    title={removedPlayer.name}
+                  >
+                    {truncateName(removedPlayer.name, Math.floor(cardSize.width / 6))}
+                  </span>
+                </div>
+                <div className="bg-[#1a1a2e]/50 px-1 py-[2px]">
+                  <span
+                    className="text-white/60 block truncate whitespace-nowrap text-center"
+                    style={{ fontSize: `${cardSize.width * 0.07}px` }}
+                    title={removedPlayer.team}
+                  >
+                    {truncateName(removedPlayer.team, Math.floor(cardSize.width / 5))}
+                  </span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="text-white font-medium" style={{ fontSize: `${cardSize.width * 0.16}px` }}>
+                {position}
+              </span>
+              <div
+                className="rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors"
+                style={{
+                  width: `${cardSize.width * 0.25}px`,
+                  height: `${cardSize.width * 0.25}px`,
+                }}
+              >
+                <Plus
+                  className="text-[#3a5a28]"
+                  style={{
+                    width: `${cardSize.width * 0.14}px`,
+                    height: `${cardSize.width * 0.14}px`,
+                  }}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      );
+    },
+    [cardSize, getRemovedPlayerForSlot, onEmptySlotClick, truncateName],
+  );
 
   // Generate all slots for the fixed formation
-  const generateSlots = () => {
+  const generateSlots = useCallback(() => {
     const slots: { position: string; row: number; col: number; slotIndex: number }[] = [];
 
     for (const [position, config] of Object.entries(TRANSFERS_FORMATION)) {
@@ -252,22 +431,52 @@ const FormationFieldTransfers = ({
     }
 
     return slots;
-  };
+  }, []);
 
-  const allSlots = generateSlots();
+  const allSlots = useMemo(() => generateSlots(), [generateSlots]);
+
+  // Адаптация позиций под разные размеры карточек
+  const getAdaptedPlayerPosition = useCallback(
+    (row: number, col: number) => {
+      const baseTopPositions: Record<number, string> = {
+        1: "2%",
+        2: "22%",
+        3: "44%",
+        4: "66%",
+      };
+
+      // Масштабируем вертикальные позиции в зависимости от размера карточки
+      const scaleFactor = cardSize.height / 84; // 84 - базовый размер для мобильных
+
+      let topPosition = baseTopPositions[row];
+      if (scaleFactor > 1) {
+        // Для больших карточек немного корректируем позиции
+        const baseValue = parseInt(topPosition);
+        const adjustedValue = baseValue - (scaleFactor - 1) * 2;
+        topPosition = `${Math.max(adjustedValue, 0)}%`;
+      }
+
+      return {
+        top: topPosition,
+        left: `${col}%`,
+      };
+    },
+    [cardSize.height],
+  );
 
   return (
     <div className="relative w-full">
-      <img src={footballFieldNew} alt="Football field" className="w-full" />
+      <img src={footballFieldNew} alt="Футбольное поле" className="w-full h-auto" loading="lazy" />
 
       {allSlots.map((slot, idx) => {
-        const style = getPlayerPosition(slot.row, slot.col);
+        const style = getAdaptedPlayerPosition(slot.row, slot.col);
         const player = getPlayerForSlot(slot.position, slot.slotIndex);
         const isOccupied = !!player;
+        const key = `${slot.position}-${slot.slotIndex}-${idx}`;
 
         return (
           <div
-            key={idx}
+            key={key}
             className={`absolute flex flex-col items-center ${isOccupied ? "z-20" : "z-10"}`}
             style={{
               top: style.top,
