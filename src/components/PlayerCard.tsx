@@ -319,25 +319,25 @@ const PlayerCard = ({
               {[0, 1, 2].map((idx) => (
                 <div key={idx} className="grid grid-cols-2 gap-4">
                   {/* Form match */}
-                  <div className="flex items-center justify-between bg-secondary/30 rounded-lg px-2 py-1.5">
-                    <span className="text-muted-foreground text-xs">Тур {recentForm[idx].tour}</span>
+                  <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 bg-secondary/30 rounded-lg px-3 py-1.5">
+                    <span className="text-muted-foreground text-xs whitespace-nowrap">Тур {recentForm[idx].tour}</span>
                     <div className="flex items-center gap-1.5">
-                      <img src={recentForm[idx].logo} alt={recentForm[idx].opponent} className="w-4 h-4 object-contain" />
-                      <span className="text-muted-foreground text-xs">
-                        {recentForm[idx].opponent} ({recentForm[idx].home ? "Д" : "Г"})
+                      <img src={recentForm[idx].logo} alt={recentForm[idx].opponent} className="w-4 h-4 object-contain flex-shrink-0" />
+                      <span className="text-muted-foreground text-xs text-left">
+                        {recentForm[idx].opponent} ({recentForm[idx].home ? "Г" : "Д"})
                       </span>
                     </div>
-                    <span className={`text-sm font-bold ${recentForm[idx].points < 0 ? "text-red-500" : "text-foreground"}`}>
+                    <span className={`text-sm font-bold text-right ${recentForm[idx].points < 0 ? "text-red-500" : "text-foreground"}`}>
                       {recentForm[idx].points}
                     </span>
                   </div>
                   
                   {/* Calendar match */}
-                  <div className="flex items-center justify-between bg-secondary/30 rounded-lg px-2 py-1.5">
-                    <span className="text-muted-foreground text-xs">Тур {upcomingMatches[idx].tour}</span>
+                  <div className="grid grid-cols-[auto_1fr] items-center gap-2 bg-secondary/30 rounded-lg px-3 py-1.5">
+                    <span className="text-muted-foreground text-xs whitespace-nowrap">Тур {upcomingMatches[idx].tour}</span>
                     <div className="flex items-center gap-1.5">
-                      <img src={upcomingMatches[idx].logo} alt={upcomingMatches[idx].opponent} className="w-4 h-4 object-contain" />
-                      <span className="text-muted-foreground text-xs">
+                      <img src={upcomingMatches[idx].logo} alt={upcomingMatches[idx].opponent} className="w-4 h-4 object-contain flex-shrink-0" />
+                      <span className="text-muted-foreground text-xs text-left">
                         {upcomingMatches[idx].opponent} ({upcomingMatches[idx].home ? "Д" : "Г"})
                       </span>
                     </div>
