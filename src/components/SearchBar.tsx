@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useRef } from "react";
 
@@ -19,6 +19,11 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
     }, 300);
   };
 
+  const handleClear = () => {
+    onChange?.("");
+    inputRef.current?.focus();
+  };
+
   return (
     <div className="px-4 mt-4">
       <div className="relative">
@@ -32,7 +37,7 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
           placeholder="Поиск"
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
-          className={`pl-11 text-[12px] h-10 transition-colors duration-200 ${
+          className={`pl-11 pr-10 text-[12px] h-10 transition-colors duration-200 ${
             isActive ? "text-white placeholder:text-white/70" : "text-foreground placeholder:text-[#4B485F]"
           }`}
           style={{
@@ -42,6 +47,15 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
           onFocus={handleFocus}
           onBlur={() => setIsActive(false)}
         />
+        {value && value.length > 0 && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </div>
   );
