@@ -25,7 +25,7 @@ import pglLogo from "@/assets/pgl-logo.png";
 import fastcupLogo from "@/assets/fastcup-logo.png";
 import eslLogo from "@/assets/esl-logo.png";
 import extraligaLogo from "@/assets/extraliga-logo.png";
-import rplLogo from "@/assets/rpl-logo.png";
+
 import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
@@ -358,21 +358,6 @@ const Index = () => {
                           <p className="text-sm">
                             <span className="text-white/50">Дедлайн: </span>
                             <span className="text-white/60">17.09 в 19.00</span>
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* RPL card */}
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-full flex items-center justify-center">
-                          <img src={rplLogo} alt="RPL" className="w-16 h-16 object-contain" />
-                        </div>
-                        <div className="blur-[1px]">
-                          <h4 className="text-white/70 font-bold text-lg">РПЛ</h4>
-                          <p className="text-white/50 text-sm">41 890 участников</p>
-                          <p className="text-sm">
-                            <span className="text-white/50">Дедлайн: </span>
-                            <span className="text-white/60">01.08 в 18.00</span>
                           </p>
                         </div>
                       </div>
