@@ -765,7 +765,7 @@ const Transfers = () => {
           </div>
           <div className="text-center">
             <span className="text-muted-foreground text-xs block">Бюджет</span>
-            <span className="text-foreground text-2xl font-bold">{budget.toFixed(0)}</span>
+            <span className="text-foreground text-2xl font-bold">{budget.toFixed(1)}</span>
           </div>
         </div>
 
