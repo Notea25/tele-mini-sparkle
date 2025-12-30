@@ -71,7 +71,9 @@ interface ConfirmTransfersDrawerProps {
   transfers: TransferRecord[];
   freeTransfersUsed: number;
   additionalTransfersUsed: number;
+  pointsPenalty?: number;
   remainingBudget: number;
+  hasTransferBoost?: boolean;
   boosts?: BoostChip[];
 }
 
@@ -82,7 +84,9 @@ const ConfirmTransfersDrawer = ({
   transfers,
   freeTransfersUsed,
   additionalTransfersUsed,
+  pointsPenalty = 0,
   remainingBudget,
+  hasTransferBoost = false,
   boosts = [],
 }: ConfirmTransfersDrawerProps) => {
   // Check if any boost is active (pending)
@@ -197,16 +201,24 @@ const ConfirmTransfersDrawer = ({
 
           {/* Stats Section */}
           <div className="mb-6">
-            <h3 className="text-foreground text-lg font-semibold mb-4">Очки</h3>
+            <h3 className="text-foreground text-lg font-semibold mb-4">Детали</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center py-2 border-b border-border">
-                <span className="text-muted-foreground">Свободных Трансферов потрачено</span>
-                <span className="text-foreground font-semibold">{freeTransfersUsed}</span>
+                <span className="text-muted-foreground">Бесплатных трансферов использовано</span>
+                <span className={`font-semibold ${hasTransferBoost ? "text-primary" : "text-foreground"}`}>
+                  {hasTransferBoost ? "∞" : freeTransfersUsed}
+                </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-border">
-                <span className="text-muted-foreground">Дополнительных Трансферов потрачено</span>
+                <span className="text-muted-foreground">Платных трансферов</span>
                 <span className="text-foreground font-semibold">{additionalTransfersUsed}</span>
               </div>
+              {pointsPenalty > 0 && (
+                <div className="flex justify-between items-center py-2 border-b border-border">
+                  <span className="text-muted-foreground">Штраф за трансферы</span>
+                  <span className="text-red-500 font-semibold">-{pointsPenalty} очков</span>
+                </div>
+              )}
               <div className="flex justify-between items-center py-2 border-b border-border">
                 <span className="text-muted-foreground">Остаток бюджета</span>
                 <span className="text-foreground font-semibold">{remainingBudget}</span>

@@ -22,6 +22,12 @@ import {
   clearGoldenTourBackup,
 } from "@/lib/boostState";
 import {
+  getTransferState,
+  calculateTransferCosts,
+  recordTransfers,
+  TRANSFERS_CONFIG,
+} from "@/lib/transferState";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -382,9 +388,23 @@ const Transfers = () => {
   // Calculate budget info - round to 1 decimal to avoid floating point issues
   const totalPrice = Math.round(players.reduce((sum, p) => sum + (p.price || 0), 0) * 10) / 10;
   const budget = Math.round((100 - totalPrice) * 10) / 10;
-  const freeTransfers = 5;
   const MAX_PLAYERS_PER_CLUB = 3;
   const MAX_SQUAD_SIZE = 15;
+  
+  // Check if transfer boost is active
+  const hasTransfersBoost = specialChips.some(c => c.id === "transfers" && c.status === "pending");
+  const hasGoldenTourBoost = specialChips.some(c => c.id === "golden" && c.status === "pending");
+  const hasAnyTransferBoost = hasTransfersBoost || hasGoldenTourBoost;
+  
+  // Calculate free transfers remaining
+  const transferState = getTransferState();
+  const freeTransfersRemaining = hasAnyTransferBoost 
+    ? "∞" 
+    : Math.max(0, TRANSFERS_CONFIG.FREE_PER_TOUR - transferState.transfersUsedThisTour);
+  
+  // Calculate pending transfer costs
+  const pendingTransferCount = getTransferRecords().length;
+  const transferCosts = calculateTransferCosts(pendingTransferCount, hasTransfersBoost, hasGoldenTourBoost);
 
   const getPlayersCountByClub = (clubName: string) => {
     return players.filter((p) => p.team === clubName).length;
@@ -722,15 +742,19 @@ const Transfers = () => {
         <div className="flex justify-between mb-3">
           <div className="text-center">
             <span className="text-muted-foreground text-xs block">Бесплатные трансферы</span>
-            <span className="text-foreground text-2xl font-bold">{freeTransfers}</span>
+            <span className={`text-2xl font-bold ${hasAnyTransferBoost ? "text-primary" : "text-foreground"}`}>
+              {freeTransfersRemaining}
+            </span>
+          </div>
+          <div className="text-center">
+            <span className="text-muted-foreground text-xs block">Штраф</span>
+            <span className={`text-2xl font-bold ${transferCosts.pointsPenalty > 0 ? "text-red-500" : "text-foreground"}`}>
+              {transferCosts.pointsPenalty > 0 ? `-${transferCosts.pointsPenalty}` : "0"}
+            </span>
           </div>
           <div className="text-center">
             <span className="text-muted-foreground text-xs block">Бюджет</span>
             <span className="text-foreground text-2xl font-bold">{budget.toFixed(0)}</span>
-          </div>
-          <div className="text-center">
-            <span className="text-muted-foreground text-xs block">Цена</span>
-            <span className="text-foreground text-2xl font-bold">{totalPrice.toFixed(0)}</span>
           </div>
         </div>
 
@@ -886,18 +910,30 @@ const Transfers = () => {
         onConfirm={() => {
           const mainSquad = players.slice(0, 11);
           const bench = players.slice(11, 15);
+          
+          // Record the transfers and apply penalty
+          const transferCount = getTransferRecords().length;
+          const result = recordTransfers(transferCount, hasTransfersBoost, hasGoldenTourBoost);
+          
           saveTeamTransfers(mainSquad, bench, captain, viceCaptain);
           initialStateRef.current = JSON.stringify(players.map((p) => p.id).sort());
           initialPlayersRef.current = [...players];
           setHasChanges(false);
           setShowConfirmDrawer(false);
-          toast.success("Изменения сохранены");
+          
+          if (result.pointsPenalty > 0) {
+            toast.success(`Изменения сохранены. Штраф: -${result.pointsPenalty} очков`);
+          } else {
+            toast.success("Изменения сохранены");
+          }
           navigate("/league");
         }}
         transfers={getTransferRecords()}
-        freeTransfersUsed={Math.min(getTransferRecords().length, freeTransfers)}
-        additionalTransfersUsed={Math.max(0, getTransferRecords().length - freeTransfers)}
+        freeTransfersUsed={transferCosts.freeTransfersUsed}
+        additionalTransfersUsed={transferCosts.paidTransfers}
+        pointsPenalty={transferCosts.pointsPenalty}
         remainingBudget={Math.round(budget)}
+        hasTransferBoost={hasAnyTransferBoost}
         boosts={allBoostsTemplate.map((boost) => {
           const currentChip = specialChips.find((c) => c.id === boost.id);
           if (currentChip) {
