@@ -52,14 +52,13 @@ const ConfirmBoostDrawer = ({
           <div className="flex gap-3">
             <Button
               onClick={onChangeBoost}
-              variant="outline"
-              className="flex-1 rounded-lg h-12 border-border text-foreground hover:bg-secondary"
+              className="flex-1 rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
             >
               Изменить
             </Button>
             <Button
               onClick={onConfirm}
-              className="flex-1 rounded-lg h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+              className="flex-1 rounded-lg h-12 font-medium bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
             >
               Подтвердить
             </Button>

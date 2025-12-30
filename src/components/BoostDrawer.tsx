@@ -127,18 +127,18 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               )}
             </div>
             
-            <div className="space-y-3">
-              <Button
-                onClick={handleConfirmApply}
-                className="w-full h-14 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-lg font-medium shadow-neon"
-              >
-                Подтвердить активацию
-              </Button>
+            <div className="flex gap-3">
               <Button
                 onClick={handleCancelConfirmation}
-                className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-medium"
+                className="flex-1 rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
               >
                 Отмена
+              </Button>
+              <Button
+                onClick={handleConfirmApply}
+                className="flex-1 rounded-lg h-12 font-medium bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+              >
+                Подтвердить
               </Button>
             </div>
           </div>
@@ -165,38 +165,37 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                 </p>
               )}
             </DrawerHeader>
-            <div className="px-6 pb-8 space-y-3">
+            <div className="px-6 pb-8">
               {chip.status === "available" && (
                 <Button
                   onClick={handleApplyClick}
-                  className="w-full h-14 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-lg font-semibold shadow-neon"
+                  className="w-full rounded-lg h-12 font-medium bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
                 >
                   Использовать
                 </Button>
               )}
               {chip.status === "pending" && (
-                <>
+                <div className="flex gap-3">
                   {onCancel && boostInfo?.canCancel && (
                     <Button
                       onClick={handleCancel}
-                      variant="outline"
-                      className="w-full h-14 rounded-full border-destructive text-destructive hover:bg-destructive/10 text-lg font-semibold"
+                      className="flex-1 rounded-lg h-12 font-medium bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                     >
                       Отменить
                     </Button>
                   )}
                   <Button
                     onClick={handleClose}
-                    className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
+                    className="flex-1 rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
                   >
                     Закрыть
                   </Button>
-                </>
+                </div>
               )}
               {chip.status === "used" && (
                 <Button
                   onClick={handleClose}
-                  className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-semibold"
+                  className="w-full rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
                 >
                   Закрыть
                 </Button>
