@@ -1021,6 +1021,22 @@ const TeamBuilder = () => {
             className="pl-10 pr-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
           />
 
+          {/* Clear button - shows when there's text and input is not focused */}
+          {searchQuery && !isSearchFocused && (
+            <button
+              type="button"
+              aria-label="Очистить поиск"
+              onClick={() => {
+                handleSearchChange("");
+                searchInputRef.current?.focus();
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* Hide keyboard button - shows when input is focused */}
           <button
             type="button"
             aria-label="Скрыть клавиатуру"

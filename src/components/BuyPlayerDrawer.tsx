@@ -196,8 +196,20 @@ const BuyPlayerDrawer = ({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="pl-10 bg-card border-border rounded-xl h-11 text-foreground placeholder:text-muted-foreground"
+                className="pl-10 pr-10 bg-card border-border rounded-xl h-11 text-foreground placeholder:text-muted-foreground"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setCurrentPage(1);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
             {/* Team filter */}
