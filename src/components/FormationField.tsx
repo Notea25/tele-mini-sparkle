@@ -330,7 +330,7 @@ const FormationField = ({
   const EmptySlotComponent = useCallback(
     ({ position }: { position: string }) => (
       <div
-        className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"
+        className="rounded-md border-2 border-dashed border-white/40 bg-[#3a5a28]/60 flex flex-col items-center justify-center cursor-pointer hover:bg-[#3a5a28]/80 transition-colors"
         style={{
           width: `${cardSize.width}px`,
           height: `${cardSize.height}px`,
