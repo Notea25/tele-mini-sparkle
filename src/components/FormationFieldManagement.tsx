@@ -359,22 +359,25 @@ const FormationFieldManagement = ({
             </button>
           )}
 
-          {/* Price centered - ИЗМЕНИЛ ВЫСОТУ НА ФИКСИРОВАННУЮ */}
-          {showPrice && (
-            <div
-              className="w-full flex items-center justify-center pt-1 pb-0.5 z-30"
-              style={{ height: `${Math.max(16, cardSize.height * 0.16)}px` }}
-            >
+          {/* Price area - ВСЕГДА ЗАНИМАЕТ МЕСТО, даже если цена не показывается */}
+          <div
+            className="w-full flex items-center justify-center pt-1 pb-0.5 z-30"
+            style={{
+              height: `${cardSize.height * 0.19}px`,
+              minHeight: "16px", // Минимальная высота для мобильных
+            }}
+          >
+            {showPrice && (
               <span
                 className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
                 style={{ fontSize: `${cardSize.width * 0.12}px` }}
               >
                 ${(player.price || 0).toFixed(1)}
               </span>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Jersey - ИСПРАВЛЕН КОНТЕЙНЕР */}
+          {/* Jersey */}
           <div className="relative w-full flex-1 z-10 overflow-hidden min-h-0">
             <img
               src={getJerseyForTeam(player.team, player.position)}
@@ -382,7 +385,7 @@ const FormationFieldManagement = ({
               className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
               style={{
                 width: `${cardSize.width * 1.5}px`,
-                top: `${-cardSize.height * 0.12}px`,
+                top: `-${cardSize.height * 0.12}px`,
               }}
               onError={(e) => {
                 e.currentTarget.src = playerJerseyNew;
@@ -466,6 +469,7 @@ const FormationFieldManagement = ({
       onPlayerClick,
       onSwapPlayer,
       onSwapBenchPlayers,
+      showPrice, // Добавлено в зависимости
     ],
   );
 
