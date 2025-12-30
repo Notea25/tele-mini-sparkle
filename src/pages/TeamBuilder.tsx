@@ -1297,7 +1297,7 @@ const TeamBuilder = () => {
                 localStorage.setItem("fantasyTeamName", teamName);
                 localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
                 localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
-                navigate("/league");
+                navigate("/league", { replace: true });
               }}
               className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
             >
