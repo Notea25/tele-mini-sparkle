@@ -97,9 +97,9 @@ const TeamBuilder = () => {
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showSquadError, setShowSquadError] = useState(false);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
-  // Sorting state: null = no sort, 'asc' = ascending, 'desc' = descending
-  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
+  // Sorting state: default to price descending (most expensive first)
+  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
 
   // Check for unsaved changes
   const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
