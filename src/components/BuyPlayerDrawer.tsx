@@ -5,16 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Plus, Minus, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, ChevronDown, X } from "lucide-react";
 import { PlayerData, allPlayers, allTeams } from "@/lib/teamData";
-import clubBelshina from "@/assets/club-belshina.png";
-import clubLogo from "@/assets/club-logo.png";
 import { clubLogos } from "@/lib/clubLogos";
 
 const ITEMS_PER_PAGE = 6;
-
-// Club icons mapping - default logo for all teams
-const clubIcons: Record<string, string> = Object.fromEntries(
-  allTeams.map(team => [team, team === "Белшина" ? clubBelshina : clubLogo])
-);
 
 // Use allPlayers from teamData
 const allChampionshipPlayers = allPlayers;
@@ -329,9 +322,9 @@ const BuyPlayerDrawer = ({
                   onClick={() => onPlayerClick?.(player as PlayerData)}
                 >
                   <div className="flex-1 flex items-center gap-2 min-w-0">
-                    {clubIcons[player.team] && (
+                    {clubLogos[player.team] && (
                       <img 
-                        src={clubIcons[player.team]} 
+                        src={clubLogos[player.team]} 
                         alt={player.team}
                         className="w-5 h-5 object-contain flex-shrink-0"
                       />
