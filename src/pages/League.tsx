@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
+import btnTeamBadge from "@/assets/btn-team.png";
+import btnTransfersBadge from "@/assets/btn-transfers-badge.png";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -464,15 +466,25 @@ const League = () => {
             {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mb-4">
               <button
-                className="w-full h-[44px] bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
+                className="relative w-full h-[44px] bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/team-management")}
               >
+                <img 
+                  src={btnTeamBadge} 
+                  alt="" 
+                  className="absolute -top-2 -right-2 w-8 h-8 object-contain"
+                />
                 <span className="text-[#212121] font-rubik text-[16px] font-medium">Моя команда</span>
               </button>
               <button
-                className="w-full h-[44px] bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
+                className="relative w-full h-[44px] bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/transfers")}
               >
+                <img 
+                  src={btnTransfersBadge} 
+                  alt="" 
+                  className="absolute -top-2 -right-2 w-8 h-8 object-contain"
+                />
                 <span className="text-[#212121] font-rubik text-[16px] font-medium">Трансферы</span>
               </button>
             </div>
