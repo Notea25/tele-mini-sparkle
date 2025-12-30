@@ -926,7 +926,7 @@ const TeamManagement = () => {
                 navigate("/league");
               }
             }}
-            className="w-full bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-12 shadow-neon"
+            className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-lg h-12"
           >
             Сохранить
           </Button>

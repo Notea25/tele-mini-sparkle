@@ -1293,7 +1293,7 @@ const TeamBuilder = () => {
               setShowSaveConfirmation(true);
             }
           }}
-          className={`w-full rounded-lg h-12 font-medium transition-all ${
+          className={`w-full rounded-lg py-3 font-semibold transition-all ${
             selectedPlayers.length < 15
               ? "bg-primary/30 text-muted-foreground"
               : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
@@ -1313,7 +1313,7 @@ const TeamBuilder = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-row gap-3 justify-center mt-2">
-            <AlertDialogCancel className="flex-1 m-0 bg-secondary hover:bg-secondary/80 text-foreground border-none rounded-lg h-12">
+            <AlertDialogCancel className="flex-1 m-0 bg-secondary hover:bg-secondary/80 text-foreground border-none rounded-lg h-11">
               Вернуться
             </AlertDialogCancel>
             <AlertDialogAction
@@ -1324,7 +1324,7 @@ const TeamBuilder = () => {
                 localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
                 navigate("/league", { replace: true });
               }}
-              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-12 shadow-neon"
+              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
             >
               Подтвердить
             </AlertDialogAction>

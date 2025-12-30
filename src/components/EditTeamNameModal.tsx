@@ -123,13 +123,13 @@ const EditTeamNameModal = ({
         <div className="flex gap-3 mt-2">
           <Button
             variant="outline"
-            className="flex-1 h-12 bg-secondary hover:bg-secondary/80 text-foreground border-none font-medium rounded-lg"
+            className="flex-1 h-12 text-base border-border bg-secondary text-foreground hover:bg-secondary/80"
             onClick={handleCancel}
           >
             Отменить
           </Button>
           <Button
-            className="flex-1 h-12 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg shadow-neon"
+            className="flex-1 h-12 text-base bg-primary text-primary-foreground hover:bg-primary/90"
             onClick={handleSave}
           >
             Сохранить

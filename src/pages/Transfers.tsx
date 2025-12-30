@@ -788,7 +788,7 @@ const Transfers = () => {
               }
               setShowConfirmDrawer(true);
             }}
-            className={`flex-1 rounded-lg h-12 font-medium transition-all ${
+            className={`flex-1 rounded-lg h-12 font-semibold transition-all ${
               players.length < 15
                 ? "bg-primary/30 text-muted-foreground cursor-not-allowed"
                 : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"

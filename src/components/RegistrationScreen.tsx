@@ -249,7 +249,8 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
         <Button
           ref={buttonRef}
           onClick={handleSubmit}
-          className="w-full h-12 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg shadow-neon"
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] rounded-lg"
+          style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
         >
           Готово
         </Button>

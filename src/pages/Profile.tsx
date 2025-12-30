@@ -214,7 +214,7 @@ const Profile = () => {
           {hasUnsavedChanges && (
             <Button
               onClick={handleSaveChanges}
-              className="w-full bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-12 shadow-neon"
+              className="w-full bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-lg h-12 shadow-neon"
             >
               Сохранить изменения
             </Button>

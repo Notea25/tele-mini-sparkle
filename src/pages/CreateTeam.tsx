@@ -255,11 +255,8 @@ const CreateTeam = () => {
           ref={buttonRef}
           onClick={validateAndNavigate}
           disabled={!isFormValid}
-          className={`w-full h-12 font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
-            isFormValid 
-              ? "bg-primary hover:opacity-90 text-primary-foreground shadow-neon" 
-              : "bg-primary/30 text-muted-foreground"
-          }`}
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+          style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
         >
           Создать команду
         </Button>
