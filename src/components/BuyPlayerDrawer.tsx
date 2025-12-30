@@ -174,17 +174,17 @@ const BuyPlayerDrawer = ({
       <DrawerContent className="bg-background max-h-[90vh]">
         <div className="p-4 overflow-y-auto max-h-[85vh]">
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-foreground text-xl font-bold">Добавить игрока</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-foreground text-xl font-bold">Доступные игроки</h2>
             <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
               <X className="w-6 h-6" />
             </button>
           </div>
 
           {/* Budget info */}
-          <div className="bg-card rounded-xl p-3 mb-4 flex justify-between items-center">
+          <div className="bg-card border border-border rounded-xl h-10 px-3 mb-2 flex justify-between items-center">
             <span className="text-muted-foreground text-sm">Доступный бюджет:</span>
-            <span className="text-primary font-bold text-lg">{currentBudget.toFixed(1)}</span>
+            <span className="text-primary font-semibold text-sm">{currentBudget.toFixed(1)}</span>
           </div>
 
           {/* Filters section */}
