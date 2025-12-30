@@ -173,7 +173,7 @@ const League = () => {
   }, []);
 
   // Tournament table data from shared source
-  const tableData = getLeaguePreviewTeams();
+  const tableData = getLeaguePreviewTeams(teamName);
 
   // Commercial leagues data with end tour for blur logic and deadlines
   const commercialLeagues = [
