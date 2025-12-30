@@ -130,13 +130,13 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
             <div className="space-y-3">
               <Button
                 onClick={handleConfirmApply}
-                className="w-full h-14 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-lg font-medium shadow-neon"
+                className="w-full h-12 rounded-lg bg-primary hover:opacity-90 text-primary-foreground font-medium shadow-neon"
               >
                 Подтвердить активацию
               </Button>
               <Button
                 onClick={handleCancelConfirmation}
-                className="w-full h-14 rounded-full bg-secondary hover:bg-secondary/80 text-foreground text-lg font-medium"
+                className="w-full h-12 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground font-medium"
               >
                 Отмена
               </Button>

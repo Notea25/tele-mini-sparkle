@@ -831,10 +831,10 @@ const League = () => {
 
             {/* Create league button */}
             <Button
-              className={`w-full rounded-lg py-6 font-semibold mb-8 ${
+              className={`w-full rounded-lg h-12 font-medium mb-8 ${
                 userCreatedLeagues.length >= 5
-                  ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
-                  : "bg-primary text-primary-foreground"
+                  ? "bg-primary/30 text-muted-foreground opacity-50 cursor-not-allowed"
+                  : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
               }`}
               onClick={() => {
                 if (userCreatedLeagues.length >= 5) {

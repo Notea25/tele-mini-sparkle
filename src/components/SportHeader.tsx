@@ -179,17 +179,17 @@ const SportHeader = ({
           <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
             <AlertDialogAction
               onClick={handleSave}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full h-12 rounded-lg bg-primary hover:opacity-90 text-primary-foreground font-medium shadow-neon"
             >
               Сохранить
             </AlertDialogAction>
             <AlertDialogAction
               onClick={handleDiscard}
-              className="w-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="w-full h-12 rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90 font-medium"
             >
               Не сохранять
             </AlertDialogAction>
-            <AlertDialogCancel onClick={handleContinueEditing} className="w-full border-border text-foreground">
+            <AlertDialogCancel onClick={handleContinueEditing} className="w-full h-12 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground border-none font-medium">
               Продолжить редактирование
             </AlertDialogCancel>
           </AlertDialogFooter>

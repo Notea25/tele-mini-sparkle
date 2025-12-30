@@ -74,13 +74,13 @@ const LeagueInviteModal = ({
             <Button
               onClick={handleClose}
               variant="outline"
-              className="flex-1 rounded-full h-14 border-border text-foreground hover:bg-background text-lg"
+              className="flex-1 rounded-lg h-12 bg-secondary hover:bg-secondary/80 text-foreground border-none font-medium"
             >
               Закрыть
             </Button>
             <Button
               onClick={handleAction}
-              className="flex-1 rounded-full h-14 bg-primary text-primary-foreground text-lg"
+              className="flex-1 rounded-lg h-12 bg-primary hover:opacity-90 text-primary-foreground font-medium shadow-neon"
             >
               {hasTeam ? "Вступить" : "Создать команду"}
             </Button>
