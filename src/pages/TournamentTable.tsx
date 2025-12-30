@@ -9,7 +9,7 @@ import arrowDownBlack from "@/assets/arrow-down-black.png";
 import trophyGold from "@/assets/trophy-gold.png";
 import trophySilver from "@/assets/trophy-silver.png";
 import trophyBronze from "@/assets/trophy-bronze.png";
-import { tournamentTeams } from "@/lib/tournamentData";
+import { getTournamentTeams } from "@/lib/tournamentData";
 
 const TournamentTable = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const TournamentTable = () => {
   });
   const itemsPerPage = 10;
 
-  const allTeams = tournamentTeams;
+  const allTeams = getTournamentTeams();
 
   const totalPages = Math.ceil(allTeams.length / itemsPerPage);
   

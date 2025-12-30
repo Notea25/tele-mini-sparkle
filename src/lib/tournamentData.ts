@@ -42,7 +42,7 @@ function seededRandom(seed: number): () => number {
 }
 
 // Generate 100 teams with consistent data (seeded random)
-function generateTournamentTeams(): TournamentTeam[] {
+function generateTournamentTeams(userTeamName: string = "Моя команда"): TournamentTeam[] {
   const random = seededRandom(42); // Fixed seed for consistent data
   const teams: TournamentTeam[] = [];
   const changes: Array<"up" | "down" | "same"> = ["up", "down", "same"];
@@ -53,7 +53,7 @@ function generateTournamentTeams(): TournamentTeam[] {
       id: i,
       position: i,
       change: changes[Math.floor(random() * 3)],
-      name: isUser ? "Моя команда" : teamNames[(i - 1) % teamNames.length],
+      name: isUser ? userTeamName : teamNames[(i - 1) % teamNames.length],
       tourPoints: Math.floor(random() * 40) + 15,
       totalPoints: Math.floor(random() * 2000) + 1500,
       isUser
@@ -82,13 +82,20 @@ function generateTournamentTeams(): TournamentTeam[] {
   return teams;
 }
 
-// Export the static tournament data
+// Get tournament teams with user's actual team name
+export function getTournamentTeams(userTeamName?: string): TournamentTeam[] {
+  const teamName = userTeamName || (typeof localStorage !== 'undefined' ? localStorage.getItem("fantasyTeamName") : null) || "Моя команда";
+  return generateTournamentTeams(teamName);
+}
+
+// Export the static tournament data (for backward compatibility)
 export const tournamentTeams: TournamentTeam[] = generateTournamentTeams();
 
 // Get top 3 teams plus user's team for /league page preview
-export function getLeaguePreviewTeams(): TournamentTeam[] {
-  const top3 = tournamentTeams.slice(0, 3);
-  const userTeam = tournamentTeams.find(t => t.isUser);
+export function getLeaguePreviewTeams(userTeamName?: string): TournamentTeam[] {
+  const teams = getTournamentTeams(userTeamName);
+  const top3 = teams.slice(0, 3);
+  const userTeam = teams.find(t => t.isUser);
   
   if (userTeam && userTeam.position > 3) {
     return [...top3, userTeam];
