@@ -890,23 +890,23 @@ const Transfers = () => {
             <AlertDialogAction
               onClick={handleSaveAndExit}
               disabled={players.length < 15}
-              className={`${
+              className={`h-12 rounded-lg font-medium ${
                 players.length < 15
-                  ? "bg-[#4A5D23] text-muted-foreground cursor-not-allowed"
-                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+                  ? "bg-primary/30 text-muted-foreground cursor-not-allowed"
+                  : "bg-primary text-primary-foreground hover:opacity-90 shadow-neon"
               }`}
             >
               Сохранить {players.length < 15 && `(${players.length}/15)`}
             </AlertDialogAction>
             <AlertDialogCancel
               onClick={handleExitWithoutSaving}
-              className="bg-card border-border text-foreground hover:bg-card/80"
+              className="h-12 rounded-lg font-medium bg-destructive hover:bg-destructive/90 text-destructive-foreground border-none"
             >
               Не сохранять
             </AlertDialogCancel>
             <AlertDialogCancel
               onClick={handleContinueEditing}
-              className="bg-[#2A2A3E] border-0 text-foreground hover:bg-[#3A3A4E]"
+              className="h-12 rounded-lg font-medium bg-secondary hover:bg-secondary/80 text-foreground border-none"
             >
               Продолжить редактирование
             </AlertDialogCancel>
