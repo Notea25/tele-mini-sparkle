@@ -1021,8 +1021,8 @@ const TeamBuilder = () => {
             className="pl-10 pr-10 bg-card border-border text-foreground placeholder:text-muted-foreground"
           />
 
-          {/* Clear button - shows when there's text and input is not focused */}
-          {searchQuery && !isSearchFocused && (
+          {/* Clear button */}
+          {searchQuery && (
             <button
               type="button"
               aria-label="Очистить поиск"
@@ -1035,21 +1035,6 @@ const TeamBuilder = () => {
               <X className="w-4 h-4" />
             </button>
           )}
-
-          {/* Hide keyboard button - shows when input is focused */}
-          <button
-            type="button"
-            aria-label="Скрыть клавиатуру"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              searchInputRef.current?.blur();
-            }}
-            className={`absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full border border-border bg-card flex items-center justify-center transition-opacity ${
-              isSearchFocused ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-          >
-            <Check className="w-4 h-4 text-primary" />
-          </button>
         </div>
       </div>
 
