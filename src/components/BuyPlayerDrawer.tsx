@@ -48,8 +48,8 @@ const BuyPlayerDrawer = ({
   const [priceFrom, setPriceFrom] = useState(3);
   const [priceTo, setPriceTo] = useState(14);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
+  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
 
   // Apply initial position filter when drawer opens
   useEffect(() => {
