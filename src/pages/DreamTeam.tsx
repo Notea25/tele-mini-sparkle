@@ -8,6 +8,7 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
 import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
+import { generateRandomTeam } from "@/lib/teamData";
 import { clubLogos } from "@/lib/clubLogos";
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon2x from "@/assets/icon-2x-boost.png";
@@ -38,63 +39,39 @@ const DreamTeam = () => {
 
   const teamName = "Dream team";
 
-  // Generate tour-specific dream team data
+  // Generate tour-specific dream team data using centralized function
   const { mainSquadPlayers, benchPlayers, tourBoosts, captainId, viceCaptainId, totalTourPoints } = useMemo(() => {
     const { tourPoints, tourBoosts } = generateTourData(0); // seed 0 for dream team
     
     const seed = currentTour;
     const boostType = tourBoosts[currentTour - 1];
     
+    // Use the centralized team generation function (seed 999 for dream team uniqueness)
+    const { mainSquad, bench } = generateRandomTeam(999, currentTour);
+    
     // Deterministic captain and vice-captain selection based on seed
     const captainSeed = Math.sin(seed * 7) * 10000;
-    const captainIdx = Math.floor((captainSeed - Math.floor(captainSeed)) * 11);
-    let viceCaptainIdx = Math.floor((Math.sin(seed * 13) * 10000 - Math.floor(Math.sin(seed * 13) * 10000)) * 11);
+    const captainIdx = Math.floor((captainSeed - Math.floor(captainSeed)) * mainSquad.length);
+    let viceCaptainIdx = Math.floor((Math.sin(seed * 13) * 10000 - Math.floor(Math.sin(seed * 13) * 10000)) * mainSquad.length);
     if (viceCaptainIdx === captainIdx) {
-      viceCaptainIdx = (viceCaptainIdx + 1) % 11;
+      viceCaptainIdx = (viceCaptainIdx + 1) % mainSquad.length;
     }
 
     // Deterministic injury and red card
-    const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * 11);
-    let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * 11);
+    const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * mainSquad.length);
+    let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * mainSquad.length);
     if (redCardIdx === injuredIdx) {
-      redCardIdx = (redCardIdx + 1) % 11;
+      redCardIdx = (redCardIdx + 1) % mainSquad.length;
     }
 
-    const baseMainSquad = [
-      { id: 0, name: "Плотников", team: "Динамо Минск", position: "ВР", price: 6.5, slotIndex: 0 },
-      { id: 4, name: "Козлов", team: "Белшина", position: "ЗЩ", price: 6.5, slotIndex: 0 },
-      { id: 5, name: "Иванов", team: "Динамо Минск", position: "ЗЩ", price: 6.5, slotIndex: 1 },
-      { id: 6, name: "Петров", team: "Динамо Минск", position: "ЗЩ", price: 6.5, slotIndex: 2 },
-      { id: 7, name: "Сидоров", team: "БАТЭ", position: "ЗЩ", price: 6.5, slotIndex: 3 },
-      { id: 12, name: "Новиков", team: "Белшина", position: "ПЗ", price: 6.5, slotIndex: 0 },
-      { id: 13, name: "Морозов", team: "Динамо Минск", position: "ПЗ", price: 6.5, slotIndex: 1 },
-      { id: 14, name: "Волков", team: "Динамо Минск", position: "ПЗ", price: 6.5, slotIndex: 2 },
-      { id: 15, name: "Алексеев", team: "БАТЭ", position: "ПЗ", price: 6.5, slotIndex: 3 },
-      { id: 22, name: "Лебедев", team: "Динамо Минск", position: "НП", price: 6.5, slotIndex: 0 },
-      { id: 23, name: "Семенов", team: "БАТЭ", position: "НП", price: 6.5, slotIndex: 1 },
-    ];
-
-    const baseBench = [
-      { id: 103, name: "Николаев", team: "Динамо Минск", position: "ВР", price: 6.5 },
-      { id: 100, name: "Егоров", team: "Динамо Минск", position: "ЗЩ", price: 6.5 },
-      { id: 101, name: "Павлов", team: "Динамо Минск", position: "ПЗ", price: 6.5 },
-      { id: 102, name: "Федоров", team: "Динамо Минск", position: "НП", price: 6.5 },
-    ];
-
-    // Assign tour-specific points (realistic: -1 to 15 per player)
-    const mainSquad: PlayerData[] = baseMainSquad.map((p, idx) => {
-      const playerSeed = seed * 100 + idx;
-      const pseudoRandom = Math.sin(playerSeed) * 10000;
-      const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      // Realistic points: -1 to 15 with most players getting 2-8
-      const basePoints = Math.floor(randomFactor * 17) - 1; // -1 to 15
+    // Add display points and captain/vice-captain info
+    const mainSquadWithPoints: PlayerData[] = mainSquad.map((p, idx) => {
       const isCaptain = idx === captainIdx;
       const isViceCaptain = idx === viceCaptainIdx;
       
       return { 
         ...p, 
-        points: basePoints,
-        displayedPoints: getDisplayedPoints(basePoints, isCaptain, isViceCaptain, boostType),
+        displayedPoints: getDisplayedPoints(p.points, isCaptain, isViceCaptain, boostType),
         isCaptain,
         isViceCaptain,
         hasRedCard: idx === redCardIdx,
@@ -102,27 +79,17 @@ const DreamTeam = () => {
       };
     });
 
-    const bench: PlayerData[] = baseBench.map((p, idx) => {
-      const playerSeed = seed * 100 + 50 + idx;
-      const pseudoRandom = Math.sin(playerSeed) * 10000;
-      const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      // Bench players: -1 to 10
-      const basePoints = Math.floor(randomFactor * 12) - 1;
-      
-      return { 
-        ...p, 
-        points: basePoints,
-        displayedPoints: basePoints,
-        isOnBench: true,
-      };
-    });
+    const benchWithPoints: PlayerData[] = bench.map((p) => ({ 
+      ...p, 
+      displayedPoints: p.points,
+    }));
 
     // Calculate total points with boost logic
-    const total = calculateTotalTourPoints(mainSquad, bench, boostType);
+    const total = calculateTotalTourPoints(mainSquadWithPoints, benchWithPoints, boostType);
 
     return { 
-      mainSquadPlayers: mainSquad, 
-      benchPlayers: bench, 
+      mainSquadPlayers: mainSquadWithPoints, 
+      benchPlayers: benchWithPoints, 
       tourBoosts,
       captainId: captainIdx,
       viceCaptainId: viceCaptainIdx,

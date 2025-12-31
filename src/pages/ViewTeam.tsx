@@ -8,6 +8,7 @@ import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
 import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
 import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
+import { generateRandomTeam, PlayerData as TeamPlayerData } from "@/lib/teamData";
 import { clubLogos } from "@/lib/clubLogos";
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
 import icon2x from "@/assets/icon-2x-boost.png";
@@ -36,11 +37,6 @@ const teamNames = [
   "Future FC", "Next United", "Forward FC", "Ahead City", "Beyond FC"
 ];
 
-const playerNames = [
-  "Иванов", "Петров", "Сидоров", "Козлов", "Новиков",
-  "Морозов", "Волков", "Алексеев", "Лебедев", "Семенов",
-  "Егоров", "Павлов", "Федоров", "Николаев", "Соколов"
-];
 
 interface PlayerData {
   id: number;
@@ -88,47 +84,37 @@ const ViewTeam = () => {
   const isCaptain3xBoostActive = currentBoostType === "captain3x";
   const isDoublePowerBoostActive = currentBoostType === "double";
 
-  // Generate random players for this team and tour
+  // Generate random players for this team and tour using centralized function
   const { mainSquadPlayers, benchPlayers, captainId, viceCaptainId, totalTourPoints } = useMemo(() => {
-    const positions = ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"];
-    const benchPositions = ["ВР", "ЗЩ", "ПЗ", "НП"];
-    
-    const seed = teamId * 100 + currentTour;
     const boostType = tourBoosts[currentTour - 1];
+    const seed = teamId * 100 + currentTour;
+    
+    // Use the centralized team generation function
+    const { mainSquad, bench } = generateRandomTeam(teamId, currentTour);
     
     // Deterministic captain and vice-captain selection based on seed
     const captainSeed = Math.sin(seed * 7) * 10000;
-    const captainIdx = Math.floor((captainSeed - Math.floor(captainSeed)) * 11);
-    let viceCaptainIdx = Math.floor((Math.sin(seed * 13) * 10000 - Math.floor(Math.sin(seed * 13) * 10000)) * 11);
+    const captainIdx = Math.floor((captainSeed - Math.floor(captainSeed)) * mainSquad.length);
+    let viceCaptainIdx = Math.floor((Math.sin(seed * 13) * 10000 - Math.floor(Math.sin(seed * 13) * 10000)) * mainSquad.length);
     if (viceCaptainIdx === captainIdx) {
-      viceCaptainIdx = (viceCaptainIdx + 1) % 11;
+      viceCaptainIdx = (viceCaptainIdx + 1) % mainSquad.length;
     }
     
     // Deterministic injury and red card
-    const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * 11);
-    let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * 11);
+    const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * mainSquad.length);
+    let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * mainSquad.length);
     if (redCardIdx === injuredIdx) {
-      redCardIdx = (redCardIdx + 1) % 11;
+      redCardIdx = (redCardIdx + 1) % mainSquad.length;
     }
 
-    const main: PlayerData[] = positions.map((pos, idx) => {
-      const playerSeed = seed * 100 + idx;
-      const pseudoRandom = Math.sin(playerSeed) * 10000;
-      const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      // Realistic points: -1 to 15 per player
-      const basePoints = Math.floor(randomFactor * 17) - 1;
+    // Add display points and captain/vice-captain info
+    const main: PlayerData[] = mainSquad.map((p, idx) => {
       const isCaptain = idx === captainIdx;
       const isViceCaptain = idx === viceCaptainIdx;
       
       return {
-        id: idx,
-        name: playerNames[idx % playerNames.length],
-        team: "Динамо Минск",
-        position: pos,
-        points: basePoints,
-        displayedPoints: getDisplayedPoints(basePoints, isCaptain, isViceCaptain, boostType),
-        price: Math.round((randomFactor * 5 + 5) * 10) / 10,
-        slotIndex: positions.slice(0, idx).filter(p => p === pos).length,
+        ...p,
+        displayedPoints: getDisplayedPoints(p.points, isCaptain, isViceCaptain, boostType),
         isCaptain,
         isViceCaptain,
         hasRedCard: idx === redCardIdx,
@@ -136,31 +122,17 @@ const ViewTeam = () => {
       };
     });
 
-    const bench: PlayerData[] = benchPositions.map((pos, idx) => {
-      const playerSeed = seed * 100 + 50 + idx;
-      const pseudoRandom = Math.sin(playerSeed) * 10000;
-      const randomFactor = pseudoRandom - Math.floor(pseudoRandom);
-      // Bench players: -1 to 10
-      const basePoints = Math.floor(randomFactor * 12) - 1;
-      
-      return {
-        id: 100 + idx,
-        name: playerNames[(idx + 11) % playerNames.length],
-        team: "БАТЭ",
-        position: pos,
-        points: basePoints,
-        displayedPoints: basePoints,
-        price: Math.round((randomFactor * 4 + 4) * 10) / 10,
-        isOnBench: true,
-      };
-    });
+    const benchWithPoints: PlayerData[] = bench.map((p) => ({
+      ...p,
+      displayedPoints: p.points,
+    }));
 
     // Calculate total points with boost logic
-    const total = calculateTotalTourPoints(main, bench, boostType);
+    const total = calculateTotalTourPoints(main, benchWithPoints, boostType);
 
     return { 
       mainSquadPlayers: main, 
-      benchPlayers: bench,
+      benchPlayers: benchWithPoints,
       captainId: captainIdx,
       viceCaptainId: viceCaptainIdx,
       totalTourPoints: total,

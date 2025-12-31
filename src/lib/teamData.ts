@@ -221,3 +221,100 @@ export function restoreTeamFromBackup(
   localStorage.setItem('fantasyTeamCaptain', JSON.stringify(captain));
   localStorage.setItem('fantasyTeamViceCaptain', JSON.stringify(viceCaptain));
 }
+
+// Available formations for realistic team generation
+const FORMATIONS = [
+  { name: "4-4-2", positions: ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"] },
+  { name: "4-3-3", positions: ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП", "НП"] },
+  { name: "3-5-2", positions: ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"] },
+  { name: "3-4-3", positions: ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП", "НП"] },
+  { name: "5-3-2", positions: ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "НП", "НП"] },
+  { name: "5-4-1", positions: ["ВР", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ЗЩ", "ПЗ", "ПЗ", "ПЗ", "ПЗ", "НП"] },
+];
+
+const BENCH_POSITIONS = ["ВР", "ЗЩ", "ПЗ", "НП"];
+
+// Generate a realistic random team for view pages (max 3 per club)
+export function generateRandomTeam(seed: number, tour: number): {
+  mainSquad: PlayerData[];
+  bench: PlayerData[];
+  formation: string;
+} {
+  const combinedSeed = seed * 1000 + tour;
+  
+  // Select formation based on seed
+  const formationIndex = Math.floor(seededRandom(combinedSeed * 3) * FORMATIONS.length);
+  const selectedFormation = FORMATIONS[formationIndex];
+  
+  // Track club usage (max 3 per club)
+  const clubCount: Record<string, number> = {};
+  const usedPlayerIds = new Set<number>();
+  
+  // Helper to get available players for a position respecting club limit
+  const getAvailablePlayer = (position: string, playerSeed: number): typeof allPlayers[0] | null => {
+    const positionPlayers = allPlayers.filter(p => 
+      p.position === position && 
+      !usedPlayerIds.has(p.id) &&
+      (clubCount[p.team] || 0) < 3
+    );
+    
+    if (positionPlayers.length === 0) return null;
+    
+    const index = Math.floor(seededRandom(playerSeed) * positionPlayers.length);
+    return positionPlayers[index];
+  };
+  
+  // Generate main squad with slot indices
+  const mainSquad: PlayerData[] = [];
+  const positionSlotCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
+  
+  for (let i = 0; i < selectedFormation.positions.length; i++) {
+    const position = selectedFormation.positions[i];
+    const player = getAvailablePlayer(position, combinedSeed * 100 + i);
+    
+    if (player) {
+      usedPlayerIds.add(player.id);
+      clubCount[player.team] = (clubCount[player.team] || 0) + 1;
+      
+      // Generate tour-specific points (-1 to 15)
+      const pointsSeed = combinedSeed * 1000 + i;
+      const points = Math.floor(seededRandom(pointsSeed) * 17) - 1;
+      
+      mainSquad.push({
+        ...player,
+        points,
+        slotIndex: positionSlotCounters[position],
+      });
+      
+      positionSlotCounters[position]++;
+    }
+  }
+  
+  // Generate bench
+  const bench: PlayerData[] = [];
+  for (let i = 0; i < BENCH_POSITIONS.length; i++) {
+    const position = BENCH_POSITIONS[i];
+    const player = getAvailablePlayer(position, combinedSeed * 200 + i);
+    
+    if (player) {
+      usedPlayerIds.add(player.id);
+      clubCount[player.team] = (clubCount[player.team] || 0) + 1;
+      
+      // Bench players: -1 to 10 points
+      const pointsSeed = combinedSeed * 2000 + i;
+      const points = Math.floor(seededRandom(pointsSeed) * 12) - 1;
+      
+      bench.push({
+        ...player,
+        points,
+        isOnBench: true,
+      });
+    }
+  }
+  
+  return {
+    mainSquad,
+    bench,
+    formation: selectedFormation.name,
+  };
+}
