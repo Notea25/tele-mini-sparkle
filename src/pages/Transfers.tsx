@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { X, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers } from "@/lib/teamData";
@@ -309,6 +309,12 @@ const Transfers = () => {
     }
   };
 
+  // Calculate new player IDs (players added since initial load)
+  const newPlayerIds = useMemo(() => {
+    const initialPlayerIds = new Set(initialPlayersRef.current.map((p) => p.id));
+    return new Set(players.filter((p) => !initialPlayerIds.has(p.id)).map((p) => p.id));
+  }, [players]);
+
   // Calculate transfer records for confirmation
   const getTransferRecords = () => {
     const currentPlayerIds = new Set(players.map((p) => p.id));
@@ -549,8 +555,13 @@ const Transfers = () => {
 
             const player = slot;
             const clubLogo = clubIcons[player.team];
+            const isNewPlayer = newPlayerIds.has(player.id);
             return (
-              <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
+              <div key={player.id} className={`rounded-xl px-4 py-2 flex items-center ${
+                isNewPlayer 
+                  ? "bg-primary/25 border border-primary" 
+                  : "bg-card"
+              }`}>
                 {/* Club logo + Player name + position */}
                 <div
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
@@ -715,6 +726,7 @@ const Transfers = () => {
             captain={captain}
             viceCaptain={viceCaptain}
             removedPlayers={removedPlayersInfo}
+            newPlayerIds={newPlayerIds}
           />
         </div>
       ) : (
