@@ -276,19 +276,20 @@ const TeamBuilder = () => {
     return true;
   });
 
-  // Apply sorting
+  // Apply sorting (default to price descending if no sort is set)
   const sortedPlayers = [...filteredPlayers].sort((a, b) => {
-    if (!sortField || !sortDirection) return 0;
+    const effectiveSortField = sortField || "price";
+    const effectiveSortDirection = sortDirection || "desc";
 
-    if (sortField === "name") {
+    if (effectiveSortField === "name") {
       const comparison = a.name.localeCompare(b.name, "ru");
-      return sortDirection === "asc" ? comparison : -comparison;
+      return effectiveSortDirection === "asc" ? comparison : -comparison;
     }
-    if (sortField === "points") {
-      return sortDirection === "desc" ? b.points - a.points : a.points - b.points;
+    if (effectiveSortField === "points") {
+      return effectiveSortDirection === "desc" ? b.points - a.points : a.points - b.points;
     }
-    if (sortField === "price") {
-      return sortDirection === "desc" ? b.price - a.price : a.price - b.price;
+    if (effectiveSortField === "price") {
+      return effectiveSortDirection === "desc" ? b.price - a.price : a.price - b.price;
     }
     return 0;
   });
@@ -330,6 +331,9 @@ const TeamBuilder = () => {
     setPriceFrom(3);
     setPriceTo(14);
     setCurrentPage(1);
+    // Reset sorting to default (price descending)
+    setSortField("price");
+    setSortDirection("desc");
   };
 
   // Check if any filters are active
