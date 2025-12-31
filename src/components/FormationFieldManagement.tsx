@@ -580,8 +580,8 @@ const FormationFieldManagement = ({
       >
         <div className="bg-card/50 rounded-xl overflow-hidden">
           {/* Bench header label - full width thin bar */}
-          <div className="bg-foreground text-background py-2 text-center">
-            <span className="font-semibold" style={{ fontSize: `${cardSize.width * 0.14}px` }}>
+          <div className="bg-foreground text-background py-3 text-center">
+            <span className="font-semibold" style={{ fontSize: `${cardSize.width * 0.28}px` }}>
               Скамейка
             </span>
           </div>
