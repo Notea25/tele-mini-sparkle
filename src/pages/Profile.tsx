@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Button } from "@/components/ui/button";
 import InviteFriendsDrawer from "@/components/InviteFriendsDrawer";
+import ImageCropDrawer from "@/components/ImageCropDrawer";
 
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
@@ -27,6 +28,8 @@ const Profile = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [inviteDrawerOpen, setInviteDrawerOpen] = useState(false);
+  const [cropDrawerOpen, setCropDrawerOpen] = useState(false);
+  const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
   
   // Load saved profile
   const [savedProfile, setSavedProfile] = useState<ProfileData>(() => {
@@ -90,12 +93,27 @@ const Profile = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const base64 = event.target?.result as string;
-      setProfile(prev => ({ ...prev, profileImage: base64 }));
+      // Open crop drawer instead of directly setting image
+      setTempImageSrc(base64);
+      setCropDrawerOpen(true);
     };
     reader.onerror = () => {
       toast.error("Ошибка при загрузке изображения");
     };
     reader.readAsDataURL(file);
+    
+    // Reset file input so the same file can be selected again
+    e.target.value = "";
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
+    setProfile(prev => ({ ...prev, profileImage: croppedImage }));
+    setTempImageSrc(null);
+  };
+
+  const handleCropClose = () => {
+    setCropDrawerOpen(false);
+    setTempImageSrc(null);
   };
 
   const handleRemoveImage = () => {
@@ -241,6 +259,16 @@ const Profile = () => {
         open={inviteDrawerOpen} 
         onOpenChange={setInviteDrawerOpen}
       />
+
+      {/* Image Crop Drawer */}
+      {tempImageSrc && (
+        <ImageCropDrawer
+          isOpen={cropDrawerOpen}
+          onClose={handleCropClose}
+          imageSrc={tempImageSrc}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </div>
   );
 };
