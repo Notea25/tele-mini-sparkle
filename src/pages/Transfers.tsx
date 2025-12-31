@@ -530,15 +530,27 @@ const Transfers = () => {
         <div className="space-y-2">
           {slots.map((slot, idx) => {
             if ("isEmpty" in slot) {
+              // Check if there's a removed player for this slot
+              const removedPlayer = removedPlayersInfo.find(
+                (rp) => rp.position === position && rp.slotIndex === slot.slotIndex
+              );
+              
               return (
                 <div
                   key={`empty-${position}-${slot.slotIndex}`}
                   className="bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
                   onClick={() => handleEmptySlotClick(position, slot.slotIndex)}
                 >
-                  {/* Empty slot label */}
-                  <div className="flex-1 cursor-pointer hover:opacity-80">
-                    <span className="text-muted-foreground text-sm">{positionLabels[position]}</span>
+                  {/* Empty slot label or removed player info */}
+                  <div className="flex-1 cursor-pointer hover:opacity-80 min-w-0">
+                    {removedPlayer ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-white/60 font-medium truncate">{removedPlayer.name}</span>
+                        <span className="text-muted-foreground text-xs">{removedPlayer.team}</span>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">{positionLabels[position]}</span>
+                    )}
                   </div>
 
                   {/* Placeholder for points and price columns */}
