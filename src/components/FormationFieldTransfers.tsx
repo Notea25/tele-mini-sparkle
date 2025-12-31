@@ -74,6 +74,7 @@ interface FormationFieldTransfersProps {
   captain?: number | null;
   viceCaptain?: number | null;
   removedPlayers?: RemovedPlayerInfo[];
+  newPlayerIds?: Set<number>;
 }
 
 // Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
@@ -125,6 +126,7 @@ const FormationFieldTransfers = ({
   captain,
   viceCaptain,
   removedPlayers = [],
+  newPlayerIds = new Set(),
 }: FormationFieldTransfersProps) => {
   const [cardSize, setCardSize] = useState({ width: 70, height: 84 });
 
@@ -192,6 +194,7 @@ const FormationFieldTransfers = ({
     (player: PlayerData) => {
       const isCap = captain === player.id;
       const isViceCap = viceCaptain === player.id;
+      const isNewPlayer = newPlayerIds.has(player.id);
 
       const maxNameLength = Math.floor(cardSize.width / 7);
       const maxTeamLength = Math.floor(cardSize.width / 9);
@@ -201,7 +204,11 @@ const FormationFieldTransfers = ({
 
       return (
         <div
-          className="relative flex flex-col cursor-pointer border border-white/60 rounded-md overflow-hidden bg-[#3a5a28]/40 backdrop-blur-[2px] hover:bg-[#3a5a28]/60 transition-colors"
+          className={`relative flex flex-col cursor-pointer rounded-md overflow-hidden backdrop-blur-[2px] hover:bg-[#3a5a28]/60 transition-colors ${
+            isNewPlayer 
+              ? "border-2 border-primary bg-primary/25 shadow-[0_0_12px_hsl(var(--primary)/0.4)]" 
+              : "border border-white/60 bg-[#3a5a28]/40"
+          }`}
           style={{
             width: `${cardSize.width}px`,
             height: `${cardSize.height}px`,
@@ -319,7 +326,7 @@ const FormationFieldTransfers = ({
         </div>
       );
     },
-    [cardSize, captain, viceCaptain, onPlayerClick, onRemovePlayer, truncateName],
+    [cardSize, captain, viceCaptain, onPlayerClick, onRemovePlayer, truncateName, newPlayerIds],
   );
 
   const renderEmptySlot = useCallback(
