@@ -21,7 +21,6 @@ import {
 import { clubLogos } from "@/lib/clubLogos";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
-import logoImage from "@/assets/logo.png";
 
 
 import iconBenchPlus from "@/assets/icon-bench-plus.png";
@@ -767,13 +766,6 @@ const TeamManagement = () => {
               </SelectContent>
             </Select>
           </div>
-        </div>
-      </div>
-
-      {/* Advertising Banner */}
-      <div className="px-4 mt-4">
-        <div className="w-full h-16 bg-card rounded-xl flex items-center justify-center border border-border/50">
-          <img src={logoImage} alt="Fantasy Sports" className="h-8 object-contain" />
         </div>
       </div>
 
