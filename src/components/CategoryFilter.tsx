@@ -8,9 +8,9 @@ import iconCs2 from "@/assets/icon-cs2.png";
 export const categories = [
   { id: "all", label: "Все лиги", icon: iconCup, scrollTo: null },
   { id: "football", label: "Футбол", icon: iconFootball, scrollTo: "section-football" },
-  { id: "basketball", label: "Баскетбол", icon: iconBasketball, scrollTo: "section-basketball" },
   { id: "hockey", label: "Хоккей", icon: iconHockey, scrollTo: "section-hockey" },
   { id: "cs2", label: "Counter-Strike 2", icon: iconCs2, scrollTo: "section-cs2" },
+  { id: "basketball", label: "Баскетбол", icon: iconBasketball, scrollTo: "section-basketball" },
 ];
 
 interface CategoryFilterProps {
