@@ -1,6 +1,6 @@
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
-import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
+import jerseyDinamoMinsk from "@/assets/jerseys/dinamoJersey.png";
 import jerseyBate from "@/assets/jerseys/bateJersey.png";
 import jerseyBateGk from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
 import jerseyDinamoBrest from "@/assets/jerseys/brestJersey.png";
