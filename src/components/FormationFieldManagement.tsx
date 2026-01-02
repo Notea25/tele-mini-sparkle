@@ -1,19 +1,19 @@
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
-import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
-import jerseyBate from "@/assets/jersey-bate.png";
-import jerseyBateGk from "@/assets/jersey-bate-gk.png";
-import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
-import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
-import jerseyMlVitebskGk from "@/assets/jersey-ml-vitebsk-gk.png";
-import jerseySlavia from "@/assets/jersey-slaviya.png";
-import jerseySlaviaGk from "@/assets/jersey-slaviya-gk-new.png";
-import jerseyNeman from "@/assets/jersey-neman.png";
-import jerseyMinsk from "@/assets/jersey-minsk.png";
-import jerseyTorpedo from "@/assets/jersey-torpedo.png";
-import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
-import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
-import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
+import jerseyDinamoMinsk from "@/assets/jerseys/dinamoJersey.png";
+import jerseyBate from "@/assets/jerseys/bateJersey.png";
+import jerseyBateGk from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
+import jerseyDinamoBrest from "@/assets/jerseys/brestJersey.png";
+import jerseyMlVitebsk from "@/assets/jerseys/mlJersey.png";
+import jerseyMlVitebskGk from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
+import jerseySlavia from "@/assets/jerseys/slaviyaJersey.png";
+import jerseySlaviaGk from "@/assets/jerseys/goalkeeperJerseys/slaviyaGoalkeeperJersey.png";
+import jerseyNeman from "@/assets/jerseys/nemanJersey.png";
+import jerseyMinsk from "@/assets/jerseys/minskJersey.png";
+import jerseyTorpedo from "@/assets/jerseys/torpedoJersey.png";
+import jerseyVitebsk from "@/assets/jerseys/vitebskJersey.png";
+import jerseyVitebskGk from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
+import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
@@ -582,7 +582,7 @@ const FormationFieldManagement = ({
         <div className="bg-card/50 rounded-xl overflow-hidden">
           {/* Bench header label - full width thin bar */}
           <div className="bg-foreground text-background py-3 text-center">
-            <span className="font-semibold" style={{ fontSize: `${cardSize.width * 0.20}px` }}>
+            <span className="font-semibold" style={{ fontSize: `${cardSize.width * 0.2}px` }}>
               Скамейка
             </span>
           </div>
