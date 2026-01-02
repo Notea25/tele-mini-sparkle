@@ -54,6 +54,7 @@ const TeamBuilder = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const playerListRef = useRef<HTMLDivElement>(null);
+  const listViewPlayerListRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -376,7 +377,8 @@ const TeamBuilder = () => {
     setCurrentPage(1);
 
     setTimeout(() => {
-      playerListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const targetRef = activeTab === "list" ? listViewPlayerListRef : playerListRef;
+      targetRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
   };
 
@@ -1000,7 +1002,7 @@ const TeamBuilder = () => {
           </div>
 
           {/* Position Filters for List View */}
-          <div className="px-4 mt-2 flex gap-2 overflow-x-auto pb-1">
+          <div ref={listViewPlayerListRef} className="px-4 mt-2 flex gap-2 overflow-x-auto pb-1">
             {filters.map((filter) => (
               <Button
                 key={filter}
