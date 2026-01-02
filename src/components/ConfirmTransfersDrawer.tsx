@@ -1,9 +1,9 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
-import jerseyDinamoMinsk from "@/assets/jersey-dinamo-minsk.png";
-import jerseyBate from "@/assets/jersey-bate.png";
-import jerseyBateGk from "@/assets/jersey-bate-gk.png";
+import jerseyDinamoMinsk from "@/assets/dinamoJersey.png";
+import jerseyBate from "@/assets/bateJersey.png";
+import jerseyBateGk from "@/assets/goalkeepers/bateGoalkeeperJersey.png";
 import jerseyDinamoBrest from "@/assets/jersey-dinamo-brest.png";
 import jerseyMlVitebsk from "@/assets/jersey-ml-vitebsk.png";
 import jerseyMlVitebskGk from "@/assets/jersey-ml-vitebsk-gk.png";
@@ -14,7 +14,6 @@ import jerseyMinsk from "@/assets/jersey-minsk.png";
 import jerseyTorpedo from "@/assets/jersey-torpedo.png";
 import jerseyVitebsk from "@/assets/jersey-vitebsk.png";
 import jerseyVitebskGk from "@/assets/jersey-vitebsk-gk.png";
-// import jerseyArsenalGk from "@/assets/jersey-arsenal-gk.png";
 import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
 import { BoostChip } from "@/components/BoostDrawer";
 
