@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { X, Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { X, Plus, Search, Minus, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
-import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers } from "@/lib/teamData";
+import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers, allPlayers, allTeams } from "@/lib/teamData";
 import { clubLogos } from "@/lib/clubLogos";
 import FormationFieldTransfers from "@/components/FormationFieldTransfers";
 import PlayerCard from "@/components/PlayerCard";
 import BoostDrawer from "@/components/BoostDrawer";
-import BuyPlayerDrawer from "@/components/BuyPlayerDrawer";
 import ConfirmTransfersDrawer from "@/components/ConfirmTransfersDrawer";
 import {
   getBoostState,
@@ -37,9 +38,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
-
 
 import icon2x from "@/assets/icon-2x.png";
 import iconStar from "@/assets/icon-star.png";
@@ -84,6 +83,8 @@ const TRANSFERS_FORMATION_SLOTS: Record<string, number> = {
   НП: 3,
 };
 
+const ITEMS_PER_PAGE = 8;
+
 const Transfers = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
@@ -93,7 +94,6 @@ const Transfers = () => {
   const [buyPlayerForCard, setBuyPlayerForCard] = useState<PlayerData | null>(null);
   const [teamName] = useState(() => getSavedTeam().teamName);
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
-    // Load initial state from localStorage
     const boostState = getBoostState();
     return initialChips.map((chip) => {
       if (boostState.pendingBoostId === chip.id) {
@@ -111,6 +111,32 @@ const Transfers = () => {
   const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
   const currentTour = 1;
 
+  // Player list state (like TeamBuilder)
+  const playerListRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState("Все команды");
+  const [activeFilter, setActiveFilter] = useState("Все");
+  const [priceFrom, setPriceFrom] = useState(3);
+  const [priceTo, setPriceTo] = useState(14);
+  const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
+  const [pendingPositionFilter, setPendingPositionFilter] = useState<string | null>(null);
+  const [pendingSlotIndex, setPendingSlotIndex] = useState<number | null>(null);
+
+  const teams = ["Все команды", ...allTeams];
+  const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
+  const positionToFilter: Record<string, string> = {
+    ВР: "Вратари",
+    ЗЩ: "Защитники",
+    ПЗ: "Полузащитники",
+    НП: "Нападающие",
+  };
+
   // Check if boost is active on the other page
   useEffect(() => {
     const checkOtherPageBoost = () => {
@@ -123,14 +149,12 @@ const Transfers = () => {
     };
     checkOtherPageBoost();
 
-    // Listen for storage changes from other tabs/pages
     const handleStorageChange = () => checkOtherPageBoost();
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const openBoostDrawer = (chip: BoostChip) => {
-    // Check if boost is active on other page
     if (otherPageBoostActive) {
       toast.error("В этом туре уже активирован буст в разделе Управление командой");
       return;
@@ -148,7 +172,6 @@ const Transfers = () => {
       return;
     }
 
-    // For Golden Tour boost, save the current squad state before making any changes
     if (chipId === "golden") {
       const mainSquad = players.slice(0, 11).map((p) => ({
         id: p.id,
@@ -239,10 +262,8 @@ const Transfers = () => {
 
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
-    // Merge all players and reassign slot indices based on position
     const allLoadedPlayers = [...mainSquad, ...bench];
 
-    // Reassign slot indices for the new formation (2-5-5-3)
     const positionCounters: Record<string, number> = { ВР: 0, ЗЩ: 0, ПЗ: 0, НП: 0 };
     const reassignedPlayers = allLoadedPlayers.map((p) => {
       const slotIndex = positionCounters[p.position] || 0;
@@ -267,7 +288,7 @@ const Transfers = () => {
     }
   }, [players]);
 
-  // Handle browser beforeunload (tab close, refresh)
+  // Handle browser beforeunload
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasChanges) {
@@ -281,10 +302,66 @@ const Transfers = () => {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasChanges]);
 
-  // Buy player drawer state
-  const [buyDrawerOpen, setBuyDrawerOpen] = useState(false);
-  const [buyPositionFilter, setBuyPositionFilter] = useState<string | null>(null);
-  const [buyTargetSlotIndex, setBuyTargetSlotIndex] = useState<number | null>(null);
+  // Header height for scroll calculations
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const update = () => setHeaderHeight(el.getBoundingClientRect().height);
+    update();
+
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+
+    return () => ro.disconnect();
+  }, []);
+
+  const scrollToPlayerList = useCallback((behavior: ScrollBehavior = "smooth") => {
+    const el = playerListRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
+    window.scrollTo({ top: Math.max(0, top), behavior });
+  }, [headerHeight]);
+
+  const scrollSearchIntoView = useCallback((behavior: ScrollBehavior = "smooth") => {
+    const el = searchInputRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
+    window.scrollTo({ top: Math.max(0, top), behavior });
+  }, [headerHeight]);
+
+  const ensureSearchVisible = useCallback((behavior: ScrollBehavior = "auto") => {
+    scrollSearchIntoView(behavior);
+    window.setTimeout(() => scrollSearchIntoView("auto"), 120);
+    window.setTimeout(() => scrollSearchIntoView("auto"), 360);
+  }, [scrollSearchIntoView]);
+
+  // Keep the search visible when keyboard opens
+  useEffect(() => {
+    if (!isSearchFocused) return;
+
+    const vv = window.visualViewport;
+
+    const onViewportChange = () => {
+      ensureSearchVisible("auto");
+    };
+
+    vv?.addEventListener("resize", onViewportChange);
+    vv?.addEventListener("scroll", onViewportChange);
+    window.addEventListener("resize", onViewportChange);
+
+    return () => {
+      vv?.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("scroll", onViewportChange);
+      window.removeEventListener("resize", onViewportChange);
+    };
+  }, [isSearchFocused, ensureSearchVisible]);
+
+  useEffect(() => {
+    if (!isSearchFocused) return;
+    const t = window.setTimeout(() => ensureSearchVisible("auto"), 0);
+    return () => window.clearTimeout(t);
+  }, [searchQuery, isSearchFocused, ensureSearchVisible]);
 
   // Calculate removed players with their original slot info for visual hints
   const getRemovedPlayersInfo = () => {
@@ -309,7 +386,7 @@ const Transfers = () => {
     }
   };
 
-  // Calculate new player IDs (players added since initial load)
+  // Calculate new player IDs
   const newPlayerIds = useMemo(() => {
     const initialPlayerIds = new Set(initialPlayersRef.current.map((p) => p.id));
     return new Set(players.filter((p) => !initialPlayerIds.has(p.id)).map((p) => p.id));
@@ -368,7 +445,6 @@ const Transfers = () => {
       setShowExitDialog(false);
       return;
     }
-    // Save changes to localStorage - split into mainSquad (11) and bench (4)
     const mainSquad = players.slice(0, 11);
     const bench = players.slice(11, 15);
     saveTeamTransfers(mainSquad, bench, captain, viceCaptain);
@@ -391,7 +467,7 @@ const Transfers = () => {
     setPendingNavigation(null);
   };
 
-  // Calculate budget info - round to 1 decimal to avoid floating point issues
+  // Calculate budget info
   const totalPrice = Math.round(players.reduce((sum, p) => sum + (p.price || 0), 0) * 10) / 10;
   const budget = Math.round((100 - totalPrice) * 10) / 10;
   const MAX_PLAYERS_PER_CLUB = 3;
@@ -402,11 +478,11 @@ const Transfers = () => {
   const hasGoldenTourBoost = specialChips.some(c => c.id === "golden" && c.status === "pending");
   const hasAnyTransferBoost = hasTransfersBoost || hasGoldenTourBoost;
   
-  // Calculate pending transfer costs first (needed for free transfers calculation)
+  // Calculate pending transfer costs
   const pendingTransferCount = getTransferRecords().length;
   const transferCosts = calculateTransferCosts(pendingTransferCount, hasTransfersBoost, hasGoldenTourBoost);
   
-  // Calculate free transfers remaining - account for pending transfers
+  // Calculate free transfers remaining
   const transferState = getTransferState();
   const alreadyUsed = transferState.transfersUsedThisTour;
   const totalUsedIncludingPending = alreadyUsed + pendingTransferCount;
@@ -439,15 +515,15 @@ const Transfers = () => {
       return;
     }
 
-    // If specific slot is provided (from clicking empty slot)
+    // If specific slot is provided
     if (targetPosition !== undefined && targetSlotIndex !== undefined) {
       const newPlayer: PlayerDataExt = {
         ...player,
         slotIndex: targetSlotIndex,
       };
       setPlayers((prev) => [...prev, newPlayer]);
-      setBuyDrawerOpen(false);
-      setBuyPositionFilter(null);
+      setPendingPositionFilter(null);
+      setPendingSlotIndex(null);
       toast.success(`${player.name} добавлен в команду`);
       return;
     }
@@ -463,8 +539,8 @@ const Transfers = () => {
           slotIndex: i,
         };
         setPlayers((prev) => [...prev, newPlayer]);
-        setBuyDrawerOpen(false);
-        setBuyPositionFilter(null);
+        setPendingPositionFilter(null);
+        setPendingSlotIndex(null);
         toast.success(`${player.name} добавлен в команду`);
         return;
       }
@@ -494,15 +570,152 @@ const Transfers = () => {
   };
 
   const handleEmptySlotClick = (position: string, slotIndex: number) => {
-    setBuyPositionFilter(position);
-    setBuyTargetSlotIndex(slotIndex);
-    setBuyDrawerOpen(true);
+    setPendingPositionFilter(position);
+    setPendingSlotIndex(slotIndex);
+    const filterName = positionToFilter[position] || "Все";
+    setActiveFilter(filterName);
+    setCurrentPage(1);
+    setTimeout(() => {
+      scrollToPlayerList("smooth");
+    }, 100);
+  };
+
+  const handleAddPlayerButtonClick = () => {
+    setPendingPositionFilter(null);
+    setPendingSlotIndex(null);
+    setActiveFilter("Все");
+    setCurrentPage(1);
+    setTimeout(() => {
+      scrollToPlayerList("smooth");
+    }, 100);
+  };
+
+  // Filter players for available list
+  const currentTeamPlayerIds = players.map((p) => p.id);
+  
+  const filteredPlayers = allPlayers.filter((player) => {
+    // Exclude already selected players
+    if (currentTeamPlayerIds.includes(player.id)) return false;
+    
+    const matchesSearch = player.name.toLowerCase().includes(searchQuery.toLowerCase());
+    if (!matchesSearch) return false;
+
+    const matchesTeam = selectedTeam === "Все команды" || player.team === selectedTeam;
+    if (!matchesTeam) return false;
+
+    // Price filter
+    if (player.price < priceFrom) return false;
+    if (player.price > priceTo) return false;
+
+    if (activeFilter === "Все") return true;
+    if (activeFilter === "Вратари") return player.position === "ВР";
+    if (activeFilter === "Защитники") return player.position === "ЗЩ";
+    if (activeFilter === "Полузащитники") return player.position === "ПЗ";
+    if (activeFilter === "Нападающие") return player.position === "НП";
+    return true;
+  });
+
+  // Apply sorting
+  const sortedPlayers = [...filteredPlayers].sort((a, b) => {
+    const effectiveSortField = sortField || "price";
+    const effectiveSortDirection = sortDirection || "desc";
+
+    if (effectiveSortField === "name") {
+      const comparison = a.name.localeCompare(b.name, "ru");
+      return effectiveSortDirection === "asc" ? comparison : -comparison;
+    }
+    if (effectiveSortField === "points") {
+      return effectiveSortDirection === "desc" ? b.points - a.points : a.points - b.points;
+    }
+    if (effectiveSortField === "price") {
+      return effectiveSortDirection === "desc" ? b.price - a.price : a.price - b.price;
+    }
+    return 0;
+  });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(sortedPlayers.length / ITEMS_PER_PAGE);
+  const paginatedPlayers = sortedPlayers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  const handleFilterChange = (filter: string) => {
+    setActiveFilter(filter);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
+  const handleTeamChange = (team: string) => {
+    setSelectedTeam(team);
+    setCurrentPage(1);
+  };
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setActiveFilter("Все");
+    setSelectedTeam("Все команды");
+    setPriceFrom(3);
+    setPriceTo(14);
+    setCurrentPage(1);
+    setSortField("price");
+    setSortDirection("desc");
+    setPendingPositionFilter(null);
+    setPendingSlotIndex(null);
+  };
+
+  const hasActiveFilters =
+    searchQuery !== "" ||
+    activeFilter !== "Все" ||
+    selectedTeam !== "Все команды" ||
+    priceFrom !== 3 ||
+    priceTo !== 14;
+
+  const handlePriceFromIncrease = () => {
+    setPriceFrom((prev) => Math.min(prev + 1, priceTo));
+    setCurrentPage(1);
+  };
+  const handlePriceFromDecrease = () => {
+    setPriceFrom((prev) => Math.max(prev - 1, 3));
+    setCurrentPage(1);
+  };
+  const handlePriceToIncrease = () => {
+    setPriceTo((prev) => Math.min(prev + 1, 14));
+    setCurrentPage(1);
+  };
+  const handlePriceToDecrease = () => {
+    setPriceTo((prev) => Math.max(prev - 1, priceFrom));
+    setCurrentPage(1);
+  };
+
+  const handleSort = (field: "name" | "points" | "price") => {
+    if (sortField !== field) {
+      setSortField(field);
+      setSortDirection(field === "name" ? "asc" : "desc");
+    } else {
+      if (field === "name") {
+        if (sortDirection === "asc") {
+          setSortDirection("desc");
+        } else {
+          setSortField(null);
+          setSortDirection(null);
+        }
+      } else {
+        if (sortDirection === "desc") {
+          setSortDirection("asc");
+        } else {
+          setSortField(null);
+          setSortDirection(null);
+        }
+      }
+    }
+    setCurrentPage(1);
   };
 
   const renderListSection = (position: string, positionPlayers: PlayerDataExt[]) => {
     const slotCount = TRANSFERS_FORMATION_SLOTS[position] || 0;
 
-    // Create array of slots (filled and empty)
     const slots: (PlayerDataExt | { isEmpty: true; slotIndex: number })[] = [];
     for (let i = 0; i < slotCount; i++) {
       const player = positionPlayers.find((p) => p.slotIndex === i);
@@ -515,10 +728,8 @@ const Transfers = () => {
 
     return (
       <div className="mb-6" key={position}>
-        {/* Position header */}
         <h3 className="text-primary font-medium mb-2">{positionLabels[position]}</h3>
 
-        {/* Column headers */}
         <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
           <span className="flex-1">Игрок</span>
           <span className="w-12 text-center">Очки</span>
@@ -526,11 +737,9 @@ const Transfers = () => {
           <span className="w-10"></span>
         </div>
 
-        {/* Players */}
         <div className="space-y-2">
           {slots.map((slot, idx) => {
             if ("isEmpty" in slot) {
-              // Check if there's a removed player for this slot
               const removedPlayer = removedPlayersInfo.find(
                 (rp) => rp.position === position && rp.slotIndex === slot.slotIndex
               );
@@ -541,7 +750,6 @@ const Transfers = () => {
                   className="bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/70 transition-colors"
                   onClick={() => handleEmptySlotClick(position, slot.slotIndex)}
                 >
-                  {/* Empty slot label or removed player info */}
                   <div className="flex-1 cursor-pointer hover:opacity-80 min-w-0">
                     {removedPlayer ? (
                       <div className="flex items-center gap-2">
@@ -553,11 +761,9 @@ const Transfers = () => {
                     )}
                   </div>
 
-                  {/* Placeholder for points and price columns */}
                   <span className="w-12 flex-shrink-0"></span>
                   <span className="w-10 flex-shrink-0"></span>
 
-                  {/* Add button */}
                   <button className="w-8 h-8 ml-2 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors flex-shrink-0">
                     <Plus className="w-4 h-4 text-primary" />
                   </button>
@@ -566,7 +772,7 @@ const Transfers = () => {
             }
 
             const player = slot;
-            const clubLogo = clubIcons[player.team];
+            const clubLogoSrc = clubIcons[player.team];
             const isNewPlayer = newPlayerIds.has(player.id);
             return (
               <div key={player.id} className={`rounded-xl px-4 py-2 flex items-center ${
@@ -574,25 +780,20 @@ const Transfers = () => {
                   ? "bg-primary/25 border border-primary" 
                   : "bg-card"
               }`}>
-                {/* Club logo + Player name + position */}
                 <div
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                   onClick={() => setSelectedPlayerForCard(player.id)}
                 >
-                  {clubLogo && (
-                    <img src={clubLogo} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                  {clubLogoSrc && (
+                    <img src={clubLogoSrc} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
                   )}
                   <span className="text-foreground font-medium text-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
                 </div>
 
-                {/* Points */}
                 <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
-
-                {/* Price */}
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
 
-                {/* Remove button */}
                 <button
                   onClick={() => handleSellPlayer(player.id)}
                   className="w-8 h-8 ml-2 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors flex-shrink-0"
@@ -609,12 +810,13 @@ const Transfers = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <SportHeader
-        hasUnsavedChanges={hasChanges}
-        onSaveChanges={handleSaveAndExit}
-        onDiscardChanges={handleExitWithoutSaving}
-      />
-
+      <div ref={headerRef}>
+        <SportHeader
+          hasUnsavedChanges={hasChanges}
+          onSaveChanges={handleSaveAndExit}
+          onDiscardChanges={handleExitWithoutSaving}
+        />
+      </div>
 
       {/* Team Header */}
       <div className="px-4 mt-4">
@@ -751,9 +953,306 @@ const Transfers = () => {
         </div>
       )}
 
+      {/* Divider between selected players and available players */}
+      <div className="mx-4 mt-6 mb-2 border-t border-border" />
+      <div className="px-4 mb-4">
+        <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
+      </div>
+
+      {/* Search */}
+      <div ref={playerListRef} className="px-4 relative z-10">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            ref={searchInputRef}
+            placeholder="Поиск"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={() => {
+              setIsSearchFocused(true);
+              window.setTimeout(() => {
+                ensureSearchVisible("smooth");
+              }, 350);
+            }}
+            onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
+            className="pl-10 pr-10 h-10 bg-card border-border rounded-xl text-foreground placeholder:text-muted-foreground"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              aria-label="Очистить поиск"
+              onClick={() => {
+                handleSearchChange("");
+                searchInputRef.current?.focus();
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Collapsible filters - animated hide when search is focused */}
+      <div 
+        className={`transition-all duration-300 ease-out overflow-hidden ${
+          isSearchFocused ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'
+        }`}
+      >
+        {/* Teams Filter */}
+        <div className="px-4 mt-2 relative z-20">
+          <Select value={selectedTeam} onValueChange={handleTeamChange}>
+            <SelectTrigger className="w-full h-10 bg-card border-border rounded-xl text-foreground cursor-pointer">
+              <SelectValue placeholder="Все команды" />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border z-50">
+              {teams.map((team) => (
+                <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    {team !== "Все команды" && clubLogos[team] && (
+                      <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
+                    )}
+                    <span>{team}</span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Position Filters */}
+        <div className="px-4 mt-2 flex gap-2 overflow-x-auto pb-1">
+          {filters.map((filter) => (
+            <Button
+              key={filter}
+              onClick={() => handleFilterChange(filter)}
+              size="sm"
+              className={`flex-shrink-0 rounded-full h-8 px-4 ${
+                activeFilter === filter
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent"
+                  : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
+              }`}
+            >
+              {filter}
+            </Button>
+          ))}
+        </div>
+
+        {/* Price Range */}
+        <div className="px-4 mt-2">
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground text-sm">Цена:</span>
+            <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+              <button
+                onClick={handlePriceFromDecrease}
+                className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+              >
+                <Minus className="w-3 h-3 text-primary-foreground" />
+              </button>
+              <span className="text-foreground text-sm w-9 text-center">{priceFrom.toFixed(1)}</span>
+              <button
+                onClick={handlePriceFromIncrease}
+                className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+              >
+                <Plus className="w-3 h-3 text-primary-foreground" />
+              </button>
+            </div>
+            <span className="text-muted-foreground text-sm">—</span>
+            <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+              <button
+                onClick={handlePriceToDecrease}
+                className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+              >
+                <Minus className="w-3 h-3 text-primary-foreground" />
+              </button>
+              <span className="text-foreground text-sm w-9 text-center">{priceTo.toFixed(1)}</span>
+              <button
+                onClick={handlePriceToIncrease}
+                className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+              >
+                <Plus className="w-3 h-3 text-primary-foreground" />
+              </button>
+            </div>
+            {hasActiveFilters && (
+              <button
+                onClick={handleResetFilters}
+                className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Players List Header */}
+      <div className="px-4 mt-6 flex items-center text-xs text-muted-foreground">
+        <button
+          onClick={() => handleSort("name")}
+          className={`flex-1 flex items-center gap-1 transition-colors ${sortField === "name" ? "text-primary" : "hover:text-foreground"}`}
+        >
+          <span>Игрок</span>
+          {sortField === "name" ? (
+            sortDirection === "asc" ? (
+              <ChevronDown className="w-3 h-3 text-primary" />
+            ) : (
+              <ChevronUp className="w-3 h-3 text-primary" />
+            )
+          ) : (
+            <ChevronsUpDown className="w-3 h-3 opacity-50" />
+          )}
+        </button>
+        <div className="w-14 flex items-center justify-center">
+          <button
+            onClick={() => handleSort("points")}
+            className={`flex items-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
+          >
+            <span>Очки</span>
+            {sortField === "points" ? (
+              sortDirection === "desc" ? (
+                <ChevronDown className="w-3 h-3 text-primary" />
+              ) : (
+                <ChevronUp className="w-3 h-3 text-primary" />
+              )
+            ) : (
+              <ChevronsUpDown className="w-3 h-3 opacity-50" />
+            )}
+          </button>
+        </div>
+        <div className="w-14 flex items-center justify-center mr-8">
+          <button
+            onClick={() => handleSort("price")}
+            className={`flex items-center gap-1 transition-colors ${sortField === "price" ? "text-primary" : "hover:text-foreground"}`}
+          >
+            <span>Цена</span>
+            {sortField === "price" ? (
+              sortDirection === "desc" ? (
+                <ChevronDown className="w-3 h-3 text-primary" />
+              ) : (
+                <ChevronUp className="w-3 h-3 text-primary" />
+              )
+            ) : (
+              <ChevronsUpDown className="w-3 h-3 opacity-50" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Players List */}
+      <div className="px-4 mt-3 space-y-2 pb-40">
+        {paginatedPlayers.map((player) => {
+          const canBuy = player.price <= budget + 0.001 && getPlayersCountByClub(player.team) < MAX_PLAYERS_PER_CLUB;
+          return (
+            <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
+              {/* Club icon */}
+              <div className="w-6 flex-shrink-0 flex justify-center mr-2">
+                <img src={clubIcons[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
+              </div>
+
+              {/* Player name + position */}
+              <div
+                className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
+                onClick={() => setBuyPlayerForCard(player)}
+              >
+                <span className="text-foreground font-medium truncate">{player.name}</span>
+                <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
+              </div>
+
+              {/* Points */}
+              <div className="w-14 flex-shrink-0 flex items-center justify-center">
+                <span className="text-sm font-medium text-foreground">{player.points}</span>
+              </div>
+
+              {/* Price */}
+              <div className="w-14 flex-shrink-0 flex items-center justify-center">
+                <span className="text-foreground text-sm">{player.price.toFixed(1)}</span>
+              </div>
+
+              {/* Add button */}
+              <button
+                onClick={() => {
+                  if (pendingPositionFilter && pendingSlotIndex !== null) {
+                    handleBuyPlayer(player, pendingPositionFilter, false, pendingSlotIndex);
+                  } else {
+                    handleBuyPlayer(player);
+                  }
+                }}
+                disabled={!canBuy}
+                className={`w-6 h-6 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
+                  canBuy ? "bg-primary hover:bg-primary/90" : "bg-muted cursor-not-allowed"
+                }`}
+              >
+                <Plus className={`w-3 h-3 ${canBuy ? "text-primary-foreground" : "text-muted-foreground"}`} />
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="px-4 mt-6 pb-40 flex items-center justify-center gap-4">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="p-1 hover:text-primary transition-colors disabled:opacity-30"
+          >
+            <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+          </button>
+
+          {(() => {
+            const pages: (number | string)[] = [];
+
+            if (totalPages <= 5) {
+              for (let i = 1; i <= totalPages; i++) pages.push(i);
+            } else {
+              pages.push(1);
+
+              if (currentPage <= 3) {
+                pages.push(2, 3, 4);
+                pages.push("...", totalPages);
+              } else if (currentPage >= totalPages - 2) {
+                pages.push("...");
+                pages.push(totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+              } else {
+                pages.push("...");
+                pages.push(currentPage - 1, currentPage, currentPage + 1);
+                pages.push("...", totalPages);
+              }
+            }
+
+            return pages.map((page, idx) =>
+              page === "..." ? (
+                <span key={`ellipsis-${idx}`} className="text-muted-foreground text-sm">
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page as number)}
+                  className={`text-sm font-medium transition-colors ${
+                    page === currentPage ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {page}
+                </button>
+              ),
+            );
+          })()}
+
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="p-1 hover:text-primary transition-colors disabled:opacity-30"
+          >
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          </button>
+        </div>
+      )}
+
       {/* Fixed Bottom Section */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-3 z-50">
-        {/* Reset squad button - appears when there are changes */}
+        {/* Reset squad button */}
         {hasChanges && (
           <Button
             onClick={handleResetSquad}
@@ -796,10 +1295,7 @@ const Transfers = () => {
         {/* Buttons Row */}
         <div className="flex gap-3">
           <Button
-            onClick={() => {
-              setBuyPositionFilter(null);
-              setBuyDrawerOpen(true);
-            }}
+            onClick={handleAddPlayerButtonClick}
             className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-lg h-12"
           >
             + Добавить игрока
@@ -828,10 +1324,7 @@ const Transfers = () => {
         <PlayerCard
           player={buyPlayerForCard}
           isOpen={!!buyPlayerForCard}
-          onClose={() => {
-            setBuyPlayerForCard(null);
-            setBuyDrawerOpen(true);
-          }}
+          onClose={() => setBuyPlayerForCard(null)}
           variant="buy"
           hidePointsBreakdown
           canBuy={
@@ -840,7 +1333,11 @@ const Transfers = () => {
           }
           onBuy={(playerId) => {
             if (buyPlayerForCard && buyPlayerForCard.id === playerId) {
-              handleBuyPlayer(buyPlayerForCard);
+              if (pendingPositionFilter && pendingSlotIndex !== null) {
+                handleBuyPlayer(buyPlayerForCard, pendingPositionFilter, false, pendingSlotIndex);
+              } else {
+                handleBuyPlayer(buyPlayerForCard);
+              }
             }
             setBuyPlayerForCard(null);
           }}
@@ -873,32 +1370,6 @@ const Transfers = () => {
         onApply={applyBoost}
         onCancel={cancelBoost}
         currentTour={currentTour}
-      />
-
-      {/* Buy Player Drawer */}
-      <BuyPlayerDrawer
-        isOpen={buyDrawerOpen}
-        onClose={() => {
-          setBuyDrawerOpen(false);
-          setBuyPositionFilter(null);
-          setBuyTargetSlotIndex(null);
-        }}
-        onBuyPlayer={(player) => {
-          if (buyPositionFilter && buyTargetSlotIndex !== null) {
-            handleBuyPlayer(player, buyPositionFilter, false, buyTargetSlotIndex);
-          } else {
-            handleBuyPlayer(player);
-          }
-        }}
-        onPlayerClick={(player) => {
-          setBuyPlayerForCard(player);
-          setBuyDrawerOpen(false);
-        }}
-        currentTeamPlayerIds={players.map((p) => p.id)}
-        currentBudget={budget}
-        getPlayersCountByClub={getPlayersCountByClub}
-        maxPlayersPerClub={MAX_PLAYERS_PER_CLUB}
-        initialPositionFilter={buyPositionFilter}
       />
 
       {/* Exit Confirmation Dialog */}
@@ -946,7 +1417,6 @@ const Transfers = () => {
           const mainSquad = players.slice(0, 11);
           const bench = players.slice(11, 15);
           
-          // Record the transfers and apply penalty
           const transferCount = getTransferRecords().length;
           const result = recordTransfers(transferCount, hasTransfersBoost, hasGoldenTourBoost);
           
