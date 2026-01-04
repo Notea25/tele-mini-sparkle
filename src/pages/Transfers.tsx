@@ -330,38 +330,45 @@ const Transfers = () => {
     window.scrollTo({ top: Math.max(0, top), behavior });
   }, [headerHeight]);
 
-  const ensureSearchVisible = useCallback((behavior: ScrollBehavior = "auto") => {
+  // Track if initial scroll has been done for this focus session
+  const initialScrollDoneRef = useRef(false);
+
+  // Reset the flag when search loses focus
+  useEffect(() => {
+    if (!isSearchFocused) {
+      initialScrollDoneRef.current = false;
+    }
+  }, [isSearchFocused]);
+
+  const ensureSearchVisibleOnce = useCallback((behavior: ScrollBehavior = "auto") => {
+    if (initialScrollDoneRef.current) return;
+    initialScrollDoneRef.current = true;
     scrollSearchIntoView(behavior);
     window.setTimeout(() => scrollSearchIntoView("auto"), 120);
     window.setTimeout(() => scrollSearchIntoView("auto"), 360);
   }, [scrollSearchIntoView]);
 
-  // Keep the search visible when keyboard opens
+  // Scroll search into view only on initial keyboard open
   useEffect(() => {
     if (!isSearchFocused) return;
 
     const vv = window.visualViewport;
+    let initialHeight = vv?.height ?? window.innerHeight;
 
-    const onViewportChange = () => {
-      ensureSearchVisible("auto");
+    const onViewportResize = () => {
+      const currentHeight = vv?.height ?? window.innerHeight;
+      // Only scroll when keyboard appears (height decreases significantly)
+      if (currentHeight < initialHeight - 100 && !initialScrollDoneRef.current) {
+        ensureSearchVisibleOnce("auto");
+      }
     };
 
-    vv?.addEventListener("resize", onViewportChange);
-    vv?.addEventListener("scroll", onViewportChange);
-    window.addEventListener("resize", onViewportChange);
+    vv?.addEventListener("resize", onViewportResize);
 
     return () => {
-      vv?.removeEventListener("resize", onViewportChange);
-      vv?.removeEventListener("scroll", onViewportChange);
-      window.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("resize", onViewportResize);
     };
-  }, [isSearchFocused, ensureSearchVisible]);
-
-  useEffect(() => {
-    if (!isSearchFocused) return;
-    const t = window.setTimeout(() => ensureSearchVisible("auto"), 0);
-    return () => window.clearTimeout(t);
-  }, [searchQuery, isSearchFocused, ensureSearchVisible]);
+  }, [isSearchFocused, ensureSearchVisibleOnce]);
 
   // Calculate removed players with their original slot info for visual hints
   const getRemovedPlayersInfo = () => {
@@ -971,7 +978,7 @@ const Transfers = () => {
             onFocus={() => {
               setIsSearchFocused(true);
               window.setTimeout(() => {
-                ensureSearchVisible("smooth");
+                scrollSearchIntoView("smooth");
               }, 350);
             }}
             onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}

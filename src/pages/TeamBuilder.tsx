@@ -187,10 +187,20 @@ const TeamBuilder = () => {
     [headerHeight],
   );
 
-  const ensureSearchVisible = useCallback(
+  // Track if initial scroll has been done for this focus session
+  const initialScrollDoneRef = useRef(false);
+
+  // Reset the flag when search loses focus
+  useEffect(() => {
+    if (!isSearchFocused) {
+      initialScrollDoneRef.current = false;
+    }
+  }, [isSearchFocused]);
+
+  const ensureSearchVisibleOnce = useCallback(
     (behavior: ScrollBehavior = "auto") => {
-      // Some mobile webviews auto-adjust scroll after focus/caret placement.
-      // A few quick re-applies keeps the input above the keyboard reliably.
+      if (initialScrollDoneRef.current) return;
+      initialScrollDoneRef.current = true;
       scrollSearchIntoView(behavior);
       window.setTimeout(() => scrollSearchIntoView("auto"), 120);
       window.setTimeout(() => scrollSearchIntoView("auto"), 360);
@@ -198,34 +208,27 @@ const TeamBuilder = () => {
     [scrollSearchIntoView],
   );
 
-  // Keep the search visible when keyboard opens / viewport changes
+  // Scroll search into view only on initial keyboard open
   useEffect(() => {
     if (!isSearchFocused) return;
 
     const vv = window.visualViewport;
+    let initialHeight = vv?.height ?? window.innerHeight;
 
-    const onViewportChange = () => {
-      ensureSearchVisible("auto");
+    const onViewportResize = () => {
+      const currentHeight = vv?.height ?? window.innerHeight;
+      // Only scroll when keyboard appears (height decreases significantly)
+      if (currentHeight < initialHeight - 100 && !initialScrollDoneRef.current) {
+        ensureSearchVisibleOnce("auto");
+      }
     };
 
-    vv?.addEventListener("resize", onViewportChange);
-    vv?.addEventListener("scroll", onViewportChange);
-    window.addEventListener("resize", onViewportChange);
+    vv?.addEventListener("resize", onViewportResize);
 
     return () => {
-      vv?.removeEventListener("resize", onViewportChange);
-      vv?.removeEventListener("scroll", onViewportChange);
-      window.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("resize", onViewportResize);
     };
-  }, [isSearchFocused, ensureSearchVisible]);
-
-  useEffect(() => {
-    if (!isSearchFocused) return;
-
-    // After filtering re-renders, ensure input is still above keyboard
-    const t = window.setTimeout(() => ensureSearchVisible("auto"), 0);
-    return () => window.clearTimeout(t);
-  }, [searchQuery, isSearchFocused, ensureSearchVisible]);
+  }, [isSearchFocused, ensureSearchVisibleOnce]);
 
   const teams = ["Все команды", ...allTeams];
   const pointsOptions = [
@@ -829,7 +832,7 @@ const TeamBuilder = () => {
                 onFocus={() => {
                   setIsSearchFocused(true);
                   window.setTimeout(() => {
-                    ensureSearchVisible("smooth");
+                    scrollSearchIntoView("smooth");
                   }, 350);
                 }}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
