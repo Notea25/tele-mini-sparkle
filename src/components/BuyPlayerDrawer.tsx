@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,6 +53,39 @@ const BuyPlayerDrawer = ({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   // Default sort by price desc without showing UI indicator
   const [isDefaultSort, setIsDefaultSort] = useState(true);
+  
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const drawerContentRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll search input into view when keyboard appears
+  const scrollSearchIntoView = useCallback(() => {
+    const inputEl = searchInputRef.current;
+    const drawerEl = drawerContentRef.current;
+    if (!inputEl || !drawerEl) return;
+    
+    // Scroll the input to be visible at the top of the drawer content
+    inputEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+  
+  // Keep the search visible when keyboard opens / viewport changes
+  useEffect(() => {
+    if (!isSearchFocused) return;
+    
+    const vv = window.visualViewport;
+    
+    const onViewportChange = () => {
+      // Small delay to let the viewport settle
+      window.setTimeout(scrollSearchIntoView, 50);
+    };
+    
+    vv?.addEventListener("resize", onViewportChange);
+    vv?.addEventListener("scroll", onViewportChange);
+    
+    return () => {
+      vv?.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("scroll", onViewportChange);
+    };
+  }, [isSearchFocused, scrollSearchIntoView]);
 
   // Apply initial position filter when drawer opens
   useEffect(() => {
@@ -173,7 +206,7 @@ const BuyPlayerDrawer = ({
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-background max-h-[90vh]">
-        <div className="p-4 overflow-y-auto max-h-[85vh]">
+        <div ref={drawerContentRef} className="p-4 overflow-y-auto max-h-[85vh]">
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-foreground text-xl font-bold">Доступные игроки</h2>
@@ -194,6 +227,7 @@ const BuyPlayerDrawer = ({
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Поиск"
                 value={searchQuery}
@@ -201,7 +235,11 @@ const BuyPlayerDrawer = ({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                onFocus={() => setIsSearchFocused(true)}
+                onFocus={() => {
+                  setIsSearchFocused(true);
+                  // Scroll to search after keyboard appears
+                  window.setTimeout(scrollSearchIntoView, 350);
+                }}
                 onBlur={() => setIsSearchFocused(false)}
                 className="pl-10 pr-10 bg-card border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
               />
