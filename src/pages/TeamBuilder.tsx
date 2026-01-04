@@ -832,7 +832,7 @@ const TeamBuilder = () => {
                     ensureSearchVisible("smooth");
                   }, 350);
                 }}
-                onBlur={() => setIsSearchFocused(false)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
                 className="pl-10 pr-10 h-10 bg-card border-border rounded-xl text-foreground placeholder:text-muted-foreground"
               />
               {searchQuery && (
@@ -973,7 +973,7 @@ const TeamBuilder = () => {
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
                 className="pl-10 pr-10 h-10 bg-card border-border rounded-xl text-foreground placeholder:text-muted-foreground"
               />
               {searchQuery && (

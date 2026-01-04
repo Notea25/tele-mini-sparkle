@@ -240,7 +240,7 @@ const BuyPlayerDrawer = ({
                   // Scroll to search after keyboard appears
                   window.setTimeout(scrollSearchIntoView, 350);
                 }}
-                onBlur={() => setIsSearchFocused(false)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
                 className="pl-10 pr-10 bg-card border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
               />
               {searchQuery && (
