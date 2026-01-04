@@ -176,8 +176,8 @@ const BuyPlayerDrawer = ({
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent
-        className="bg-background max-h-[90vh]"
-        style={{ height: `calc(90vh - ${keyboardInset}px)` }}
+        className="bg-background h-[90dvh] max-h-[90dvh] overflow-hidden"
+        style={{ paddingBottom: keyboardInset }}
       >
         <div className="p-4 flex flex-col h-full">
           {/* Header */}
@@ -210,12 +210,7 @@ const BuyPlayerDrawer = ({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                onFocus={() => {
-                  setIsSearchFocused(true);
-                  window.setTimeout(() => {
-                    searchInputRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                  }, 50);
-                }}
+                onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
                 className="pl-10 pr-10 bg-card border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
               />
@@ -321,7 +316,7 @@ const BuyPlayerDrawer = ({
           </div>
 
           {/* Results */}
-          <div className="flex-1 overflow-y-auto" style={{ paddingBottom: 16 }}>
+          <div className="flex-1 overflow-y-auto" style={{ paddingBottom: Math.max(16, keyboardInset) }}>
             {/* Table header */}
             <div className="flex items-center px-3 py-1 text-xs text-muted-foreground">
               <button
