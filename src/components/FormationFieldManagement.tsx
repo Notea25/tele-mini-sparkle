@@ -1,19 +1,5 @@
 import footballFieldNew from "@/assets/football-field-new.png";
 import playerJerseyNew from "@/assets/player-jersey-new.png";
-import jerseyDinamoMinsk from "@/assets/jerseys/dinamoJersey.png";
-import jerseyBate from "@/assets/jerseys/bateJersey.png";
-import jerseyBateGk from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
-import jerseyDinamoBrest from "@/assets/jerseys/brestJersey.png";
-import jerseyMlVitebsk from "@/assets/jerseys/mlJersey.png";
-import jerseyMlVitebskGk from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
-import jerseySlavia from "@/assets/jerseys/slaviaJersey.png";
-import jerseySlaviaGk from "@/assets/jerseys/goalkeeperJerseys/slaviaGoalkeeperJersey.png";
-import jerseyNeman from "@/assets/jerseys/nemanJersey.png";
-import jerseyMinsk from "@/assets/jerseys/minskJersey.png";
-import jerseyTorpedo from "@/assets/jerseys/torpedoJersey.png";
-import jerseyVitebsk from "@/assets/jerseys/vitebskJersey.png";
-import jerseyVitebskGk from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
-import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
@@ -357,8 +343,8 @@ const FormationFieldManagement = ({
               alt={player.name}
               className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
               style={{
-                width: `${cardSize.width * 1.5}px`,
-                top: `-${cardSize.height * 0.12}px`,
+                width: `${cardSize.width * 1.5 * 1.5}px`,
+                top: `-${cardSize.height * 0.15}px`,
               }}
               onError={(e) => {
                 e.currentTarget.src = playerJerseyNew;
