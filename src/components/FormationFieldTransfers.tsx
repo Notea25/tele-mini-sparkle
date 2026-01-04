@@ -18,7 +18,7 @@ import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import { X, Plus } from "lucide-react";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import getJerseyForTeam from "@/hooks/getJerseyForTeam.tsx";
+import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
 
 interface PlayerData {
   id: number;
