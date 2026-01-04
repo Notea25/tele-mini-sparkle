@@ -395,6 +395,10 @@ const BuyPlayerDrawer = ({
                     <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
 
                     <button
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (canBuy) onBuyPlayer(player as PlayerData);

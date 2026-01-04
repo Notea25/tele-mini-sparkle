@@ -1165,6 +1165,10 @@ const TeamBuilder = () => {
 
               {/* Add/Remove button */}
               <button
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 onClick={() => togglePlayer(player.id)}
                 className={`w-6 h-6 ml-2 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
                   isSelected ? "bg-muted hover:bg-muted/80" : "bg-primary hover:bg-primary/90"
