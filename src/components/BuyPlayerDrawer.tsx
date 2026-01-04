@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Plus, Minus, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, ChevronDown, X } from "lucide-react";
 import { PlayerData, allPlayers, allTeams } from "@/lib/teamData";
 import { clubLogos } from "@/lib/clubLogos";
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -52,34 +51,8 @@ const BuyPlayerDrawer = ({
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const keyboardInset = useKeyboardInset();
-  const [visualViewportHeight, setVisualViewportHeight] = useState(() => {
-    const vv = window.visualViewport;
-    return Math.round(vv?.height ?? window.innerHeight);
-  });
-  const searchInputRef = useRef<HTMLInputElement>(null);
   // Default sort by price desc without showing UI indicator
   const [isDefaultSort, setIsDefaultSort] = useState(true);
-
-  // Keep track of the visible viewport height (important for mobile keyboard)
-  useEffect(() => {
-    const vv = window.visualViewport;
-
-    const update = () => {
-      setVisualViewportHeight(Math.round(vv?.height ?? window.innerHeight));
-    };
-
-    update();
-    vv?.addEventListener("resize", update);
-    vv?.addEventListener("scroll", update);
-    window.addEventListener("resize", update);
-
-    return () => {
-      vv?.removeEventListener("resize", update);
-      vv?.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
 
   // Apply initial position filter when drawer opens
   useEffect(() => {
@@ -199,15 +172,8 @@ const BuyPlayerDrawer = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent
-        className="bg-background mt-0 overflow-hidden"
-        style={{
-          height: Math.round(visualViewportHeight * 0.9),
-          maxHeight: Math.round(visualViewportHeight * 0.9),
-          bottom: keyboardInset,
-        }}
-      >
-        <div className="p-4 flex flex-col h-full">
+      <DrawerContent className="bg-background max-h-[90vh]">
+        <div className="p-4 overflow-y-auto max-h-[85vh]">
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-foreground text-xl font-bold">Доступные игроки</h2>
@@ -216,21 +182,18 @@ const BuyPlayerDrawer = ({
             </button>
           </div>
 
-          {/* Budget info - hidden when search is focused */}
-          {!isSearchFocused && (
-            <div className="bg-card border border-border rounded-xl h-10 px-3 mb-2 flex justify-between items-center">
-              <span className="text-muted-foreground text-sm">Доступный бюджет:</span>
-              <span className="text-primary font-semibold text-sm">{currentBudget.toFixed(1)}</span>
-            </div>
-          )}
+          {/* Budget info */}
+          <div className="bg-card border border-border rounded-xl h-10 px-3 mb-2 flex justify-between items-center">
+            <span className="text-muted-foreground text-sm">Доступный бюджет:</span>
+            <span className="text-primary font-semibold text-sm">{currentBudget.toFixed(1)}</span>
+          </div>
 
           {/* Filters section */}
-          <div className={`space-y-2 ${isSearchFocused ? "mb-2" : "mb-3"}`}>
+          <div className="space-y-2 mb-3">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
-                ref={searchInputRef}
                 type="text"
                 placeholder="Поиск"
                 value={searchQuery}
@@ -248,7 +211,6 @@ const BuyPlayerDrawer = ({
                   onClick={() => {
                     setSearchQuery("");
                     setCurrentPage(1);
-                    searchInputRef.current?.focus();
                   }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -300,15 +262,15 @@ const BuyPlayerDrawer = ({
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground text-sm">Цена:</span>
                   <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
-                    <button
-                      onClick={() => { setPriceFrom(Math.max(3, priceFrom - 1)); setCurrentPage(1); }}
+                    <button 
+                      onClick={() => { setPriceFrom(Math.max(3, priceFrom - 1)); setCurrentPage(1); }} 
                       className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
                     >
                       <Minus className="w-3 h-3 text-primary-foreground" />
                     </button>
                     <span className="text-foreground text-sm w-9 text-center">{priceFrom.toFixed(1)}</span>
-                    <button
-                      onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }}
+                    <button 
+                      onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }} 
                       className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
                     >
                       <Plus className="w-3 h-3 text-primary-foreground" />
@@ -316,15 +278,15 @@ const BuyPlayerDrawer = ({
                   </div>
                   <span className="text-muted-foreground text-sm">—</span>
                   <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
-                    <button
-                      onClick={() => { setPriceTo(Math.max(priceFrom, priceTo - 1)); setCurrentPage(1); }}
+                    <button 
+                      onClick={() => { setPriceTo(Math.max(priceFrom, priceTo - 1)); setCurrentPage(1); }} 
                       className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
                     >
                       <Minus className="w-3 h-3 text-primary-foreground" />
                     </button>
                     <span className="text-foreground text-sm w-9 text-center">{priceTo.toFixed(1)}</span>
-                    <button
-                      onClick={() => { setPriceTo(Math.min(14, priceTo + 1)); setCurrentPage(1); }}
+                    <button 
+                      onClick={() => { setPriceTo(Math.min(14, priceTo + 1)); setCurrentPage(1); }} 
                       className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
                     >
                       <Plus className="w-3 h-3 text-primary-foreground" />
@@ -343,105 +305,101 @@ const BuyPlayerDrawer = ({
             )}
           </div>
 
-          {/* Results */}
-          <div className="flex-1 overflow-y-auto" style={{ paddingBottom: Math.max(16, keyboardInset) }}>
-            {/* Table header */}
-            <div className="flex items-center px-3 py-1 text-xs text-muted-foreground">
-              <button
-                className={`flex-1 flex items-center gap-1 text-left ${sortField === "name" ? "text-primary" : ""}`}
-                onClick={() => handleSort("name")}
-              >
-                Игрок {getSortIcon("name")}
-              </button>
-              <button
-                className={`w-12 flex items-center justify-center gap-1 ${sortField === "points" ? "text-primary" : ""}`}
-                onClick={() => handleSort("points")}
-              >
-                Очки {getSortIcon("points")}
-              </button>
-              <button
-                className={`w-12 flex items-center justify-center gap-1 ${sortField === "price" ? "text-primary" : ""}`}
-                onClick={() => handleSort("price")}
-              >
-                Цена {getSortIcon("price")}
-              </button>
-              <span className="w-10"></span>
-            </div>
-
-            {/* Player list */}
-            <div className="space-y-2 mb-4">
-              {paginatedPlayers.map((player) => {
-                const canBuy = canBuyPlayer(player);
-                return (
-                  <div
-                    key={player.id}
-                    className={`bg-card rounded-xl px-3 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${!canBuy ? "opacity-50" : ""}`}
-                    onClick={() => onPlayerClick?.(player as PlayerData)}
-                  >
-                    <div className="flex-1 flex items-center gap-2 min-w-0">
-                      {clubLogos[player.team] && (
-                        <img
-                          src={clubLogos[player.team]}
-                          alt={player.team}
-                          className="w-5 h-5 object-contain flex-shrink-0"
-                        />
-                      )}
-                      <span className="text-foreground font-medium text-sm truncate">{player.name}</span>
-                      <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
-                    </div>
-
-                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
-
-                    <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
-
-                    <button
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (canBuy) onBuyPlayer(player as PlayerData);
-                      }}
-                      disabled={!canBuy}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        canBuy
-                          ? "bg-primary hover:bg-primary/90"
-                          : "bg-muted cursor-not-allowed"
-                      }`}
-                    >
-                      <Plus
-                        className={`w-4 h-4 ${canBuy ? "text-primary-foreground" : "text-muted-foreground"}`}
-                      />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-50"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <span className="text-muted-foreground text-sm">
-                  {currentPage} / {totalPages}
-                </span>
-                <button
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                  disabled={currentPage === totalPages}
-                  className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-50"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            )}
+          {/* Table header */}
+          <div className="flex items-center px-3 py-1 text-xs text-muted-foreground">
+            <button
+              className={`flex-1 flex items-center gap-1 text-left ${sortField === "name" ? "text-primary" : ""}`}
+              onClick={() => handleSort("name")}
+            >
+              Игрок {getSortIcon("name")}
+            </button>
+            <button
+              className={`w-12 flex items-center justify-center gap-1 ${sortField === "points" ? "text-primary" : ""}`}
+              onClick={() => handleSort("points")}
+            >
+              Очки {getSortIcon("points")}
+            </button>
+            <button
+              className={`w-12 flex items-center justify-center gap-1 ${sortField === "price" ? "text-primary" : ""}`}
+              onClick={() => handleSort("price")}
+            >
+              Цена {getSortIcon("price")}
+            </button>
+            <span className="w-10"></span>
           </div>
+
+          {/* Player list */}
+          <div className="space-y-2 mb-4">
+            {paginatedPlayers.map((player) => {
+              const canBuy = canBuyPlayer(player);
+              return (
+                <div
+                  key={player.id}
+                  className={`bg-card rounded-xl px-3 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${!canBuy ? "opacity-50" : ""}`}
+                  onClick={() => onPlayerClick?.(player as PlayerData)}
+                >
+                  <div className="flex-1 flex items-center gap-2 min-w-0">
+                    {clubLogos[player.team] && (
+                      <img 
+                        src={clubLogos[player.team]} 
+                        alt={player.team}
+                        className="w-5 h-5 object-contain flex-shrink-0"
+                      />
+                    )}
+                    <span className="text-foreground font-medium text-sm truncate">{player.name}</span>
+                    <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
+                  </div>
+                  
+                  <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">
+                    {player.points}
+                  </span>
+                  
+                  <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">
+                    {player.price}
+                  </span>
+                  
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (canBuy) onBuyPlayer(player as PlayerData);
+                    }}
+                    disabled={!canBuy}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      canBuy
+                        ? "bg-primary hover:bg-primary/90"
+                        : "bg-muted cursor-not-allowed"
+                    }`}
+                  >
+                    <Plus className={`w-4 h-4 ${canBuy ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2">
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-50"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <span className="text-muted-foreground text-sm">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-50"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+
         </div>
       </DrawerContent>
     </Drawer>
