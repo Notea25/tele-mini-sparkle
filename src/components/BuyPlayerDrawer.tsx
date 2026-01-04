@@ -50,6 +50,7 @@ const BuyPlayerDrawer = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   // Default sort by price desc without showing UI indicator
   const [isDefaultSort, setIsDefaultSort] = useState(true);
 
@@ -200,6 +201,8 @@ const BuyPlayerDrawer = ({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
                 className="pl-10 pr-10 bg-card border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
               />
               {searchQuery && (
@@ -216,85 +219,90 @@ const BuyPlayerDrawer = ({
               )}
             </div>
 
-            {/* Team filter */}
-            <Select value={selectedTeam} onValueChange={(v) => { setSelectedTeam(v); setCurrentPage(1); }}>
-              <SelectTrigger className="h-10 bg-card border-border rounded-xl text-foreground text-sm w-full focus:ring-2 focus:ring-primary focus:ring-offset-0">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border">
-                {teams.map((team) => (
-                  <SelectItem key={team} value={team}>
-                    <div className="flex items-center gap-2">
-                      {team !== "Все команды" && clubLogos[team] && (
-                        <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
-                      )}
-                      <span>{team}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Collapsible filters - hidden when search is focused */}
+            {!isSearchFocused && (
+              <>
+                {/* Team filter */}
+                <Select value={selectedTeam} onValueChange={(v) => { setSelectedTeam(v); setCurrentPage(1); }}>
+                  <SelectTrigger className="h-10 bg-card border-border rounded-xl text-foreground text-sm w-full focus:ring-2 focus:ring-primary focus:ring-offset-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border">
+                    {teams.map((team) => (
+                      <SelectItem key={team} value={team}>
+                        <div className="flex items-center gap-2">
+                          {team !== "Все команды" && clubLogos[team] && (
+                            <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
+                          )}
+                          <span>{team}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-            {/* Position filters */}
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-              {filters.map((filter) => (
-                <Button
-                  key={filter}
-                  onClick={() => { setActiveFilter(filter); setCurrentPage(1); }}
-                  className={`rounded-full h-8 px-4 text-sm whitespace-nowrap ${
-                    activeFilter === filter
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
-                  }`}
-                >
-                  {filter}
-                </Button>
-              ))}
-            </div>
+                {/* Position filters */}
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+                  {filters.map((filter) => (
+                    <Button
+                      key={filter}
+                      onClick={() => { setActiveFilter(filter); setCurrentPage(1); }}
+                      className={`rounded-full h-8 px-4 text-sm whitespace-nowrap ${
+                        activeFilter === filter
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-card text-muted-foreground hover:bg-card/80 border border-border"
+                      }`}
+                    >
+                      {filter}
+                    </Button>
+                  ))}
+                </div>
 
-            {/* Price range */}
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-sm">Цена:</span>
-              <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
-                <button 
-                  onClick={() => { setPriceFrom(Math.max(3, priceFrom - 1)); setCurrentPage(1); }} 
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                >
-                  <Minus className="w-3 h-3 text-primary-foreground" />
-                </button>
-                <span className="text-foreground text-sm w-9 text-center">{priceFrom.toFixed(1)}</span>
-                <button 
-                  onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }} 
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                >
-                  <Plus className="w-3 h-3 text-primary-foreground" />
-                </button>
-              </div>
-              <span className="text-muted-foreground text-sm">—</span>
-              <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
-                <button 
-                  onClick={() => { setPriceTo(Math.max(priceFrom, priceTo - 1)); setCurrentPage(1); }} 
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                >
-                  <Minus className="w-3 h-3 text-primary-foreground" />
-                </button>
-                <span className="text-foreground text-sm w-9 text-center">{priceTo.toFixed(1)}</span>
-                <button 
-                  onClick={() => { setPriceTo(Math.min(14, priceTo + 1)); setCurrentPage(1); }} 
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                >
-                  <Plus className="w-3 h-3 text-primary-foreground" />
-                </button>
-              </div>
-              {hasActiveFilters && (
-                <button
-                  onClick={handleResetFilters}
-                  className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
+                {/* Price range */}
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground text-sm">Цена:</span>
+                  <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+                    <button 
+                      onClick={() => { setPriceFrom(Math.max(3, priceFrom - 1)); setCurrentPage(1); }} 
+                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                    >
+                      <Minus className="w-3 h-3 text-primary-foreground" />
+                    </button>
+                    <span className="text-foreground text-sm w-9 text-center">{priceFrom.toFixed(1)}</span>
+                    <button 
+                      onClick={() => { setPriceFrom(Math.min(priceFrom + 1, priceTo)); setCurrentPage(1); }} 
+                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                    >
+                      <Plus className="w-3 h-3 text-primary-foreground" />
+                    </button>
+                  </div>
+                  <span className="text-muted-foreground text-sm">—</span>
+                  <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+                    <button 
+                      onClick={() => { setPriceTo(Math.max(priceFrom, priceTo - 1)); setCurrentPage(1); }} 
+                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                    >
+                      <Minus className="w-3 h-3 text-primary-foreground" />
+                    </button>
+                    <span className="text-foreground text-sm w-9 text-center">{priceTo.toFixed(1)}</span>
+                    <button 
+                      onClick={() => { setPriceTo(Math.min(14, priceTo + 1)); setCurrentPage(1); }} 
+                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                    >
+                      <Plus className="w-3 h-3 text-primary-foreground" />
+                    </button>
+                  </div>
+                  {hasActiveFilters && (
+                    <button
+                      onClick={handleResetFilters}
+                      className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Table header */}
