@@ -953,6 +953,94 @@ const TeamManagement = () => {
           : [];
         const validIds = new Set(validOptions.map(opt => opt.id));
 
+        // Build contextual error messages for invalid swap targets
+        const swapInvalidMessages: Record<number, string> = {};
+        if (currentPlayer) {
+          const POSITION_KEY: Record<string, "GK" | "DEF" | "MID" | "FWD"> = {
+            "ВР": "GK",
+            "ЗЩ": "DEF",
+            "ПЗ": "MID",
+            "НП": "FWD",
+          };
+
+          const LIMITS: Record<"GK" | "DEF" | "MID" | "FWD", { min: number; max: number }> = {
+            GK: { min: 1, max: 1 },
+            DEF: { min: 3, max: 5 },
+            MID: { min: 2, max: 5 },
+            FWD: { min: 1, max: 3 },
+          };
+
+          const baseCounts = {
+            GK: mainSquadPlayers.filter((p) => p.position === "ВР").length,
+            DEF: mainSquadPlayers.filter((p) => p.position === "ЗЩ").length,
+            MID: mainSquadPlayers.filter((p) => p.position === "ПЗ").length,
+            FWD: mainSquadPlayers.filter((p) => p.position === "НП").length,
+          };
+
+          const getReason = (fieldOutPos: string, fieldInPos: string): string => {
+            const outKey = POSITION_KEY[fieldOutPos];
+            const inKey = POSITION_KEY[fieldInPos];
+            if (!outKey || !inKey) return "Замена невозможна";
+
+            const next = { ...baseCounts } as typeof baseCounts;
+            next[outKey] -= 1;
+            next[inKey] += 1;
+
+            const belowMin = (key: keyof typeof next) => next[key] < LIMITS[key].min;
+            const aboveMax = (key: keyof typeof next) => next[key] > LIMITS[key].max;
+
+            const minMessage = (key: keyof typeof next) => {
+              switch (key) {
+                case "GK":
+                  return "На поле должен быть хотя бы 1 вратарь";
+                case "DEF":
+                  return "На поле должно быть минимум 3 защитника";
+                case "MID":
+                  return "На поле должно быть минимум 2 полузащитника";
+                case "FWD":
+                  return "На поле должно быть минимум 1 нападающий";
+              }
+            };
+
+            const maxMessage = (key: keyof typeof next) => {
+              switch (key) {
+                case "GK":
+                  return "На поле не может быть 2 вратаря";
+                case "DEF":
+                  return "На поле не может быть более 5 защитников";
+                case "MID":
+                  return "На поле не может быть более 5 полузащитников";
+                case "FWD":
+                  return "На поле не может быть более 3 нападающих";
+              }
+            };
+
+            // Priority 1: user removes someone → don't break minimums (especially for removed position)
+            if (belowMin(outKey)) return minMessage(outKey);
+            if (belowMin("GK")) return minMessage("GK");
+            if (belowMin("DEF")) return minMessage("DEF");
+            if (belowMin("MID")) return minMessage("MID");
+            if (belowMin("FWD")) return minMessage("FWD");
+
+            // Priority 2: user adds someone → don't exceed maximums (especially for incoming position)
+            if (aboveMax(inKey)) return maxMessage(inKey);
+            if (aboveMax("GK")) return maxMessage("GK");
+            if (aboveMax("DEF")) return maxMessage("DEF");
+            if (aboveMax("MID")) return maxMessage("MID");
+            if (aboveMax("FWD")) return maxMessage("FWD");
+
+            return "Замена невозможна - нет подходящей схемы";
+          };
+
+          for (const t of swapTargets) {
+            if (validIds.has(t.id)) continue;
+
+            const fieldOutPos = currentPlayer.isOnBench ? t.position : currentPlayer.position;
+            const fieldInPos = currentPlayer.isOnBench ? currentPlayer.position : t.position;
+            swapInvalidMessages[t.id] = getReason(fieldOutPos, fieldInPos);
+          }
+        }
+
         return (
           <PlayerCard
             player={currentPlayer || null}
@@ -968,6 +1056,7 @@ const TeamManagement = () => {
             hidePointsBreakdown={true}
             swapablePlayers={swapTargets}
             validSwapIds={validIds}
+            swapInvalidMessages={swapInvalidMessages}
             onSwapSelect={(targetPlayerId) => {
               handleSwapConfirm(selectedPlayerForCard, targetPlayerId);
               setSelectedPlayerForCard(null);

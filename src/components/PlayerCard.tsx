@@ -151,6 +151,7 @@ interface PlayerCardProps {
   // New props for inline swap in management
   swapablePlayers?: SwapablePlayer[];
   validSwapIds?: Set<number>;
+  swapInvalidMessages?: Record<number, string>;
   onSwapSelect?: (targetPlayerId: number) => void;
 }
 
@@ -172,6 +173,7 @@ const PlayerCard = ({
   canBuy = true,
   swapablePlayers = [],
   validSwapIds = new Set(),
+  swapInvalidMessages = {},
   onSwapSelect,
 }: PlayerCardProps) => {
   const [selectedSwapTarget, setSelectedSwapTarget] = useState<number | null>(null);
@@ -513,7 +515,7 @@ const PlayerCard = ({
                           if (isValid) {
                             setSelectedSwapTarget(isSelected ? null : swapPlayer.id);
                           } else {
-                            toast.error(getValidationMessage());
+                            toast.error(swapInvalidMessages[swapPlayer.id] ?? getValidationMessage());
                           }
                         }}
                         className={`grid grid-cols-2 gap-4 p-2 rounded-lg cursor-pointer transition-all ${
