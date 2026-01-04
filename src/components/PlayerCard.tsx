@@ -415,7 +415,14 @@ const PlayerCard = ({
           {/* Swap Player Selection Section - only for management variant */}
           {variant === "management" && swapablePlayers.length > 0 && (
             <div className="mt-6">
-              <h3 className="text-foreground text-sm font-bold mb-3 text-left">Выберите игрока для замены</h3>
+              <h3 className="text-foreground text-sm font-bold mb-3 text-left">Выбери игрока для замены</h3>
+              
+              {/* Column Headers */}
+              <div className="grid grid-cols-2 gap-4 mb-2">
+                <span className="text-muted-foreground text-xs text-left">Игрок</span>
+                <span className="text-muted-foreground text-xs text-left">Играет против</span>
+              </div>
+              
               <ScrollArea className="h-[180px]">
                 <div className="space-y-2 pr-2">
                   {swapablePlayers.map((swapPlayer) => {
@@ -426,8 +433,14 @@ const PlayerCard = ({
                     // Generate next opponent for swap player
                     const { upcomingMatches: swapUpcoming } = generateClubSchedule(swapPlayer.team, swapPlayer.id);
                     const nextMatch = swapUpcoming[0];
-                    const nextOpponentText = nextMatch ? `(${nextMatch.home ? "Д" : "Г"}) ${nextMatch.opponent}` : "";
                     const nextOpponentLogo = nextMatch?.logo || clubLogo;
+                    
+                    // Position label
+                    const positionLabel = swapPlayer.position === "ВР" ? "ВР" 
+                      : swapPlayer.position === "ЗЩ" ? "ЗАЩ"
+                      : swapPlayer.position === "ПЗ" ? "ПЗ"
+                      : swapPlayer.position === "НП" ? "НАП"
+                      : swapPlayer.position;
 
                     // Get validation error message
                     const getValidationMessage = () => {
@@ -459,7 +472,7 @@ const PlayerCard = ({
                             toast.error(getValidationMessage());
                           }
                         }}
-                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all ${
+                        className={`grid grid-cols-2 gap-4 p-2 rounded-lg cursor-pointer transition-all ${
                           isSelected 
                             ? "bg-primary/20 border border-primary" 
                             : isValid 
@@ -467,54 +480,52 @@ const PlayerCard = ({
                               : "bg-secondary/20 opacity-50 blur-[0.5px]"
                         } ${isValid && swapPlayer.hasRedCard ? "border border-destructive/50" : ""}`}
                       >
-                        {/* Selection circle */}
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                          isSelected 
-                            ? "border-primary bg-primary" 
-                            : isValid 
-                              ? "border-muted-foreground" 
-                              : "border-muted"
-                        }`}>
-                          {isSelected && (
-                            <div className="w-2 h-2 rounded-full bg-primary-foreground" />
+                        {/* Player column: logo, name, position, badges */}
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img 
+                            src={swapPlayerLogo} 
+                            alt={swapPlayer.team} 
+                            className="w-5 h-5 object-contain flex-shrink-0" 
+                          />
+                          <span className={`text-sm font-medium truncate ${isValid ? "text-foreground" : "text-muted-foreground"}`}>
+                            {swapPlayer.name}
+                          </span>
+                          <span className="text-muted-foreground text-xs flex-shrink-0">{positionLabel}</span>
+                          {swapPlayer.isInjured && (
+                            <img src={injuryBadge} alt="injury" className="w-4 h-4 flex-shrink-0" />
+                          )}
+                          {swapPlayer.hasRedCard && (
+                            <img src={redCardBadge} alt="red card" className="w-4 h-4 flex-shrink-0" />
                           )}
                         </div>
 
-                        {/* Club logo */}
-                        <img 
-                          src={swapPlayerLogo} 
-                          alt={swapPlayer.team} 
-                          className="w-6 h-6 object-contain flex-shrink-0" 
-                        />
-
-                        {/* Player name */}
-                        <span className={`text-sm font-medium flex-1 text-left ${isValid ? "text-foreground" : "text-muted-foreground"}`}>
-                          {swapPlayer.name}
-                        </span>
-
-                        {/* Next opponent */}
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                        {/* Opponent column: logo, abbreviation, home/away, selection circle */}
+                        <div className="flex items-center gap-1.5">
                           <img 
                             src={nextOpponentLogo} 
                             alt="opponent" 
-                            className="w-4 h-4 object-contain" 
+                            className="w-4 h-4 object-contain flex-shrink-0" 
                           />
-                          <span className="text-xs text-muted-foreground">
-                            {nextOpponentText}
+                          <span className="text-muted-foreground text-xs">
+                            {nextMatch?.opponent || ""}
                           </span>
-                        </div>
-
-                        {/* Injury/Red card badges */}
-                        {(swapPlayer.isInjured || swapPlayer.hasRedCard) && (
-                          <div className="flex items-center gap-1 flex-shrink-0">
-                            {swapPlayer.isInjured && (
-                              <img src={injuryBadge} alt="injury" className="w-4 h-4" />
-                            )}
-                            {swapPlayer.hasRedCard && (
-                              <img src={redCardBadge} alt="red card" className="w-4 h-4" />
+                          <span className="text-muted-foreground text-xs">
+                            {nextMatch?.home ? "Д" : "Г"}
+                          </span>
+                          
+                          {/* Selection circle - pushed to the right */}
+                          <div className={`ml-auto w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                            isSelected 
+                              ? "border-primary bg-primary" 
+                              : isValid 
+                                ? "border-muted-foreground" 
+                                : "border-muted"
+                          }`}>
+                            {isSelected && (
+                              <div className="w-2 h-2 rounded-full bg-primary-foreground" />
                             )}
                           </div>
-                        )}
+                        </div>
                       </div>
                     );
                   })}
