@@ -951,13 +951,16 @@ const Transfers = () => {
           />
         </div>
       ) : (
-        <div className="px-4 mt-6 pb-14">
-          <h2 className="text-foreground text-xl font-bold mb-4">Состав команды</h2>
-
-          {Object.entries(playersByPosition).map(([position, positionPlayers]) =>
-            renderListSection(position, positionPlayers),
-          )}
-        </div>
+        <>
+          <div className="px-4 mt-6">
+            <h2 className="text-foreground text-xl font-bold mb-4">Состав команды</h2>
+          </div>
+          <div className="px-4">
+            {Object.entries(playersByPosition).map(([position, positionPlayers]) =>
+              renderListSection(position, positionPlayers),
+            )}
+          </div>
+        </>
       )}
 
       {/* Divider between selected players and available players */}
