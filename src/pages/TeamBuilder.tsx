@@ -851,11 +851,14 @@ const TeamBuilder = () => {
             </div>
           </div>
 
-          {/* Collapsible filters - hidden when search is focused */}
-          {!isSearchFocused && (
-            <>
-              {/* Teams Filter */}
-              <div className="px-4 mt-2 relative z-20">
+          {/* Collapsible filters - animated hide when search is focused */}
+          <div 
+            className={`transition-all duration-300 ease-out overflow-hidden ${
+              isSearchFocused ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'
+            }`}
+          >
+            {/* Teams Filter */}
+            <div className="px-4 mt-2 relative z-20">
                 <Select value={selectedTeam} onValueChange={handleTeamChange}>
                   <SelectTrigger className="w-full h-10 bg-card border-border rounded-xl text-foreground cursor-pointer">
                     <SelectValue placeholder="Все команды" />
@@ -937,9 +940,8 @@ const TeamBuilder = () => {
                     </button>
                   )}
                 </div>
-              </div>
-            </>
-          )}
+            </div>
+          </div>
         </>
       )}
 
@@ -987,11 +989,14 @@ const TeamBuilder = () => {
             </div>
           </div>
 
-          {/* Collapsible filters for List View - hidden when search is focused */}
-          {!isSearchFocused && (
-            <>
-              {/* Teams Filter for List View */}
-              <div className="px-4 mt-2 relative z-20">
+          {/* Collapsible filters for List View - animated hide when search is focused */}
+          <div 
+            className={`transition-all duration-300 ease-out overflow-hidden ${
+              isSearchFocused ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'
+            }`}
+          >
+            {/* Teams Filter for List View */}
+            <div className="px-4 mt-2 relative z-20">
                 <Select value={selectedTeam} onValueChange={handleTeamChange}>
                   <SelectTrigger className="w-full h-10 bg-card border-border rounded-xl text-foreground cursor-pointer">
                     <SelectValue placeholder="Все команды" />
@@ -1071,11 +1076,10 @@ const TeamBuilder = () => {
                     >
                       <X className="w-4 h-4" />
                     </button>
-                  )}
-                </div>
+                )}
               </div>
-            </>
-          )}
+            </div>
+          </div>
         </>
       )}
 
