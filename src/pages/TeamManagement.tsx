@@ -949,6 +949,7 @@ const TeamManagement = () => {
           onSetCaptain={setCaptain}
           onSetViceCaptain={setViceCaptain}
           variant="management"
+          hidePointsBreakdown={true}
           onSwap={(playerId) => {
             setSelectedPlayerForCard(null);
             handlePlayerSwap(playerId);
