@@ -182,14 +182,16 @@ const BuyPlayerDrawer = ({
             </button>
           </div>
 
-          {/* Budget info */}
-          <div className="bg-card border border-border rounded-xl h-10 px-3 mb-2 flex justify-between items-center">
-            <span className="text-muted-foreground text-sm">Доступный бюджет:</span>
-            <span className="text-primary font-semibold text-sm">{currentBudget.toFixed(1)}</span>
-          </div>
+          {/* Budget info - hidden when search is focused */}
+          {!isSearchFocused && (
+            <div className="bg-card border border-border rounded-xl h-10 px-3 mb-2 flex justify-between items-center">
+              <span className="text-muted-foreground text-sm">Доступный бюджет:</span>
+              <span className="text-primary font-semibold text-sm">{currentBudget.toFixed(1)}</span>
+            </div>
+          )}
 
           {/* Filters section */}
-          <div className="space-y-2 mb-3">
+          <div className={`space-y-2 ${isSearchFocused ? 'mb-2' : 'mb-3'}`}>
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
