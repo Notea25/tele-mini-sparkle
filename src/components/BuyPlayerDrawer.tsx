@@ -53,9 +53,33 @@ const BuyPlayerDrawer = ({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const keyboardInset = useKeyboardInset();
+  const [visualViewportHeight, setVisualViewportHeight] = useState(() => {
+    const vv = window.visualViewport;
+    return Math.round(vv?.height ?? window.innerHeight);
+  });
   const searchInputRef = useRef<HTMLInputElement>(null);
   // Default sort by price desc without showing UI indicator
   const [isDefaultSort, setIsDefaultSort] = useState(true);
+
+  // Keep track of the visible viewport height (important for mobile keyboard)
+  useEffect(() => {
+    const vv = window.visualViewport;
+
+    const update = () => {
+      setVisualViewportHeight(Math.round(vv?.height ?? window.innerHeight));
+    };
+
+    update();
+    vv?.addEventListener("resize", update);
+    vv?.addEventListener("scroll", update);
+    window.addEventListener("resize", update);
+
+    return () => {
+      vv?.removeEventListener("resize", update);
+      vv?.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
   // Apply initial position filter when drawer opens
   useEffect(() => {
@@ -176,8 +200,12 @@ const BuyPlayerDrawer = ({
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent
-        className="bg-background h-[90dvh] max-h-[90dvh] overflow-hidden"
-        style={{ paddingBottom: keyboardInset }}
+        className="bg-background mt-0 overflow-hidden"
+        style={{
+          height: Math.round(visualViewportHeight * 0.9),
+          maxHeight: Math.round(visualViewportHeight * 0.9),
+          bottom: keyboardInset,
+        }}
       >
         <div className="p-4 flex flex-col h-full">
           {/* Header */}
