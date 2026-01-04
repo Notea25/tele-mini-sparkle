@@ -458,23 +458,51 @@ const PlayerCard = ({
                       : swapPlayer.position === "НП" ? "НАП"
                       : swapPlayer.position;
 
-                    // Get validation error message
+                    // Get validation error message based on swap direction
                     const getValidationMessage = () => {
-                      const currentPlayerPos = player.position;
-                      const targetPos = swapPlayer.position;
+                      const currentPlayerPos = player.position; // Player being viewed (will go OUT)
+                      const targetPos = swapPlayer.position; // Player in the list (will come IN)
                       
-                      if (currentPlayerPos === "ВР" || targetPos === "ВР") {
+                      // If positions are same, it should be valid - something else is wrong
+                      if (currentPlayerPos === targetPos) {
+                        return "Замена невозможна";
+                      }
+                      
+                      // When swapping, current player goes OUT (their position loses 1)
+                      // and target player comes IN (their position gains 1)
+                      
+                      // Goalkeeper logic
+                      if (currentPlayerPos === "ВР" && targetPos !== "ВР") {
                         return "На поле должен быть хотя бы 1 вратарь";
                       }
-                      if (currentPlayerPos === "ЗЩ" || targetPos === "ЗЩ") {
-                        return "Защитников должно быть от 3 до 5";
+                      if (targetPos === "ВР" && currentPlayerPos !== "ВР") {
+                        return "На поле не может быть 2 вратаря";
                       }
-                      if (currentPlayerPos === "ПЗ" || targetPos === "ПЗ") {
-                        return "Полузащитников должно быть от 2 до 5";
+                      
+                      // Defender logic (min 3, max 5)
+                      if (currentPlayerPos === "ЗЩ" && targetPos !== "ЗЩ") {
+                        return "На поле должно быть минимум 3 защитника";
                       }
-                      if (currentPlayerPos === "НП" || targetPos === "НП") {
-                        return "Нападающих должно быть от 1 до 3";
+                      if (targetPos === "ЗЩ" && currentPlayerPos !== "ЗЩ") {
+                        return "На поле не может быть более 5 защитников";
                       }
+                      
+                      // Midfielder logic (min 2, max 5)
+                      if (currentPlayerPos === "ПЗ" && targetPos !== "ПЗ") {
+                        return "На поле должно быть минимум 2 полузащитника";
+                      }
+                      if (targetPos === "ПЗ" && currentPlayerPos !== "ПЗ") {
+                        return "На поле не может быть более 5 полузащитников";
+                      }
+                      
+                      // Forward logic (min 1, max 3)
+                      if (currentPlayerPos === "НП" && targetPos !== "НП") {
+                        return "На поле должен быть минимум 1 нападающий";
+                      }
+                      if (targetPos === "НП" && currentPlayerPos !== "НП") {
+                        return "На поле не может быть более 3 нападающих";
+                      }
+                      
                       return "Замена невозможна - нет подходящей схемы";
                     };
 
