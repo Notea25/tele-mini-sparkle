@@ -155,8 +155,25 @@ const YourTeam = () => {
         </button>
       </div>
 
+      {/* Boost chips - same layout as Transfers */}
+      <div className="px-4 mt-4">
+        <div className="flex gap-2">
+          {currentBoostInfo && (
+            <div className="flex-1 bg-card rounded-xl p-3 flex items-center gap-3 border border-primary">
+              <div className="w-10 h-10 flex items-center justify-center">
+                <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-8 h-8 object-contain" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-foreground text-sm font-semibold">{currentBoostInfo.label}</span>
+                <span className="text-primary text-[10px]">Активен</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Tabs */}
-      <div className="px-4 mt-6">
+      <div className="px-4 mt-4">
         <div className="flex bg-secondary rounded-lg p-1">
           <Button
             onClick={() => setActiveTab("formation")}
