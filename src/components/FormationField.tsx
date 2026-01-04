@@ -249,8 +249,8 @@ const FormationField = ({
               alt={player.name}
               className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
               style={{
-                width: `${cardSize.width * 1.5 * 1.5}px`,
-                top: `-${cardSize.height * 0.15}px`,
+                width: `${cardSize.width * 3}px`,
+                top: `-${cardSize.height * 0.12}px`,
               }}
               onError={(e) => {
                 // Fallback на стандартную форму
