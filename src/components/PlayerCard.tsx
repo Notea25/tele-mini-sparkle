@@ -425,7 +425,23 @@ const PlayerCard = ({
               
               <ScrollArea className="h-[180px]">
                 <div className="space-y-2 pr-2">
-                  {swapablePlayers.map((swapPlayer) => {
+                  {/* Sort players: valid first (by position priority), then invalid */}
+                  {[...swapablePlayers]
+                    .sort((a, b) => {
+                      const aValid = validSwapIds.has(a.id);
+                      const bValid = validSwapIds.has(b.id);
+                      
+                      // Valid players first
+                      if (aValid && !bValid) return -1;
+                      if (!aValid && bValid) return 1;
+                      
+                      // Among same validity, sort by position: ВР > ЗЩ > ПЗ > НП
+                      const positionOrder: Record<string, number> = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
+                      const aOrder = positionOrder[a.position] ?? 4;
+                      const bOrder = positionOrder[b.position] ?? 4;
+                      return aOrder - bOrder;
+                    })
+                    .map((swapPlayer) => {
                     const isValid = validSwapIds.has(swapPlayer.id);
                     const isSelected = selectedSwapTarget === swapPlayer.id;
                     const swapPlayerLogo = clubLogos[swapPlayer.team] || getClubLogo(swapPlayer.team) || clubLogo;
@@ -499,7 +515,7 @@ const PlayerCard = ({
                           )}
                         </div>
 
-                        {/* Opponent column: logo, abbreviation, home/away, selection circle */}
+                        {/* Opponent column: logo, abbreviation (home/away), selection circle */}
                         <div className="flex items-center gap-1.5">
                           <img 
                             src={nextOpponentLogo} 
@@ -507,10 +523,7 @@ const PlayerCard = ({
                             className="w-4 h-4 object-contain flex-shrink-0" 
                           />
                           <span className="text-muted-foreground text-xs">
-                            {nextMatch?.opponent || ""}
-                          </span>
-                          <span className="text-muted-foreground text-xs">
-                            {nextMatch?.home ? "Д" : "Г"}
+                            {nextMatch?.opponent || ""} ({nextMatch?.home ? "Д" : "Г"})
                           </span>
                           
                           {/* Selection circle - pushed to the right */}
