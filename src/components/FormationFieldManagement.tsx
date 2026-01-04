@@ -25,7 +25,7 @@ import injuryBadge from "@/assets/injury-badge.svg";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import getJerseyForTeam from "@/hooks/getJerseyForTeam.tsx";
+import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
 
 interface PlayerData {
   id: number;
