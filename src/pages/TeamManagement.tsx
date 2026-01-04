@@ -937,25 +937,48 @@ const TeamManagement = () => {
       <div className="h-20" />
 
       {/* Player Card Drawer */}
-      {selectedPlayerForCard !== null && (
-        <PlayerCard
-          player={allPlayers.find((p) => p.id === selectedPlayerForCard) || null}
-          isOpen={selectedPlayerForCard !== null}
-          onClose={() => setSelectedPlayerForCard(null)}
-          isSelected={true}
-          onToggleSelect={() => {}}
-          isCaptain={captain === selectedPlayerForCard}
-          isViceCaptain={viceCaptain === selectedPlayerForCard}
-          onSetCaptain={setCaptain}
-          onSetViceCaptain={setViceCaptain}
-          variant="management"
-          hidePointsBreakdown={true}
-          onSwap={(playerId) => {
-            setSelectedPlayerForCard(null);
-            handlePlayerSwap(playerId);
-          }}
-        />
-      )}
+      {selectedPlayerForCard !== null && (() => {
+        const currentPlayer = allPlayers.find((p) => p.id === selectedPlayerForCard);
+        // Get swap targets for the current player
+        const swapTargets = currentPlayer 
+          ? (currentPlayer.isOnBench 
+              ? mainSquadPlayers 
+              : benchPlayers
+            ).filter(p => p.id !== selectedPlayerForCard)
+          : [];
+        
+        // Calculate valid swap IDs
+        const validOptions = currentPlayer 
+          ? getValidSwapOptions(mainSquadPlayers, benchPlayers, currentPlayer)
+          : [];
+        const validIds = new Set(validOptions.map(opt => opt.id));
+
+        return (
+          <PlayerCard
+            player={currentPlayer || null}
+            isOpen={selectedPlayerForCard !== null}
+            onClose={() => setSelectedPlayerForCard(null)}
+            isSelected={true}
+            onToggleSelect={() => {}}
+            isCaptain={captain === selectedPlayerForCard}
+            isViceCaptain={viceCaptain === selectedPlayerForCard}
+            onSetCaptain={setCaptain}
+            onSetViceCaptain={setViceCaptain}
+            variant="management"
+            hidePointsBreakdown={true}
+            swapablePlayers={swapTargets}
+            validSwapIds={validIds}
+            onSwapSelect={(targetPlayerId) => {
+              handleSwapConfirm(selectedPlayerForCard, targetPlayerId);
+              setSelectedPlayerForCard(null);
+            }}
+            onSwap={(playerId) => {
+              setSelectedPlayerForCard(null);
+              handlePlayerSwap(playerId);
+            }}
+          />
+        );
+      })()}
 
 
       {/* Boost Drawer */}

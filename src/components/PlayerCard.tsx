@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
 import playerPhoto from "@/assets/player-photo.png";
 import clubLogo from "@/assets/club-logo.png";
 import { clubLogos, getClubLogo } from "@/lib/clubLogos";
+import injuryBadge from "@/assets/injury-badge.png";
+import redCardBadge from "@/assets/red-card-badge.png";
 
 // Club abbreviations for form/calendar display
 const clubAbbreviations: Record<string, string> = {
@@ -114,6 +119,19 @@ interface PlayerData {
   price: number;
 }
 
+interface SwapablePlayer {
+  id: number;
+  name: string;
+  team: string;
+  position: string;
+  points?: number;
+  hasRedCard?: boolean;
+  isInjured?: boolean;
+  isOnBench?: boolean;
+  nextOpponent?: string;
+  nextOpponentHome?: boolean;
+}
+
 interface PlayerCardProps {
   player: PlayerData | null;
   isOpen: boolean;
@@ -130,6 +148,10 @@ interface PlayerCardProps {
   onBuy?: (playerId: number) => void;
   hidePointsBreakdown?: boolean;
   canBuy?: boolean;
+  // New props for inline swap in management
+  swapablePlayers?: SwapablePlayer[];
+  validSwapIds?: Set<number>;
+  onSwapSelect?: (targetPlayerId: number) => void;
 }
 
 const PlayerCard = ({
@@ -148,7 +170,11 @@ const PlayerCard = ({
   onBuy,
   hidePointsBreakdown = false,
   canBuy = true,
+  swapablePlayers = [],
+  validSwapIds = new Set(),
+  onSwapSelect,
 }: PlayerCardProps) => {
+  const [selectedSwapTarget, setSelectedSwapTarget] = useState<number | null>(null);
   if (!player) return null;
 
   const positionNames: Record<string, string> = {
@@ -385,6 +411,117 @@ const PlayerCard = ({
               </div>
             </div>
           )}
+
+          {/* Swap Player Selection Section - only for management variant */}
+          {variant === "management" && swapablePlayers.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-foreground text-sm font-bold mb-3 text-left">Выберите игрока для замены</h3>
+              <ScrollArea className="h-[180px]">
+                <div className="space-y-2 pr-2">
+                  {swapablePlayers.map((swapPlayer) => {
+                    const isValid = validSwapIds.has(swapPlayer.id);
+                    const isSelected = selectedSwapTarget === swapPlayer.id;
+                    const swapPlayerLogo = clubLogos[swapPlayer.team] || getClubLogo(swapPlayer.team) || clubLogo;
+                    
+                    // Generate next opponent for swap player
+                    const { upcomingMatches: swapUpcoming } = generateClubSchedule(swapPlayer.team, swapPlayer.id);
+                    const nextMatch = swapUpcoming[0];
+                    const nextOpponentText = nextMatch ? `(${nextMatch.home ? "Д" : "Г"}) ${nextMatch.opponent}` : "";
+                    const nextOpponentLogo = nextMatch?.logo || clubLogo;
+
+                    // Get validation error message
+                    const getValidationMessage = () => {
+                      const currentPlayerPos = player.position;
+                      const targetPos = swapPlayer.position;
+                      
+                      if (currentPlayerPos === "ВР" || targetPos === "ВР") {
+                        return "На поле должен быть хотя бы 1 вратарь";
+                      }
+                      if (currentPlayerPos === "ЗЩ" || targetPos === "ЗЩ") {
+                        return "Защитников должно быть от 3 до 5";
+                      }
+                      if (currentPlayerPos === "ПЗ" || targetPos === "ПЗ") {
+                        return "Полузащитников должно быть от 2 до 5";
+                      }
+                      if (currentPlayerPos === "НП" || targetPos === "НП") {
+                        return "Нападающих должно быть от 1 до 3";
+                      }
+                      return "Замена невозможна - нет подходящей схемы";
+                    };
+
+                    return (
+                      <div
+                        key={swapPlayer.id}
+                        onClick={() => {
+                          if (isValid) {
+                            setSelectedSwapTarget(isSelected ? null : swapPlayer.id);
+                          } else {
+                            toast.error(getValidationMessage());
+                          }
+                        }}
+                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all ${
+                          isSelected 
+                            ? "bg-primary/20 border border-primary" 
+                            : isValid 
+                              ? "bg-secondary/30 hover:bg-secondary/50" 
+                              : "bg-secondary/20 opacity-50 blur-[0.5px]"
+                        } ${isValid && swapPlayer.hasRedCard ? "border border-destructive/50" : ""}`}
+                      >
+                        {/* Selection circle */}
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                          isSelected 
+                            ? "border-primary bg-primary" 
+                            : isValid 
+                              ? "border-muted-foreground" 
+                              : "border-muted"
+                        }`}>
+                          {isSelected && (
+                            <div className="w-2 h-2 rounded-full bg-primary-foreground" />
+                          )}
+                        </div>
+
+                        {/* Club logo */}
+                        <img 
+                          src={swapPlayerLogo} 
+                          alt={swapPlayer.team} 
+                          className="w-6 h-6 object-contain flex-shrink-0" 
+                        />
+
+                        {/* Player name */}
+                        <span className={`text-sm font-medium flex-1 text-left ${isValid ? "text-foreground" : "text-muted-foreground"}`}>
+                          {swapPlayer.name}
+                        </span>
+
+                        {/* Next opponent */}
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          <img 
+                            src={nextOpponentLogo} 
+                            alt="opponent" 
+                            className="w-4 h-4 object-contain" 
+                          />
+                          <span className="text-xs text-muted-foreground">
+                            {nextOpponentText}
+                          </span>
+                        </div>
+
+                        {/* Injury/Red card badges */}
+                        {(swapPlayer.isInjured || swapPlayer.hasRedCard) && (
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            {swapPlayer.isInjured && (
+                              <img src={injuryBadge} alt="injury" className="w-4 h-4" />
+                            )}
+                            {swapPlayer.hasRedCard && (
+                              <img src={redCardBadge} alt="red card" className="w-4 h-4" />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+            </div>
+          )}
         </div>
 
         <DrawerFooter className="px-6 pb-6">
@@ -416,17 +553,32 @@ const PlayerCard = ({
           ) : variant === "management" ? (
             <div className="flex gap-3 w-full">
               <Button
-                onClick={onClose}
+                onClick={() => {
+                  setSelectedSwapTarget(null);
+                  onClose();
+                }}
                 className="flex-1 rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
               >
-                Закрыть
+                Отмена
               </Button>
               <Button
                 onClick={() => {
-                  onSwap?.(player.id);
-                  onClose();
+                  if (selectedSwapTarget) {
+                    onSwapSelect?.(selectedSwapTarget);
+                    setSelectedSwapTarget(null);
+                    onClose();
+                  } else {
+                    // Fallback to old swap mode
+                    onSwap?.(player.id);
+                    onClose();
+                  }
                 }}
-                className="flex-1 rounded-lg h-12 font-medium bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+                disabled={swapablePlayers.length > 0 && !selectedSwapTarget}
+                className={`flex-1 rounded-lg h-12 font-medium ${
+                  swapablePlayers.length > 0 && !selectedSwapTarget
+                    ? "bg-muted text-muted-foreground cursor-not-allowed"
+                    : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+                }`}
               >
                 Заменить
               </Button>
