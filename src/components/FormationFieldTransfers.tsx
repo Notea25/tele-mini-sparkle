@@ -5,7 +5,7 @@ import jerseyBate from "@/assets/jerseys/bateJersey.png";
 import jerseyBateGk from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
 import jerseyDinamoBrest from "@/assets/jerseys/brestJersey.png";
 import jerseyMlVitebsk from "@/assets/jerseys/mlJersey.png";
-import jerseyMlVitebskGk from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJerseys.png";
+import jerseyMlVitebskGk from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
 import jerseySlavia from "@/assets/jerseys/slaviaJersey.png";
 import jerseySlaviaGk from "@/assets/jerseys/goalkeeperJerseys/slaviaGoalkeeperJersey.png";
 import jerseyNeman from "@/assets/jerseys/nemanJersey.png";
