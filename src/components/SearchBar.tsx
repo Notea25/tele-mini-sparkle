@@ -5,18 +5,25 @@ import { useState, useRef } from "react";
 interface SearchBarProps {
   value?: string;
   onChange?: (value: string) => void;
+  onFocusChange?: (focused: boolean) => void;
 }
 
-const SearchBar = ({ value, onChange }: SearchBarProps) => {
+const SearchBar = ({ value, onChange, onFocusChange }: SearchBarProps) => {
   const [isActive, setIsActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFocus = () => {
     setIsActive(true);
+    onFocusChange?.(true);
     // Scroll input into view when keyboard appears
     setTimeout(() => {
       inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 300);
+  };
+
+  const handleBlur = () => {
+    setIsActive(false);
+    onFocusChange?.(false);
   };
 
   const handleClear = () => {
@@ -45,7 +52,7 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
             borderColor: isActive ? "rgba(255, 255, 255, 0.2)" : "#2D2B3E",
           }}
           onFocus={handleFocus}
-          onBlur={() => setIsActive(false)}
+          onBlur={handleBlur}
         />
         {value && value.length > 0 && (
           <button
