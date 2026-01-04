@@ -25,34 +25,7 @@ import injuryBadge from "@/assets/injury-badge.svg";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 import { useState, useEffect, useMemo, useCallback } from "react";
-
-// Helper function to get jersey based on team and position
-const getJerseyForTeam = (team: string, position?: string) => {
-  switch (team) {
-    case "Динамо-Минск":
-      return jerseyDinamoMinsk;
-    case "БАТЭ":
-      return position === "ВР" ? jerseyBateGk : jerseyBate;
-    case "Динамо-Брест":
-      return jerseyDinamoBrest;
-    case "МЛ Витебск":
-      return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
-    case "Славия-Мозырь":
-      return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
-    case "Арсенал":
-      return position === "ВР" ? jerseyArsenalGk : playerJerseyNew;
-    case "Неман":
-      return jerseyNeman;
-    case "Минск":
-      return jerseyMinsk;
-    case "Торпедо-БелАЗ":
-      return jerseyTorpedo;
-    case "Витебск":
-      return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
-    default:
-      return playerJerseyNew;
-  }
-};
+import getJerseyForTeam from "@/hooks/getJerseyForTeam.tsx";
 
 interface PlayerData {
   id: number;
