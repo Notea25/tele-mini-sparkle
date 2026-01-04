@@ -16,7 +16,7 @@ import jerseyVitebsk from "@/assets/jerseys/vitebskJersey.png";
 import jerseyVitebskGk from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
 import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
 import { BoostChip } from "@/components/BoostDrawer";
-import getJerseyForTeam from "@/hooks/getJerseyForTeam.tsx";
+import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
 
 interface TransferRecord {
   type: "swap" | "buy" | "sell";
