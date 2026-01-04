@@ -25,11 +25,10 @@ import pglLogo from "@/assets/pgl-logo.png";
 import fastcupLogo from "@/assets/fastcup-logo.png";
 import eslLogo from "@/assets/esl-logo.png";
 import extraligaLogo from "@/assets/extraliga-logo.png";
-
 import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
-
+//
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 const FAVORITES_STORAGE_KEY = "fantasyFavoriteLeagues";
 
