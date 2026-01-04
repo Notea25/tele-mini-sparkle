@@ -2,30 +2,38 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, AlertCircle } from "lucide-react";
 import jerseyDinamoMinsk from "@/assets/jerseys/dinamoJersey.png";
+import jerseyDinamoMinskGk from "@/assets/jerseys/goalkeeperJerseys/dinamoGoalkeeperJersey.png";
 import jerseyBate from "@/assets/jerseys/bateJersey.png";
 import jerseyBateGk from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
 import jerseyDinamoBrest from "@/assets/jerseys/brestJersey.png";
+import jerseyDinamoBrestGk from "@/assets/jerseys/goalkeeperJerseys/brestGoalkeeperJersey.png";
 import jerseyMlVitebsk from "@/assets/jerseys/mlJersey.png";
 import jerseyMlVitebskGk from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
 import jerseySlavia from "@/assets/jerseys/slaviaJersey.png";
 import jerseySlaviaGk from "@/assets/jerseys/goalkeeperJerseys/slaviaGoalkeeperJersey.png";
 import jerseyNeman from "@/assets/jerseys/nemanJersey.png";
+import jerseyNemanGk from "@/assets/jerseys/goalkeeperJerseys/nemanGoalkeeperJersey.png";
 import jerseyMinsk from "@/assets/jerseys/minskJersey.png";
+import jerseyMinskGk from "@/assets/jerseys/goalkeeperJerseys/minskGoalkeeperJersey.png";
 import jerseyTorpedo from "@/assets/jerseys/torpedoJersey.png";
+import jerseyTorpedoGk from "@/assets/jerseys/goalkeeperJerseys/torpedoGoalkeeperJersey.png";
 import jerseyVitebsk from "@/assets/jerseys/vitebskJersey.png";
 import jerseyVitebskGk from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
 import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
 import { BoostChip } from "@/components/BoostDrawer";
 
+jerseyDneprGk;
+jerseyDnepr;
+
 // Helper function to get jersey based on team and position
 const getJerseyForTeam = (team: string, position?: string) => {
   switch (team) {
     case "Динамо-Минск":
-      return jerseyDinamoMinsk;
+      return position === "ВР" ? jerseyDinamoMinskGk : jerseyDinamoMinsk;
     case "БАТЭ":
       return position === "ВР" ? jerseyBateGk : jerseyBate;
     case "Динамо-Брест":
-      return jerseyDinamoBrest;
+      return position === "ВР" ? jerseyDinamoBrestGk : jerseyDinamoBrest;
     case "МЛ Витебск":
       return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
     case "Славия-Мозырь":
@@ -33,13 +41,15 @@ const getJerseyForTeam = (team: string, position?: string) => {
     case "Арсенал":
       return position === "ВР" ? jerseyArsenalGk : jerseySlavia;
     case "Неман":
-      return jerseyNeman;
+      return position === "ВР" ? jerseyNemanGk : jerseyNeman;
     case "Минск":
-      return jerseyMinsk;
+      return position === "ВР" ? jerseyMinskGk : jerseyMinsk;
     case "Торпедо-БелАЗ":
-      return jerseyTorpedo;
+      return position === "ВР" ? jerseyTorpedoGk : jerseyTorpedo;
     case "Витебск":
       return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
+    case "Днепр":
+      return position === "ВР" ? jerseyDneprGk : jerseyDnepr;
     default:
       return jerseySlavia;
   }
