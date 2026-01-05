@@ -67,12 +67,15 @@ const SportCard = ({
         
         console.log('[SportCard] getMySquads response:', response);
         
-        if (response.success && response.data && Array.isArray(response.data)) {
-          console.log('[SportCard] Squads array:', response.data);
+        // API returns { success, status, data: [...squads] }
+        const squadsArray = response.data;
+        
+        if (response.success && squadsArray && Array.isArray(squadsArray)) {
+          console.log('[SportCard] Squads array:', squadsArray);
           console.log('[SportCard] Looking for league_id:', apiLeagueId, 'type:', typeof apiLeagueId);
           
           // Ensure type-safe comparison (both as numbers)
-          const existingSquad = response.data.find(squad => {
+          const existingSquad = squadsArray.find(squad => {
             console.log('[SportCard] Comparing squad.league_id:', squad.league_id, 'type:', typeof squad.league_id, 'with apiLeagueId:', apiLeagueId);
             return Number(squad.league_id) === Number(apiLeagueId);
           });
