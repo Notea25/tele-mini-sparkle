@@ -54,55 +54,33 @@ const SportCard = ({
     if (href && !comingSoon && !isNavigating) {
       setIsNavigating(true);
       
-      console.log('[SportCard] Clicked, apiLeagueId:', apiLeagueId);
-      
-      // Save the API league ID for use on other pages
       if (apiLeagueId) {
         localStorage.setItem('fantasySelectedLeagueId', apiLeagueId.toString());
       }
       
       try {
-        // Check if user has a squad for this league
         const response = await squadsApi.getMySquads();
-        
-        console.log('[SportCard] getMySquads response:', response);
-        
-        // API returns { success, status, data: [...squads] }
         const squadsArray = response.data;
         
         if (response.success && squadsArray && Array.isArray(squadsArray)) {
-          console.log('[SportCard] Squads array:', squadsArray);
-          console.log('[SportCard] Looking for league_id:', apiLeagueId, 'type:', typeof apiLeagueId);
-          
-          // Ensure type-safe comparison (both as numbers)
-          const existingSquad = squadsArray.find(squad => {
-            console.log('[SportCard] Comparing squad.league_id:', squad.league_id, 'type:', typeof squad.league_id, 'with apiLeagueId:', apiLeagueId);
-            return Number(squad.league_id) === Number(apiLeagueId);
-          });
-          
-          console.log('[SportCard] Found squad:', existingSquad);
+          const existingSquad = squadsArray.find(squad => 
+            Number(squad.league_id) === Number(apiLeagueId)
+          );
           
           if (existingSquad) {
-            // Save squad data for /league page
             localStorage.setItem('fantasyUserSquad', JSON.stringify(existingSquad));
             localStorage.setItem('fantasyHasTeam', 'true');
-            console.log('[SportCard] Navigating to /league');
             navigate('/league');
           } else {
-            // No squad for this league, go to create team
             localStorage.removeItem('fantasyUserSquad');
-            console.log('[SportCard] No squad found, navigating to /create-team');
             navigate('/create-team');
           }
         } else {
-          // No squads or error, go to create team
-          console.log('[SportCard] No squads data or error, navigating to /create-team');
           localStorage.removeItem('fantasyUserSquad');
           navigate('/create-team');
         }
       } catch (error) {
         console.error('[SportCard] Error checking squads:', error);
-        // On error, default to create team
         navigate('/create-team');
       } finally {
         setIsNavigating(false);
