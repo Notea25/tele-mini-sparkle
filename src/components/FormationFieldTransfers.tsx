@@ -37,45 +37,29 @@ interface FormationFieldTransfersProps {
 }
 
 // Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
-const TRANSFERS_FORMATION = {
-  ВР: { count: 2, row: 1 },
-  ЗЩ: { count: 5, row: 2 },
-  ПЗ: { count: 5, row: 3 },
-  НП: { count: 3, row: 4 },
-};
-
-// Get left percentage positions based on number of players in a row - uniform spacing
-function getColumnPositions(count: number): number[] {
-  switch (count) {
-    case 1:
-      return [50];
-    case 2:
-      return [37, 63];
-    case 3:
-      return [25, 50, 75];
-    case 4:
-      return [12.5, 37.5, 62.5, 87.5];
-    case 5:
-      return [10, 30, 50, 70, 90];
-    default:
-      return [50];
-  }
+interface FormationPosition {
+  position: string;
+  row: number;
+  col: number;
 }
 
-// Get CSS positioning for a player on the field
-const getPlayerPosition = (row: number, col: number) => {
-  const topPositions: Record<number, string> = {
-    1: "2%",
-    2: "22%",
-    3: "44%",
-    4: "66%",
-  };
-
-  return {
-    top: topPositions[row],
-    left: `${col}%`,
-  };
-};
+const TRANSFERS_FORMATION: FormationPosition[] = [
+  { position: "ВР", row: 1, col: 1 },
+  { position: "ВР", row: 1, col: 2 },
+  { position: "ЗЩ", row: 2, col: 1 },
+  { position: "ЗЩ", row: 2, col: 2 },
+  { position: "ЗЩ", row: 2, col: 3 },
+  { position: "ЗЩ", row: 2, col: 4 },
+  { position: "ЗЩ", row: 2, col: 5 },
+  { position: "ПЗ", row: 3, col: 1 },
+  { position: "ПЗ", row: 3, col: 2 },
+  { position: "ПЗ", row: 3, col: 3 },
+  { position: "ПЗ", row: 3, col: 4 },
+  { position: "ПЗ", row: 3, col: 5 },
+  { position: "НП", row: 4, col: 1 },
+  { position: "НП", row: 4, col: 2 },
+  { position: "НП", row: 4, col: 3 },
+];
 
 const FormationFieldTransfers = ({
   players,
@@ -385,75 +369,179 @@ const FormationFieldTransfers = ({
     [cardSize, getRemovedPlayerForSlot, onEmptySlotClick, truncateName],
   );
 
-  // Generate all slots for the fixed formation
-  const generateSlots = useCallback(() => {
-    const slots: { position: string; row: number; col: number; slotIndex: number }[] = [];
+  // Мемоизированный маппинг слотов (position-row-col -> slotIndex)
+  const slotIndexMap = useMemo(() => {
+    const map = new Map<string, number>();
+    const positionCounts = new Map<string, number>();
 
-    for (const [position, config] of Object.entries(TRANSFERS_FORMATION)) {
-      const cols = getColumnPositions(config.count);
-      for (let i = 0; i < config.count; i++) {
-        slots.push({ position, row: config.row, col: cols[i], slotIndex: i });
-      }
-    }
+    TRANSFERS_FORMATION.forEach((pos) => {
+      const count = positionCounts.get(pos.position) || 0;
+      const key = `${pos.position}-${pos.row}-${pos.col}`;
+      map.set(key, count);
+      positionCounts.set(pos.position, count + 1);
+    });
 
-    return slots;
+    return map;
   }, []);
 
-  const allSlots = useMemo(() => generateSlots(), [generateSlots]);
+  // Группировка по строкам с мемоизацией
+  const rows = useMemo(
+    () => ({
+      1: TRANSFERS_FORMATION.filter((slot) => slot.row === 1),
+      2: TRANSFERS_FORMATION.filter((slot) => slot.row === 2),
+      3: TRANSFERS_FORMATION.filter((slot) => slot.row === 3),
+      4: TRANSFERS_FORMATION.filter((slot) => slot.row === 4),
+    }),
+    [],
+  );
 
-  // Адаптация позиций под разные размеры карточек
-  const getAdaptedPlayerPosition = useCallback(
-    (row: number, col: number) => {
-      const baseTopPositions: Record<number, string> = {
-        1: "2%",
-        2: "22%",
-        3: "44%",
-        4: "66%",
-      };
+  // Получить slotIndex для слота
+  const getSlotIndex = useCallback(
+    (slot: FormationPosition) => {
+      const key = `${slot.position}-${slot.row}-${slot.col}`;
+      return slotIndexMap.get(key) || 0;
+    },
+    [slotIndexMap],
+  );
 
-      // Масштабируем вертикальные позиции в зависимости от размера карточки
-      const scaleFactor = cardSize.height / 84; // 84 - базовый размер для мобильных
+  // Мемоизированные функции для расчета отступов (из FormationField)
+  const getRowGap = useCallback((cardsInRow: number) => {
+    const width = window.innerWidth;
+    if (width <= 768) {
+      if (cardsInRow === 2) return 8;
+      if (cardsInRow === 3) return 6;
+      if (cardsInRow === 5) return 4;
+      return 4;
+    } else {
+      if (cardsInRow === 2) return 24;
+      if (cardsInRow === 3) return 20;
+      if (cardsInRow === 5) return 16;
+      return 16;
+    }
+  }, []);
 
-      let topPosition = baseTopPositions[row];
-      if (scaleFactor > 1) {
-        // Для больших карточек немного корректируем позиции
-        const baseValue = parseInt(topPosition);
-        const adjustedValue = baseValue - (scaleFactor - 1) * 2;
-        topPosition = `${Math.max(adjustedValue, 0)}%`;
+  const getVerticalSpacing = useCallback(
+    (rowIndex: number) => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        return cardSize.height * 0.1 * (rowIndex + 1);
+      } else {
+        return cardSize.height * 0.5 * (rowIndex + 1);
       }
-
-      return {
-        top: topPosition,
-        left: `${col}%`,
-      };
     },
     [cardSize.height],
+  );
+
+  // Расчет вертикальных отступов с мемоизацией
+  const rowSpacings = useMemo(
+    () => ({
+      row1: getVerticalSpacing(0),
+      row2: getVerticalSpacing(1),
+      row3: getVerticalSpacing(2),
+    }),
+    [getVerticalSpacing],
+  );
+
+  // Рассчитываем горизонтальные гэпы для каждой строки
+  const rowGaps = useMemo(
+    () => ({
+      row1: getRowGap(2),
+      row2: getRowGap(5),
+      row3: getRowGap(5),
+      row4: getRowGap(3),
+    }),
+    [getRowGap],
   );
 
   return (
     <div className="relative w-full">
       <img src={footballFieldNew} alt="Футбольное поле" className="w-full h-auto" loading="lazy" />
 
-      {allSlots.map((slot, idx) => {
-        const style = getAdaptedPlayerPosition(slot.row, slot.col);
-        const player = getPlayerForSlot(slot.position, slot.slotIndex);
-        const isOccupied = !!player;
-        const key = `${slot.position}-${slot.slotIndex}-${idx}`;
+      <div className="absolute inset-0">
+        {/* Вратари */}
+        <div
+          className="absolute left-0 right-0 flex justify-center"
+          style={{
+            top: "4%",
+            gap: `${rowGaps.row1}px`,
+          }}
+        >
+          {rows[1].map((slot) => {
+            const slotIndex = getSlotIndex(slot);
+            const player = getPlayerForSlot(slot.position, slotIndex);
+            const key = `${slot.position}-${slot.row}-${slot.col}`;
 
-        return (
-          <div
-            key={key}
-            className={`absolute flex flex-col items-center ${isOccupied ? "z-20" : "z-10"}`}
-            style={{
-              top: style.top,
-              left: style.left,
-              transform: "translateX(-50%)",
-            }}
-          >
-            {player ? renderPlayer(player) : renderEmptySlot(slot.position, slot.slotIndex)}
-          </div>
-        );
-      })}
+            return (
+              <div key={key}>
+                {player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Защитники */}
+        <div
+          className="absolute left-0 right-0 flex justify-center"
+          style={{
+            top: `calc(4% + ${cardSize.height}px + ${rowSpacings.row1}px)`,
+            gap: `${rowGaps.row2}px`,
+          }}
+        >
+          {rows[2].map((slot) => {
+            const slotIndex = getSlotIndex(slot);
+            const player = getPlayerForSlot(slot.position, slotIndex);
+            const key = `${slot.position}-${slot.row}-${slot.col}`;
+
+            return (
+              <div key={key}>
+                {player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Полузащитники */}
+        <div
+          className="absolute left-0 right-0 flex justify-center"
+          style={{
+            top: `calc(4% + ${cardSize.height * 2}px + ${rowSpacings.row1 + rowSpacings.row2}px)`,
+            gap: `${rowGaps.row3}px`,
+          }}
+        >
+          {rows[3].map((slot) => {
+            const slotIndex = getSlotIndex(slot);
+            const player = getPlayerForSlot(slot.position, slotIndex);
+            const key = `${slot.position}-${slot.row}-${slot.col}`;
+
+            return (
+              <div key={key}>
+                {player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Нападающие */}
+        <div
+          className="absolute left-0 right-0 flex justify-center"
+          style={{
+            top: `calc(4% + ${cardSize.height * 3}px + ${rowSpacings.row1 + rowSpacings.row2 + rowSpacings.row3}px)`,
+            gap: `${rowGaps.row4}px`,
+          }}
+        >
+          {rows[4].map((slot) => {
+            const slotIndex = getSlotIndex(slot);
+            const player = getPlayerForSlot(slot.position, slotIndex);
+            const key = `${slot.position}-${slot.row}-${slot.col}`;
+
+            return (
+              <div key={key}>
+                {player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
