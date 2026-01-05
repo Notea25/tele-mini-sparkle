@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { leaguesApi, teamsApi, usersApi, ApiResponse } from '@/lib/api';
+import { leaguesApi, teamsApi, usersApi, squadsApi, ApiResponse } from '@/lib/api';
 
 const BackendTest = () => {
   const [leagueResponse, setLeagueResponse] = useState<ApiResponse<unknown> | null>(null);
   const [teamsResponse, setTeamsResponse] = useState<ApiResponse<unknown> | null>(null);
   const [usersResponse, setUsersResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [squadsResponse, setSquadsResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
+  const [loadingSquads, setLoadingSquads] = useState(false);
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -52,6 +54,25 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingUsers(false);
+    }
+  };
+
+  const testSquadsApi = async () => {
+    setLoadingSquads(true);
+    try {
+      const result = await squadsApi.create({
+        name: 'Test Squad',
+        league_id: 116,
+        fav_team_id: 379,
+      });
+      setSquadsResponse(result);
+    } catch (err) {
+      setSquadsResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingSquads(false);
     }
   };
 
@@ -128,13 +149,18 @@ const BackendTest = () => {
         </Button>
 
         <Button onClick={testUsersApi} disabled={loadingUsers} variant="outline">
-          {loadingUsers ? 'Загрузка...' : 'Тест: /api/users/protected'}
+          {loadingUsers ? 'Загрузка...' : 'Тест: GET /api/users/protected'}
+        </Button>
+
+        <Button onClick={testSquadsApi} disabled={loadingSquads} variant="destructive">
+          {loadingSquads ? 'Загрузка...' : 'Тест: POST /api/squads/create'}
         </Button>
       </div>
 
       {renderResponse(leagueResponse, 'Ответ: Лиги')}
       {renderResponse(teamsResponse, 'Ответ: Команды')}
       {renderResponse(usersResponse, 'Ответ: Users Protected')}
+      {renderResponse(squadsResponse, 'Ответ: Squads Create')}
     </div>
   );
 };
