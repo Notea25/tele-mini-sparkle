@@ -235,7 +235,7 @@ const Index = () => {
       comingSoon: false,
       comingSoonYear: "2026",
       isLoading: isLoadingLeague,
-      apiLeagueId: belarusLeague?.id,
+      apiLeagueId: belarusLeague?.id ?? 116, // Fallback to 116 if API fails
     },
     {
       id: "hockey",
