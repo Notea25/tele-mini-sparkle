@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { leaguesApi, teamsApi, ApiResponse } from '@/lib/api';
+import { leaguesApi, teamsApi, usersApi, ApiResponse } from '@/lib/api';
 
 const BackendTest = () => {
   const [leagueResponse, setLeagueResponse] = useState<ApiResponse<unknown> | null>(null);
   const [teamsResponse, setTeamsResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [usersResponse, setUsersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -35,6 +37,21 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingTeams(false);
+    }
+  };
+
+  const testUsersApi = async () => {
+    setLoadingUsers(true);
+    try {
+      const result = await usersApi.getProtected();
+      setUsersResponse(result);
+    } catch (err) {
+      setUsersResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingUsers(false);
     }
   };
 
@@ -109,10 +126,15 @@ const BackendTest = () => {
         <Button onClick={testTeamsApi} disabled={loadingTeams} variant="secondary">
           {loadingTeams ? 'Загрузка...' : 'Тест: /api/teams/league_116'}
         </Button>
+
+        <Button onClick={testUsersApi} disabled={loadingUsers} variant="outline">
+          {loadingUsers ? 'Загрузка...' : 'Тест: /api/users/protected'}
+        </Button>
       </div>
 
       {renderResponse(leagueResponse, 'Ответ: Лиги')}
       {renderResponse(teamsResponse, 'Ответ: Команды')}
+      {renderResponse(usersResponse, 'Ответ: Users Protected')}
     </div>
   );
 };
