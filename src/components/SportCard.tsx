@@ -64,7 +64,8 @@ const SportCard = ({
         const response = await squadsApi.getMySquads();
         
         if (response.success && response.data && Array.isArray(response.data)) {
-          const existingSquad = response.data.find(squad => squad.league_id === apiLeagueId);
+          // Ensure type-safe comparison (both as numbers)
+          const existingSquad = response.data.find(squad => Number(squad.league_id) === Number(apiLeagueId));
           
           if (existingSquad) {
             // Save squad data for /league page
