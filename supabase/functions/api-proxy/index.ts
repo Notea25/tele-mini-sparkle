@@ -15,31 +15,24 @@ serve(async (req) => {
   }
 
   try {
-    const url = new URL(req.url);
-    const path = url.searchParams.get('path') || '/';
+    // Parse request body to get path, method, and body
+    const requestData = await req.json();
+    const { path = '/', method = 'GET', body: requestBody } = requestData;
     
-    console.log(`Proxying request to: ${BACKEND_URL}${path}`);
+    console.log(`Proxying ${method} request to: ${BACKEND_URL}${path}`);
     
-    // Build the request to the backend
     const backendUrl = `${BACKEND_URL}${path}`;
     
     const fetchOptions: RequestInit = {
-      method: req.method,
+      method: method,
       headers: {
         'Content-Type': 'application/json',
       },
     };
 
     // Forward body for POST/PUT/PATCH requests
-    if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
-      try {
-        const body = await req.text();
-        if (body) {
-          fetchOptions.body = body;
-        }
-      } catch {
-        // No body
-      }
+    if (['POST', 'PUT', 'PATCH'].includes(method) && requestBody) {
+      fetchOptions.body = JSON.stringify(requestBody);
     }
 
     console.log(`Fetching: ${backendUrl}`);
