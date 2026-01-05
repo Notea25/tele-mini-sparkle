@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { leaguesApi, teamsApi, usersApi, squadsApi, ApiResponse } from '@/lib/api';
+import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, ApiResponse } from '@/lib/api';
 
 const BackendTest = () => {
   const [leagueResponse, setLeagueResponse] = useState<ApiResponse<unknown> | null>(null);
@@ -8,11 +8,13 @@ const BackendTest = () => {
   const [usersResponse, setUsersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [squadsCreateResponse, setSquadsCreateResponse] = useState<ApiResponse<unknown> | null>(null);
   const [mySquadsResponse, setMySquadsResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [deadlineResponse, setDeadlineResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [loadingSquadsCreate, setLoadingSquadsCreate] = useState(false);
   const [loadingMySquads, setLoadingMySquads] = useState(false);
+  const [loadingDeadline, setLoadingDeadline] = useState(false);
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -90,6 +92,21 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingMySquads(false);
+    }
+  };
+
+  const testDeadlineApi = async () => {
+    setLoadingDeadline(true);
+    try {
+      const result = await toursApi.getDeadlineForNextTour(116);
+      setDeadlineResponse(result);
+    } catch (err) {
+      setDeadlineResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingDeadline(false);
     }
   };
 
@@ -176,6 +193,10 @@ const BackendTest = () => {
         <Button onClick={testMySquadsApi} disabled={loadingMySquads} variant="outline">
           {loadingMySquads ? 'Загрузка...' : 'Тест: GET /api/squads/my_squads'}
         </Button>
+
+        <Button onClick={testDeadlineApi} disabled={loadingDeadline} variant="secondary">
+          {loadingDeadline ? 'Загрузка...' : 'Тест: GET /api/tours/get_deadline_for_next_tour/116'}
+        </Button>
       </div>
 
       {renderResponse(leagueResponse, 'Ответ: Лиги')}
@@ -183,6 +204,7 @@ const BackendTest = () => {
       {renderResponse(usersResponse, 'Ответ: Users Protected')}
       {renderResponse(squadsCreateResponse, 'Ответ: Squads Create')}
       {renderResponse(mySquadsResponse, 'Ответ: My Squads')}
+      {renderResponse(deadlineResponse, 'Ответ: Deadline')}
     </div>
   );
 };

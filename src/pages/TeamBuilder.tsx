@@ -42,6 +42,7 @@ import homeIcon from "@/assets/home-icon.png";
 import { clubLogos } from "@/lib/clubLogos";
 
 import { allPlayers, allTeams } from "@/lib/teamData";
+import { toursApi } from "@/lib/api";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -134,11 +135,33 @@ const TeamBuilder = () => {
   };
 
   // Deadline countdown
-  const deadlineDate = new Date("2025-12-14T19:00:00");
-  const tournamentStartDate = new Date("2025-12-04T19:00:00"); // Tournament start (10 days before deadline)
+  const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
+  const [deadlineLoading, setDeadlineLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
 
+  // Fetch deadline from API
   useEffect(() => {
+    const fetchDeadline = async () => {
+      const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
+      try {
+        const response = await toursApi.getDeadlineForNextTour(Number(leagueId));
+        if (response.success && response.data?.deadline) {
+          setDeadlineDate(new Date(response.data.deadline));
+        }
+      } catch (error) {
+        console.error('Error fetching deadline:', error);
+      } finally {
+        setDeadlineLoading(false);
+      }
+    };
+    fetchDeadline();
+  }, []);
+
+  useEffect(() => {
+    if (!deadlineDate) return;
+
+    const tournamentStartDate = new Date(deadlineDate.getTime() - 10 * 24 * 60 * 60 * 1000); // 10 days before deadline
+
     const calculateTimeLeft = () => {
       const now = new Date();
       const difference = deadlineDate.getTime() - now.getTime();
@@ -162,7 +185,7 @@ const TeamBuilder = () => {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [deadlineDate]);
 
   useEffect(() => {
     const el = headerRef.current;
@@ -755,7 +778,9 @@ const TeamBuilder = () => {
           </Button>
         </div>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Дедлайн: 14.12.2025 в 19:00</span>
+          <span className="text-muted-foreground">
+            Дедлайн: {deadlineLoading ? '...' : deadlineDate ? `${deadlineDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })} в ${deadlineDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : '—'}
+          </span>
           <span className="text-foreground">
             {timeLeft.days} дн. {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
             {String(timeLeft.seconds).padStart(2, "0")}
