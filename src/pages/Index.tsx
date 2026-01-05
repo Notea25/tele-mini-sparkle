@@ -235,6 +235,7 @@ const Index = () => {
       comingSoon: false,
       comingSoonYear: "2026",
       isLoading: isLoadingLeague,
+      apiLeagueId: belarusLeague?.id,
     },
     {
       id: "hockey",
@@ -369,6 +370,7 @@ const Index = () => {
                 comingSoon={leagueData.comingSoon}
                 comingSoonYear={leagueData.comingSoonYear}
                 leagueId={leagueData.id}
+                apiLeagueId={'apiLeagueId' in leagueData ? leagueData.apiLeagueId : undefined}
                 isFavorite={favorites.includes(leagueData.id)}
                 onToggleFavorite={toggleFavorite}
                 hasTeam={leagueData.id === "football-belarus" && hasTeam}
