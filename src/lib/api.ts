@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://31.222.229.78';
+import { supabase } from "@/integrations/supabase/client";
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -16,48 +16,26 @@ interface ApiOptions {
 }
 
 export async function apiRequest<T>(endpoint: string, options: ApiOptions = {}): Promise<ApiResponse<T>> {
-  const { method = 'GET', body, headers = {} } = options;
-
-  const config: RequestInit = {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...headers,
-    },
-  };
-
-  if (body) {
-    config.body = JSON.stringify(body);
-  }
+  const { method = 'GET', body } = options;
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    
-    // Собираем заголовки ответа
-    const responseHeaders: Record<string, string> = {};
-    response.headers.forEach((value, key) => {
-      responseHeaders[key] = value;
+    const { data, error } = await supabase.functions.invoke('api-proxy', {
+      method: 'POST',
+      body: {
+        path: endpoint,
+        method,
+        body,
+      },
     });
 
-    let data: T | undefined;
-    const contentType = response.headers.get('content-type');
-    
-    if (contentType?.includes('application/json')) {
-      try {
-        data = await response.json();
-      } catch {
-        // JSON parsing failed
-      }
+    if (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
     }
 
-    return {
-      success: response.ok,
-      status: response.status,
-      statusText: response.statusText,
-      data,
-      headers: responseHeaders,
-      error: response.ok ? undefined : `${response.status} ${response.statusText}`,
-    };
+    return data as ApiResponse<T>;
   } catch (err) {
     return {
       success: false,
