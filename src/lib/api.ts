@@ -48,3 +48,15 @@ export async function apiRequest<T>(endpoint: string, options: ApiOptions = {}):
 export const leaguesApi = {
   getMainPage: (id: number) => apiRequest<unknown>(`/api/leagues/main_page_id_${id}`),
 };
+
+// Типы для команд
+export interface Team {
+  id: number;
+  name: string;
+  logo: string;
+}
+
+// Методы для работы с командами
+export const teamsApi = {
+  getByLeague: (leagueId: number) => apiRequest<Team[]>(`/api/teams/league_${leagueId}`),
+};
