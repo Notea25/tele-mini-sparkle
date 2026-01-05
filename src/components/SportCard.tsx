@@ -130,14 +130,8 @@ const SportCard = ({
                 <h4 className="text-foreground font-bold text-lg">{league}</h4>
                 {participants !== undefined && (
                   <p className="text-sm">
-                    {hasTeam && userRank !== undefined ? (
-                      <>
-                        <span className="text-primary font-semibold">{formatParticipants(userRank)}</span>
-                        <span className="text-muted-foreground"> из {formatParticipants(participants)} участников</span>
-                      </>
-                    ) : (
-                      <span className="text-muted-foreground">{formatParticipants(participants)} участников</span>
-                    )}
+                    <span className="text-primary font-semibold">{formatParticipants(userRank ?? 0)}</span>
+                    <span className="text-muted-foreground"> из {formatParticipants(participants)} участников</span>
                   </p>
                 )}
                 <p className="text-sm">
