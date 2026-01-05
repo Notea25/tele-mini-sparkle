@@ -6,11 +6,13 @@ const BackendTest = () => {
   const [leagueResponse, setLeagueResponse] = useState<ApiResponse<unknown> | null>(null);
   const [teamsResponse, setTeamsResponse] = useState<ApiResponse<unknown> | null>(null);
   const [usersResponse, setUsersResponse] = useState<ApiResponse<unknown> | null>(null);
-  const [squadsResponse, setSquadsResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [squadsCreateResponse, setSquadsCreateResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [mySquadsResponse, setMySquadsResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
-  const [loadingSquads, setLoadingSquads] = useState(false);
+  const [loadingSquadsCreate, setLoadingSquadsCreate] = useState(false);
+  const [loadingMySquads, setLoadingMySquads] = useState(false);
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -57,22 +59,37 @@ const BackendTest = () => {
     }
   };
 
-  const testSquadsApi = async () => {
-    setLoadingSquads(true);
+  const testSquadsCreateApi = async () => {
+    setLoadingSquadsCreate(true);
     try {
       const result = await squadsApi.create({
         name: 'Test Squad',
         league_id: 116,
         fav_team_id: 379,
       });
-      setSquadsResponse(result);
+      setSquadsCreateResponse(result);
     } catch (err) {
-      setSquadsResponse({
+      setSquadsCreateResponse({
         success: false,
         error: err instanceof Error ? err.message : 'Unknown error',
       });
     } finally {
-      setLoadingSquads(false);
+      setLoadingSquadsCreate(false);
+    }
+  };
+
+  const testMySquadsApi = async () => {
+    setLoadingMySquads(true);
+    try {
+      const result = await squadsApi.getMySquads();
+      setMySquadsResponse(result);
+    } catch (err) {
+      setMySquadsResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingMySquads(false);
     }
   };
 
@@ -152,15 +169,20 @@ const BackendTest = () => {
           {loadingUsers ? 'Загрузка...' : 'Тест: GET /api/users/protected'}
         </Button>
 
-        <Button onClick={testSquadsApi} disabled={loadingSquads} variant="destructive">
-          {loadingSquads ? 'Загрузка...' : 'Тест: POST /api/squads/create'}
+        <Button onClick={testSquadsCreateApi} disabled={loadingSquadsCreate} variant="destructive">
+          {loadingSquadsCreate ? 'Загрузка...' : 'Тест: POST /api/squads/create'}
+        </Button>
+
+        <Button onClick={testMySquadsApi} disabled={loadingMySquads} variant="outline">
+          {loadingMySquads ? 'Загрузка...' : 'Тест: GET /api/squads/my_squads'}
         </Button>
       </div>
 
       {renderResponse(leagueResponse, 'Ответ: Лиги')}
       {renderResponse(teamsResponse, 'Ответ: Команды')}
       {renderResponse(usersResponse, 'Ответ: Users Protected')}
-      {renderResponse(squadsResponse, 'Ответ: Squads Create')}
+      {renderResponse(squadsCreateResponse, 'Ответ: Squads Create')}
+      {renderResponse(mySquadsResponse, 'Ответ: My Squads')}
     </div>
   );
 };

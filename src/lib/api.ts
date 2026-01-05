@@ -75,12 +75,21 @@ export interface CreateSquadResponse {
   fav_team_id: number;
 }
 
+// Типы для получения сквадов пользователя
+export interface UserSquad {
+  id: number;
+  name: string;
+  league_id: number;
+  fav_team_id: number;
+}
+
 // Методы для работы со сквадами
 export const squadsApi = {
   create: (data: CreateSquadRequest) => apiRequest<CreateSquadResponse>('/api/squads/create', {
     method: 'POST',
     body: data,
   }),
+  getMySquads: () => apiRequest<UserSquad[]>('/api/squads/my_squads'),
 };
 
 // Методы для работы с пользователями
