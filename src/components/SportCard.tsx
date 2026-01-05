@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Play, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { getLeagueDestination } from "@/lib/onboardingUtils";
+import { squadsApi } from "@/lib/api";
 
 interface SportCardProps {
   title: string;
@@ -47,16 +48,46 @@ const SportCard = ({
   isLoading = false,
 }: SportCardProps) => {
   const navigate = useNavigate();
+  const [isNavigating, setIsNavigating] = useState(false);
 
-  const handleClick = () => {
-    if (href && !comingSoon) {
+  const handleClick = async () => {
+    if (href && !comingSoon && !isNavigating) {
+      setIsNavigating(true);
+      
       // Save the API league ID for use on other pages
       if (apiLeagueId) {
         localStorage.setItem('fantasySelectedLeagueId', apiLeagueId.toString());
       }
-      // Use smart destination based on user progress
-      const destination = getLeagueDestination();
-      navigate(destination);
+      
+      try {
+        // Check if user has a squad for this league
+        const response = await squadsApi.getMySquads();
+        
+        if (response.success && response.data && Array.isArray(response.data)) {
+          const existingSquad = response.data.find(squad => squad.league_id === apiLeagueId);
+          
+          if (existingSquad) {
+            // Save squad data for /league page
+            localStorage.setItem('fantasyUserSquad', JSON.stringify(existingSquad));
+            localStorage.setItem('fantasyHasTeam', 'true');
+            navigate('/league');
+          } else {
+            // No squad for this league, go to create team
+            localStorage.removeItem('fantasyUserSquad');
+            navigate('/create-team');
+          }
+        } else {
+          // No squads or error, go to create team
+          localStorage.removeItem('fantasyUserSquad');
+          navigate('/create-team');
+        }
+      } catch (error) {
+        console.error('Error checking squads:', error);
+        // On error, default to create team
+        navigate('/create-team');
+      } finally {
+        setIsNavigating(false);
+      }
     }
   };
 
