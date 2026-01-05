@@ -135,18 +135,42 @@ const TeamBuilder = () => {
   };
 
   // Deadline countdown
-  const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
-  const [deadlineLoading, setDeadlineLoading] = useState(true);
+  const [deadlineDate, setDeadlineDate] = useState<Date | null>(() => {
+    const cached = localStorage.getItem('fantasyDeadlineCache');
+    if (cached) {
+      const { deadline, leagueId, cachedAt } = JSON.parse(cached);
+      const cacheAge = Date.now() - cachedAt;
+      const currentLeagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
+      // Cache valid for 5 minutes and same league
+      if (cacheAge < 5 * 60 * 1000 && leagueId === currentLeagueId) {
+        return new Date(deadline);
+      }
+    }
+    return null;
+  });
+  const [deadlineLoading, setDeadlineLoading] = useState(!deadlineDate);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
 
-  // Fetch deadline from API
+  // Fetch deadline from API (only if not cached)
   useEffect(() => {
+    if (deadlineDate) {
+      setDeadlineLoading(false);
+      return;
+    }
+    
     const fetchDeadline = async () => {
       const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
       try {
         const response = await toursApi.getDeadlineForNextTour(Number(leagueId));
         if (response.success && response.data?.deadline) {
-          setDeadlineDate(new Date(response.data.deadline));
+          const deadline = new Date(response.data.deadline);
+          setDeadlineDate(deadline);
+          // Cache the deadline
+          localStorage.setItem('fantasyDeadlineCache', JSON.stringify({
+            deadline: response.data.deadline,
+            leagueId,
+            cachedAt: Date.now(),
+          }));
         }
       } catch (error) {
         console.error('Error fetching deadline:', error);
@@ -155,7 +179,7 @@ const TeamBuilder = () => {
       }
     };
     fetchDeadline();
-  }, []);
+  }, [deadlineDate]);
 
   useEffect(() => {
     if (!deadlineDate) return;
