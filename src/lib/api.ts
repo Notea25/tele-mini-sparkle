@@ -61,6 +61,28 @@ export const teamsApi = {
   getByLeague: (leagueId: number) => apiRequest<Team[]>(`/api/teams/league_${leagueId}`),
 };
 
+// Типы для создания команды
+export interface CreateSquadRequest {
+  name: string;
+  league_id: number;
+  fav_team_id: number;
+}
+
+export interface CreateSquadResponse {
+  id: number;
+  name: string;
+  league_id: number;
+  fav_team_id: number;
+}
+
+// Методы для работы со сквадами
+export const squadsApi = {
+  create: (data: CreateSquadRequest) => apiRequest<CreateSquadResponse>('/api/squads/create', {
+    method: 'POST',
+    body: data,
+  }),
+};
+
 // Методы для работы с пользователями
 export const usersApi = {
   getProtected: () => apiRequest<unknown>('/api/users/protected'),

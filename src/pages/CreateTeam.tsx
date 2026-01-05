@@ -9,7 +9,7 @@ import SportHeader from "@/components/SportHeader";
 
 import InfiniteClubCarousel from "@/components/InfiniteClubCarousel";
 import { useState, useMemo, useRef, useEffect } from "react";
-import { teamsApi, Team } from "@/lib/api";
+import { teamsApi, squadsApi, Team } from "@/lib/api";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg-2.webp";
@@ -122,6 +122,7 @@ const CreateTeam = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [apiTeams, setApiTeams] = useState<Team[]>([]);
   const [isLoadingTeams, setIsLoadingTeams] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
 
   // Load teams from API
   useEffect(() => {
@@ -165,7 +166,7 @@ const CreateTeam = () => {
 
   const isFormValid = teamName.trim().length > 0 && favoriteTeam.length > 0;
 
-  const validateAndNavigate = () => {
+  const validateAndNavigate = async () => {
     if (!isFormValid) {
       toast.error("Заполни все поля");
       return;
@@ -182,11 +183,38 @@ const CreateTeam = () => {
       // If filter fails, allow navigation
     }
 
-    // Save team name and favorite team to localStorage
-    localStorage.setItem("fantasyTeamName", name);
-    localStorage.setItem("fantasyFavoriteTeam", favoriteTeam);
+    // Create squad via API
+    setIsCreating(true);
+    try {
+      const leagueId = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116');
+      const favTeamId = parseInt(favoriteTeam);
 
-    navigate("/team-builder", { state: { teamName: name } });
+      const response = await squadsApi.create({
+        name,
+        league_id: leagueId,
+        fav_team_id: favTeamId,
+      });
+
+      if (!response.success) {
+        toast.error(response.error || "Ошибка при создании команды");
+        return;
+      }
+
+      // Save team data to localStorage
+      localStorage.setItem("fantasyTeamName", name);
+      localStorage.setItem("fantasyFavoriteTeam", favoriteTeam);
+      if (response.data?.id) {
+        localStorage.setItem("fantasySquadId", response.data.id.toString());
+      }
+
+      toast.success("Команда создана!");
+      navigate("/team-builder", { state: { teamName: name } });
+    } catch (error) {
+      console.error('Failed to create squad:', error);
+      toast.error("Ошибка при создании команды");
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (
@@ -298,11 +326,11 @@ const CreateTeam = () => {
         <Button
           ref={buttonRef}
           onClick={validateAndNavigate}
-          disabled={!isFormValid}
+          disabled={!isFormValid || isCreating}
           className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
-          style={{ boxShadow: isFormValid ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
+          style={{ boxShadow: isFormValid && !isCreating ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
         >
-          Создать команду
+          {isCreating ? "Создание..." : "Создать команду"}
         </Button>
         <InfiniteClubCarousel />
       </div>
