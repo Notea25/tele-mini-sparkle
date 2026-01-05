@@ -60,3 +60,8 @@ export interface Team {
 export const teamsApi = {
   getByLeague: (leagueId: number) => apiRequest<Team[]>(`/api/teams/league_${leagueId}`),
 };
+
+// Методы для работы с пользователями
+export const usersApi = {
+  getProtected: () => apiRequest<unknown>('/api/users/protected'),
+};
