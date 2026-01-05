@@ -23,6 +23,7 @@ import Transfers from "./pages/Transfers";
 import ViewTeam from "./pages/ViewTeam";
 import ViewLeague from "./pages/ViewLeague";
 import Profile from "./pages/Profile";
+import BackendTest from "./pages/BackendTest";
 import NotFound from "./pages/NotFound";
 
 // Wrapper to force re-render when team ID changes
@@ -164,6 +165,7 @@ const App = () => {
               <Route path="/view-team" element={<ViewTeamWrapper />} />
               <Route path="/view-league" element={<ViewLeague />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/backtest" element={<BackendTest />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
