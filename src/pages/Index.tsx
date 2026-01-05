@@ -10,6 +10,7 @@ import LeagueInviteModal from "@/components/LeagueInviteModal";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { hasCreatedTeam } from "@/lib/onboardingUtils";
+import { leaguesApi } from "@/lib/api";
 import leagueLogo from "@/assets/league-logo.png";
 import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
@@ -29,6 +30,17 @@ import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
 //
+interface LeagueData {
+  id: number;
+  name: string;
+  logo: string;
+  country: string;
+  sport: string;
+  all_squads_quantity: number;
+  your_place: number | null;
+  deadline: string | null;
+}
+
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 const FAVORITES_STORAGE_KEY = "fantasyFavoriteLeagues";
 
@@ -46,6 +58,8 @@ const Index = () => {
   const [hasTeam, setHasTeam] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [belarusLeague, setBelarusLeague] = useState<LeagueData | null>(null);
+  const [isLoadingLeague, setIsLoadingLeague] = useState(true);
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -102,6 +116,24 @@ const Index = () => {
   // Check if user has a complete team (15 players)
   useEffect(() => {
     setHasTeam(hasCreatedTeam());
+  }, []);
+
+  // Fetch Belarus league data from API
+  useEffect(() => {
+    const fetchLeagueData = async () => {
+      setIsLoadingLeague(true);
+      try {
+        const response = await leaguesApi.getMainPage(116);
+        if (response.success && response.data) {
+          setBelarusLeague(response.data as LeagueData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch league data:", error);
+      } finally {
+        setIsLoadingLeague(false);
+      }
+    };
+    fetchLeagueData();
   }, []);
 
   // Check for league invite
@@ -168,6 +200,23 @@ const Index = () => {
 
   const sortOptions = ["Избранные", "ТОП-лиги", "От А до Я", "От Я до А"];
 
+  // Format deadline from API response
+  const formatDeadline = (deadline: string | null) => {
+    if (!deadline) return { date: "—", time: "—" };
+    try {
+      const dateObj = new Date(deadline);
+      const day = String(dateObj.getDate()).padStart(2, "0");
+      const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const hours = String(dateObj.getHours()).padStart(2, "0");
+      const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+      return { date: `${day}.${month}`, time: `${hours}.${minutes}` };
+    } catch {
+      return { date: "—", time: "—" };
+    }
+  };
+
+  const belarusDeadline = formatDeadline(belarusLeague?.deadline ?? null);
+
   // Define all leagues data for sorting
   const allLeagues = [
     {
@@ -175,15 +224,17 @@ const Index = () => {
       title: "Футбол",
       section: "section-football",
       iconImage: iconFootball,
-      leagueIcon: leagueLogo,
-      league: "Беларусь",
-      participants: 26130,
-      date: "04.04",
-      time: "19.00",
+      leagueIcon: belarusLeague?.logo || leagueLogo,
+      league: belarusLeague?.country || "Беларусь",
+      participants: belarusLeague?.all_squads_quantity ?? 0,
+      userRank: belarusLeague?.your_place ?? undefined,
+      date: belarusDeadline.date,
+      time: belarusDeadline.time,
       glowColor: "120 85% 55%",
       href: "/create-team",
       comingSoon: false,
       comingSoonYear: "2026",
+      isLoading: isLoadingLeague,
     },
     {
       id: "hockey",
@@ -310,7 +361,7 @@ const Index = () => {
                 leagueIcon={leagueData.leagueIcon}
                 league={leagueData.league}
                 participants={leagueData.participants}
-                userRank={leagueData.id === "football-belarus" && hasTeam ? 21953 : undefined}
+                userRank={leagueData.id === "football-belarus" && hasTeam ? leagueData.userRank : undefined}
                 date={leagueData.date}
                 time={leagueData.time}
                 glowColor={leagueData.glowColor}
@@ -321,6 +372,7 @@ const Index = () => {
                 isFavorite={favorites.includes(leagueData.id)}
                 onToggleFavorite={toggleFavorite}
                 hasTeam={leagueData.id === "football-belarus" && hasTeam}
+                isLoading={'isLoading' in leagueData ? leagueData.isLoading : false}
               />
             )}
 

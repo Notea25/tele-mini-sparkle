@@ -21,6 +21,7 @@ interface SportCardProps {
   isFavorite?: boolean;
   onToggleFavorite?: (leagueId: string) => void;
   hasTeam?: boolean;
+  isLoading?: boolean;
 }
 
 const SportCard = ({
@@ -41,6 +42,7 @@ const SportCard = ({
   isFavorite = false,
   onToggleFavorite,
   hasTeam = false,
+  isLoading = false,
 }: SportCardProps) => {
   const navigate = useNavigate();
 
@@ -84,6 +86,17 @@ const SportCard = ({
             <div className="relative text-center">
               <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
               <p className="text-primary text-lg font-bold">{comingSoonYear}</p>
+            </div>
+          </div>
+        ) : isLoading ? (
+          <div className="relative p-4 flex items-center justify-between min-h-[100px]">
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-20 rounded-full bg-muted animate-pulse" />
+              <div className="space-y-2">
+                <div className="h-5 w-24 bg-muted rounded animate-pulse" />
+                <div className="h-4 w-32 bg-muted rounded animate-pulse" />
+                <div className="h-4 w-28 bg-muted rounded animate-pulse" />
+              </div>
             </div>
           </div>
         ) : (
