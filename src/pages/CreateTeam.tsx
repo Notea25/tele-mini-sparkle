@@ -8,7 +8,8 @@ import FooterNav from "@/components/FooterNav";
 import SportHeader from "@/components/SportHeader";
 
 import InfiniteClubCarousel from "@/components/InfiniteClubCarousel";
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { teamsApi, Team } from "@/lib/api";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg-2.webp";
@@ -119,6 +120,32 @@ const CreateTeam = () => {
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [isSelectFocused, setIsSelectFocused] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const [apiTeams, setApiTeams] = useState<Team[]>([]);
+  const [isLoadingTeams, setIsLoadingTeams] = useState(true);
+
+  // Load teams from API
+  useEffect(() => {
+    const loadTeams = async () => {
+      const leagueId = localStorage.getItem('fantasySelectedLeagueId');
+      if (!leagueId) {
+        setIsLoadingTeams(false);
+        return;
+      }
+
+      try {
+        const response = await teamsApi.getByLeague(parseInt(leagueId));
+        if (response.success && response.data) {
+          setApiTeams(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to load teams:', error);
+      } finally {
+        setIsLoadingTeams(false);
+      }
+    };
+
+    loadTeams();
+  }, []);
 
   const scrollToButton = () => {
     setTimeout(() => {
@@ -235,18 +262,35 @@ const CreateTeam = () => {
               borderColor: "rgba(255, 255, 255, 0.2)",
             }}
           >
-            {TEAM_OPTIONS.map((option) => (
-              <SelectItem
-                key={option.value}
-                value={option.value}
-                className="focus:bg-white/10 focus:text-white data-[state=checked]:text-primary"
-              >
-                <div className="flex items-center gap-2">
-                  <img src={option.logo} alt={option.label} className="w-5 h-5 object-contain" />
-                  <span>{option.label}</span>
-                </div>
-              </SelectItem>
-            ))}
+            {isLoadingTeams ? (
+              <div className="px-4 py-2 text-muted-foreground">Загрузка...</div>
+            ) : apiTeams.length > 0 ? (
+              apiTeams.map((team) => (
+                <SelectItem
+                  key={team.id}
+                  value={team.id.toString()}
+                  className="focus:bg-white/10 focus:text-white data-[state=checked]:text-primary"
+                >
+                  <div className="flex items-center gap-2">
+                    <img src={team.logo} alt={team.name} className="w-5 h-5 object-contain" />
+                    <span>{team.name}</span>
+                  </div>
+                </SelectItem>
+              ))
+            ) : (
+              TEAM_OPTIONS.map((option) => (
+                <SelectItem
+                  key={option.value}
+                  value={option.value}
+                  className="focus:bg-white/10 focus:text-white data-[state=checked]:text-primary"
+                >
+                  <div className="flex items-center gap-2">
+                    <img src={option.logo} alt={option.label} className="w-5 h-5 object-contain" />
+                    <span>{option.label}</span>
+                  </div>
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
 
