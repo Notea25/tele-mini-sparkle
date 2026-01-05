@@ -49,6 +49,16 @@ export const leaguesApi = {
   getMainPage: (id: number) => apiRequest<unknown>(`/api/leagues/main_page_id_${id}`),
 };
 
+// Типы для туров
+export interface TourDeadline {
+  deadline: string;
+}
+
+// Методы для работы с турами
+export const toursApi = {
+  getDeadlineForNextTour: (leagueId: number) => apiRequest<TourDeadline>(`/api/tours/get_deadline_for_next_tour/${leagueId}`),
+};
+
 // Типы для команд
 export interface Team {
   id: number;
