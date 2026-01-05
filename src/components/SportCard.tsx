@@ -18,6 +18,7 @@ interface SportCardProps {
   glowColor?: string;
   href?: string;
   leagueId?: string;
+  apiLeagueId?: number;
   isFavorite?: boolean;
   onToggleFavorite?: (leagueId: string) => void;
   hasTeam?: boolean;
@@ -39,6 +40,7 @@ const SportCard = ({
   glowColor = "88 85% 55%",
   href,
   leagueId,
+  apiLeagueId,
   isFavorite = false,
   onToggleFavorite,
   hasTeam = false,
@@ -48,6 +50,10 @@ const SportCard = ({
 
   const handleClick = () => {
     if (href && !comingSoon) {
+      // Save the API league ID for use on other pages
+      if (apiLeagueId) {
+        localStorage.setItem('fantasySelectedLeagueId', apiLeagueId.toString());
+      }
       // Use smart destination based on user progress
       const destination = getLeagueDestination();
       navigate(destination);
