@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
-import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers, allPlayers, allTeams } from "@/lib/teamData";
+import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers, allPlayers } from "@/lib/teamData";
 import { useDeadline } from "@/hooks/useDeadline";
+import { useTeams } from "@/hooks/useTeams";
 import { clubLogos } from "@/lib/clubLogos";
 import FormationFieldTransfers from "@/components/FormationFieldTransfers";
 import PlayerCard from "@/components/PlayerCard";
@@ -129,7 +130,10 @@ const Transfers = () => {
   const [pendingPositionFilter, setPendingPositionFilter] = useState<string | null>(null);
   const [pendingSlotIndex, setPendingSlotIndex] = useState<number | null>(null);
 
-  const teams = ["Все команды", ...allTeams];
+  // Load teams from API with caching
+  const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
+  const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
+  const teams = ["Все команды", ...apiTeams.map(t => t.name)];
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
   const positionToFilter: Record<string, string> = {
     ВР: "Вратари",
@@ -217,8 +221,7 @@ const Transfers = () => {
     );
   };
 
-  // Deadline countdown using shared hook
-  const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
+  // Deadline countdown using shared hook (leagueId defined above with useTeams)
   const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueId);
 
   // All 15 players in one array
