@@ -29,7 +29,7 @@ import extraligaLogo from "@/assets/extraliga-logo.png";
 import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
-//
+
 interface LeagueData {
   id: number;
   name: string;
@@ -370,11 +370,11 @@ const Index = () => {
                 comingSoon={leagueData.comingSoon}
                 comingSoonYear={leagueData.comingSoonYear}
                 leagueId={leagueData.id}
-                apiLeagueId={'apiLeagueId' in leagueData ? leagueData.apiLeagueId : undefined}
+                apiLeagueId={"apiLeagueId" in leagueData ? leagueData.apiLeagueId : undefined}
                 isFavorite={favorites.includes(leagueData.id)}
                 onToggleFavorite={toggleFavorite}
                 hasTeam={leagueData.id === "football-belarus" && hasTeam}
-                isLoading={'isLoading' in leagueData ? leagueData.isLoading : false}
+                isLoading={"isLoading" in leagueData ? leagueData.isLoading : false}
               />
             )}
 
