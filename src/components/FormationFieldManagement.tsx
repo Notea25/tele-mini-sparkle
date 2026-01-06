@@ -404,7 +404,7 @@ const FormationFieldManagement = ({
               ) : (
                 <span
                   className="font-medium block truncate whitespace-nowrap text-center"
-                  style={{ fontSize: `${cardSize.width * 0.085}px` }}
+                  style={{ fontSize: `${cardSize.width * 0.1}px` }}
                   title={player.team}
                 >
                   <span className="text-[#7D7A94]">(Д)</span>
