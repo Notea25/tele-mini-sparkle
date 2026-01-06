@@ -7,6 +7,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers, allPlayers, allTeams } from "@/lib/teamData";
+import { useDeadline } from "@/hooks/useDeadline";
 import { clubLogos } from "@/lib/clubLogos";
 import FormationFieldTransfers from "@/components/FormationFieldTransfers";
 import PlayerCard from "@/components/PlayerCard";
@@ -216,36 +217,9 @@ const Transfers = () => {
     );
   };
 
-  // Deadline countdown
-  const deadlineDate = new Date("2025-12-14T19:00:00");
-  const tournamentStartDate = new Date("2025-12-04T19:00:00");
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
-
-  useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const difference = deadlineDate.getTime() - now.getTime();
-      const totalDuration = deadlineDate.getTime() - tournamentStartDate.getTime();
-      const elapsed = now.getTime() - tournamentStartDate.getTime();
-
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((difference / (1000 * 60)) % 60);
-        const seconds = Math.floor((difference / 1000) % 60);
-        const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-
-        setTimeLeft({ days, hours, minutes, seconds, progress });
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 100 });
-      }
-    };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
+  // Deadline countdown using shared hook
+  const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
+  const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueId);
 
   // All 15 players in one array
   const [players, setPlayers] = useState<PlayerDataExt[]>([]);
@@ -833,7 +807,7 @@ const Transfers = () => {
 
         <div className="flex items-center justify-between text-sm text-regular">
           <span className="text-muted-foreground">
-            Дедлайн: <span className="text-foreground font-medium">04.04 в 19.00</span>
+            Дедлайн: <span className="text-foreground font-medium">{deadlineLoading ? '...' : formattedDeadline || '—'}</span>
           </span>
           <span className="text-foreground">
             {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
