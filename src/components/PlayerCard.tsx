@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,9 +8,28 @@ import clubLogo from "@/assets/club-logo.png";
 import { clubLogos, getClubLogo } from "@/lib/clubLogos";
 import injuryBadge from "@/assets/injury-badge.png";
 import redCardBadge from "@/assets/red-card-badge.png";
+import { playersApi, PlayerFullInfoResponse } from "@/lib/api";
 
-// Club abbreviations for form/calendar display
+// Club abbreviations for opponent names
 const clubAbbreviations: Record<string, string> = {
+  "Torpedo-BelAZ": "ТОР",
+  "FC Gomel": "ГОМ",
+  "BATE Borisov": "БАТ",
+  "Dinamo Brest": "ДБР",
+  "Dinamo Minsk": "ДМН",
+  "FC Isloch": "ИСЛ",
+  "Neman": "НЕМ",
+  "Shakhtyor Soligorsk": "ШАХ",
+  "FC Vitebsk": "ВИТ",
+  "Slavia-Mozyr": "СЛА",
+  "Naftan": "НАФ",
+  "FC Minsk": "МИН",
+  "Belshina Bobruisk": "БЕЛ",
+  "Arsenal Dzerzhinsk": "АРС",
+  "FK Baranovichi": "БАР",
+  "FC Dnepr Mogilev": "ДНП",
+  "Lokomotiv Vitebsk": "МЛ",
+  // Russian names fallback
   "Арсенал": "АРС",
   "Барановичи": "БАР",
   "БАТЭ": "БАТ",
@@ -34,19 +53,33 @@ const clubAbbreviations: Record<string, string> = {
   "Торпедо": "ТОР",
 };
 
-// All clubs in the league for generating schedules
+// Get abbreviation for team name
+const getTeamAbbreviation = (teamName: string): string => {
+  // Check direct match
+  if (clubAbbreviations[teamName]) {
+    return clubAbbreviations[teamName];
+  }
+  // Try partial match
+  for (const [key, abbr] of Object.entries(clubAbbreviations)) {
+    if (teamName.includes(key) || key.includes(teamName)) {
+      return abbr;
+    }
+  }
+  // Fallback: first 3 chars uppercase
+  return teamName.substring(0, 3).toUpperCase();
+};
+
+// All clubs in the league for generating schedules (fallback for swap players)
 const allClubs = [
   "Арсенал", "БАТЭ", "Белшина", "Витебск", "Гомель",
   "Динамо-Брест", "Динамо-Минск", "Днепр-Могилев", "Ислочь",
   "Минск", "МЛ Витебск", "Нафтан", "Неман", "Славия", "Торпедо-БелАЗ"
 ];
 
-// Generate deterministic schedule based on team name
+// Generate deterministic schedule for swap players (fallback when no API data)
 function generateClubSchedule(teamName: string, playerId: number) {
-  // Get opponents (all clubs except player's team)
   const opponents = allClubs.filter(club => !teamName.includes(club.split("-")[0]) && !club.includes(teamName.split("-")[0]));
   
-  // Create a seed from team name and player id for deterministic randomness
   let seed = playerId;
   for (let i = 0; i < teamName.length; i++) {
     seed += teamName.charCodeAt(i);
@@ -57,57 +90,18 @@ function generateClubSchedule(teamName: string, playerId: number) {
     return x - Math.floor(x);
   };
   
-  // Shuffle opponents deterministically
   const shuffled = [...opponents].sort((a, b) => seededRandom(seed + a.charCodeAt(0)) - seededRandom(seed + b.charCodeAt(0)));
   
-  // Generate form (last 3 matches)
-  const recentForm = [
-    { 
-      tour: 24, 
-      opponent: clubAbbreviations[shuffled[0]] || shuffled[0].substring(0, 3).toUpperCase(), 
-      home: seededRandom(seed + 1) > 0.5, 
-      points: Math.floor(seededRandom(seed + 10) * 10) - 2,
-      logo: getClubLogo(shuffled[0]) || clubLogo
-    },
-    { 
-      tour: 25, 
-      opponent: clubAbbreviations[shuffled[1]] || shuffled[1].substring(0, 3).toUpperCase(), 
-      home: seededRandom(seed + 2) > 0.5, 
-      points: Math.floor(seededRandom(seed + 11) * 10) - 2,
-      logo: getClubLogo(shuffled[1]) || clubLogo
-    },
-    { 
-      tour: 26, 
-      opponent: clubAbbreviations[shuffled[2]] || shuffled[2].substring(0, 3).toUpperCase(), 
-      home: seededRandom(seed + 3) > 0.5, 
-      points: Math.floor(seededRandom(seed + 12) * 10) - 2,
-      logo: getClubLogo(shuffled[2]) || clubLogo
-    },
-  ];
-  
-  // Generate calendar (next 3 matches)
   const upcomingMatches = [
     { 
       tour: 27, 
-      opponent: clubAbbreviations[shuffled[3]] || shuffled[3].substring(0, 3).toUpperCase(), 
+      opponent: clubAbbreviations[shuffled[3]] || shuffled[3]?.substring(0, 3).toUpperCase() || "???", 
       home: seededRandom(seed + 4) > 0.5,
       logo: getClubLogo(shuffled[3]) || clubLogo
     },
-    { 
-      tour: 28, 
-      opponent: clubAbbreviations[shuffled[4]] || shuffled[4].substring(0, 3).toUpperCase(), 
-      home: seededRandom(seed + 5) > 0.5,
-      logo: getClubLogo(shuffled[4]) || clubLogo
-    },
-    { 
-      tour: 29, 
-      opponent: clubAbbreviations[shuffled[5]] || shuffled[5].substring(0, 3).toUpperCase(), 
-      home: seededRandom(seed + 6) > 0.5,
-      logo: getClubLogo(shuffled[5]) || clubLogo
-    },
   ];
   
-  return { recentForm, upcomingMatches };
+  return { upcomingMatches };
 }
 
 interface PlayerData {
@@ -177,6 +171,28 @@ const PlayerCard = ({
   onSwapSelect,
 }: PlayerCardProps) => {
   const [selectedSwapTarget, setSelectedSwapTarget] = useState<number | null>(null);
+  const [fullInfo, setFullInfo] = useState<PlayerFullInfoResponse | null>(null);
+  const [isLoadingInfo, setIsLoadingInfo] = useState(false);
+
+  // Load full player info when drawer opens
+  useEffect(() => {
+    if (isOpen && player?.id) {
+      setIsLoadingInfo(true);
+      playersApi.getFullInfo(player.id)
+        .then((response) => {
+          if (response.success && response.data) {
+            setFullInfo(response.data);
+          }
+        })
+        .finally(() => {
+          setIsLoadingInfo(false);
+        });
+    } else if (!isOpen) {
+      // Reset when closed
+      setFullInfo(null);
+    }
+  }, [isOpen, player?.id]);
+
   if (!player) return null;
 
   const positionNames: Record<string, string> = {
@@ -184,78 +200,75 @@ const PlayerCard = ({
     ЗЩ: "Защитник",
     ПЗ: "Полузащитник",
     НП: "Нападающий",
+    Goalkeeper: "Вратарь",
+    Defender: "Защитник",
+    Midfielder: "Полузащитник",
+    Attacker: "Нападающий",
   };
 
-  // Generate club-specific form and calendar data
-  const { recentForm, upcomingMatches } = generateClubSchedule(player.team, player.id);
+  // Get data from API or fallback to player props
+  const playerPhoto_url = fullInfo?.base_info?.photo || playerPhoto;
+  const teamLogo_url = fullInfo?.base_info?.team_logo || clubLogos[player.team] || clubLogo;
+  const teamName = fullInfo?.base_info?.team_name || player.team;
+  const positionDisplay = fullInfo?.base_info?.position 
+    ? positionNames[fullInfo.base_info.position] || fullInfo.base_info.position
+    : positionNames[player.position] || player.position;
+
+  // Extended info from API
+  const extInfo = fullInfo?.extended_info;
+  const totalPlayers = extInfo?.total_players_in_league || 467;
+
+  // Form data from API (last 3 tours)
+  const recentForm = fullInfo?.last_3_tours?.map(tour => {
+    const match = tour.matches[0];
+    return {
+      tour: tour.tour_number,
+      opponent: match ? getTeamAbbreviation(match.opponent_team_name) : "???",
+      home: match?.is_home ?? false,
+      points: match?.player_points ?? 0,
+      logo: match?.opponent_team_logo || clubLogo,
+    };
+  }) || [];
+
+  // Calendar data from API (next 3 tours)
+  const upcomingMatches = fullInfo?.next_3_tours?.map(tour => {
+    const match = tour.matches[0];
+    return {
+      tour: tour.tour_number,
+      opponent: match ? getTeamAbbreviation(match.opponent_team_name) : "???",
+      home: match?.is_home ?? false,
+      logo: match?.opponent_team_logo || clubLogo,
+    };
+  }) || [];
 
   // Generate point breakdown that sums up to the player's actual points
   const getPointBreakdown = () => {
     const actions: { action: string; points: number }[] = [];
     let remaining = player.points;
     
-    // Define possible actions by position with their point values
-    const positionActions: Record<string, { action: string; points: number }[]> = {
-      "ВР": [
-        { action: "Выход на поле", points: 2 },
-        { action: "Сухой матч", points: 4 },
-        { action: "Пенальти отбит", points: 5 },
-        { action: "Гол пропущен", points: -1 },
-        { action: "Жёлтая карточка", points: -1 },
-      ],
-      "ЗЩ": [
-        { action: "Выход на поле", points: 2 },
-        { action: "Гол", points: 6 },
-        { action: "Голевая передача", points: 3 },
-        { action: "Сухой матч", points: 4 },
-        { action: "Жёлтая карточка", points: -1 },
-      ],
-      "ПЗ": [
-        { action: "Выход на поле", points: 2 },
-        { action: "Гол", points: 5 },
-        { action: "Голевая передача", points: 3 },
-        { action: "Жёлтая карточка", points: -1 },
-        { action: "Красная карточка", points: -3 },
-      ],
-      "НП": [
-        { action: "Выход на поле", points: 2 },
-        { action: "Гол", points: 4 },
-        { action: "Голевая передача", points: 3 },
-        { action: "Жёлтая карточка", points: -1 },
-      ],
-    };
-
-    const availableActions = positionActions[player.position] || positionActions["ПЗ"];
+    const goalPoints = player.position === "ВР" ? 6 : player.position === "ЗЩ" ? 6 : player.position === "ПЗ" ? 5 : 4;
+    const assistPoints = 3;
     
-    // Always start with "Выход на поле" if player has positive points
     if (remaining >= 2) {
       actions.push({ action: "Выход на поле", points: 2 });
       remaining -= 2;
     }
     
-    // Distribute remaining points using goals and assists
-    const goalPoints = player.position === "ВР" ? 6 : player.position === "ЗЩ" ? 6 : player.position === "ПЗ" ? 5 : 4;
-    const assistPoints = 3;
-    
-    // Add goals
     while (remaining >= goalPoints) {
       actions.push({ action: "Гол", points: goalPoints });
       remaining -= goalPoints;
     }
     
-    // Add assists
     while (remaining >= assistPoints) {
       actions.push({ action: "Голевая передача", points: assistPoints });
       remaining -= assistPoints;
     }
     
-    // Handle remaining points with clean sheet or smaller bonuses
     if (remaining === 4 && (player.position === "ВР" || player.position === "ЗЩ")) {
       actions.push({ action: "Сухой матч", points: 4 });
       remaining -= 4;
     }
     
-    // Handle small remaining amounts
     if (remaining === 2) {
       actions.push({ action: "Бонус за передачи", points: 2 });
       remaining -= 2;
@@ -264,7 +277,6 @@ const PlayerCard = ({
       remaining -= 1;
     }
     
-    // Handle negative remaining (if player has negative total or yellow/red cards)
     while (remaining < 0 && remaining <= -1) {
       if (remaining <= -3) {
         actions.push({ action: "Красная карточка", points: -3 });
@@ -287,8 +299,17 @@ const PlayerCard = ({
           {/* Header with player info */}
           <div className="flex items-start gap-4">
             {/* Player photo */}
-            <div className="w-24 h-28 rounded-lg overflow-hidden">
-              <img src={playerPhoto} alt={player.name} className="w-full h-full object-cover" />
+            <div className="w-24 h-28 rounded-lg overflow-hidden bg-secondary/30">
+              {isLoadingInfo ? (
+                <div className="w-full h-full animate-pulse bg-secondary/50" />
+              ) : (
+                <img 
+                  src={playerPhoto_url} 
+                  alt={player.name} 
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.currentTarget.src = playerPhoto; }}
+                />
+              )}
             </div>
 
             <div className="flex-1 flex flex-col justify-center h-28">
@@ -297,13 +318,18 @@ const PlayerCard = ({
 
               {/* Team with logo - Rubik font */}
               <div className="flex items-center gap-2 mt-1">
-                <img src={clubLogos[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
-                <span className="text-foreground text-sm font-rubik">{player.team}</span>
+                <img 
+                  src={teamLogo_url} 
+                  alt={teamName} 
+                  className="w-5 h-5 object-contain"
+                  onError={(e) => { e.currentTarget.src = clubLogo; }}
+                />
+                <span className="text-foreground text-sm font-rubik">{teamName}</span>
               </div>
 
               {/* Position - muted color, Rubik font */}
               <span className="text-muted-foreground text-sm font-rubik mt-1">
-                {positionNames[player.position] || player.position}
+                {positionDisplay}
               </span>
             </div>
           </div>
@@ -315,22 +341,36 @@ const PlayerCard = ({
               <span className="text-foreground text-xl font-bold">
                 {typeof player.price === "number" ? player.price.toFixed(1) : player.price}
               </span>
-              <span className="text-muted-foreground text-xs block">{Math.floor(Math.random() * 10) + 1} из 82</span>
+              <span className="text-muted-foreground text-xs block">
+                {extInfo ? `${extInfo.market_value_rank} из ${totalPlayers}` : "-"}
+              </span>
             </div>
             <div className="text-center">
               <span className="text-muted-foreground text-xs block">Очки / матч</span>
-              <span className="text-foreground text-xl font-bold">{Math.round(player.points / 10)}</span>
-              <span className="text-muted-foreground text-xs block">{Math.floor(Math.random() * 10) + 1} из 82</span>
+              <span className="text-foreground text-xl font-bold">
+                {extInfo?.avg_points_all_matches?.toFixed(1) ?? Math.round(player.points / 10)}
+              </span>
+              <span className="text-muted-foreground text-xs block">
+                {extInfo ? `${extInfo.avg_points_all_matches_rank} из ${totalPlayers}` : "-"}
+              </span>
             </div>
             <div className="text-center">
               <span className="text-muted-foreground text-xs block">Форма</span>
-              <span className="text-foreground text-xl font-bold">{Math.floor(Math.random() * 5) + 5}</span>
-              <span className="text-muted-foreground text-xs block">{Math.floor(Math.random() * 10) + 1} из 82</span>
+              <span className="text-foreground text-xl font-bold">
+                {extInfo?.avg_points_last_5_matches?.toFixed(1) ?? "-"}
+              </span>
+              <span className="text-muted-foreground text-xs block">
+                {extInfo ? `${extInfo.avg_points_last_5_matches_rank} из ${totalPlayers}` : "-"}
+              </span>
             </div>
             <div className="text-center">
               <span className="text-muted-foreground text-xs block">Выбран</span>
-              <span className="text-foreground text-xl font-bold">{Math.floor(Math.random() * 30) + 5}%</span>
-              <span className="text-muted-foreground text-xs block">{Math.floor(Math.random() * 10) + 1} из 82</span>
+              <span className="text-foreground text-xl font-bold">
+                {extInfo?.squad_presence_percentage?.toFixed(0) ?? 0}%
+              </span>
+              <span className="text-muted-foreground text-xs block">
+                {extInfo ? `${extInfo.squad_presence_rank} из ${totalPlayers}` : "-"}
+              </span>
             </div>
           </div>
 
@@ -347,29 +387,51 @@ const PlayerCard = ({
               {[0, 1, 2].map((idx) => (
                 <div key={idx} className="grid grid-cols-2 gap-4">
                   {/* Form match */}
-                  <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 bg-secondary/30 rounded-lg px-3 py-1.5">
-                    <span className="text-muted-foreground text-xs whitespace-nowrap">Тур {recentForm[idx].tour}</span>
-                    <div className="flex items-center gap-1.5">
-                      <img src={recentForm[idx].logo} alt={recentForm[idx].opponent} className="w-4 h-4 object-contain flex-shrink-0" />
-                      <span className="text-muted-foreground text-xs text-left">
-                        {recentForm[idx].opponent} ({recentForm[idx].home ? "Г" : "Д"})
+                  {recentForm[idx] ? (
+                    <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 bg-secondary/30 rounded-lg px-3 py-1.5">
+                      <span className="text-muted-foreground text-xs whitespace-nowrap">Тур {recentForm[idx].tour}</span>
+                      <div className="flex items-center gap-1.5">
+                        <img 
+                          src={recentForm[idx].logo} 
+                          alt={recentForm[idx].opponent} 
+                          className="w-4 h-4 object-contain flex-shrink-0"
+                          onError={(e) => { e.currentTarget.src = clubLogo; }}
+                        />
+                        <span className="text-muted-foreground text-xs text-left">
+                          {recentForm[idx].opponent} ({recentForm[idx].home ? "Д" : "Г"})
+                        </span>
+                      </div>
+                      <span className={`text-sm font-bold text-right ${(recentForm[idx].points ?? 0) < 0 ? "text-red-500" : "text-foreground"}`}>
+                        {recentForm[idx].points ?? "-"}
                       </span>
                     </div>
-                    <span className={`text-sm font-bold text-right ${recentForm[idx].points < 0 ? "text-red-500" : "text-foreground"}`}>
-                      {recentForm[idx].points}
-                    </span>
-                  </div>
+                  ) : (
+                    <div className="bg-secondary/30 rounded-lg px-3 py-1.5 flex items-center justify-center">
+                      <span className="text-muted-foreground text-xs">—</span>
+                    </div>
+                  )}
                   
                   {/* Calendar match */}
-                  <div className="grid grid-cols-[auto_1fr] items-center gap-2 bg-secondary/30 rounded-lg px-3 py-1.5">
-                    <span className="text-muted-foreground text-xs whitespace-nowrap">Тур {upcomingMatches[idx].tour}</span>
-                    <div className="flex items-center gap-1.5">
-                      <img src={upcomingMatches[idx].logo} alt={upcomingMatches[idx].opponent} className="w-4 h-4 object-contain flex-shrink-0" />
-                      <span className="text-muted-foreground text-xs text-left">
-                        {upcomingMatches[idx].opponent} ({upcomingMatches[idx].home ? "Д" : "Г"})
-                      </span>
+                  {upcomingMatches[idx] ? (
+                    <div className="grid grid-cols-[auto_1fr] items-center gap-2 bg-secondary/30 rounded-lg px-3 py-1.5">
+                      <span className="text-muted-foreground text-xs whitespace-nowrap">Тур {upcomingMatches[idx].tour}</span>
+                      <div className="flex items-center gap-1.5">
+                        <img 
+                          src={upcomingMatches[idx].logo} 
+                          alt={upcomingMatches[idx].opponent} 
+                          className="w-4 h-4 object-contain flex-shrink-0"
+                          onError={(e) => { e.currentTarget.src = clubLogo; }}
+                        />
+                        <span className="text-muted-foreground text-xs text-left">
+                          {upcomingMatches[idx].opponent} ({upcomingMatches[idx].home ? "Д" : "Г"})
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="bg-secondary/30 rounded-lg px-3 py-1.5 flex items-center justify-center">
+                      <span className="text-muted-foreground text-xs">—</span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

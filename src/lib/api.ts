@@ -119,18 +119,44 @@ export interface Player {
   points: number;
 }
 
-// Тип для полной информации об игроке
-export interface PlayerFullInfo {
-  id: number;
-  name: string;
-  team_id: number;
-  team_name: string;
-  team_logo: string;
-  position: string;
-  market_value: number;
-  points: number;
-  // Дополнительные поля будут определены после тестирования API
-  [key: string]: unknown;
+// Типы для полной информации об игроке
+export interface PlayerFullInfoMatch {
+  match_id: number;
+  is_home: boolean;
+  opponent_team_id: number;
+  opponent_team_name: string;
+  opponent_team_logo: string;
+  player_points: number | null;
+}
+
+export interface PlayerFullInfoTour {
+  tour_id: number;
+  tour_number: number;
+  matches: PlayerFullInfoMatch[];
+}
+
+export interface PlayerFullInfoResponse {
+  base_info: {
+    id: number;
+    name: string;
+    photo: string;
+    team_id: number;
+    team_name: string;
+    team_logo: string;
+    position: string;
+  };
+  extended_info: {
+    total_players_in_league: number;
+    market_value_rank: number;
+    avg_points_all_matches: number;
+    avg_points_all_matches_rank: number;
+    avg_points_last_5_matches: number;
+    avg_points_last_5_matches_rank: number;
+    squad_presence_percentage: number;
+    squad_presence_rank: number;
+  };
+  last_3_tours: PlayerFullInfoTour[];
+  next_3_tours: PlayerFullInfoTour[];
 }
 
 // Методы для работы с игроками
@@ -138,5 +164,5 @@ export const playersApi = {
   getByLeague: (leagueId: number) => 
     apiRequest<Player[]>(`/api/players/league/${leagueId}/players_with_points`),
   getFullInfo: (playerId: number) =>
-    apiRequest<PlayerFullInfo>(`/api/players/${playerId}/full-info`),
+    apiRequest<PlayerFullInfoResponse>(`/api/players/${playerId}/full-info`),
 };
