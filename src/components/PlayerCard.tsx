@@ -348,7 +348,7 @@ const PlayerCard = ({
             <div className="text-center">
               <span className="text-muted-foreground text-xs block">Очки / матч</span>
               <span className="text-foreground text-xl font-bold">
-                {extInfo?.avg_points_all_matches?.toFixed(1) ?? Math.round(player.points / 10)}
+                {extInfo ? Math.round(extInfo.avg_points_all_matches) : Math.round(player.points / 10)}
               </span>
               <span className="text-muted-foreground text-xs block">
                 {extInfo ? `${extInfo.avg_points_all_matches_rank} из ${totalPlayers}` : "-"}
@@ -357,7 +357,7 @@ const PlayerCard = ({
             <div className="text-center">
               <span className="text-muted-foreground text-xs block">Форма</span>
               <span className="text-foreground text-xl font-bold">
-                {extInfo?.avg_points_last_5_matches?.toFixed(1) ?? "-"}
+                {extInfo ? Math.round(extInfo.avg_points_last_5_matches) : "-"}
               </span>
               <span className="text-muted-foreground text-xs block">
                 {extInfo ? `${extInfo.avg_points_last_5_matches_rank} из ${totalPlayers}` : "-"}
