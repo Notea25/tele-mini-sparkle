@@ -10,6 +10,7 @@ const BackendTest = () => {
   const [mySquadsResponse, setMySquadsResponse] = useState<ApiResponse<unknown> | null>(null);
   const [deadlineResponse, setDeadlineResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playersResponse, setPlayersResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [playerFullInfoResponse, setPlayerFullInfoResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -17,6 +18,8 @@ const BackendTest = () => {
   const [loadingMySquads, setLoadingMySquads] = useState(false);
   const [loadingDeadline, setLoadingDeadline] = useState(false);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
+  const [loadingPlayerFullInfo, setLoadingPlayerFullInfo] = useState(false);
+  const [playerIdInput, setPlayerIdInput] = useState('1');
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -127,6 +130,21 @@ const BackendTest = () => {
     }
   };
 
+  const testPlayerFullInfoApi = async () => {
+    setLoadingPlayerFullInfo(true);
+    try {
+      const result = await playersApi.getFullInfo(parseInt(playerIdInput) || 1);
+      setPlayerFullInfoResponse(result);
+    } catch (err) {
+      setPlayerFullInfoResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingPlayerFullInfo(false);
+    }
+  };
+
   const renderResponse = (response: ApiResponse<unknown> | null, title: string) => {
     if (!response) return null;
     
@@ -218,8 +236,22 @@ const BackendTest = () => {
         <Button onClick={testPlayersApi} disabled={loadingPlayers} variant="outline">
           {loadingPlayers ? 'Загрузка...' : 'Тест: GET /api/players/league/116/players_with_points'}
         </Button>
+
+        <div className="flex gap-2 items-center">
+          <input
+            type="number"
+            value={playerIdInput}
+            onChange={(e) => setPlayerIdInput(e.target.value)}
+            className="w-20 px-2 py-2 bg-muted text-foreground rounded border border-border"
+            placeholder="ID"
+          />
+          <Button onClick={testPlayerFullInfoApi} disabled={loadingPlayerFullInfo} variant="default">
+            {loadingPlayerFullInfo ? 'Загрузка...' : `Тест: GET /api/players/${playerIdInput}/full-info`}
+          </Button>
+        </div>
       </div>
 
+      {renderResponse(playerFullInfoResponse, 'Ответ: Player Full Info')}
       {renderResponse(leagueResponse, 'Ответ: Лиги')}
       {renderResponse(teamsResponse, 'Ответ: Команды')}
       {renderResponse(usersResponse, 'Ответ: Users Protected')}

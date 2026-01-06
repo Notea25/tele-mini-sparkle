@@ -119,8 +119,24 @@ export interface Player {
   points: number;
 }
 
+// Тип для полной информации об игроке
+export interface PlayerFullInfo {
+  id: number;
+  name: string;
+  team_id: number;
+  team_name: string;
+  team_logo: string;
+  position: string;
+  market_value: number;
+  points: number;
+  // Дополнительные поля будут определены после тестирования API
+  [key: string]: unknown;
+}
+
 // Методы для работы с игроками
 export const playersApi = {
   getByLeague: (leagueId: number) => 
     apiRequest<Player[]>(`/api/players/league/${leagueId}/players_with_points`),
+  getFullInfo: (playerId: number) =>
+    apiRequest<PlayerFullInfo>(`/api/players/${playerId}/full-info`),
 };
