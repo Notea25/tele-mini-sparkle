@@ -106,3 +106,21 @@ export const squadsApi = {
 export const usersApi = {
   getProtected: () => apiRequest<unknown>('/api/users/protected'),
 };
+
+// Типы для игроков
+export interface Player {
+  id: number;
+  name: string;
+  team_id: number;
+  team_name: string;
+  team_logo: string;
+  position: string; // "Defender", "Attacker", "Midfielder", "Goalkeeper"
+  market_value: number;
+  points: number;
+}
+
+// Методы для работы с игроками
+export const playersApi = {
+  getByLeague: (leagueId: number) => 
+    apiRequest<Player[]>(`/api/players/league/${leagueId}/players_with_points`),
+};
