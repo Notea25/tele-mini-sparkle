@@ -43,6 +43,7 @@ import { clubLogos } from "@/lib/clubLogos";
 
 import { allPlayers, allTeams } from "@/lib/teamData";
 import { useDeadline } from "@/hooks/useDeadline";
+import { teamsApi, Team } from "@/lib/api";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -103,6 +104,10 @@ const TeamBuilder = () => {
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
 
+  // API teams state
+  const [apiTeams, setApiTeams] = useState<Team[]>([]);
+  const [isLoadingTeams, setIsLoadingTeams] = useState(true);
+
   // Check for unsaved changes
   const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
 
@@ -137,6 +142,24 @@ const TeamBuilder = () => {
   // Deadline countdown
   const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
   const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueId);
+
+  // Load teams from API
+  useEffect(() => {
+    const loadTeams = async () => {
+      try {
+        const response = await teamsApi.getByLeague(parseInt(leagueId));
+        if (response.success && response.data) {
+          setApiTeams(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to load teams:', error);
+      } finally {
+        setIsLoadingTeams(false);
+      }
+    };
+
+    loadTeams();
+  }, [leagueId]);
 
   useEffect(() => {
     const el = headerRef.current;
@@ -843,16 +866,32 @@ const TeamBuilder = () => {
                     <SelectValue placeholder="Все команды" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border z-50">
-                    {teams.map((team) => (
-                      <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
-                        <div className="flex items-center gap-2">
-                          {team !== "Все команды" && clubLogos[team] && (
-                            <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
-                          )}
-                          <span>{team}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="Все команды" className="text-foreground hover:bg-secondary cursor-pointer">
+                      <span>Все команды</span>
+                    </SelectItem>
+                    {isLoadingTeams ? (
+                      <div className="px-4 py-2 text-muted-foreground">Загрузка...</div>
+                    ) : apiTeams.length > 0 ? (
+                      apiTeams.map((team) => (
+                        <SelectItem key={team.id} value={team.name} className="text-foreground hover:bg-secondary cursor-pointer">
+                          <div className="flex items-center gap-2">
+                            <img src={team.logo} alt={team.name} className="w-5 h-5 object-contain" />
+                            <span>{team.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))
+                    ) : (
+                      teams.filter(t => t !== "Все команды").map((team) => (
+                        <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
+                          <div className="flex items-center gap-2">
+                            {clubLogos[team] && (
+                              <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
+                            )}
+                            <span>{team}</span>
+                          </div>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -981,16 +1020,32 @@ const TeamBuilder = () => {
                     <SelectValue placeholder="Все команды" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border z-50">
-                    {teams.map((team) => (
-                      <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
-                        <div className="flex items-center gap-2">
-                          {team !== "Все команды" && clubLogos[team] && (
-                            <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
-                          )}
-                          <span>{team}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="Все команды" className="text-foreground hover:bg-secondary cursor-pointer">
+                      <span>Все команды</span>
+                    </SelectItem>
+                    {isLoadingTeams ? (
+                      <div className="px-4 py-2 text-muted-foreground">Загрузка...</div>
+                    ) : apiTeams.length > 0 ? (
+                      apiTeams.map((team) => (
+                        <SelectItem key={team.id} value={team.name} className="text-foreground hover:bg-secondary cursor-pointer">
+                          <div className="flex items-center gap-2">
+                            <img src={team.logo} alt={team.name} className="w-5 h-5 object-contain" />
+                            <span>{team.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))
+                    ) : (
+                      teams.filter(t => t !== "Все команды").map((team) => (
+                        <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
+                          <div className="flex items-center gap-2">
+                            {clubLogos[team] && (
+                              <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
+                            )}
+                            <span>{team}</span>
+                          </div>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               </div>
