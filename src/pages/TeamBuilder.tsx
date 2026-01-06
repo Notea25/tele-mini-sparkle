@@ -43,7 +43,7 @@ import { clubLogos } from "@/lib/clubLogos";
 
 import { allPlayers, allTeams } from "@/lib/teamData";
 import { useDeadline } from "@/hooks/useDeadline";
-import { teamsApi, Team } from "@/lib/api";
+import { useTeams } from "@/hooks/useTeams";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -104,10 +104,6 @@ const TeamBuilder = () => {
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
 
-  // API teams state
-  const [apiTeams, setApiTeams] = useState<Team[]>([]);
-  const [isLoadingTeams, setIsLoadingTeams] = useState(true);
-
   // Check for unsaved changes
   const hasUnsavedChanges = JSON.stringify(selectedPlayers) !== initialPlayersRef.current;
 
@@ -143,23 +139,8 @@ const TeamBuilder = () => {
   const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
   const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueId);
 
-  // Load teams from API
-  useEffect(() => {
-    const loadTeams = async () => {
-      try {
-        const response = await teamsApi.getByLeague(parseInt(leagueId));
-        if (response.success && response.data) {
-          setApiTeams(response.data);
-        }
-      } catch (error) {
-        console.error('Failed to load teams:', error);
-      } finally {
-        setIsLoadingTeams(false);
-      }
-    };
-
-    loadTeams();
-  }, [leagueId]);
+  // API teams
+  const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
 
   useEffect(() => {
     const el = headerRef.current;

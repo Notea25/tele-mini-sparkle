@@ -9,7 +9,8 @@ import SportHeader from "@/components/SportHeader";
 
 import InfiniteClubCarousel from "@/components/InfiniteClubCarousel";
 import { useState, useMemo, useRef, useEffect } from "react";
-import { teamsApi, squadsApi, Team } from "@/lib/api";
+import { squadsApi, Team } from "@/lib/api";
+import { useTeams } from "@/hooks/useTeams";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg-2.webp";
@@ -120,33 +121,9 @@ const CreateTeam = () => {
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [isSelectFocused, setIsSelectFocused] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [apiTeams, setApiTeams] = useState<Team[]>([]);
-  const [isLoadingTeams, setIsLoadingTeams] = useState(true);
+  const leagueId = localStorage.getItem('fantasySelectedLeagueId');
+  const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
   const [isCreating, setIsCreating] = useState(false);
-
-  // Load teams from API
-  useEffect(() => {
-    const loadTeams = async () => {
-      const leagueId = localStorage.getItem('fantasySelectedLeagueId');
-      if (!leagueId) {
-        setIsLoadingTeams(false);
-        return;
-      }
-
-      try {
-        const response = await teamsApi.getByLeague(parseInt(leagueId));
-        if (response.success && response.data) {
-          setApiTeams(response.data);
-        }
-      } catch (error) {
-        console.error('Failed to load teams:', error);
-      } finally {
-        setIsLoadingTeams(false);
-      }
-    };
-
-    loadTeams();
-  }, []);
 
   const scrollToButton = () => {
     setTimeout(() => {
