@@ -235,7 +235,7 @@ const FormationFieldTransfers = ({
               alt={player.name}
               className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
               style={{
-                width: `${cardSize.width * 3}px`,
+                width: `${cardSize.width * 6}px`,
                 top: `-${cardSize.height * 0.12}px`,
               }}
               onError={(e) => {
@@ -471,11 +471,7 @@ const FormationFieldTransfers = ({
             const player = getPlayerForSlot(slot.position, slotIndex);
             const key = `${slot.position}-${slot.row}-${slot.col}`;
 
-            return (
-              <div key={key}>
-                {player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}
-              </div>
-            );
+            return <div key={key}>{player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}</div>;
           })}
         </div>
 
@@ -492,11 +488,7 @@ const FormationFieldTransfers = ({
             const player = getPlayerForSlot(slot.position, slotIndex);
             const key = `${slot.position}-${slot.row}-${slot.col}`;
 
-            return (
-              <div key={key}>
-                {player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}
-              </div>
-            );
+            return <div key={key}>{player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}</div>;
           })}
         </div>
 
@@ -513,11 +505,7 @@ const FormationFieldTransfers = ({
             const player = getPlayerForSlot(slot.position, slotIndex);
             const key = `${slot.position}-${slot.row}-${slot.col}`;
 
-            return (
-              <div key={key}>
-                {player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}
-              </div>
-            );
+            return <div key={key}>{player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}</div>;
           })}
         </div>
 
@@ -534,11 +522,7 @@ const FormationFieldTransfers = ({
             const player = getPlayerForSlot(slot.position, slotIndex);
             const key = `${slot.position}-${slot.row}-${slot.col}`;
 
-            return (
-              <div key={key}>
-                {player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}
-              </div>
-            );
+            return <div key={key}>{player ? renderPlayer(player) : renderEmptySlot(slot.position, slotIndex)}</div>;
           })}
         </div>
       </div>
