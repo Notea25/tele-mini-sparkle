@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useDeadline } from "@/hooks/useDeadline";
+import { useTeams } from "@/hooks/useTeams";
 import SportHeader from "@/components/SportHeader";
 import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
 import { getValidSwapOptions, detectFormation, FORMATION_LABELS, FormationKey } from "@/lib/formationUtils";
@@ -144,9 +145,10 @@ const TeamManagement = () => {
       ),
     );
   };
-  // Deadline countdown using shared hook
+  // Deadline and teams using shared hooks
   const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
   const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueId);
+  const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
 
   // Load saved team from localStorage
   const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerDataExt[]>([]);
