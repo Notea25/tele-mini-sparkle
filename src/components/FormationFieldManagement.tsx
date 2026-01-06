@@ -343,7 +343,7 @@ const FormationFieldManagement = ({
               alt={player.name}
               className="h-auto object-contain absolute left-1/2 transform -translate-x-1/2"
               style={{
-                width: `${cardSize.width * 3}px`,
+                width: `${cardSize.width * 6}px`,
                 top: `-${cardSize.height * 0.12}px`,
               }}
               onError={(e) => {
@@ -567,7 +567,7 @@ const FormationFieldManagement = ({
               <p
                 className="text-center text-muted-foreground mt-4"
                 style={{
-                  fontSize: `${cardSize.width * 0.10}px`,
+                  fontSize: `${cardSize.width * 0.1}px`,
                   marginTop: `${cardSize.height * 0.15}px`,
                 }}
               >
