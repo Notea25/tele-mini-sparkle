@@ -42,7 +42,7 @@ import homeIcon from "@/assets/home-icon.png";
 import { clubLogos } from "@/lib/clubLogos";
 
 import { allPlayers, allTeams } from "@/lib/teamData";
-import { toursApi } from "@/lib/api";
+import { useDeadline } from "@/hooks/useDeadline";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -135,81 +135,8 @@ const TeamBuilder = () => {
   };
 
   // Deadline countdown
-  const [deadlineDate, setDeadlineDate] = useState<Date | null>(() => {
-    const cached = localStorage.getItem('fantasyDeadlineCache');
-    if (cached) {
-      const { deadline, leagueId, cachedAt } = JSON.parse(cached);
-      const cacheAge = Date.now() - cachedAt;
-      const currentLeagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
-      // Cache valid for 5 minutes and same league
-      if (cacheAge < 5 * 60 * 1000 && leagueId === currentLeagueId) {
-        return new Date(deadline);
-      }
-    }
-    return null;
-  });
-  const [deadlineLoading, setDeadlineLoading] = useState(!deadlineDate);
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
-
-  // Fetch deadline from API (only if not cached)
-  useEffect(() => {
-    if (deadlineDate) {
-      setDeadlineLoading(false);
-      return;
-    }
-    
-    const fetchDeadline = async () => {
-      const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
-      try {
-        const response = await toursApi.getDeadlineForNextTour(Number(leagueId));
-        if (response.success && response.data?.deadline) {
-          const deadline = new Date(response.data.deadline);
-          setDeadlineDate(deadline);
-          // Cache the deadline
-          localStorage.setItem('fantasyDeadlineCache', JSON.stringify({
-            deadline: response.data.deadline,
-            leagueId,
-            cachedAt: Date.now(),
-          }));
-        }
-      } catch (error) {
-        console.error('Error fetching deadline:', error);
-      } finally {
-        setDeadlineLoading(false);
-      }
-    };
-    fetchDeadline();
-  }, [deadlineDate]);
-
-  useEffect(() => {
-    if (!deadlineDate) return;
-
-    const tournamentStartDate = new Date(deadlineDate.getTime() - 10 * 24 * 60 * 60 * 1000); // 10 days before deadline
-
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const difference = deadlineDate.getTime() - now.getTime();
-      const totalDuration = deadlineDate.getTime() - tournamentStartDate.getTime();
-      const elapsed = now.getTime() - tournamentStartDate.getTime();
-
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((difference / (1000 * 60)) % 60);
-        const seconds = Math.floor((difference / 1000) % 60);
-        const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-
-        setTimeLeft({ days, hours, minutes, seconds, progress });
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 100 });
-      }
-    };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
-
-    return () => clearInterval(timer);
-  }, [deadlineDate]);
+  const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
+  const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueId);
 
   useEffect(() => {
     const el = headerRef.current;
@@ -803,7 +730,7 @@ const TeamBuilder = () => {
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
-            Дедлайн: {deadlineLoading ? '...' : deadlineDate ? `${deadlineDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })} в ${deadlineDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : '—'}
+            Дедлайн: {deadlineLoading ? '...' : formattedDeadline || '—'}
           </span>
           <span className="text-foreground">
             {timeLeft.days} дн. {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
+import { useDeadline } from "@/hooks/useDeadline";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -125,10 +126,9 @@ const League = () => {
     localStorage.setItem("fantasyTeamName", newName);
   };
 
-  // Deadline countdown
-  const deadlineDate = new Date("2025-12-14T19:00:00");
-  const tournamentStartDate = new Date("2025-12-04T19:00:00");
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
+  // Deadline countdown using shared hook
+  const leagueIdForDeadline = localStorage.getItem('fantasySelectedLeagueId') || '116';
+  const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueIdForDeadline);
 
   // Restore scroll position when returning to this page
   useEffect(() => {
@@ -146,29 +146,14 @@ const League = () => {
     navigate(path);
   };
 
+  // Check if tournament has started
   useEffect(() => {
-    const calculateTimeLeft = () => {
+    const checkTournamentStarted = () => {
       const now = new Date();
-      const difference = deadlineDate.getTime() - now.getTime();
-      const totalDuration = deadlineDate.getTime() - tournamentStartDate.getTime();
-      const elapsed = now.getTime() - tournamentStartDate.getTime();
-
-      // Check if tournament has started
       setIsTournamentStarted(now >= firstTourDeadline);
-
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((difference / (1000 * 60)) % 60);
-        const seconds = Math.floor((difference / 1000) % 60);
-        const progress = Math.min((elapsed / totalDuration) * 100, 100);
-
-        setTimeLeft({ days, hours, minutes, seconds, progress });
-      }
     };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
+    checkTournamentStarted();
+    const timer = setInterval(checkTournamentStarted, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -445,7 +430,7 @@ const League = () => {
             {/* Deadline */}
             <div className="flex justify-between items-center mb-2 text-regular">
               <span className="text-muted-foreground text-sm">
-                Дедлайн: <span className="text-foreground font-medium">04.04 в 19.00</span>
+                Дедлайн: <span className="text-foreground font-medium">{deadlineLoading ? '...' : formattedDeadline || '—'}</span>
               </span>
               <span className="text-foreground text-sm">
                 {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:
