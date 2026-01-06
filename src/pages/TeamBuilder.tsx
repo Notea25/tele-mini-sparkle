@@ -44,13 +44,9 @@ import { clubLogos } from "@/lib/clubLogos";
 import { allPlayers, allTeams } from "@/lib/teamData";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
+import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
 
 const ITEMS_PER_PAGE = 8;
-
-// Use clubLogos from lib, with fallback to default logo
-const clubIcons: Record<string, string> = Object.fromEntries(
-  allTeams.map((team) => [team, clubLogos[team] || clubLogo]),
-);
 
 const TeamBuilder = () => {
   const navigate = useNavigate();
@@ -139,8 +135,9 @@ const TeamBuilder = () => {
   const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
   const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueId);
 
-  // API teams
+  // API teams and players
   const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
+  const { players: apiPlayers, isLoading: isLoadingPlayers } = usePlayers(leagueId);
 
   useEffect(() => {
     const el = headerRef.current;
@@ -208,7 +205,8 @@ const TeamBuilder = () => {
     };
   }, [isSearchFocused, ensureSearchVisibleOnce]);
 
-  const teams = ["Все команды", ...allTeams];
+  // Use API players if available, otherwise fallback to static
+  const teams = ["Все команды", ...(apiTeams.length > 0 ? apiTeams.map(t => t.name) : allTeams)];
   const pointsOptions = [
     { label: "Фильтр по очкам", value: "Фильтр по очкам" },
     { label: "80+", value: "80+" },
@@ -219,7 +217,8 @@ const TeamBuilder = () => {
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
-  const players = allPlayers;
+  // Use API players if available, otherwise fallback to static
+  const players = apiPlayers.length > 0 ? apiPlayers : allPlayers;
 
   const selectedPlayerIds = selectedPlayers.map((sp) => sp.id);
   const selectedPlayersData = players
@@ -954,7 +953,7 @@ const TeamBuilder = () => {
             onRemovePlayer={(id) => togglePlayer(id)}
             onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
             onEmptySlotClick={handleEmptySlotClick}
-            clubIcons={clubIcons}
+            clubIcons={clubLogos}
           />
 
           {/* Divider between selected players and available players */}
@@ -1160,7 +1159,7 @@ const TeamBuilder = () => {
             <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
               {/* Club icon */}
               <div className="w-6 flex-shrink-0 flex justify-center mr-2">
-                <img src={clubIcons[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
+                <img src={(player as TransformedPlayer).team_logo || clubLogos[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
               </div>
 
               {/* Player name + position - flexible */}
