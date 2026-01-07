@@ -8,7 +8,7 @@
  * All colors MUST be HSL.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700;800&display=swap");
 
 @layer base {
   :root {
@@ -26,7 +26,7 @@
     --popover-foreground: 0 0% 98%;
 
     /* Primary - Neon Green */
-    --primary: 82 100% 50%;
+    --primary: 277 100% 47%;
     --primary-foreground: 220 20% 4%;
 
     /* Secondary */
@@ -38,7 +38,7 @@
     --muted-foreground: 220 10% 55%;
 
     /* Accent */
-    --accent: 82 100% 50%;
+    --accent: 277 100% 47%;
     --accent-foreground: 220 20% 4%;
 
     /* Destructive */
@@ -48,7 +48,7 @@
     /* Border & Input */
     --border: 220 15% 18%;
     --input: 220 18% 12%;
-    --ring: 82 100% 50%;
+    --ring: 277 100% 47%;
 
     /* Border Radius - Unified */
     --radius: 1rem;
@@ -66,30 +66,29 @@
     --shadow-sm: 0 2px 8px hsl(220 20% 4% / 0.3);
     --shadow-md: 0 4px 16px hsl(220 20% 4% / 0.4);
     --shadow-lg: 0 8px 32px hsl(220 20% 4% / 0.5);
-    --shadow-neon: 0 0 20px hsl(82 100% 50% / 0.25);
-    --shadow-neon-lg: 0 0 40px hsl(82 100% 50% / 0.35);
+    --shadow-neon: 0 0 20px hsl(277 100% 47% / 0.25);
+    --shadow-neon-lg: 0 0 40px hsl(277 100% 47% / 0.35);
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(82 100% 50% / 0.2), hsl(82 100% 40% / 0));
+    --gradient-primary: linear-gradient(135deg, hsl(277 100% 47% / 0.2), hsl(82 100% 40% / 0));
     --gradient-card: linear-gradient(180deg, hsl(220 18% 12%), hsl(220 18% 8%));
 
     /* Sidebar */
     --sidebar-background: 220 18% 8%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 82 100% 50%;
+    --sidebar-primary: 277 100% 47%;
     --sidebar-primary-foreground: 220 20% 4%;
     --sidebar-accent: 220 18% 15%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 220 15% 18%;
-    --sidebar-ring: 82 100% 50%;
+    --sidebar-ring: 277 100% 47%;
 
     /* Typography */
-    --font-display: 'Unbounded', sans-serif;
-    --font-body: 'Rubik', sans-serif;
+    --font-display: "Unbounded", sans-serif;
+    --font-body: "Rubik", sans-serif;
     --font-body-medium: 500;
     --font-body-regular: 400;
   }
-
 }
 
 @layer base {
@@ -133,7 +132,10 @@
   }
 
   /* Typography Scale - Unbounded for headings */
-  h1, h2, h3, .font-display {
+  h1,
+  h2,
+  h3,
+  .font-display {
     font-family: var(--font-display);
     font-weight: 400;
   }
@@ -311,7 +313,8 @@
 
 /* Animations */
 @keyframes bounce-dot-to-ball {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
     animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
