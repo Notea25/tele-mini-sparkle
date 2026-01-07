@@ -1142,7 +1142,7 @@ const Transfers = () => {
       </div>
 
       {/* Players List */}
-      <div className="px-4 mt-3 space-y-2 pb-40">
+      <div className="px-4 mt-3 space-y-2 pb-6">
         {paginatedPlayers.map((player) => {
           const canBuy = player.price <= budget + 0.001 && getPlayersCountByClub(player.team) < MAX_PLAYERS_PER_CLUB;
           return (
@@ -1194,7 +1194,7 @@ const Transfers = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="px-4 mt-6 pb-40 flex items-center justify-center gap-4">
+        <div className="px-4 mb-24 flex items-center justify-center gap-4">
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
