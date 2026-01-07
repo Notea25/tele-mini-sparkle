@@ -1194,7 +1194,7 @@ const Transfers = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="px-4 mt-6 pb-20 flex items-center justify-center gap-4">
+        <div className="px-4 mb-24 flex items-center justify-center gap-4">
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
