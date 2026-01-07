@@ -63,7 +63,7 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-ball-squish"
             style={{ 
-              filter: 'brightness(0) saturate(100%) invert(21%) sepia(95%) saturate(6000%) hue-rotate(275deg) brightness(95%) contrast(120%)',
+              filter: 'brightness(0) saturate(100%) invert(12%) sepia(100%) saturate(7000%) hue-rotate(270deg) brightness(100%) contrast(130%)',
               transform: 'scale(1.5)',
             }}
           />
