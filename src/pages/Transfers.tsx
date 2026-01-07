@@ -1125,7 +1125,7 @@ const Transfers = () => {
         </div>
       </div>
 
-      {/* Players List */}
+      /* {/* Players List */}
       <div className="px-4 mt-3 space-y-2 pb-40">
         {paginatedPlayers.map((player) => {
           const canBuy = player.price <= budget + 0.001 && getPlayersCountByClub(player.team) < MAX_PLAYERS_PER_CLUB;
@@ -1238,7 +1238,83 @@ const Transfers = () => {
       )}
 
       {/* Fixed Bottom Section */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-3 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-3 z-50"> */
+
+        {/* Players List - список игроков БЕЗ большого нижнего отступа */}
+<div className="px-4 mt-3 space-y-2 pb-6">
+  {paginatedPlayers.map((player) => {
+    const canBuy = player.price <= budget + 0.001 && getPlayersCountByClub(player.team) < MAX_PLAYERS_PER_CLUB;
+    return (
+      <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
+        {/* ... содержимое карточки игрока ... */}
+      </div>
+    );
+  })}
+</div>
+
+{/* Пагинация - сразу после списка с небольшим отступом */}
+{totalPages > 1 && (
+  <div className="px-4 mb-24 flex items-center justify-center gap-4">
+    <button
+      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+      disabled={currentPage === 1}
+      className="p-1 hover:text-primary transition-colors disabled:opacity-30"
+    >
+      <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+    </button>
+
+    {(() => {
+      const pages: (number | string)[] = [];
+
+      if (totalPages <= 5) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+
+        if (currentPage <= 3) {
+          pages.push(2, 3, 4);
+          pages.push("...", totalPages);
+        } else if (currentPage >= totalPages - 2) {
+          pages.push("...");
+          pages.push(totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+        } else {
+          pages.push("...");
+          pages.push(currentPage - 1, currentPage, currentPage + 1);
+          pages.push("...", totalPages);
+        }
+      }
+
+      return pages.map((page, idx) =>
+        page === "..." ? (
+          <span key={`ellipsis-${idx}`} className="text-muted-foreground text-sm">
+            ...
+          </span>
+        ) : (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page as number)}
+            className={`text-sm font-medium transition-colors ${
+              page === currentPage ? "text-primary" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {page}
+          </button>
+        ),
+      );
+    })()}
+
+    <button
+      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+      disabled={currentPage === totalPages}
+      className="p-1 hover:text-primary transition-colors disabled:opacity-30"
+    >
+      <ChevronRight className="w-5 h-5 text-muted-foreground" />
+    </button>
+  </div>
+)}
+
+{/* Fixed Bottom Section - фиксированный блок */}
+<div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-3 z-50">
         {/* Reset squad button */}
         {hasChanges && (
           <Button
