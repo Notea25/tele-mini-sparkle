@@ -26,7 +26,7 @@
     --popover-foreground: 0 0% 98%;
 
     /* Primary - Neon Green */
-    --primary: 277 100% 47%;
+    --primary: 274 99% 46%;
     --primary-foreground: 220 20% 4%;
 
     /* Secondary */
@@ -38,7 +38,7 @@
     --muted-foreground: 220 10% 55%;
 
     /* Accent */
-    --accent: 277 100% 47%;
+    --accent: 274 99% 46%;
     --accent-foreground: 220 20% 4%;
 
     /* Destructive */
@@ -48,7 +48,7 @@
     /* Border & Input */
     --border: 220 15% 18%;
     --input: 220 18% 12%;
-    --ring: 277 100% 47%;
+    --ring: 274 99% 46%;
 
     /* Border Radius - Unified */
     --radius: 1rem;
@@ -76,12 +76,12 @@
     /* Sidebar */
     --sidebar-background: 220 18% 8%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 277 100% 47%;
+    --sidebar-primary: 274 99% 46%;
     --sidebar-primary-foreground: 220 20% 4%;
     --sidebar-accent: 220 18% 15%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 220 15% 18%;
-    --sidebar-ring: 277 100% 47%;
+    --sidebar-ring: 274 99% 46%;
 
     /* Typography */
     --font-display: "Unbounded", sans-serif;
