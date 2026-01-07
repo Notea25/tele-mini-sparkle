@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import logoSymbol from "@/assets/logo-symbol-purple.png";
-import footballBall from "@/assets/football-ball-purple.png";
+import logoSymbol from "@/assets/logo-symbol.png";
+import footballBall from "@/assets/football-ball.png";
 
 interface SplashScreenProps {
   onComplete?: () => void;
@@ -51,10 +51,10 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
         
         {/* Animated football ball */}
         <div 
-          className="absolute w-[22%] h-[20%] animate-bounce-dot-to-ball"
+          className="absolute w-[14%] h-[12%] animate-bounce-dot-to-ball"
           style={{
-            right: '2%',
-            top: '36%',
+            right: '6%',
+            top: '38%',
           }}
         >
           {/* Football - always visible, with squish effect at bottom */}
@@ -63,7 +63,8 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-ball-squish"
             style={{ 
-              transform: 'scale(1.2)',
+              filter: 'brightness(0) saturate(100%) invert(83%) sepia(65%) saturate(512%) hue-rotate(42deg) brightness(103%) contrast(104%)',
+              transform: 'scale(1.5)',
             }}
           />
         </div>
