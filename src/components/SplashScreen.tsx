@@ -51,10 +51,10 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
         
         {/* Animated football ball */}
         <div 
-          className="absolute w-[14%] h-[12%] animate-bounce-dot-to-ball"
+          className="absolute w-[22%] h-[20%] animate-bounce-dot-to-ball"
           style={{
-            right: '6%',
-            top: '38%',
+            right: '2%',
+            top: '36%',
           }}
         >
           {/* Football - always visible, with squish effect at bottom */}
@@ -63,7 +63,7 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-ball-squish"
             style={{ 
-              transform: 'scale(1.5)',
+              transform: 'scale(1.2)',
             }}
           />
         </div>
