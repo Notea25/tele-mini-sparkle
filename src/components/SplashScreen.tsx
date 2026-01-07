@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import logoSymbol from "@/assets/logo-symbol-purple.png";
-import footballBall from "@/assets/football-ball.png";
+import footballBall from "@/assets/football-ball-purple.png";
 
 interface SplashScreenProps {
   onComplete?: () => void;
@@ -63,7 +63,6 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-ball-squish"
             style={{ 
-              filter: 'brightness(0) saturate(100%) invert(12%) sepia(100%) saturate(7000%) hue-rotate(270deg) brightness(100%) contrast(130%)',
               transform: 'scale(1.5)',
             }}
           />
