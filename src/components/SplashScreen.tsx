@@ -42,10 +42,10 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
       <style>{`
         @keyframes ball-bounce {
           0%, 100% {
-            transform: translateY(0) scaleY(1) scaleX(1);
+            transform: translateY(0) scaleY(1) scaleX(1) rotate(0deg);
           }
           45%, 55% {
-            transform: translateY(48px) scaleY(0.7) scaleX(1.2);
+            transform: translateY(48px) scaleY(0.7) scaleX(1.2) rotate(180deg);
           }
         }
         
@@ -61,7 +61,7 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
         }
         
         .animate-ball-bounce {
-          animation: ball-bounce 0.6s ease-in-out infinite;
+          animation: ball-bounce 1s ease-in-out infinite;
         }
         
         .animate-shadow-pulse {
