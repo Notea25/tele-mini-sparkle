@@ -114,6 +114,17 @@ export interface UserSquad {
   fav_team_id: number;
 }
 
+// Типы для лидерборда
+export interface LeaderboardEntry {
+  place: number;
+  squad_id: number;
+  squad_name: string;
+  user_id: number;
+  username: string;
+  tour_points: number;
+  total_points: number;
+}
+
 // Методы для работы со сквадами
 export const squadsApi = {
   create: (data: CreateSquadRequest) => apiRequest<CreateSquadResponse>('/api/squads/create', {
@@ -125,6 +136,7 @@ export const squadsApi = {
     method: 'PATCH',
     body: { name },
   }),
+  getLeaderboard: (tourId: number) => apiRequest<LeaderboardEntry[]>(`/api/squads/leaderboard/${tourId}`),
 };
 
 // Методы для работы с пользователями

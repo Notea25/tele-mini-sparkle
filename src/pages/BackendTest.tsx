@@ -12,6 +12,7 @@ const BackendTest = () => {
   const [toursResponse, setToursResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playersResponse, setPlayersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playerFullInfoResponse, setPlayerFullInfoResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [leaderboardResponse, setLeaderboardResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -21,7 +22,9 @@ const BackendTest = () => {
   const [loadingTours, setLoadingTours] = useState(false);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
   const [loadingPlayerFullInfo, setLoadingPlayerFullInfo] = useState(false);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
   const [playerIdInput, setPlayerIdInput] = useState('1');
+  const [tourIdInput, setTourIdInput] = useState('2');
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -164,6 +167,21 @@ const BackendTest = () => {
     }
   };
 
+  const testLeaderboardApi = async () => {
+    setLoadingLeaderboard(true);
+    try {
+      const result = await squadsApi.getLeaderboard(parseInt(tourIdInput) || 2);
+      setLeaderboardResponse(result);
+    } catch (err) {
+      setLeaderboardResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingLeaderboard(false);
+    }
+  };
+
   const renderResponse = (response: ApiResponse<unknown> | null, title: string) => {
     if (!response) return null;
     
@@ -272,8 +290,22 @@ const BackendTest = () => {
             {loadingPlayerFullInfo ? 'Загрузка...' : `Тест: GET /api/players/${playerIdInput}/full-info`}
           </Button>
         </div>
+
+        <div className="flex gap-2 items-center">
+          <input
+            type="number"
+            value={tourIdInput}
+            onChange={(e) => setTourIdInput(e.target.value)}
+            className="w-20 px-2 py-2 bg-muted text-foreground rounded border border-border"
+            placeholder="Tour ID"
+          />
+          <Button onClick={testLeaderboardApi} disabled={loadingLeaderboard} variant="default">
+            {loadingLeaderboard ? 'Загрузка...' : `Тест: GET /api/squads/leaderboard/${tourIdInput}`}
+          </Button>
+        </div>
       </div>
 
+      {renderResponse(leaderboardResponse, 'Ответ: Leaderboard')}
       {renderResponse(playerFullInfoResponse, 'Ответ: Player Full Info')}
       {renderResponse(leagueResponse, 'Ответ: Лиги')}
       {renderResponse(teamsResponse, 'Ответ: Команды')}
