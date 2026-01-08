@@ -8,7 +8,7 @@ import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { squadsApi, UserSquad } from "@/lib/api";
+import { squadsApi, toursApi, UserSquad } from "@/lib/api";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -44,10 +44,21 @@ const League = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes cache
   });
   
+  // Fetch tours info from API (or cache)
+  const { data: toursResponse } = useQuery({
+    queryKey: ['tours', leagueId],
+    queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
+  });
+  
   // Find the squad for current league
   const currentSquad: UserSquad | undefined = mySquadsResponse?.data?.find(
     (squad) => squad.league_id === leagueId
   );
+  
+  // Get tour numbers from API response
+  const currentTourNumber = toursResponse?.data?.current_tour?.number ?? 1;
+  const nextTourNumber = toursResponse?.data?.next_tour?.number ?? 2;
   
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(() => {
     const savedTab = localStorage.getItem(LEAGUE_TAB_KEY);
@@ -428,7 +439,7 @@ const League = () => {
             <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
               <span className="text-muted-foreground text-sm whitespace-nowrap text-regular">
-                {isTournamentStarted ? "29 тур" : "1 тур"}
+                {currentTourNumber} тур
               </span>
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
             </div>
@@ -464,7 +475,7 @@ const League = () => {
             {isTournamentStarted && (
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
-                <span className="text-muted-foreground text-sm whitespace-nowrap">30 тур</span>
+                <span className="text-muted-foreground text-sm whitespace-nowrap">{nextTourNumber} тур</span>
                 <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
               </div>
             )}
@@ -521,7 +532,7 @@ const League = () => {
               <span className="col-span-3 text-xs">Место</span>
               <span className="col-span-4 text-xs">Название</span>
               <span className="col-span-3 text-center">
-                <span className="text-xs block whitespace-nowrap">29-й тур</span>
+                <span className="text-xs block whitespace-nowrap">{currentTourNumber}-й тур</span>
                 <span className="text-[10px] italic block">(очки)</span>
               </span>
               <span className="col-span-2 text-right">
