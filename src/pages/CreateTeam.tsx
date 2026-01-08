@@ -278,7 +278,7 @@ const CreateTeam = () => {
           ref={buttonRef}
           onClick={validateAndNavigate}
           disabled={!isFormValid || isCreating}
-          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
           style={{ boxShadow: isFormValid && !isCreating ? "0 0 20px hsl(var(--primary) / 0.5)" : "none" }}
         >
           {isCreating ? "Создание..." : "Создать команду"}
