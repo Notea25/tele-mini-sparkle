@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import logoSymbol from "@/assets/logo-symbol.png";
-import footballBall from "@/assets/football-ball.png";
+import footballBall from "@/assets/football-splash.png";
 
 interface SplashScreenProps {
   onComplete?: () => void;
