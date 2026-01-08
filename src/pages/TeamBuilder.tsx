@@ -1237,7 +1237,11 @@ const TeamBuilder = () => {
 
               {/* Points - fixed width, centered */}
               <div className="w-14 flex-shrink-0 flex items-center justify-center">
-                <span className="text-sm font-medium text-foreground">{player.points}</span>
+                <span className={`text-sm font-medium ${
+                  player.points > 0 ? "text-primary" : player.points < 0 ? "text-destructive" : "text-foreground"
+                }`}>
+                  {player.points > 0 ? `+${player.points}` : player.points}
+                </span>
               </div>
 
               {/* Price - fixed width, centered */}

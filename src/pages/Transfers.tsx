@@ -790,7 +790,11 @@ const Transfers = () => {
                   <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
                 </div>
 
-                <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">{player.points}</span>
+                <span className={`w-12 flex-shrink-0 text-sm text-center font-medium ${
+                  player.points > 0 ? "text-primary" : player.points < 0 ? "text-destructive" : "text-foreground"
+                }`}>
+                  {player.points > 0 ? `+${player.points}` : player.points}
+                </span>
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
 
                 <button
@@ -1163,7 +1167,11 @@ const Transfers = () => {
 
               {/* Points */}
               <div className="w-14 flex-shrink-0 flex items-center justify-center">
-                <span className="text-sm font-medium text-foreground">{player.points}</span>
+                <span className={`text-sm font-medium ${
+                  player.points > 0 ? "text-primary" : player.points < 0 ? "text-destructive" : "text-foreground"
+                }`}>
+                  {player.points > 0 ? `+${player.points}` : player.points}
+                </span>
               </div>
 
               {/* Price */}

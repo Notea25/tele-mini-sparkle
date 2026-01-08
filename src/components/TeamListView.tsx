@@ -94,8 +94,10 @@ const TeamListView = ({
                         </div>
 
                         {/* Points */}
-                        <span className="w-12 flex-shrink-0 text-foreground text-sm text-center">
-                          {slot.player.points}
+                        <span className={`w-12 flex-shrink-0 text-sm text-center font-medium ${
+                          slot.player.points > 0 ? "text-primary" : slot.player.points < 0 ? "text-destructive" : "text-foreground"
+                        }`}>
+                          {slot.player.points > 0 ? `+${slot.player.points}` : slot.player.points}
                         </span>
 
                         {/* Price */}
