@@ -45,6 +45,7 @@ import { allPlayers, allTeams } from "@/lib/teamData";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
+import { squadsApi } from "@/lib/api";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -676,18 +677,81 @@ const TeamBuilder = () => {
     setSelectedPlayers(newSelectedPlayers);
   };
 
-  const handleSaveChanges = () => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveChanges = async () => {
     if (selectedPlayers.length < 15) {
       setShowSquadError(true);
       toast.error(`Состав не сформирован. Выбрано ${selectedPlayers.length} из 15 игроков`);
       return;
     }
-    localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
-    localStorage.setItem("fantasyTeamName", teamName);
-    localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
-    localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
-    initialPlayersRef.current = JSON.stringify(selectedPlayers);
-    toast.success("Изменения сохранены");
+
+    // Separate main players (11) from bench players (4)
+    // Bench = rightmost slot for each position (last slotIndex)
+    // POSITION_SLOTS: ВР: 2, ЗЩ: 5, ПЗ: 5, НП: 3
+    // Bench slots: ВР slot 1, ЗЩ slot 4, ПЗ slot 4, НП slot 2
+    const benchSlotIndices: Record<string, number> = {
+      ВР: 1,  // rightmost of 2 (0, 1)
+      ЗЩ: 4,  // rightmost of 5 (0, 1, 2, 3, 4)
+      ПЗ: 4,  // rightmost of 5 (0, 1, 2, 3, 4)
+      НП: 2,  // rightmost of 3 (0, 1, 2)
+    };
+
+    const mainPlayerIds: number[] = [];
+    const benchPlayerIds: number[] = [];
+
+    selectedPlayers.forEach((sp) => {
+      const player = players.find((p) => p.id === sp.id);
+      if (!player) return;
+
+      const isBench = sp.slotIndex === benchSlotIndices[player.position];
+      if (isBench) {
+        benchPlayerIds.push(sp.id);
+      } else {
+        mainPlayerIds.push(sp.id);
+      }
+    });
+
+    // Validate we have correct counts
+    if (mainPlayerIds.length !== 11 || benchPlayerIds.length !== 4) {
+      toast.error("Ошибка разделения состава на основной и запасных");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const leagueId = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116');
+      const favTeamId = parseInt(localStorage.getItem('fantasyFavoriteTeam') || '0');
+
+      const response = await squadsApi.create({
+        name: teamName,
+        league_id: leagueId,
+        fav_team_id: favTeamId,
+        main_player_ids: mainPlayerIds,
+        bench_player_ids: benchPlayerIds,
+      });
+
+      if (!response.success) {
+        toast.error(response.error || "Ошибка при сохранении команды");
+        return;
+      }
+
+      // Save to localStorage
+      localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
+      localStorage.setItem("fantasyTeamName", teamName);
+      localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
+      localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
+      if (response.data?.id) {
+        localStorage.setItem("fantasySquadId", response.data.id.toString());
+      }
+      initialPlayersRef.current = JSON.stringify(selectedPlayers);
+      toast.success("Команда сохранена!");
+    } catch (error) {
+      console.error('Failed to save squad:', error);
+      toast.error("Ошибка при сохранении команды");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDiscardChanges = () => {
@@ -1329,13 +1393,14 @@ const TeamBuilder = () => {
               setShowSaveConfirmation(true);
             }
           }}
+          disabled={isSaving}
           className={`w-full rounded-lg py-3 font-semibold transition-all ${
-            selectedPlayers.length < 15
+            selectedPlayers.length < 15 || isSaving
               ? "bg-primary/30 text-muted-foreground"
               : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
           }`}
         >
-          Сохранить
+          {isSaving ? "Сохранение..." : "Сохранить"}
         </Button>
       </div>
 
@@ -1353,16 +1418,16 @@ const TeamBuilder = () => {
               Вернуться
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => {
-                localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
-                localStorage.setItem("fantasyTeamName", teamName);
-                localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
-                localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
-                navigate("/league", { replace: true });
+              onClick={async () => {
+                await handleSaveChanges();
+                if (!isSaving) {
+                  navigate("/league", { replace: true });
+                }
               }}
+              disabled={isSaving}
               className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
             >
-              Подтвердить
+              {isSaving ? "Сохранение..." : "Подтвердить"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

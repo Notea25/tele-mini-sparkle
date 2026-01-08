@@ -76,6 +76,8 @@ export interface CreateSquadRequest {
   name: string;
   league_id: number;
   fav_team_id: number;
+  main_player_ids: number[];
+  bench_player_ids: number[];
 }
 
 export interface CreateSquadResponse {
@@ -83,6 +85,8 @@ export interface CreateSquadResponse {
   name: string;
   league_id: number;
   fav_team_id: number;
+  main_player_ids: number[];
+  bench_player_ids: number[];
 }
 
 // Типы для получения сквадов пользователя

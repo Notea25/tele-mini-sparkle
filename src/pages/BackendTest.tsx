@@ -73,6 +73,8 @@ const BackendTest = () => {
         name: 'Test Squad',
         league_id: 116,
         fav_team_id: 379,
+        main_player_ids: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        bench_player_ids: [12, 13, 14, 15],
       });
       setSquadsCreateResponse(result);
     } catch (err) {

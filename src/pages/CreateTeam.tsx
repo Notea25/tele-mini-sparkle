@@ -160,38 +160,12 @@ const CreateTeam = () => {
       // If filter fails, allow navigation
     }
 
-    // Create squad via API
-    setIsCreating(true);
-    try {
-      const leagueId = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116');
-      const favTeamId = parseInt(favoriteTeam);
+    // Save team data to localStorage and navigate to team builder
+    localStorage.setItem("fantasyTeamName", name);
+    localStorage.setItem("fantasyFavoriteTeam", favoriteTeam);
 
-      const response = await squadsApi.create({
-        name,
-        league_id: leagueId,
-        fav_team_id: favTeamId,
-      });
-
-      if (!response.success) {
-        toast.error(response.error || "Ошибка при создании команды");
-        return;
-      }
-
-      // Save team data to localStorage
-      localStorage.setItem("fantasyTeamName", name);
-      localStorage.setItem("fantasyFavoriteTeam", favoriteTeam);
-      if (response.data?.id) {
-        localStorage.setItem("fantasySquadId", response.data.id.toString());
-      }
-
-      toast.success("Команда создана!");
-      navigate("/team-builder", { state: { teamName: name } });
-    } catch (error) {
-      console.error('Failed to create squad:', error);
-      toast.error("Ошибка при создании команды");
-    } finally {
-      setIsCreating(false);
-    }
+    toast.success("Перейдите к выбору игроков!");
+    navigate("/team-builder", { state: { teamName: name } });
   };
 
   return (
