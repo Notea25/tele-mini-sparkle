@@ -505,13 +505,13 @@ const League = () => {
                 className="w-full h-[44px] bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/team-management")}
               >
-                <span className="text-primary-foreground font-rubik text-[16px] font-medium">Моя команда</span>
+                <span className="text-primary-foreground font-semibold">Моя команда</span>
               </button>
               <button
                 className="w-full h-[44px] bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/transfers")}
               >
-                <span className="text-primary-foreground font-rubik text-[16px] font-medium">Трансферы</span>
+                <span className="text-primary-foreground font-semibold">Трансферы</span>
               </button>
             </div>
 
