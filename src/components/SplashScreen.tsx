@@ -34,37 +34,36 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
           <img 
             src={footballBounce} 
             alt="Ball" 
-            className="w-6 h-6 object-contain animate-ball-bounce"
+            className="w-6 h-6 object-contain animate-ball-bounce animate-ball-spin"
           />
         </div>
       </div>
 
       <style>{`
         @keyframes ball-bounce {
-          0% {
-            transform: translateY(0) scaleY(1) scaleX(1) rotate(0deg);
+          0%, 100% {
+            transform: translateY(0) scaleY(1) scaleX(1);
           }
           45%, 55% {
-            transform: translateY(48px) scaleY(0.7) scaleX(1.2) rotate(50deg);
-          }
-          100% {
-            transform: translateY(0) scaleY(1) scaleX(1) rotate(100deg);
+            transform: translateY(48px) scaleY(0.7) scaleX(1.2);
           }
         }
         
-        @keyframes shadow-pulse {
-          0%, 100% {
-            transform: translateX(-50%) scale(1);
-            opacity: 0.3;
+        @keyframes ball-spin {
+          from {
+            rotate: 0deg;
           }
-          50% {
-            transform: translateX(-50%) scale(1.3);
-            opacity: 0.6;
+          to {
+            rotate: 360deg;
           }
         }
         
         .animate-ball-bounce {
           animation: ball-bounce 1s ease-in-out infinite;
+        }
+        
+        .animate-ball-spin {
+          animation: ball-spin 2s linear infinite;
         }
         
         .animate-shadow-pulse {
