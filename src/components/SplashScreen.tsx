@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import logoSymbol from "@/assets/logo-symbol-purple.png";
+import logoSymbolNoDot from "@/assets/logo-symbol-no-dot.png";
 import footballBounce from "@/assets/football-bounce.png";
 
 interface SplashScreenProps {
@@ -25,16 +25,16 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0f]">
       <div className="relative">
         <img 
-          src={logoSymbol} 
+          src={logoSymbolNoDot} 
           alt="Logo" 
           className="w-24 h-24 object-contain animate-scale-in"
         />
         {/* Bouncing ball replacing the dot in the logo */}
-        <div className="absolute top-[18%] right-[18%]">
+        <div className="absolute -top-1 -right-1">
           <img 
             src={footballBounce} 
             alt="Ball" 
-            className="w-4 h-4 object-contain animate-ball-bounce"
+            className="w-5 h-5 object-contain animate-ball-bounce"
           />
         </div>
       </div>
