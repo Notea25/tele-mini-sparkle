@@ -25,9 +25,9 @@ import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 
 
-import iconBenchPlus from "@/assets/icon-bench-plus.png";
-import icon3x from "@/assets/icon-3x.png";
-import icon2x from "@/assets/icon-2x.png";
+import boostBench from "@/assets/boost-bench.png";
+import boostCaptain3x from "@/assets/boost-captain3x.png";
+import boostDouble from "@/assets/boost-double.png";
 
 // Club icons mapping
 const clubIcons: Record<string, string> = {
@@ -44,9 +44,9 @@ import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
 
 // Special chips data with icons - only team management boosts
 const initialChips: BoostChip[] = [
-  { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Подробнее", status: "available" },
-  { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
-  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
+  { id: "bench", icon: boostBench, label: "Скамейка +", sublabel: "Подробнее", status: "available" },
+  { id: "captain3x", icon: boostCaptain3x, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
+  { id: "double", icon: boostDouble, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
 ];
 
 // Formation options - all 8 valid formations

@@ -47,11 +47,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import clubLogo from "@/assets/club-logo.png";
 
-import icon2x from "@/assets/icon-2x.png";
-import iconStar from "@/assets/icon-star.png";
-import iconFree from "@/assets/icon-free.png";
-import iconBenchPlus from "@/assets/icon-bench-plus.png";
-import icon3x from "@/assets/icon-3x.png";
+import boostTransfers from "@/assets/boost-transfers.png";
+import boostGolden from "@/assets/boost-golden.png";
+import boostBench from "@/assets/boost-bench.png";
+import boostCaptain3x from "@/assets/boost-captain3x.png";
+import boostDouble from "@/assets/boost-double.png";
 
 // Club icons mapping - use clubLogos as primary, fall back to defaults
 const clubIcons: Record<string, string> = {
@@ -63,17 +63,17 @@ import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
 
 // Special chips for transfers page UI - only 2 chips
 const initialChips: BoostChip[] = [
-  { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
-  { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
+  { id: "transfers", icon: boostTransfers, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
+  { id: "golden", icon: boostGolden, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
 ];
 
 // All 5 boosts for confirmation drawer
 const allBoostsTemplate: BoostChip[] = [
-  { id: "bench", icon: iconBenchPlus, label: "Скамейка +", sublabel: "Подробнее", status: "available" },
-  { id: "captain3x", icon: icon3x, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
-  { id: "transfers", icon: iconStar, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
-  { id: "golden", icon: iconFree, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
-  { id: "double", icon: icon2x, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
+  { id: "bench", icon: boostBench, label: "Скамейка +", sublabel: "Подробнее", status: "available" },
+  { id: "captain3x", icon: boostCaptain3x, label: "3x Капитан", sublabel: "Подробнее", status: "available" },
+  { id: "transfers", icon: boostTransfers, label: "Трансферы +", sublabel: "Подробнее", status: "available" },
+  { id: "golden", icon: boostGolden, label: "Золотой тур", sublabel: "Подробнее", status: "available" },
+  { id: "double", icon: boostDouble, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
 ];
 
 interface PlayerDataExt extends PlayerData {
