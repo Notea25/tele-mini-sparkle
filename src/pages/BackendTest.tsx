@@ -9,6 +9,7 @@ const BackendTest = () => {
   const [squadsCreateResponse, setSquadsCreateResponse] = useState<ApiResponse<unknown> | null>(null);
   const [mySquadsResponse, setMySquadsResponse] = useState<ApiResponse<unknown> | null>(null);
   const [deadlineResponse, setDeadlineResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [toursResponse, setToursResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playersResponse, setPlayersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playerFullInfoResponse, setPlayerFullInfoResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
@@ -17,6 +18,7 @@ const BackendTest = () => {
   const [loadingSquadsCreate, setLoadingSquadsCreate] = useState(false);
   const [loadingMySquads, setLoadingMySquads] = useState(false);
   const [loadingDeadline, setLoadingDeadline] = useState(false);
+  const [loadingTours, setLoadingTours] = useState(false);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
   const [loadingPlayerFullInfo, setLoadingPlayerFullInfo] = useState(false);
   const [playerIdInput, setPlayerIdInput] = useState('1');
@@ -114,6 +116,21 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingDeadline(false);
+    }
+  };
+
+  const testToursApi = async () => {
+    setLoadingTours(true);
+    try {
+      const result = await toursApi.getPreviousCurrentNextTour(116);
+      setToursResponse(result);
+    } catch (err) {
+      setToursResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingTours(false);
     }
   };
 
@@ -235,6 +252,10 @@ const BackendTest = () => {
           {loadingDeadline ? 'Загрузка...' : 'Тест: GET /api/tours/get_deadline_for_next_tour/116'}
         </Button>
 
+        <Button onClick={testToursApi} disabled={loadingTours} variant="secondary">
+          {loadingTours ? 'Загрузка...' : 'Тест: GET /api/tours/get_previous_current_next_tour/116'}
+        </Button>
+
         <Button onClick={testPlayersApi} disabled={loadingPlayers} variant="outline">
           {loadingPlayers ? 'Загрузка...' : 'Тест: GET /api/players/league/116/players_with_points'}
         </Button>
@@ -260,6 +281,7 @@ const BackendTest = () => {
       {renderResponse(squadsCreateResponse, 'Ответ: Squads Create')}
       {renderResponse(mySquadsResponse, 'Ответ: My Squads')}
       {renderResponse(deadlineResponse, 'Ответ: Deadline')}
+      {renderResponse(toursResponse, 'Ответ: Tours (prev/current/next)')}
       {renderResponse(playersResponse, 'Ответ: Players')}
     </div>
   );

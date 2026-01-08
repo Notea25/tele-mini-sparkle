@@ -54,9 +54,26 @@ export interface TourDeadline {
   deadline: string;
 }
 
+export interface TourInfo {
+  id: number;
+  number: number;
+  league_id: number;
+  start_date: string;
+  end_date: string;
+  deadline: string;
+  type: 'previous' | 'current' | 'next';
+}
+
+export interface ToursResponse {
+  previous_tour: TourInfo | null;
+  current_tour: TourInfo | null;
+  next_tour: TourInfo | null;
+}
+
 // Методы для работы с турами
 export const toursApi = {
   getDeadlineForNextTour: (leagueId: number) => apiRequest<TourDeadline>(`/api/tours/get_deadline_for_next_tour/${leagueId}`),
+  getPreviousCurrentNextTour: (leagueId: number) => apiRequest<ToursResponse>(`/api/tours/get_previous_current_next_tour/${leagueId}`),
 };
 
 // Типы для команд
