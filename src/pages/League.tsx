@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
 import { useDeadline } from "@/hooks/useDeadline";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { squadsApi, UserSquad } from "@/lib/api";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -26,9 +28,27 @@ import { restoreTeamFromBackup } from "@/lib/teamData";
 import cupComingSoon from "@/assets/cup-coming-soon.png";
 
 const LEAGUE_TAB_KEY = "fantasyLeagueActiveTab";
+const SELECTED_LEAGUE_ID_KEY = "fantasySelectedLeagueId";
 
 const League = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  
+  // Get league ID from localStorage (default 116)
+  const leagueId = parseInt(localStorage.getItem(SELECTED_LEAGUE_ID_KEY) || '116', 10);
+  
+  // Fetch user squads from API (or cache)
+  const { data: mySquadsResponse } = useQuery({
+    queryKey: ['mySquads'],
+    queryFn: () => squadsApi.getMySquads(),
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
+  });
+  
+  // Find the squad for current league
+  const currentSquad: UserSquad | undefined = mySquadsResponse?.data?.find(
+    (squad) => squad.league_id === leagueId
+  );
+  
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(() => {
     const savedTab = localStorage.getItem(LEAGUE_TAB_KEY);
     if (savedTab === "main" || savedTab === "leagues" || savedTab === "cup") {
@@ -120,10 +140,32 @@ const League = () => {
   // Get user's favorite team from localStorage
   const favoriteTeam = localStorage.getItem("fantasyFavoriteTeam") || "dinamo-minsk";
   const clubLeagueName = clubToLeagueName[favoriteTeam] || "Лига «Динамо-Минск»";
-  // Save team name to localStorage when it changes
-  const handleSaveTeamName = (newName: string) => {
-    setTeamName(newName);
-    localStorage.setItem("fantasyTeamName", newName);
+  // Save team name - send to backend
+  const [isRenamingSaving, setIsRenamingSaving] = useState(false);
+  
+  const handleSaveTeamName = async (newName: string) => {
+    if (!currentSquad) {
+      toast.error("Сквад не найден");
+      return;
+    }
+    
+    setIsRenamingSaving(true);
+    try {
+      const response = await squadsApi.rename(currentSquad.id, newName);
+      if (response.success) {
+        setTeamName(newName);
+        localStorage.setItem("fantasyTeamName", newName);
+        // Invalidate cache to refresh squad data
+        queryClient.invalidateQueries({ queryKey: ['mySquads'] });
+        toast.success("Название команды обновлено");
+      } else {
+        toast.error(response.error || "Ошибка при переименовании");
+      }
+    } catch (error) {
+      toast.error("Ошибка при переименовании");
+    } finally {
+      setIsRenamingSaving(false);
+    }
   };
 
   // Deadline countdown using shared hook
@@ -375,7 +417,7 @@ const League = () => {
           <>
             {/* Team Name */}
             <div className="flex items-center justify-center gap-2 mb-4">
-              <h1 className="text-2xl font-display text-foreground">{teamName}</h1>
+              <h1 className="text-2xl font-display text-foreground">{currentSquad?.name || teamName}</h1>
               <Pencil
                 className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground"
                 onClick={() => setIsEditTeamNameModalOpen(true)}
@@ -992,7 +1034,7 @@ const League = () => {
       <EditTeamNameModal
         isOpen={isEditTeamNameModalOpen}
         onClose={() => setIsEditTeamNameModalOpen(false)}
-        currentName={teamName}
+        currentName={currentSquad?.name || teamName}
         onSave={handleSaveTeamName}
       />
 
