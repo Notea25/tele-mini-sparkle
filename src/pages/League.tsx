@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, ChevronDown, ChevronUp, User, ArrowRight, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -8,7 +8,7 @@ import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { squadsApi, toursApi, UserSquad } from "@/lib/api";
+import { squadsApi, toursApi, UserSquad, LeaderboardEntry } from "@/lib/api";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -18,7 +18,6 @@ import arrowDownBlack from "@/assets/arrow-down-black.png";
 import trophyGold from "@/assets/trophy-gold.png";
 import trophySilver from "@/assets/trophy-silver.png";
 import trophyBronze from "@/assets/trophy-bronze.png";
-import { getLeaguePreviewTeams } from "@/lib/tournamentData";
 import beteraLogo from "@/assets/betera-basketball-logo.png";
 import eslLogo from "@/assets/esl-logo.png";
 import leagueLogo from "@/assets/league-logo.png";
@@ -55,10 +54,20 @@ const League = () => {
   const currentSquad: UserSquad | undefined = mySquadsResponse?.data?.find(
     (squad) => squad.league_id === leagueId
   );
+  const mySquadId = currentSquad?.id;
   
-  // Get tour numbers from API response
+  // Get tour info from API response
+  const currentTourId = toursResponse?.data?.current_tour?.id;
   const currentTourNumber = toursResponse?.data?.current_tour?.number ?? 1;
   const nextTourNumber = toursResponse?.data?.next_tour?.number ?? 2;
+  
+  // Fetch leaderboard data for tournament table preview
+  const { data: leaderboardResponse, isLoading: leaderboardLoading } = useQuery({
+    queryKey: ['leaderboard', currentTourId],
+    queryFn: () => currentTourId ? squadsApi.getLeaderboard(currentTourId) : Promise.resolve({ success: false, data: [] }),
+    enabled: !!currentTourId,
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
+  });
   
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(() => {
     const savedTab = localStorage.getItem(LEAGUE_TAB_KEY);
@@ -210,8 +219,37 @@ const League = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Tournament table data from shared source
-  const tableData = getLeaguePreviewTeams(teamName);
+  // Tournament table data from API - top 3 + user's position
+  const tableData = useMemo(() => {
+    const leaderboard = leaderboardResponse?.data;
+    if (!leaderboard || leaderboard.length === 0) return [];
+    
+    const top3 = leaderboard.slice(0, 3).map((entry: LeaderboardEntry) => ({
+      id: entry.squad_id,
+      position: entry.place,
+      name: entry.squad_name,
+      tourPoints: entry.tour_points,
+      totalPoints: entry.total_points,
+      isUser: entry.squad_id === mySquadId,
+      change: "same" as "up" | "down" | "same",
+    }));
+    
+    // Find user's entry if not in top 3
+    const userEntry = leaderboard.find((entry: LeaderboardEntry) => entry.squad_id === mySquadId);
+    if (userEntry && userEntry.place > 3) {
+      top3.push({
+        id: userEntry.squad_id,
+        position: userEntry.place,
+        name: userEntry.squad_name,
+        tourPoints: userEntry.tour_points,
+        totalPoints: userEntry.total_points,
+        isUser: true,
+        change: "same" as "up" | "down" | "same",
+      });
+    }
+    
+    return top3;
+  }, [leaderboardResponse?.data, mySquadId]);
 
   // Commercial leagues data with end tour for blur logic and deadlines
   const commercialLeagues = [
