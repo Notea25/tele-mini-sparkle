@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import SportHeader from "@/components/SportHeader";
+import { squadsApi, toursApi, LeaderboardEntry } from "@/lib/api";
 
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
@@ -9,7 +11,6 @@ import arrowDownBlack from "@/assets/arrow-down-black.png";
 import trophyGold from "@/assets/trophy-gold.png";
 import trophySilver from "@/assets/trophy-silver.png";
 import trophyBronze from "@/assets/trophy-bronze.png";
-import { getTournamentTeams } from "@/lib/tournamentData";
 
 const TournamentTable = () => {
   const navigate = useNavigate();
@@ -19,9 +20,56 @@ const TournamentTable = () => {
   });
   const itemsPerPage = 10;
 
-  const allTeams = getTournamentTeams();
+  // Get league_id from localStorage
+  const leagueId = parseInt(localStorage.getItem("selectedLeagueId") || "116", 10);
 
-  const totalPages = Math.ceil(allTeams.length / itemsPerPage);
+  // Fetch tours to get current tour id
+  const { data: toursData } = useQuery({
+    queryKey: ['tours', leagueId],
+    queryFn: async () => {
+      const result = await toursApi.getPreviousCurrentNextTour(leagueId);
+      return result.success ? result.data : null;
+    },
+  });
+
+  // Fetch my squads to determine which team is the user's
+  const { data: mySquadsData } = useQuery({
+    queryKey: ['mySquads'],
+    queryFn: async () => {
+      const result = await squadsApi.getMySquads();
+      return result.success ? result.data : null;
+    },
+  });
+
+  const currentTourId = toursData?.current_tour?.id;
+  const currentTourNumber = toursData?.current_tour?.number;
+  const mySquadId = mySquadsData?.[0]?.id;
+
+  // Fetch leaderboard data
+  const { data: leaderboardData, isLoading } = useQuery({
+    queryKey: ['leaderboard', currentTourId],
+    queryFn: async () => {
+      if (!currentTourId) return null;
+      const result = await squadsApi.getLeaderboard(currentTourId);
+      return result.success ? result.data : null;
+    },
+    enabled: !!currentTourId,
+  });
+
+  const allTeams = useMemo(() => {
+    if (!leaderboardData) return [];
+    return leaderboardData.map((entry: LeaderboardEntry) => ({
+      id: entry.squad_id,
+      position: entry.place,
+      name: entry.squad_name,
+      tourPoints: entry.tour_points,
+      totalPoints: entry.total_points,
+      isUser: entry.squad_id === mySquadId,
+      change: "same" as "up" | "down" | "same", // API doesn't provide change info yet
+    }));
+  }, [leaderboardData, mySquadId]);
+
+  const totalPages = Math.max(1, Math.ceil(allTeams.length / itemsPerPage));
   
   // Restore scroll position when returning to this page
   useEffect(() => {
@@ -98,7 +146,7 @@ const TournamentTable = () => {
           <span className="col-span-3 text-xs">Место</span>
           <span className="col-span-4 text-xs">Название</span>
           <span className="col-span-3 text-center">
-            <span className="text-xs block whitespace-nowrap">29-й тур</span>
+            <span className="text-xs block whitespace-nowrap">{currentTourNumber ? `${currentTourNumber}-й тур` : 'Тур'}</span>
             <span className="text-[10px] italic block">(очки)</span>
           </span>
           <span className="col-span-2 text-right">
@@ -106,6 +154,16 @@ const TournamentTable = () => {
             <span className="text-[10px] italic block">(очков)</span>
           </span>
         </div>
+
+        {/* Loading state */}
+        {isLoading && (
+          <div className="text-center text-muted-foreground py-8">Загрузка...</div>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && allTeams.length === 0 && (
+          <div className="text-center text-muted-foreground py-8">Нет данных</div>
+        )}
 
         {/* Table rows */}
         <div className="space-y-2">
@@ -137,9 +195,11 @@ const TournamentTable = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-center gap-1 mt-8">
-          {renderPagination()}
-        </div>
+        {allTeams.length > 0 && (
+          <div className="flex items-center justify-center gap-1 mt-8">
+            {renderPagination()}
+          </div>
+        )}
       </main>
     </div>
   );
