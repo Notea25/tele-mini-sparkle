@@ -33,6 +33,7 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
             clipPath: 'polygon(0 0, 100% 0, 100% 35%, 72% 35%, 72% 55%, 100% 55%, 100% 100%, 0 100%)',
+            filter: 'brightness(0) saturate(100%) invert(13%) sepia(95%) saturate(6697%) hue-rotate(276deg) brightness(99%) contrast(133%)',
           }}
         />
         
@@ -63,7 +64,7 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-ball-squish"
             style={{ 
-              filter: 'brightness(0) saturate(100%) invert(83%) sepia(65%) saturate(512%) hue-rotate(42deg) brightness(103%) contrast(104%)',
+              filter: 'brightness(0) saturate(100%) invert(13%) sepia(95%) saturate(6697%) hue-rotate(276deg) brightness(99%) contrast(133%)',
               transform: 'scale(1.5)',
             }}
           />
