@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import playersWelcome from "@/assets/players-welcome.png";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-new.png";
 import { Filter } from "bad-words";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";

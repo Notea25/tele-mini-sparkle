@@ -2,7 +2,7 @@ import { ChevronLeft } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTelegram } from "@/providers/TelegramProvider";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-new.png";
 import {
   AlertDialog,
   AlertDialogAction,
