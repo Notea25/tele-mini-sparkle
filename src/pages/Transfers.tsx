@@ -1044,36 +1044,36 @@ const Transfers = () => {
         {/* Price Range */}
         <div className="px-4 mt-2">
           <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-sm">Цена:</span>
-            <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+            <span className="text-muted-foreground text-sm">от</span>
+            <div className="flex items-center gap-1 bg-card rounded-xl px-1 py-1 border border-border">
               <button
                 onClick={handlePriceFromDecrease}
-                className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
               >
-                <Minus className="w-3 h-3 text-primary-foreground" />
+                <Minus className="w-4 h-4 text-primary-foreground" />
               </button>
-              <span className="text-foreground text-sm w-9 text-center">{priceFrom.toFixed(1)}</span>
+              <span className="text-foreground text-sm w-10 text-center">{priceFrom.toFixed(1)}</span>
               <button
                 onClick={handlePriceFromIncrease}
-                className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
               >
-                <Plus className="w-3 h-3 text-primary-foreground" />
+                <Plus className="w-4 h-4 text-primary-foreground" />
               </button>
             </div>
-            <span className="text-muted-foreground text-sm">—</span>
-            <div className="flex items-center gap-1 bg-card rounded-xl px-1.5 py-1 border border-border">
+            <span className="text-muted-foreground text-sm">до</span>
+            <div className="flex items-center gap-1 bg-card rounded-xl px-1 py-1 border border-border">
               <button
                 onClick={handlePriceToDecrease}
-                className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
               >
-                <Minus className="w-3 h-3 text-primary-foreground" />
+                <Minus className="w-4 h-4 text-primary-foreground" />
               </button>
-              <span className="text-foreground text-sm w-9 text-center">{priceTo.toFixed(1)}</span>
+              <span className="text-foreground text-sm w-10 text-center">{priceTo.toFixed(1)}</span>
               <button
                 onClick={handlePriceToIncrease}
-                className="w-6 h-6 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
               >
-                <Plus className="w-3 h-3 text-primary-foreground" />
+                <Plus className="w-4 h-4 text-primary-foreground" />
               </button>
             </div>
             {hasActiveFilters && (
