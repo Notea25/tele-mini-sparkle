@@ -10,7 +10,7 @@ export interface ApiResponse<T> {
 }
 
 interface ApiOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   body?: unknown;
   headers?: Record<string, string>;
 }
@@ -104,6 +104,10 @@ export const squadsApi = {
     body: data,
   }),
   getMySquads: () => apiRequest<UserSquad[]>('/api/squads/my_squads'),
+  rename: (squadId: number, name: string) => apiRequest<{ id: number; name: string }>(`/api/squads/${squadId}/rename`, {
+    method: 'PATCH',
+    body: { name },
+  }),
 };
 
 // Методы для работы с пользователями
