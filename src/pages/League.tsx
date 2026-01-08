@@ -251,6 +251,27 @@ const League = () => {
     return top3;
   }, [leaderboardResponse?.data, mySquadId]);
 
+  // Calculate tour statistics from leaderboard data
+  const tourStats = useMemo(() => {
+    const leaderboard = leaderboardResponse?.data;
+    if (!leaderboard || leaderboard.length === 0) {
+      return { averagePoints: 0, myPoints: 0, bestPoints: 0 };
+    }
+    
+    // Calculate average points
+    const totalPoints = leaderboard.reduce((sum: number, entry: LeaderboardEntry) => sum + entry.tour_points, 0);
+    const averagePoints = Math.round(totalPoints / leaderboard.length);
+    
+    // Find user's points
+    const userEntry = leaderboard.find((entry: LeaderboardEntry) => entry.squad_id === mySquadId);
+    const myPoints = userEntry?.tour_points ?? 0;
+    
+    // Find best result (max tour_points)
+    const bestPoints = Math.max(...leaderboard.map((entry: LeaderboardEntry) => entry.tour_points));
+    
+    return { averagePoints, myPoints, bestPoints };
+  }, [leaderboardResponse?.data, mySquadId]);
+
   // Commercial leagues data with end tour for blur logic and deadlines
   const commercialLeagues = [
     {
@@ -487,7 +508,7 @@ const League = () => {
                 className="bg-secondary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all"
                 onClick={() => handleNavigate("/tournament-table")}
               >
-                <span className="text-xl font-medium text-foreground">{isTournamentStarted ? "40" : "0"}</span>
+                <span className="text-xl font-medium text-foreground">{isTournamentStarted ? tourStats.averagePoints : 0}</span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Средний результат</span>
                 <span className="text-muted-foreground text-xs text-regular">→</span>
               </div>
@@ -495,7 +516,7 @@ const League = () => {
                 className="bg-primary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-all"
                 onClick={() => handleNavigate("/your-team")}
               >
-                <span className="text-2xl font-medium text-primary-foreground">{isTournamentStarted ? "55" : "0"}</span>
+                <span className="text-2xl font-medium text-primary-foreground">{isTournamentStarted ? tourStats.myPoints : 0}</span>
                 <span className="text-[10px] text-primary-foreground/70 whitespace-nowrap text-regular">Мои очки</span>
                 <span className="text-primary-foreground text-xs text-regular">→</span>
               </div>
@@ -503,7 +524,7 @@ const League = () => {
                 className="bg-secondary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all"
                 onClick={() => handleNavigate("/dream-team")}
               >
-                <span className="text-xl font-medium text-foreground">{isTournamentStarted ? "129" : "0"}</span>
+                <span className="text-xl font-medium text-foreground">{isTournamentStarted ? tourStats.bestPoints : 0}</span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Лучший результат</span>
                 <span className="text-muted-foreground text-xs text-regular">→</span>
               </div>
