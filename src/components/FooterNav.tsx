@@ -1,4 +1,4 @@
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-new.png";
 import instagramIcon from "@/assets/icon-instagram.png";
 import telegramIcon from "@/assets/icon-telegram.png";
 import youtubeIcon from "@/assets/icon-youtube.png";
