@@ -549,7 +549,11 @@ const TeamManagement = () => {
               </div>
 
               {/* Points */}
-              <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.points}</div>
+              <div className={`w-12 flex-shrink-0 flex justify-center text-sm font-medium ${
+                player.points > 0 ? "text-primary" : player.points < 0 ? "text-destructive" : "text-foreground"
+              }`}>
+                {player.points > 0 ? `+${player.points}` : player.points}
+              </div>
 
               {/* Next match opponent */}
               <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">
@@ -840,7 +844,11 @@ const TeamManagement = () => {
                   </div>
 
                   {/* Points */}
-                  <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.points}</div>
+                  <div className={`w-12 flex-shrink-0 flex justify-center text-sm font-medium ${
+                    player.points > 0 ? "text-primary" : player.points < 0 ? "text-destructive" : "text-foreground"
+                  }`}>
+                    {player.points > 0 ? `+${player.points}` : player.points}
+                  </div>
 
                   {/* Next match opponent */}
                   <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">
