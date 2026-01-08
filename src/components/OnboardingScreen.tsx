@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import onboardingField from "@/assets/onboarding-field.png";
 import onboardingTransfers from "@/assets/onboarding-transfers.png";
-import onboardingPrizes from "@/assets/onboarding-prizes.png";
+import onboardingPrizes from "@/assets/onboarding-prizes-new.png";
 import logo from "@/assets/logo.png";
 
 interface OnboardingSlide {
