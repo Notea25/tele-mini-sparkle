@@ -1429,7 +1429,38 @@ const TeamBuilder = () => {
             <AlertDialogCancel className="flex-1 m-0 bg-secondary hover:bg-secondary/80 text-foreground border-none rounded-lg h-11">
               {debugRequestBody ? "Закрыть" : "Вернуться"}
             </AlertDialogCancel>
-            {!debugRequestBody && (
+            {debugRequestBody ? (
+              <AlertDialogAction
+                onClick={async (e) => {
+                  e.preventDefault();
+                  setIsSaving(true);
+                  try {
+                    const requestBody = JSON.parse(debugRequestBody);
+                    const response = await squadsApi.create(requestBody);
+                    if (response.success) {
+                      toast.success("Команда успешно создана!");
+                      localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
+                      localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
+                      localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
+                      initialPlayersRef.current = JSON.stringify(selectedPlayers);
+                      setShowSaveConfirmation(false);
+                      setDebugRequestBody(null);
+                      navigate("/your-team");
+                    } else {
+                      toast.error(`Ошибка: ${response.error || "Не удалось создать команду"}`);
+                    }
+                  } catch (err) {
+                    toast.error("Ошибка при отправке запроса");
+                  } finally {
+                    setIsSaving(false);
+                  }
+                }}
+                disabled={isSaving}
+                className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
+              >
+                {isSaving ? "Отправка..." : "ОК"}
+              </AlertDialogAction>
+            ) : (
               <AlertDialogAction
                 onClick={(e) => {
                   e.preventDefault();
