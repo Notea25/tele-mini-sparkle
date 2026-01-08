@@ -97,7 +97,6 @@ const TeamBuilder = () => {
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showSquadError, setShowSquadError] = useState(false);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
-  const [debugRequestBody, setDebugRequestBody] = useState<string | null>(null);
   // Sorting state: default to price descending (most expensive first)
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
@@ -1405,66 +1404,26 @@ const TeamBuilder = () => {
         </Button>
       </div>
 
-      {/* Save Confirmation Dialog - DEBUG MODE: Show request body */}
-      <AlertDialog open={showSaveConfirmation} onOpenChange={(open) => {
-        setShowSaveConfirmation(open);
-        if (!open) setDebugRequestBody(null);
-      }}>
+      {/* Save Confirmation Dialog */}
+      <AlertDialog open={showSaveConfirmation} onOpenChange={setShowSaveConfirmation}>
         <AlertDialogContent className="bg-card border-border rounded-xl max-w-[400px]">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground text-center">
-              {debugRequestBody ? "Тело запроса (DEBUG)" : "Сохранить команду?"}
+              Сохранить команду?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-muted-foreground text-center" asChild>
-              {debugRequestBody ? (
-                <pre className="text-left bg-background p-3 rounded-lg text-xs overflow-auto max-h-[400px] whitespace-pre-wrap break-words">
-                  {debugRequestBody}
-                </pre>
-              ) : (
-                <span>Твоя команда "{teamName}" будет сохранена. Именно с этим составом ты входишь в сезон.</span>
-              )}
+            <AlertDialogDescription className="text-muted-foreground text-center">
+              Твоя команда "{teamName}" будет сохранена. Именно с этим составом ты входишь в сезон.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-row gap-3 justify-center mt-2">
             <AlertDialogCancel className="flex-1 m-0 bg-secondary hover:bg-secondary/80 text-foreground border-none rounded-lg h-11">
-              {debugRequestBody ? "Закрыть" : "Вернуться"}
+              Вернуться
             </AlertDialogCancel>
-            {debugRequestBody ? (
-              <AlertDialogAction
-                onClick={async (e) => {
-                  e.preventDefault();
-                  setIsSaving(true);
-                  try {
-                    const requestBody = JSON.parse(debugRequestBody);
-                    const response = await squadsApi.create(requestBody);
-                    if (response.success) {
-                      toast.success("Команда успешно создана!");
-                      localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
-                      localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
-                      localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
-                      initialPlayersRef.current = JSON.stringify(selectedPlayers);
-                      setShowSaveConfirmation(false);
-                      setDebugRequestBody(null);
-                      navigate("/your-team");
-                    } else {
-                      toast.error(`Ошибка: ${response.error || "Не удалось создать команду"}`);
-                    }
-                  } catch (err) {
-                    toast.error("Ошибка при отправке запроса");
-                  } finally {
-                    setIsSaving(false);
-                  }
-                }}
-                disabled={isSaving}
-                className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
-              >
-                {isSaving ? "Отправка..." : "ОК"}
-              </AlertDialogAction>
-            ) : (
-              <AlertDialogAction
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Build the request body for debug display
+            <AlertDialogAction
+              onClick={async (e) => {
+                e.preventDefault();
+                setIsSaving(true);
+                try {
                   const benchSlotIndices: Record<string, number> = {
                     ВР: 1,
                     ЗЩ: 4,
@@ -1496,13 +1455,29 @@ const TeamBuilder = () => {
                     bench_player_ids: benchPlayerIds,
                   };
 
-                  setDebugRequestBody(JSON.stringify(requestBody, null, 2));
-                }}
-                className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
-              >
-                Показать запрос
-              </AlertDialogAction>
-            )}
+                  const response = await squadsApi.create(requestBody);
+                  if (response.success) {
+                    toast.success("Команда успешно создана!");
+                    localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
+                    localStorage.setItem("fantasyTeamCaptain", JSON.stringify(captain));
+                    localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
+                    initialPlayersRef.current = JSON.stringify(selectedPlayers);
+                    setShowSaveConfirmation(false);
+                    navigate("/your-team");
+                  } else {
+                    toast.error(`Ошибка: ${response.error || "Не удалось создать команду"}`);
+                  }
+                } catch (err) {
+                  toast.error("Ошибка при отправке запроса");
+                } finally {
+                  setIsSaving(false);
+                }
+              }}
+              disabled={isSaving}
+              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
+            >
+              {isSaving ? "Сохранение..." : "Подтвердить"}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
