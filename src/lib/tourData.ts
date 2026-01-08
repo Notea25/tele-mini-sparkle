@@ -1,11 +1,11 @@
 // Tour data utilities for fantasy league
 // 30 tours in Belarus Higher League season
 
-import iconBenchPlus from "@/assets/icon-bench-plus.png";
-import icon3x from "@/assets/icon-3x.png";
-import iconStar from "@/assets/icon-star.png";
-import iconFree from "@/assets/icon-free.png";
-import icon2x from "@/assets/icon-2x.png";
+import boostBench from "@/assets/boost-bench.png";
+import boostCaptain3x from "@/assets/boost-captain3x.png";
+import boostTransfers from "@/assets/boost-transfers.png";
+import boostGolden from "@/assets/boost-golden.png";
+import boostDouble from "@/assets/boost-double.png";
 
 export type BoostType = "bench" | "captain3x" | "transfers" | "golden" | "double";
 
@@ -16,11 +16,11 @@ export interface BoostInfo {
 }
 
 export const BOOST_CONFIG: Record<BoostType, BoostInfo> = {
-  bench: { id: "bench", icon: iconBenchPlus, label: "Скамейка +" },
-  captain3x: { id: "captain3x", icon: icon3x, label: "3x Капитан" },
-  transfers: { id: "transfers", icon: iconStar, label: "Трансферы +" },
-  golden: { id: "golden", icon: iconFree, label: "Золотой тур" },
-  double: { id: "double", icon: icon2x, label: "Двойная сила" },
+  bench: { id: "bench", icon: boostBench, label: "Скамейка +" },
+  captain3x: { id: "captain3x", icon: boostCaptain3x, label: "3x Капитан" },
+  transfers: { id: "transfers", icon: boostTransfers, label: "Трансферы +" },
+  golden: { id: "golden", icon: boostGolden, label: "Золотой тур" },
+  double: { id: "double", icon: boostDouble, label: "Двойная сила" },
 };
 
 export const MAX_TOURS = 30;
