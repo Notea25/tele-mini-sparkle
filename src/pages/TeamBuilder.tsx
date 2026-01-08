@@ -97,6 +97,7 @@ const TeamBuilder = () => {
   const [isEditTeamNameModalOpen, setIsEditTeamNameModalOpen] = useState(false);
   const [showSquadError, setShowSquadError] = useState(false);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
+  const [debugRequestBody, setDebugRequestBody] = useState<string | null>(null);
   // Sorting state: default to price descending (most expensive first)
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
@@ -1404,31 +1405,73 @@ const TeamBuilder = () => {
         </Button>
       </div>
 
-      {/* Save Confirmation Dialog */}
-      <AlertDialog open={showSaveConfirmation} onOpenChange={setShowSaveConfirmation}>
-        <AlertDialogContent className="bg-card border-border rounded-xl max-w-[320px]">
+      {/* Save Confirmation Dialog - DEBUG MODE: Show request body */}
+      <AlertDialog open={showSaveConfirmation} onOpenChange={(open) => {
+        setShowSaveConfirmation(open);
+        if (!open) setDebugRequestBody(null);
+      }}>
+        <AlertDialogContent className="bg-card border-border rounded-xl max-w-[400px]">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground text-center">Сохранить команду?</AlertDialogTitle>
-            <AlertDialogDescription className="text-muted-foreground text-center">
-              Твоя команда "{teamName}" будет сохранена. Именно с этим составом ты входишь в сезон.
+            <AlertDialogTitle className="text-foreground text-center">
+              {debugRequestBody ? "Тело запроса (DEBUG)" : "Сохранить команду?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground text-center" asChild>
+              {debugRequestBody ? (
+                <pre className="text-left bg-background p-3 rounded-lg text-xs overflow-auto max-h-[400px] whitespace-pre-wrap break-words">
+                  {debugRequestBody}
+                </pre>
+              ) : (
+                <span>Твоя команда "{teamName}" будет сохранена. Именно с этим составом ты входишь в сезон.</span>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-row gap-3 justify-center mt-2">
             <AlertDialogCancel className="flex-1 m-0 bg-secondary hover:bg-secondary/80 text-foreground border-none rounded-lg h-11">
-              Вернуться
+              {debugRequestBody ? "Закрыть" : "Вернуться"}
             </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={async () => {
-                await handleSaveChanges();
-                if (!isSaving) {
-                  navigate("/league", { replace: true });
-                }
-              }}
-              disabled={isSaving}
-              className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
-            >
-              {isSaving ? "Сохранение..." : "Подтвердить"}
-            </AlertDialogAction>
+            {!debugRequestBody && (
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Build the request body for debug display
+                  const benchSlotIndices: Record<string, number> = {
+                    ВР: 1,
+                    ЗЩ: 4,
+                    ПЗ: 4,
+                    НП: 2,
+                  };
+                  const mainPlayerIds: number[] = [];
+                  const benchPlayerIds: number[] = [];
+
+                  selectedPlayers.forEach((sp) => {
+                    const player = players.find((p) => p.id === sp.id);
+                    if (!player) return;
+                    const isBench = sp.slotIndex === benchSlotIndices[player.position];
+                    if (isBench) {
+                      benchPlayerIds.push(sp.id);
+                    } else {
+                      mainPlayerIds.push(sp.id);
+                    }
+                  });
+
+                  const leagueIdNum = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116');
+                  const favTeamId = parseInt(localStorage.getItem('fantasyFavoriteTeam') || '0');
+
+                  const requestBody = {
+                    name: teamName,
+                    league_id: leagueIdNum,
+                    fav_team_id: favTeamId,
+                    main_player_ids: mainPlayerIds,
+                    bench_player_ids: benchPlayerIds,
+                  };
+
+                  setDebugRequestBody(JSON.stringify(requestBody, null, 2));
+                }}
+                className="flex-1 m-0 bg-primary hover:opacity-90 text-primary-foreground font-medium rounded-lg h-11 shadow-neon"
+              >
+                Показать запрос
+              </AlertDialogAction>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
