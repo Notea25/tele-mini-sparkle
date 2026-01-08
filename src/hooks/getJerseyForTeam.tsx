@@ -31,42 +31,60 @@ import jerseyIslochGk from "@/assets/jerseys/goalkeeperJerseys/islochGoalkeeperJ
 import jerseyNaftan from "@/assets/jerseys/naftanJersey.png";
 import jerseyNaftanGk from "@/assets/jerseys/goalkeeperJerseys/naftanGoalkeeperJersey.png";
 
+// Маппинг названий команд с бэкенда на футболки
+const TEAM_JERSEY_MAP: Record<string, { regular: string; gk: string }> = {
+  // Названия с бэкенда (английские)
+  "Dinamo Minsk": { regular: jerseyDinamoMinsk, gk: jerseyDinamoMinskGk },
+  "Dinamo-Minsk": { regular: jerseyDinamoMinsk, gk: jerseyDinamoMinskGk },
+  "Bate Borisov": { regular: jerseyBate, gk: jerseyBateGk },
+  "BATE": { regular: jerseyBate, gk: jerseyBateGk },
+  "Dinamo Brest": { regular: jerseyDinamoBrest, gk: jerseyDinamoBrestGk },
+  "Dinamo-Brest": { regular: jerseyDinamoBrest, gk: jerseyDinamoBrestGk },
+  "ML Vitebsk": { regular: jerseyMlVitebsk, gk: jerseyMlVitebskGk },
+  "Slavia Mozyr": { regular: jerseySlavia, gk: jerseySlaviaGk },
+  "Slavia-Mozyr": { regular: jerseySlavia, gk: jerseySlaviaGk },
+  "Arsenal": { regular: jerseyArsenal, gk: jerseyArsenalGk },
+  "Neman": { regular: jerseyNeman, gk: jerseyNemanGk },
+  "FC Minsk": { regular: jerseyMinsk, gk: jerseyMinskGk },
+  "Minsk": { regular: jerseyMinsk, gk: jerseyMinskGk },
+  "Torpedo Zhodino": { regular: jerseyTorpedo, gk: jerseyTorpedoGk },
+  "Torpedo-Zhodino": { regular: jerseyTorpedo, gk: jerseyTorpedoGk },
+  "FC Vitebsk": { regular: jerseyVitebsk, gk: jerseyVitebskGk },
+  "Vitebsk": { regular: jerseyVitebsk, gk: jerseyVitebskGk },
+  "FC Gomel": { regular: jerseyGomel, gk: jerseyGomelGk },
+  "Gomel": { regular: jerseyGomel, gk: jerseyGomelGk },
+  "FC Isloch Minsk R.": { regular: jerseyIsloch, gk: jerseyIslochGk },
+  "Isloch": { regular: jerseyIsloch, gk: jerseyIslochGk },
+  "Naftan": { regular: jerseyNaftan, gk: jerseyNaftanGk },
+  "Belshina": { regular: jerseyBelshina, gk: jerseyBelshinaGk },
+  // Старые русские названия (для совместимости)
+  "Динамо-Минск": { regular: jerseyDinamoMinsk, gk: jerseyDinamoMinskGk },
+  "БАТЭ": { regular: jerseyBate, gk: jerseyBateGk },
+  "Динамо-Брест": { regular: jerseyDinamoBrest, gk: jerseyDinamoBrestGk },
+  "МЛ Витебск": { regular: jerseyMlVitebsk, gk: jerseyMlVitebskGk },
+  "Славия-Мозырь": { regular: jerseySlavia, gk: jerseySlaviaGk },
+  "Арсенал": { regular: jerseyArsenal, gk: jerseyArsenalGk },
+  "Неман": { regular: jerseyNeman, gk: jerseyNemanGk },
+  "Минск": { regular: jerseyMinsk, gk: jerseyMinskGk },
+  "Торпедо-БелАЗ": { regular: jerseyTorpedo, gk: jerseyTorpedoGk },
+  "Витебск": { regular: jerseyVitebsk, gk: jerseyVitebskGk },
+  "Днепр": { regular: jerseyDnepr, gk: jerseyDneprGk },
+  "Барановичи": { regular: jerseyBaranovichi, gk: jerseyBaranovichiGk },
+  "Белшина": { regular: jerseyBelshina, gk: jerseyBelshinaGk },
+  "Гомель": { regular: jerseyGomel, gk: jerseyGomelGk },
+  "Ислочь": { regular: jerseyIsloch, gk: jerseyIslochGk },
+  "Нафтан": { regular: jerseyNaftan, gk: jerseyNaftanGk },
+};
+
 // Helper function to get jersey based on team and position
 export const getJerseyForTeam = (team: string, position?: string) => {
-  switch (team) {
-    case "Динамо-Минск":
-      return position === "ВР" ? jerseyDinamoMinskGk : jerseyDinamoMinsk;
-    case "БАТЭ":
-      return position === "ВР" ? jerseyBateGk : jerseyBate;
-    case "Динамо-Брест":
-      return position === "ВР" ? jerseyDinamoBrestGk : jerseyDinamoBrest;
-    case "МЛ Витебск":
-      return position === "ВР" ? jerseyMlVitebskGk : jerseyMlVitebsk;
-    case "Славия-Мозырь":
-      return position === "ВР" ? jerseySlaviaGk : jerseySlavia;
-    case "Арсенал":
-      return position === "ВР" ? jerseyArsenalGk : jerseyArsenal;
-    case "Неман":
-      return position === "ВР" ? jerseyNemanGk : jerseyNeman;
-    case "Минск":
-      return position === "ВР" ? jerseyMinskGk : jerseyMinsk;
-    case "Торпедо-БелАЗ":
-      return position === "ВР" ? jerseyTorpedoGk : jerseyTorpedo;
-    case "Витебск":
-      return position === "ВР" ? jerseyVitebskGk : jerseyVitebsk;
-    case "Днепр":
-      return position === "ВР" ? jerseyDneprGk : jerseyDnepr;
-    case "Барановичи":
-      return position === "ВР" ? jerseyBaranovichiGk : jerseyBaranovichi;
-    case "Белшина":
-      return position === "ВР" ? jerseyBelshinaGk : jerseyBelshina;
-      case "Гомель":
-      return position === "ВР" ? jerseyGomelGk : jerseyGomel;
-      case "Ислочь":
-      return position === "ВР" ? jerseyIslochGk : jerseyIsloch;
-      case "Нафтан":
-      return position === "ВР" ? jerseyNaftanGk : jerseyNaftan;
-    default:
-      return jerseySlavia;
+  const isGoalkeeper = position === "ВР" || position === "Goalkeeper";
+  const jerseySet = TEAM_JERSEY_MAP[team];
+  
+  if (jerseySet) {
+    return isGoalkeeper ? jerseySet.gk : jerseySet.regular;
   }
+  
+  // Fallback на стандартную футболку Славии
+  return isGoalkeeper ? jerseySlaviaGk : jerseySlavia;
 };
