@@ -30,11 +30,11 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
           className="w-24 h-24 object-contain animate-scale-in"
         />
         {/* Bouncing ball replacing the dot in the logo */}
-        <div className="absolute top-[35%] right-0">
+        <div className="absolute top-[35%] right-0 animate-ball-bounce">
           <img 
             src={footballBounce} 
             alt="Ball" 
-            className="w-6 h-6 object-contain animate-ball-bounce animate-ball-spin"
+            className="w-6 h-6 object-contain animate-ball-spin"
           />
         </div>
       </div>
