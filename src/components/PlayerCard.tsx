@@ -460,7 +460,7 @@ const PlayerCard = ({
                       <span className="text-muted-foreground text-sm">
                         {item.action}{item.count > 1 ? ` x${item.count}` : ""}
                       </span>
-                      <span className={`text-sm font-bold ${item.points > 0 ? "text-primary" : "text-red-500"}`}>
+                      <span className={`text-sm font-bold ${item.points > 0 ? "text-success" : "text-destructive"}`}>
                         {item.points > 0 ? `+${item.points}` : item.points}
                       </span>
                     </div>
@@ -468,7 +468,7 @@ const PlayerCard = ({
                 })()}
                 <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
                   <span className="text-foreground text-sm font-semibold">Итого</span>
-                  <span className={`text-sm font-bold ${player.points >= 0 ? "text-primary" : "text-red-500"}`}>
+                  <span className={`text-sm font-bold ${player.points > 0 ? "text-success" : player.points < 0 ? "text-destructive" : "text-foreground"}`}>
                     {player.points > 0 ? "+" : ""}{player.points}
                   </span>
                 </div>
