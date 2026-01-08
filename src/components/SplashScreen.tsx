@@ -44,8 +44,8 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
           0%, 100% {
             transform: translateY(0) scaleY(1) scaleX(1);
           }
-          50% {
-            transform: translateY(20px) scaleY(0.8) scaleX(1.1);
+          45%, 55% {
+            transform: translateY(48px) scaleY(0.7) scaleX(1.2);
           }
         }
         
