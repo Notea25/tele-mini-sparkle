@@ -393,7 +393,7 @@ const FormationFieldManagement = ({
               {showPointsInsteadOfTeam ? (
                 <span
                   className={`font-bold block text-center ${
-                    player.points > 0 ? "text-primary" : player.points < 0 ? "text-destructive" : "text-white"
+                    player.points > 0 ? "text-success" : player.points < 0 ? "text-destructive" : "text-white"
                   }`}
                   style={{
                     fontSize: `${cardSize.width * 0.12}px`,

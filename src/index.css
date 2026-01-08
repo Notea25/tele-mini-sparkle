@@ -45,6 +45,10 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
+    /* Success - Green for positive values */
+    --success: 104 100% 44%;
+    --success-foreground: 0 0% 100%;
+
     /* Border & Input */
     --border: 220 15% 18%;
     --input: 220 18% 12%;

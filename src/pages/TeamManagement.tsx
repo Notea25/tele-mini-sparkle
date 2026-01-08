@@ -550,7 +550,7 @@ const TeamManagement = () => {
 
               {/* Points */}
               <div className={`w-12 flex-shrink-0 flex justify-center text-sm font-medium ${
-                player.points > 0 ? "text-primary" : player.points < 0 ? "text-destructive" : "text-foreground"
+                player.points > 0 ? "text-success" : player.points < 0 ? "text-destructive" : "text-foreground"
               }`}>
                 {player.points > 0 ? `+${player.points}` : player.points}
               </div>
@@ -845,7 +845,7 @@ const TeamManagement = () => {
 
                   {/* Points */}
                   <div className={`w-12 flex-shrink-0 flex justify-center text-sm font-medium ${
-                    player.points > 0 ? "text-primary" : player.points < 0 ? "text-destructive" : "text-foreground"
+                    player.points > 0 ? "text-success" : player.points < 0 ? "text-destructive" : "text-foreground"
                   }`}>
                     {player.points > 0 ? `+${player.points}` : player.points}
                   </div>
