@@ -99,7 +99,7 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
       <div className="px-6 pb-8 space-y-3">
         <Button
           onClick={handleNext}
-          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-[#212121] rounded-lg"
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
           style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
         >
           Далее
