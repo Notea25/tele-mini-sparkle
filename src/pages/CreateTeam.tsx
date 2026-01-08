@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg-2.webp";
 import createTeamBannerLogo from "@/assets/create-team-banner-logo.png";
 import scoringExample from "@/assets/scoring-example-new.png";
-import leaderboardExample from "@/assets/leaderboard-example.png";
+import leaderboardExample from "@/assets/leaderboard-example-new.png";
 import prizesBanner from "@/assets/prizes-banner.png";
 import playerBykov from "@/assets/player-bykov.png";
 import playerKozlov from "@/assets/player-kozlov.png";
