@@ -505,13 +505,13 @@ const League = () => {
                 className="w-full h-[44px] bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/team-management")}
               >
-                <span className="text-[#212121] font-rubik text-[16px] font-medium">Моя команда</span>
+                <span className="text-primary-foreground font-rubik text-[16px] font-medium">Моя команда</span>
               </button>
               <button
                 className="w-full h-[44px] bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all shadow-neon"
                 onClick={() => handleNavigate("/transfers")}
               >
-                <span className="text-[#212121] font-rubik text-[16px] font-medium">Трансферы</span>
+                <span className="text-primary-foreground font-rubik text-[16px] font-medium">Трансферы</span>
               </button>
             </div>
 
@@ -580,7 +580,7 @@ const League = () => {
             {/* View all button */}
             <Button
               variant="outline"
-              className="w-full mt-6 rounded-lg py-6 font-semibold border-border"
+              className="w-full mt-6 rounded-lg py-6 font-semibold border-border hover:text-primary-foreground"
               onClick={() => handleNavigate("/tournament-table")}
             >
               Смотреть все
