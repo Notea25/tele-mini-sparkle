@@ -886,7 +886,7 @@ const Transfers = () => {
                         ? "text-primary"
                         : chip.status === "used"
                           ? "text-muted-foreground"
-                          : "text-primary"
+                          : "text-foreground/60"
                   }`}
                 >
                   {isBlocked
