@@ -6,13 +6,10 @@ import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 
 import PlayerCard from "@/components/PlayerCard";
-import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType } from "@/lib/tourData";
+import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType, BOOST_CONFIG } from "@/lib/tourData";
 import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
 import { generateRandomTeam, PlayerData as TeamPlayerData } from "@/lib/teamData";
 import { clubLogos } from "@/lib/clubLogos";
-import iconBenchPlus from "@/assets/icon-bench-plus.png";
-import icon2x from "@/assets/icon-2x-boost.png";
-import icon3x from "@/assets/icon-3x-boost.png";
 // Random team names (same as in TournamentTable)
 const teamNames = [
   "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",
@@ -295,10 +292,10 @@ const ViewTeam = () => {
                             <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">ВК</span>
                           )}
                           {showCaptain3xBadge && (
-                            <img src={icon3x} alt="3x" className="w-4 h-4" />
+                            <img src={BOOST_CONFIG.captain3x.icon} alt="3x" className="w-4 h-4" />
                           )}
                           {showDoublePowerBadge && !showCaptain3xBadge && (
-                            <img src={icon2x} alt="2x" className="w-4 h-4" />
+                            <img src={BOOST_CONFIG.double.icon} alt="2x" className="w-4 h-4" />
                           )}
                           {player.hasRedCard && (
                             <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">КК</span>
@@ -340,7 +337,7 @@ const ViewTeam = () => {
                   <span className="text-foreground font-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs">{player.position}</span>
                   {isBenchBoostActive && (
-                    <img src={iconBenchPlus} alt="Bench+" className="w-4 h-4" />
+                    <img src={BOOST_CONFIG.bench.icon} alt="Bench+" className="w-4 h-4" />
                   )}
                 </div>
                 <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.displayedPoints}</div>
