@@ -3,15 +3,13 @@ import playerJerseyNew from "@/assets/player-jersey-new.png";
 import captainBadge from "@/assets/captain-badge.png";
 import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
-import iconBench from "@/assets/icon-bench.png";
-import icon2x from "@/assets/icon-2x-boost.png";
-import icon3x from "@/assets/icon-3x-boost.png";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.svg";
 import { Plus } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
+import { BOOST_CONFIG } from "@/lib/tourData";
 
 interface PlayerData {
   id: number;
@@ -240,7 +238,7 @@ const FormationFieldManagement = ({
           {/* Boost badges for captain/vice-captain, or Bench boost badge, or Swap button */}
           {showCaptain3xIcon ? (
             <img
-              src={icon3x}
+              src={BOOST_CONFIG.captain3x.icon}
               alt="3x"
               className="absolute top-1 right-1 z-50"
               style={{
@@ -250,7 +248,7 @@ const FormationFieldManagement = ({
             />
           ) : showDoublePowerIcon ? (
             <img
-              src={icon2x}
+              src={BOOST_CONFIG.double.icon}
               alt="2x"
               className="absolute top-1 right-1 z-50"
               style={{
@@ -260,7 +258,7 @@ const FormationFieldManagement = ({
             />
           ) : showActionButton && isOnBench && isBenchBoostActive ? (
             <img
-              src={iconBench}
+              src={BOOST_CONFIG.bench.icon}
               alt="Bench+"
               className="absolute top-1 right-1 z-50"
               style={{
