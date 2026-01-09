@@ -276,7 +276,7 @@ const ViewTeam = () => {
                         key={player.id}
                         onClick={() => handlePlayerClick(player)}
                         className={`bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
-                          showCaptain3xBadge || showDoublePowerBadge ? "border border-primary" : ""
+                          showCaptain3xBadge || showDoublePowerBadge ? "border border-success" : ""
                         } ${player.hasRedCard || player.isInjured ? "border border-red-500" : ""}`}
                       >
                         <div className="flex-1 flex items-center gap-2 min-w-0">
@@ -327,7 +327,7 @@ const ViewTeam = () => {
                 key={player.id}
                 onClick={() => handlePlayerClick(player)}
                 className={`bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
-                  isBenchBoostActive ? "border border-primary" : "opacity-70"
+                  isBenchBoostActive ? "border border-success" : "opacity-70"
                 }`}
               >
                 <div className="flex-1 flex items-center gap-2 min-w-0">
