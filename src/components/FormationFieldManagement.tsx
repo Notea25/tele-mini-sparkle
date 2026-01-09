@@ -149,7 +149,7 @@ const FormationFieldManagement = ({
       } else if (hasRedCard || isInjured) {
         borderClass = "border-red-500";
       } else if (showDoublePowerBorder || showCaptain3xBorder || (isOnBench && isBenchBoostActive)) {
-        borderClass = "border-success";
+        borderClass = "border-primary";
       }
 
       // Background color: swap mode > red tint for injured/red card > green tint for boosts > default
@@ -164,7 +164,7 @@ const FormationFieldManagement = ({
       } else if (hasRedCard || isInjured) {
         bgClass = "bg-red-500/25";
       } else if (hasBoostEffect) {
-        bgClass = "bg-success/25";
+        bgClass = "bg-primary/25";
       }
 
       // Opacity for non-valid targets in swap mode
