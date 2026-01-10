@@ -154,22 +154,42 @@ const TeamManagement = () => {
   const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerDataExt[]>([]);
   const [benchPlayers, setBenchPlayers] = useState<PlayerDataExt[]>([]);
 
+  // Helper function to reassign slot indices based on player positions - moved before useEffect
+  const assignSlotIndicesByPosition = (players: PlayerDataExt[]): PlayerDataExt[] => {
+    const positionCounters: Record<string, number> = {
+      ВР: 0,
+      ЗЩ: 0,
+      ПЗ: 0,
+      НП: 0,
+    };
+
+    return players.map((player) => {
+      const slotIndex = positionCounters[player.position] || 0;
+      positionCounters[player.position] = slotIndex + 1;
+      return { ...player, slotIndex };
+    });
+  };
+
   useEffect(() => {
     const { mainSquad, bench } = getMainSquadAndBench();
     const savedTeam = getSavedTeam();
 
     if (mainSquad.length > 0) {
       // Add red card to Степанов and injury to Макаров for testing
-      const updatedMainSquad = mainSquad.map((p) => {
+      let updatedMainSquad = mainSquad.map((p) => {
         if (p.name === "Степанов") return { ...p, hasRedCard: true };
         if (p.name === "Макаров") return { ...p, isInjured: true };
         return p;
       });
-      const updatedBench = bench.map((p) => {
+      let updatedBench = bench.map((p) => {
         if (p.name === "Степанов") return { ...p, hasRedCard: true };
         if (p.name === "Макаров") return { ...p, isInjured: true };
         return p;
       });
+
+      // Assign slotIndex per position (not globally)
+      updatedMainSquad = assignSlotIndicesByPosition(updatedMainSquad);
+
       setMainSquadPlayers(updatedMainSquad);
       setBenchPlayers(updatedBench);
 
