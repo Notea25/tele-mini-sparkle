@@ -2,6 +2,12 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/u
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { X } from "lucide-react";
 import scoringExample from "@/assets/scoring-example-new.png";
+import boostCaptain3x from "@/assets/boost-captain3x.png";
+import boostDouble from "@/assets/boost-double.png";
+import boostBench from "@/assets/boost-bench.png";
+import boostTransfers from "@/assets/boost-transfers.png";
+import boostGolden from "@/assets/boost-golden.png";
+
 interface RulesDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -216,27 +222,42 @@ const RulesDrawer = ({
 
                   <div className="space-y-3">
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium text-medium mb-1">🔥 3× Капитан</h4>
+                      <div className="flex items-center gap-2 mb-1">
+                        <img src={boostCaptain3x} alt="3× Капитан" className="w-5 h-5 object-contain" />
+                        <h4 className="text-foreground font-medium text-medium">3× Капитан</h4>
+                      </div>
                       <p className="text-xs text-regular">Капитан получает ×3 очков вместо ×2 в этом туре</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium text-medium mb-1">⚡ Двойная сила</h4>
+                      <div className="flex items-center gap-2 mb-1">
+                        <img src={boostDouble} alt="Двойная сила" className="w-5 h-5 object-contain" />
+                        <h4 className="text-foreground font-medium text-medium">Двойная сила</h4>
+                      </div>
                       <p className="text-xs text-regular">И капитан, и вице-капитан получают ×2 очков в этом туре</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium text-medium mb-1">🪑 Скамейка+</h4>
+                      <div className="flex items-center gap-2 mb-1">
+                        <img src={boostBench} alt="Скамейка+" className="w-5 h-5 object-contain" />
+                        <h4 className="text-foreground font-medium text-medium">Скамейка+</h4>
+                      </div>
                       <p className="text-xs text-regular">Очки игроков со скамейки засчитываются в этом туре</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium text-medium mb-1">⭐ Трансферы+</h4>
+                      <div className="flex items-center gap-2 mb-1">
+                        <img src={boostTransfers} alt="Трансферы+" className="w-5 h-5 object-contain" />
+                        <h4 className="text-foreground font-medium text-medium">Трансферы+</h4>
+                      </div>
                       <p className="text-xs text-regular">Неограниченные трансферы без штрафа. Изменения постоянные, бесплатные трансферы сгорают</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
-                      <h4 className="text-foreground font-medium text-medium mb-1">🏆 Золотой тур</h4>
+                      <div className="flex items-center gap-2 mb-1">
+                        <img src={boostGolden} alt="Золотой тур" className="w-5 h-5 object-contain" />
+                        <h4 className="text-foreground font-medium text-medium">Золотой тур</h4>
+                      </div>
                       <p className="text-xs text-regular">Неограниченные трансферы на один тур. После тура состав возвращается, бесплатные трансферы сохраняются</p>
                     </div>
                   </div>
