@@ -141,6 +141,22 @@ export interface LeaderboardEntry {
   total_points: number;
 }
 
+// Типы для обновления игроков в скваде
+export interface UpdateSquadPlayersRequest {
+  captain_id?: number | null;
+  vice_captain_id?: number | null;
+  main_player_ids?: number[];
+  bench_player_ids?: number[];
+}
+
+export interface UpdateSquadPlayersResponse {
+  id: number;
+  captain_id: number | null;
+  vice_captain_id: number | null;
+  main_player_ids: number[];
+  bench_player_ids: number[];
+}
+
 // Методы для работы со сквадами
 export const squadsApi = {
   create: (data: CreateSquadRequest) => apiRequest<CreateSquadResponse>('/api/squads/create', {
@@ -153,6 +169,11 @@ export const squadsApi = {
     body: { name },
   }),
   getLeaderboard: (tourId: number) => apiRequest<LeaderboardEntry[]>(`/api/squads/leaderboard/${tourId}`),
+  updatePlayers: (squadId: number, data: UpdateSquadPlayersRequest) => 
+    apiRequest<UpdateSquadPlayersResponse>(`/api/squads/update_players/${squadId}`, {
+      method: 'PUT',
+      body: data,
+    }),
 };
 
 // Методы для работы с пользователями

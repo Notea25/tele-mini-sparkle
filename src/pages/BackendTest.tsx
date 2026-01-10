@@ -13,6 +13,7 @@ const BackendTest = () => {
   const [playersResponse, setPlayersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playerFullInfoResponse, setPlayerFullInfoResponse] = useState<ApiResponse<unknown> | null>(null);
   const [leaderboardResponse, setLeaderboardResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [updatePlayersResponse, setUpdatePlayersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -23,8 +24,14 @@ const BackendTest = () => {
   const [loadingPlayers, setLoadingPlayers] = useState(false);
   const [loadingPlayerFullInfo, setLoadingPlayerFullInfo] = useState(false);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+  const [loadingUpdatePlayers, setLoadingUpdatePlayers] = useState(false);
   const [playerIdInput, setPlayerIdInput] = useState('1');
   const [tourIdInput, setTourIdInput] = useState('2');
+  const [squadIdInput, setSquadIdInput] = useState('1');
+  const [captainIdInput, setCaptainIdInput] = useState('');
+  const [viceCaptainIdInput, setViceCaptainIdInput] = useState('');
+  const [mainPlayerIdsInput, setMainPlayerIdsInput] = useState('');
+  const [benchPlayerIdsInput, setBenchPlayerIdsInput] = useState('');
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -182,6 +189,33 @@ const BackendTest = () => {
     }
   };
 
+  const testUpdatePlayersApi = async () => {
+    setLoadingUpdatePlayers(true);
+    try {
+      const data: {
+        captain_id?: number;
+        vice_captain_id?: number;
+        main_player_ids?: number[];
+        bench_player_ids?: number[];
+      } = {};
+      
+      if (captainIdInput) data.captain_id = parseInt(captainIdInput);
+      if (viceCaptainIdInput) data.vice_captain_id = parseInt(viceCaptainIdInput);
+      if (mainPlayerIdsInput) data.main_player_ids = mainPlayerIdsInput.split(',').map(id => parseInt(id.trim()));
+      if (benchPlayerIdsInput) data.bench_player_ids = benchPlayerIdsInput.split(',').map(id => parseInt(id.trim()));
+      
+      const result = await squadsApi.updatePlayers(parseInt(squadIdInput) || 1, data);
+      setUpdatePlayersResponse(result);
+    } catch (err) {
+      setUpdatePlayersResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingUpdatePlayers(false);
+    }
+  };
+
   const renderResponse = (response: ApiResponse<unknown> | null, title: string) => {
     if (!response) return null;
     
@@ -305,6 +339,64 @@ const BackendTest = () => {
         </div>
       </div>
 
+      {/* Update Players Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">PUT /api/squads/update_players/{'{squad_id}'}</h2>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Squad ID</label>
+            <input
+              type="number"
+              value={squadIdInput}
+              onChange={(e) => setSquadIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Captain ID (опционально)</label>
+            <input
+              type="number"
+              value={captainIdInput}
+              onChange={(e) => setCaptainIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Vice Captain ID (опционально)</label>
+            <input
+              type="number"
+              value={viceCaptainIdInput}
+              onChange={(e) => setViceCaptainIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Main Player IDs (через запятую)</label>
+            <input
+              type="text"
+              value={mainPlayerIdsInput}
+              onChange={(e) => setMainPlayerIdsInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              placeholder="1,2,3,4,5,6,7,8,9,10,11"
+            />
+          </div>
+          <div className="col-span-2">
+            <label className="text-sm text-muted-foreground">Bench Player IDs (через запятую)</label>
+            <input
+              type="text"
+              value={benchPlayerIdsInput}
+              onChange={(e) => setBenchPlayerIdsInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              placeholder="12,13,14,15"
+            />
+          </div>
+        </div>
+        <Button onClick={testUpdatePlayersApi} disabled={loadingUpdatePlayers} variant="default">
+          {loadingUpdatePlayers ? 'Загрузка...' : `Тест: PUT /api/squads/update_players/${squadIdInput}`}
+        </Button>
+      </div>
+
+      {renderResponse(updatePlayersResponse, 'Ответ: Update Players')}
       {renderResponse(leaderboardResponse, 'Ответ: Leaderboard')}
       {renderResponse(playerFullInfoResponse, 'Ответ: Player Full Info')}
       {renderResponse(leagueResponse, 'Ответ: Лиги')}

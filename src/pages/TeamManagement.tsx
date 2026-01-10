@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
 import { useSquadData, EnrichedPlayer } from "@/hooks/useSquadData";
+import { squadsApi, UpdateSquadPlayersRequest } from "@/lib/api";
 import SportHeader from "@/components/SportHeader";
 import { PlayerData } from "@/lib/teamData";
 import { getValidSwapOptions, detectFormation, FORMATION_LABELS, FormationKey } from "@/lib/formationUtils";
@@ -82,6 +83,11 @@ const TeamManagement = () => {
   const [captain, setCaptain] = useState<number | null>(null);
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
+  
+  // Debug mode states
+  const [showDebugPreview, setShowDebugPreview] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
     // Load initial state from localStorage
     const boostState = getBoostState();
@@ -210,6 +216,49 @@ const TeamManagement = () => {
       }
     }
   }, [squad, mainSquadPlayers.length]);
+
+  // Build request body for API
+  const buildRequestBody = (): UpdateSquadPlayersRequest => {
+    return {
+      captain_id: captain,
+      vice_captain_id: viceCaptain,
+      main_player_ids: mainSquadPlayers.map(p => p.id),
+      bench_player_ids: benchPlayersExt.map(p => p.id),
+    };
+  };
+
+  // Handle save - show debug preview first
+  const handleSaveClick = () => {
+    const pendingBoost = specialChips.find((c) => c.status === "pending");
+    if (pendingBoost) {
+      setIsConfirmBoostOpen(true);
+    } else {
+      setShowDebugPreview(true);
+    }
+  };
+
+  // Confirm and send request
+  const handleConfirmSave = async () => {
+    if (!squad) return;
+    
+    setIsSaving(true);
+    try {
+      const requestBody = buildRequestBody();
+      const result = await squadsApi.updatePlayers(squad.id, requestBody);
+      
+      if (result.success) {
+        toast.success("Изменения сохранены");
+        setShowDebugPreview(false);
+        navigate("/league");
+      } else {
+        toast.error(`Ошибка: ${result.error || 'Неизвестная ошибка'}`);
+      }
+    } catch (err) {
+      toast.error(`Ошибка: ${err instanceof Error ? err.message : 'Неизвестная ошибка'}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Swap mode state (no drawer)
   const [swapModePlayer, setSwapModePlayer] = useState<PlayerDataExt | null>(null);
@@ -779,22 +828,49 @@ const TeamManagement = () => {
       )}
 
       {/* Fixed Bottom Section with Save Button */}
-      {!swapModePlayer && (
+      {!swapModePlayer && !showDebugPreview && (
         <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
           <Button
-            onClick={() => {
-              const pendingBoost = specialChips.find((c) => c.status === "pending");
-              if (pendingBoost) {
-                setIsConfirmBoostOpen(true);
-              } else {
-                toast.success("Изменения сохранены");
-                navigate("/league");
-              }
-            }}
+            onClick={handleSaveClick}
             className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-lg h-12"
           >
             Сохранить
           </Button>
+        </div>
+      )}
+
+      {/* Debug Preview Modal */}
+      {showDebugPreview && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-xl max-w-lg w-full max-h-[80vh] overflow-auto">
+            <div className="p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-foreground">DEBUG: Предпросмотр запроса</h2>
+              <p className="text-sm text-muted-foreground">PUT /api/squads/update_players/{squad?.id}</p>
+            </div>
+            <div className="p-4">
+              <pre className="bg-muted p-4 rounded-lg text-sm text-foreground overflow-auto font-mono whitespace-pre-wrap">
+                {JSON.stringify(buildRequestBody(), null, 2)}
+              </pre>
+            </div>
+            <div className="p-4 border-t border-border flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowDebugPreview(false)}
+                disabled={isSaving}
+              >
+                Отмена
+              </Button>
+              <Button
+                className="flex-1 bg-[#A8FF00] hover:bg-[#98EE00] text-black"
+                onClick={handleConfirmSave}
+                disabled={isSaving}
+              >
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                Подтвердить
+              </Button>
+            </div>
+          </div>
         </div>
       )}
 
