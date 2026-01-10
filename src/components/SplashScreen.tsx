@@ -34,7 +34,7 @@ const SplashScreen = ({ onComplete, minDuration = 2000 }: SplashScreenProps) => 
           <img 
             src={footballBounce} 
             alt="Ball" 
-            className="w-6 h-6 object-contain animate-ball-spin"
+            className="w-5 h-5 object-contain animate-ball-spin"
           />
         </div>
       </div>
