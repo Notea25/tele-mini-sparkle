@@ -106,12 +106,28 @@ export interface CreateSquadResponse {
   bench_player_ids: number[];
 }
 
+// Типы для игрока в скводе
+export interface SquadPlayer {
+  id: number;
+  name: string;
+  team_id: number;
+  points: number;
+}
+
 // Типы для получения сквадов пользователя
 export interface UserSquad {
   id: number;
   name: string;
+  user_id: number;
+  username: string;
   league_id: number;
   fav_team_id: number;
+  budget: number;
+  replacements: number;
+  captain_id: number | null;
+  vice_captain_id: number | null;
+  main_players: SquadPlayer[];
+  bench_players: SquadPlayer[];
 }
 
 // Типы для лидерборда
