@@ -58,7 +58,7 @@ const TournamentTable = () => {
   });
 
   const allTeams = useMemo(() => {
-    if (!leaderboardData) return [];
+    if (!leaderboardData || !Array.isArray(leaderboardData)) return [];
     return leaderboardData.map((entry: LeaderboardEntry) => ({
       id: entry.squad_id,
       position: entry.place,
