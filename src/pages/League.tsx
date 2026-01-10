@@ -221,8 +221,9 @@ const League = () => {
 
   // Tournament table data from API - top 3 + user's position
   const tableData = useMemo(() => {
-    const leaderboard = leaderboardResponse?.data;
-    if (!leaderboard || leaderboard.length === 0) return [];
+    const rawData = leaderboardResponse?.data;
+    const leaderboard = Array.isArray(rawData) ? rawData : [];
+    if (leaderboard.length === 0) return [];
     
     const top3 = leaderboard.slice(0, 3).map((entry: LeaderboardEntry) => ({
       id: entry.squad_id,
@@ -253,9 +254,10 @@ const League = () => {
 
   // Calculate tour statistics from leaderboard data
   const tourStats = useMemo(() => {
-    const leaderboard = leaderboardResponse?.data;
-    if (!leaderboard || leaderboard.length === 0) {
-      return { averagePoints: 0, myPoints: 0, bestPoints: 0 };
+    const rawData = leaderboardResponse?.data;
+    const leaderboard = Array.isArray(rawData) ? rawData : [];
+    if (leaderboard.length === 0) {
+      return { averagePoints: 0, myPoints: 0, bestPoints: 0, bestSquadId: undefined };
     }
     
     // Calculate average points
@@ -266,10 +268,13 @@ const League = () => {
     const userEntry = leaderboard.find((entry: LeaderboardEntry) => entry.squad_id === mySquadId);
     const myPoints = userEntry?.tour_points ?? 0;
     
-    // Find best result (max tour_points)
-    const bestPoints = Math.max(...leaderboard.map((entry: LeaderboardEntry) => entry.tour_points));
+    // Find best result (max tour_points) and its squad_id
+    const bestEntry = leaderboard.reduce((best: LeaderboardEntry | null, entry: LeaderboardEntry) => 
+      !best || entry.tour_points > best.tour_points ? entry : best, null);
+    const bestPoints = bestEntry?.tour_points ?? 0;
+    const bestSquadId = bestEntry?.squad_id;
     
-    return { averagePoints, myPoints, bestPoints };
+    return { averagePoints, myPoints, bestPoints, bestSquadId };
   }, [leaderboardResponse?.data, mySquadId]);
 
   // Commercial leagues data with end tour for blur logic and deadlines
