@@ -164,6 +164,7 @@ export const squadsApi = {
     body: data,
   }),
   getMySquads: () => apiRequest<UserSquad[]>('/api/squads/my_squads'),
+  getSquadById: (squadId: number) => apiRequest<UserSquad>(`/api/squads/get_squad_${squadId}`),
   rename: (squadId: number, name: string) => apiRequest<{ id: number; name: string }>(`/api/squads/${squadId}/rename`, {
     method: 'PATCH',
     body: { name },
