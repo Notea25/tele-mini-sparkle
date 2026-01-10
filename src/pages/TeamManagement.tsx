@@ -797,6 +797,8 @@ const TeamManagement = () => {
             {benchPlayersExt.map((player, index) => {
               const clubLogo = clubLogos[player.team] || clubIcons[player.team];
               const playerExt = player as PlayerDataExt;
+              const isCaptainPlayer = captain === player.id;
+              const isViceCaptainPlayer = viceCaptain === player.id;
               
               // Swap mode highlighting
               const isSwapSource = swapModePlayer?.id === player.id;
@@ -827,6 +829,18 @@ const TeamManagement = () => {
                     )}
                     <span className="text-foreground font-medium truncate">{player.name}</span>
                     <span className="text-muted-foreground text-xs">{player.position}</span>
+                    {/* Captain badge */}
+                    {isCaptainPlayer && (
+                      <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                        К
+                      </span>
+                    )}
+                    {/* Vice-captain badge */}
+                    {isViceCaptainPlayer && (
+                      <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                        ВК
+                      </span>
+                    )}
                     {/* Red card badge */}
                     {playerExt.hasRedCard && (
                       <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
