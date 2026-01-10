@@ -84,8 +84,7 @@ const TeamManagement = () => {
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   
-  // Debug mode states
-  const [showDebugPreview, setShowDebugPreview] = useState(false);
+  // Saving state
   const [isSaving, setIsSaving] = useState(false);
   
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
@@ -237,18 +236,14 @@ const TeamManagement = () => {
     };
   };
 
-  // Handle save - show debug preview first
-  const handleSaveClick = () => {
+  // Handle save - directly save to backend
+  const handleSaveClick = async () => {
     const pendingBoost = specialChips.find((c) => c.status === "pending");
     if (pendingBoost) {
       setIsConfirmBoostOpen(true);
-    } else {
-      setShowDebugPreview(true);
+      return;
     }
-  };
-
-  // Confirm and send request
-  const handleConfirmSave = async () => {
+    
     if (!squad) return;
     
     setIsSaving(true);
@@ -258,7 +253,6 @@ const TeamManagement = () => {
       
       if (result.success) {
         toast.success("Изменения сохранены");
-        setShowDebugPreview(false);
         navigate("/league");
       } else {
         toast.error(`Ошибка: ${result.error || 'Неизвестная ошибка'}`);
@@ -910,49 +904,16 @@ const TeamManagement = () => {
       )}
 
       {/* Fixed Bottom Section with Save Button */}
-      {!swapModePlayer && !showDebugPreview && (
+      {!swapModePlayer && (
         <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-4 z-50">
           <Button
             onClick={handleSaveClick}
+            disabled={isSaving}
             className="w-full bg-[#A8FF00] hover:bg-[#98EE00] text-black font-semibold rounded-lg h-12"
           >
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
             Сохранить
           </Button>
-        </div>
-      )}
-
-      {/* Debug Preview Modal */}
-      {showDebugPreview && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <div className="bg-card rounded-xl max-w-lg w-full max-h-[80vh] overflow-auto">
-            <div className="p-4 border-b border-border">
-              <h2 className="text-lg font-bold text-foreground">DEBUG: Предпросмотр запроса</h2>
-              <p className="text-sm text-muted-foreground">PUT /api/squads/update_players/{squad?.id}</p>
-            </div>
-            <div className="p-4">
-              <pre className="bg-muted p-4 rounded-lg text-sm text-foreground overflow-auto font-mono whitespace-pre-wrap">
-                {JSON.stringify(buildRequestBody(), null, 2)}
-              </pre>
-            </div>
-            <div className="p-4 border-t border-border flex gap-3">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => setShowDebugPreview(false)}
-                disabled={isSaving}
-              >
-                Отмена
-              </Button>
-              <Button
-                className="flex-1 bg-[#A8FF00] hover:bg-[#98EE00] text-black"
-                onClick={handleConfirmSave}
-                disabled={isSaving}
-              >
-                {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                Подтвердить
-              </Button>
-            </div>
-          </div>
         </div>
       )}
 
