@@ -49,9 +49,10 @@ const TournamentTable = () => {
   const { data: leaderboardData, isLoading } = useQuery({
     queryKey: ['leaderboard', currentTourId],
     queryFn: async () => {
-      if (!currentTourId) return null;
+      if (!currentTourId) return [];
       const result = await squadsApi.getLeaderboard(currentTourId);
-      return result.success ? result.data : null;
+      // API returns array directly in result.data
+      return result.success && Array.isArray(result.data) ? result.data : [];
     },
     enabled: !!currentTourId,
   });
