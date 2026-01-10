@@ -40,14 +40,20 @@ const League = () => {
   const { data: mySquadsResponse } = useQuery({
     queryKey: ['mySquads'],
     queryFn: () => squadsApi.getMySquads(),
-    staleTime: 5 * 60 * 1000, // 5 minutes cache
+    staleTime: 10 * 60 * 1000, // 10 minutes - data considered fresh
+    gcTime: 30 * 60 * 1000, // 30 minutes - keep in cache
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
   
   // Fetch tours info from API (or cache)
   const { data: toursResponse } = useQuery({
     queryKey: ['tours', leagueId],
     queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
-    staleTime: 5 * 60 * 1000, // 5 minutes cache
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
   
   // Find the squad for current league
@@ -66,7 +72,10 @@ const League = () => {
     queryKey: ['leaderboard', currentTourId],
     queryFn: () => currentTourId ? squadsApi.getLeaderboard(currentTourId) : Promise.resolve({ success: false, data: [] }),
     enabled: !!currentTourId,
-    staleTime: 5 * 60 * 1000, // 5 minutes cache
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
   
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(() => {
