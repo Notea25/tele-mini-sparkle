@@ -565,7 +565,7 @@ const FormationFieldManagement = ({
               <p
                 className="text-center text-muted-foreground mt-4"
                 style={{
-                  fontSize: `${cardSize.width * 0.1}px`,
+                  fontSize: `${cardSize.width * 0.12}px`,
                   marginTop: `${cardSize.height * 0.15}px`,
                 }}
               >
