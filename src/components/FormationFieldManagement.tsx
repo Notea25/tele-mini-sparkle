@@ -5,7 +5,7 @@ import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.svg";
-import { Plus } from "lucide-react";
+import { Plus, ArrowUp } from "lucide-react";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
@@ -562,15 +562,19 @@ const FormationFieldManagement = ({
               })}
             </div>
             {onSwapBenchPlayers && (
-              <p
-                className="text-center text-muted-foreground mt-4"
+              <div
+                className="flex items-center justify-center gap-2 text-muted-foreground mt-4"
                 style={{
                   fontSize: `${cardSize.width * 0.12}px`,
                   marginTop: `${cardSize.height * 0.15}px`,
                 }}
               >
-                Используй стрелку для изменения приоритета выхода на поле
-              </p>
+                <ArrowUp 
+                  size={cardSize.width * 0.16} 
+                  className="text-primary" 
+                />
+                <span>Используй стрелку для изменения приоритета выхода на поле</span>
+              </div>
             )}
           </div>
         </div>
