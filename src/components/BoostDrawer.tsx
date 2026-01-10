@@ -23,30 +23,75 @@ interface BoostDrawerProps {
   currentTour?: number;
 }
 
-const boostDescriptions: Record<string, { title: string; description: string; canCancel: boolean }> = {
+const boostDescriptions: Record<string, { title: string; description: React.ReactNode; canCancel: boolean }> = {
   bench: {
     title: "Скамейка+",
-    description: "Эффект: Очки игроков, находящихся на скамейке запасных, засчитываются в общую сумму баллов команды наравне с игроками стартового состава.\n\nВажно: Буст можно отменить до наступления дедлайна тура.",
+    description: (
+      <>
+        <span className="text-foreground font-medium">Эффект:</span> Очки игроков, находящихся на скамейке запасных, засчитываются в общую сумму баллов команды наравне с игроками стартового состава.
+        <br /><br />
+        <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
+      </>
+    ),
     canCancel: true,
   },
   captain3x: {
     title: "3× Капитан",
-    description: "Эффект: Очки, набранные твоим капитаном, утраиваются.\n\nОсобые условия:\n1. Если капитан не вышел на поле, буст передаётся вице-капитану.\n2. Если и вице-капитан не появился на поле, буст сгорает.\n\nВажно: Буст можно отменить до наступления дедлайна тура.",
+    description: (
+      <>
+        <span className="text-foreground font-medium">Эффект:</span> Очки, набранные твоим капитаном, утраиваются.
+        <br /><br />
+        <span className="text-foreground font-medium">Особые условия:</span>
+        <br />1. Если капитан не вышел на поле, буст передаётся вице-капитану.
+        <br />2. Если и вице-капитан не появился на поле, буст сгорает.
+        <br /><br />
+        <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
+      </>
+    ),
     canCancel: true,
   },
   transfers: {
     title: "Трансферы+",
-    description: "Эффект: Позволяет совершить неограниченное количество трансферов за один раз (без штрафа в -4 очка за каждый).\n\nОсобые условия:\n1. Все внесённые изменения в состав становятся постоянными.\n2. Накопленные до активации буста бесплатные трансферы сгорают.\n\nВажно: Буст НЕЛЬЗЯ отменить после активации.",
+    description: (
+      <>
+        <span className="text-foreground font-medium">Эффект:</span> Позволяет совершить неограниченное количество трансферов за один раз (без штрафа в -4 очка за каждый).
+        <br /><br />
+        <span className="text-foreground font-medium">Особые условия:</span>
+        <br />1. Все внесённые изменения в состав становятся постоянными.
+        <br />2. Накопленные до активации буста бесплатные трансферы сгорают.
+        <br /><br />
+        <span className="text-foreground font-medium">Важно:</span> Буст НЕЛЬЗЯ отменить после активации.
+      </>
+    ),
     canCancel: false,
   },
   golden: {
     title: "Золотой тур",
-    description: "Эффект: Позволяет совершать неограниченное количество бесплатных трансферов (без штрафа -4 очка) в рамках одного игрового тура.\n\nОсобые условия:\n1. После окончания тура состав автоматически возвращается к тому, который был до активации буста.\n2. Накопленные бесплатные трансферы НЕ сгорают.\n\nВажно: Буст НЕЛЬЗЯ отменить после активации.",
+    description: (
+      <>
+        <span className="text-foreground font-medium">Эффект:</span> Позволяет совершать неограниченное количество бесплатных трансферов (без штрафа -4 очка) в рамках одного игрового тура.
+        <br /><br />
+        <span className="text-foreground font-medium">Особые условия:</span>
+        <br />1. После окончания тура состав автоматически возвращается к тому, который был до активации буста.
+        <br />2. Накопленные бесплатные трансферы НЕ сгорают.
+        <br /><br />
+        <span className="text-foreground font-medium">Важно:</span> Буст НЕЛЬЗЯ отменить после активации.
+      </>
+    ),
     canCancel: false,
   },
   double: {
     title: "Двойная сила",
-    description: "Эффект: Очки удваиваются как для капитана, так и для вице-капитана.\n\nОсобые условия:\n1. Если капитан или вице-капитан не вышли на поле, буст НЕ переносится на других игроков.\n\nВажно: Буст можно отменить до наступления дедлайна тура.",
+    description: (
+      <>
+        <span className="text-foreground font-medium">Эффект:</span> Очки удваиваются как для капитана, так и для вице-капитана.
+        <br /><br />
+        <span className="text-foreground font-medium">Особые условия:</span>
+        <br />1. Если капитан или вице-капитан не вышли на поле, буст НЕ переносится на других игроков.
+        <br /><br />
+        <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
+      </>
+    ),
     canCancel: true,
   }
 };
@@ -156,9 +201,9 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               <DrawerTitle className="text-2xl font-display text-foreground mb-4 text-center">
                 {boostInfo?.title || chip.label}
               </DrawerTitle>
-              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line text-left w-full">
+              <div className="text-muted-foreground text-sm leading-relaxed text-left w-full">
                 {boostInfo?.description}
-              </p>
+              </div>
               {getStatusText() && (
                 <p className={`text-sm mt-4 ${chip.status === "pending" ? "text-primary" : "text-muted-foreground"}`}>
                   {getStatusText()}
