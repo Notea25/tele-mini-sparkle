@@ -116,11 +116,12 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     return map;
   }, [allPlayers]);
 
-  // Enrich main players with full data
+  // Enrich main players with full data and assign slotIndex per position
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
     if (!squad) return [];
 
-    return squad.main_players.map((sp, index) => {
+    // First, map all players with their positions
+    const playersWithPositions = squad.main_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
       return {
         id: sp.id,
@@ -131,8 +132,17 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         position: fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ",
         price: fullPlayer?.market_value || 0,
         points: sp.points,
-        slotIndex: index,
+        slotIndex: 0, // Will be assigned below
       };
+    });
+
+    // Assign slotIndex per position
+    const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
+    
+    return playersWithPositions.map(player => {
+      const slotIndex = positionCounters[player.position] || 0;
+      positionCounters[player.position] = slotIndex + 1;
+      return { ...player, slotIndex };
     });
   }, [squad, playerMap]);
 
@@ -140,18 +150,25 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
   const benchPlayers = useMemo((): EnrichedPlayer[] => {
     if (!squad) return [];
 
-    return squad.bench_players.map((sp, index) => {
+    // Assign slotIndex per position for bench too
+    const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
+
+    return squad.bench_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
+      const position = fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ";
+      const slotIndex = positionCounters[position] || 0;
+      positionCounters[position] = slotIndex + 1;
+
       return {
         id: sp.id,
         name: sp.name,
         team_id: sp.team_id,
         team_name: fullPlayer?.team_name || "",
         team_logo: fullPlayer?.team_logo || "",
-        position: fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ",
+        position,
         price: fullPlayer?.market_value || 0,
         points: sp.points,
-        slotIndex: index,
+        slotIndex,
       };
     });
   }, [squad, playerMap]);
