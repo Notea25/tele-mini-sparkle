@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, ArrowLeftRight, X } from "lucide-react";
+import { ChevronDown, ArrowLeftRight, X, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
+import { useSquadData, EnrichedPlayer } from "@/hooks/useSquadData";
 import SportHeader from "@/components/SportHeader";
-import { getSavedTeam, getMainSquadAndBench, PlayerData } from "@/lib/teamData";
+import { PlayerData } from "@/lib/teamData";
 import { getValidSwapOptions, detectFormation, FORMATION_LABELS, FormationKey } from "@/lib/formationUtils";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
 import PlayerCard from "@/components/PlayerCard";
@@ -54,6 +55,12 @@ const formationOptions: { value: FormationKey; label: string }[] = Object.entrie
   ([value, label]) => ({ value: value as FormationKey, label }),
 );
 
+// Get league ID from localStorage or use default
+const getLeagueId = (): number => {
+  const saved = localStorage.getItem("fantasySelectedLeagueId");
+  return saved ? parseInt(saved, 10) : 116;
+};
+
 interface PlayerDataExt extends PlayerData {
   slotIndex?: number;
   isCaptain?: boolean;
@@ -65,12 +72,16 @@ interface PlayerDataExt extends PlayerData {
 
 const TeamManagement = () => {
   const navigate = useNavigate();
+  const leagueId = getLeagueId();
+  
+  // Load squad data from API
+  const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, isLoading, error } = useSquadData(leagueId);
+  
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [selectedFormation, setSelectedFormation] = useState("1-4-4-2");
-  const [captain, setCaptain] = useState<number | null>(() => getSavedTeam().captain);
-  const [viceCaptain, setViceCaptain] = useState<number | null>(() => getSavedTeam().viceCaptain);
+  const [captain, setCaptain] = useState<number | null>(null);
+  const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
-  const [teamName] = useState(() => getSavedTeam().teamName);
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
     // Load initial state from localStorage
     const boostState = getBoostState();
@@ -89,7 +100,6 @@ const TeamManagement = () => {
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
   const [isConfirmBoostOpen, setIsConfirmBoostOpen] = useState(false);
   const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
-  const currentTour = 1; // Current tour number
 
   // Check if boost is active on the other page
   useEffect(() => {
@@ -146,89 +156,66 @@ const TeamManagement = () => {
     );
   };
   // Deadline and teams using shared hooks
-  const leagueId = localStorage.getItem('fantasySelectedLeagueId') || '116';
-  const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueId);
-  const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
+  const leagueIdStr = String(leagueId);
+  const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueIdStr);
+  const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueIdStr);
 
-  // Load saved team from localStorage
-  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerDataExt[]>([]);
-  const [benchPlayers, setBenchPlayers] = useState<PlayerDataExt[]>([]);
+  // Convert API players to PlayerDataExt format
+  const mainSquadPlayers = useMemo((): PlayerDataExt[] => {
+    return apiMainPlayers.map(p => ({
+      id: p.id,
+      name: p.name,
+      team: p.team_name,
+      position: p.position,
+      price: p.price,
+      points: p.points,
+      slotIndex: p.slotIndex,
+      isCaptain: squad?.captain_id === p.id,
+      isViceCaptain: squad?.vice_captain_id === p.id,
+      isOnBench: false,
+    }));
+  }, [apiMainPlayers, squad]);
 
-  // Helper function to reassign slot indices based on player positions - moved before useEffect
-  const assignSlotIndicesByPosition = (players: PlayerDataExt[]): PlayerDataExt[] => {
-    const positionCounters: Record<string, number> = {
-      ВР: 0,
-      ЗЩ: 0,
-      ПЗ: 0,
-      НП: 0,
-    };
+  const benchPlayersExt = useMemo((): PlayerDataExt[] => {
+    return apiBenchPlayers.map(p => ({
+      id: p.id,
+      name: p.name,
+      team: p.team_name,
+      position: p.position,
+      price: p.price,
+      points: p.points,
+      slotIndex: p.slotIndex,
+      isOnBench: true,
+    }));
+  }, [apiBenchPlayers]);
 
-    return players.map((player) => {
-      const slotIndex = positionCounters[player.position] || 0;
-      positionCounters[player.position] = slotIndex + 1;
-      return { ...player, slotIndex };
-    });
-  };
-
+  // Initialize captain/vice-captain from squad data
   useEffect(() => {
-    const { mainSquad, bench } = getMainSquadAndBench();
-    const savedTeam = getSavedTeam();
-
-    if (mainSquad.length > 0) {
-      // Add red card to Степанов and injury to Макаров for testing
-      let updatedMainSquad = mainSquad.map((p) => {
-        if (p.name === "Степанов") return { ...p, hasRedCard: true };
-        if (p.name === "Макаров") return { ...p, isInjured: true };
-        return p;
-      });
-      let updatedBench = bench.map((p) => {
-        if (p.name === "Степанов") return { ...p, hasRedCard: true };
-        if (p.name === "Макаров") return { ...p, isInjured: true };
-        return p;
-      });
-
-      // Assign slotIndex per position (not globally)
-      updatedMainSquad = assignSlotIndicesByPosition(updatedMainSquad);
-
-      setMainSquadPlayers(updatedMainSquad);
-      setBenchPlayers(updatedBench);
-
-      // Get main squad player IDs for validation
-      const mainSquadIds = updatedMainSquad.map((p) => p.id);
-
-      // Validate saved captain/vice-captain are in main squad (not on bench)
-      const savedCaptainValid = savedTeam.captain && mainSquadIds.includes(savedTeam.captain);
-      const savedViceCaptainValid = savedTeam.viceCaptain && mainSquadIds.includes(savedTeam.viceCaptain);
-
-      // Sort main squad by price (descending) to get most expensive players for auto-assign
-      const sortedByPrice = [...updatedMainSquad].sort((a, b) => (b.price || 0) - (a.price || 0));
-
-      if (sortedByPrice.length >= 2) {
-        // Use saved values only if they're valid (player is in main squad)
-        let newCaptain = savedCaptainValid ? savedTeam.captain : sortedByPrice[0].id;
-        let newViceCaptain = savedViceCaptainValid ? savedTeam.viceCaptain : null;
-
-        // If vice-captain not valid or equals captain, pick next best player
-        if (!newViceCaptain || newViceCaptain === newCaptain) {
-          const nextBest = sortedByPrice.find((p) => p.id !== newCaptain);
-          newViceCaptain = nextBest?.id || null;
-        }
-
-        setCaptain(newCaptain!);
-        setViceCaptain(newViceCaptain);
-
-        // Save to localStorage
-        localStorage.setItem("fantasyTeamCaptain", JSON.stringify(newCaptain));
-        localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(newViceCaptain));
+    if (squad) {
+      if (squad.captain_id) {
+        setCaptain(squad.captain_id);
+      } else if (mainSquadPlayers.length > 0) {
+        // Auto-assign captain to first player if not set
+        const sortedByPrice = [...mainSquadPlayers].sort((a, b) => (b.price || 0) - (a.price || 0));
+        setCaptain(sortedByPrice[0]?.id || null);
+      }
+      
+      if (squad.vice_captain_id) {
+        setViceCaptain(squad.vice_captain_id);
+      } else if (mainSquadPlayers.length > 1) {
+        // Auto-assign vice-captain
+        const sortedByPrice = [...mainSquadPlayers].sort((a, b) => (b.price || 0) - (a.price || 0));
+        const viceCaptainCandidate = sortedByPrice.find(p => p.id !== captain);
+        setViceCaptain(viceCaptainCandidate?.id || null);
       }
     }
-  }, []);
+  }, [squad, mainSquadPlayers.length]);
 
   // Swap mode state (no drawer)
   const [swapModePlayer, setSwapModePlayer] = useState<PlayerDataExt | null>(null);
   const [validSwapTargetIds, setValidSwapTargetIds] = useState<Set<number>>(new Set());
 
-  const allPlayers = [...mainSquadPlayers, ...benchPlayers];
+  const allPlayers = [...mainSquadPlayers, ...benchPlayersExt];
 
   // Group players by position for list view
   const playersByPosition = {
@@ -265,7 +252,7 @@ const TeamManagement = () => {
     }
 
     // Calculate valid swap targets
-    const validOptions = getValidSwapOptions(mainSquadPlayers, benchPlayers, player);
+    const validOptions = getValidSwapOptions(mainSquadPlayers, benchPlayersExt, player);
     const validIds = new Set(validOptions.map((opt) => opt.id));
 
     setSwapModePlayer(player);
@@ -278,85 +265,12 @@ const TeamManagement = () => {
   };
 
   const handleSwapConfirm = (fromPlayerId: number, toPlayerId: number) => {
-    const fromPlayer = allPlayers.find((p) => p.id === fromPlayerId);
-    const toPlayer = allPlayers.find((p) => p.id === toPlayerId);
-
-    if (!fromPlayer || !toPlayer) return;
-
-    // Determine if swapping between main and bench
-    const fromIsOnBench = fromPlayer.isOnBench;
-    const toIsOnBench = toPlayer.isOnBench;
-
-    // Track if captain/vice-captain is being moved to bench
-    let newCaptain = captain;
-    let newViceCaptain = viceCaptain;
-
-    if (fromIsOnBench && !toIsOnBench) {
-      // Bench player replacing field player
-      // If the field player being replaced is captain/vice-captain, transfer the role to incoming player
-      if (captain === toPlayerId) {
-        newCaptain = fromPlayerId;
-      }
-      if (viceCaptain === toPlayerId) {
-        newViceCaptain = fromPlayerId;
-      }
-
-      // Create new main squad: replace field player with bench player
-      const newMainSquad = mainSquadPlayers.map((p) => (p.id === toPlayerId ? { ...fromPlayer, isOnBench: false } : p));
-
-      // Create new bench: replace bench player with field player
-      const newBench = benchPlayers.map((p) =>
-        p.id === fromPlayerId ? { ...toPlayer, slotIndex: undefined, isOnBench: true } : p,
-      );
-
-      // Reassign slot indices based on positions
-      const reassignedMainSquad = reassignSlotIndices(newMainSquad);
-
-      setMainSquadPlayers(reassignedMainSquad);
-      setBenchPlayers(newBench);
-    } else if (!fromIsOnBench && toIsOnBench) {
-      // Field player going to bench, bench player coming to field
-      // If the field player being moved to bench is captain/vice-captain, transfer the role to incoming player
-      if (captain === fromPlayerId) {
-        newCaptain = toPlayerId;
-      }
-      if (viceCaptain === fromPlayerId) {
-        newViceCaptain = toPlayerId;
-      }
-
-      // Create new main squad: replace field player with bench player
-      const newMainSquad = mainSquadPlayers.map((p) => (p.id === fromPlayerId ? { ...toPlayer, isOnBench: false } : p));
-
-      // Create new bench: replace bench player with field player
-      const newBench = benchPlayers.map((p) =>
-        p.id === toPlayerId ? { ...fromPlayer, slotIndex: undefined, isOnBench: true } : p,
-      );
-
-      // Reassign slot indices based on positions
-      const reassignedMainSquad = reassignSlotIndices(newMainSquad);
-
-      setMainSquadPlayers(reassignedMainSquad);
-      setBenchPlayers(newBench);
-    }
-
-    // Ensure same player is not both captain and vice-captain after swap
-    if (newCaptain === newViceCaptain && newCaptain !== null) {
-      // This shouldn't happen with current logic, but safeguard
-      newViceCaptain = null;
-    }
-
-    // Update captain/vice-captain if they changed
-    if (newCaptain !== captain) {
-      setCaptain(newCaptain);
-      localStorage.setItem("fantasyTeamCaptain", JSON.stringify(newCaptain));
-    }
-    if (newViceCaptain !== viceCaptain) {
-      setViceCaptain(newViceCaptain);
-      localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(newViceCaptain));
-    }
+    // TODO: Implement swap via API
+    toast.info("Замена игроков пока недоступна");
+    exitSwapMode();
   };
 
-  // Helper function to reassign slot indices based on player positions
+  // Helper function to reassign slot indices based on positions
   const reassignSlotIndices = (players: PlayerDataExt[]): PlayerDataExt[] => {
     const positionCounters: Record<string, number> = {
       ВР: 0,
@@ -372,96 +286,16 @@ const TeamManagement = () => {
     });
   };
 
-
   // Handle bench player reordering (swap between bench players)
   const handleBenchReorder = (fromIndex: number, toIndex: number) => {
-    if (fromIndex === toIndex) return;
-
-    // Goalkeeper (position ВР) must always stay at index 0
-    const fromPlayer = benchPlayers[fromIndex];
-    const toPlayer = benchPlayers[toIndex];
-
-    // Don't allow swapping goalkeeper with non-goalkeeper
-    if (fromPlayer?.position === "ВР" || toPlayer?.position === "ВР") {
-      if (fromPlayer?.position !== toPlayer?.position) {
-        toast.error("Вратарь всегда занимает первую позицию на скамейке");
-        return;
-      }
-    }
-
-    const newBench = [...benchPlayers];
-    // Swap the two players
-    [newBench[fromIndex], newBench[toIndex]] = [newBench[toIndex], newBench[fromIndex]];
-
-    setBenchPlayers(newBench);
-    toast.success("Порядок игроков изменён");
+    // TODO: Implement via API
+    toast.info("Перестановка игроков пока недоступна");
   };
 
   // Handle swapping a main squad player with a bench player via long-press
   const handleSwapMainAndBench = (mainPlayerId: number, benchPlayerId: number) => {
-    const mainPlayer = mainSquadPlayers.find((p) => p.id === mainPlayerId);
-    const benchPlayer = benchPlayers.find((p) => p.id === benchPlayerId);
-
-    if (!mainPlayer || !benchPlayer) {
-      toast.error("Игрок не найден");
-      return;
-    }
-
-    // Check if positions are compatible for swap
-    // Goalkeepers can only swap with goalkeepers
-    if (mainPlayer.position === "ВР" && benchPlayer.position !== "ВР") {
-      toast.error("Вратарь может меняться только с вратарём");
-      return;
-    }
-    if (benchPlayer.position === "ВР" && mainPlayer.position !== "ВР") {
-      toast.error("Вратарь может меняться только с вратарём");
-      return;
-    }
-
-    // Track if captain/vice-captain is being moved to bench
-    let newCaptain = captain;
-    let newViceCaptain = viceCaptain;
-
-    // If the main player being replaced is captain/vice-captain, transfer the role to incoming bench player
-    if (captain === mainPlayerId) {
-      newCaptain = benchPlayerId;
-    }
-    if (viceCaptain === mainPlayerId) {
-      newViceCaptain = benchPlayerId;
-    }
-
-    // Create new main squad: replace main player with bench player
-    const newMainSquad = mainSquadPlayers.map((p) =>
-      p.id === mainPlayerId ? { ...benchPlayer, isOnBench: false, slotIndex: p.slotIndex } : p,
-    );
-
-    // Create new bench: replace bench player with main player
-    const newBench = benchPlayers.map((p) =>
-      p.id === benchPlayerId ? { ...mainPlayer, isOnBench: true, slotIndex: undefined } : p,
-    );
-
-    // Reassign slot indices based on positions
-    const reassignedMainSquad = reassignSlotIndices(newMainSquad);
-
-    setMainSquadPlayers(reassignedMainSquad);
-    setBenchPlayers(newBench);
-
-    // Ensure same player is not both captain and vice-captain after swap
-    if (newCaptain === newViceCaptain && newCaptain !== null) {
-      newViceCaptain = null;
-    }
-
-    // Update captain/vice-captain if they changed
-    if (newCaptain !== captain) {
-      setCaptain(newCaptain);
-      localStorage.setItem("fantasyTeamCaptain", JSON.stringify(newCaptain));
-    }
-    if (newViceCaptain !== viceCaptain) {
-      setViceCaptain(newViceCaptain);
-      localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(newViceCaptain));
-    }
-
-    toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
+    // TODO: Implement via API
+    toast.info("Замена игроков пока недоступна");
   };
 
 
@@ -602,6 +436,33 @@ const TeamManagement = () => {
     </div>
   );
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-destructive">Ошибка загрузки: {error}</p>
+      </div>
+    );
+  }
+
+  // No squad state
+  if (!squad) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Команда не найдена</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <SportHeader />
@@ -611,7 +472,7 @@ const TeamManagement = () => {
 
         {/* Team name */}
         <div className="flex items-center justify-center mb-2">
-          <h1 className="text-foreground text-3xl font-display">{teamName}</h1>
+          <h1 className="text-foreground text-3xl font-display">{squad?.name || "Моя команда"}</h1>
         </div>
 
         <div className="flex items-center justify-between text-sm text-regular">
@@ -774,7 +635,7 @@ const TeamManagement = () => {
         <div className="mt-4">
           <FormationFieldManagement
             mainSquadPlayers={mainSquadPlayers}
-            benchPlayers={benchPlayers}
+            benchPlayers={benchPlayersExt}
             onPlayerClick={(player) => {
               if (swapModePlayer) {
                 // In swap mode - check if valid target
@@ -816,7 +677,7 @@ const TeamManagement = () => {
           </div>
 
           <div className="space-y-2">
-            {benchPlayers.map((player, index) => {
+            {benchPlayersExt.map((player, index) => {
               const clubLogo = clubLogos[player.team] || clubIcons[player.team];
               const playerExt = player as PlayerDataExt;
               
@@ -947,13 +808,13 @@ const TeamManagement = () => {
         const swapTargets = currentPlayer 
           ? (currentPlayer.isOnBench 
               ? mainSquadPlayers 
-              : benchPlayers
+              : benchPlayersExt
             ).filter(p => p.id !== selectedPlayerForCard)
           : [];
         
         // Calculate valid swap IDs
         const validOptions = currentPlayer 
-          ? getValidSwapOptions(mainSquadPlayers, benchPlayers, currentPlayer)
+          ? getValidSwapOptions(mainSquadPlayers, benchPlayersExt, currentPlayer)
           : [];
         const validIds = new Set(validOptions.map(opt => opt.id));
 
