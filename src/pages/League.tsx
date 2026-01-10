@@ -514,7 +514,11 @@ const League = () => {
               </div>
               <div
                 className="bg-primary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-primary/90 transition-all"
-                onClick={() => handleNavigate("/your-team")}
+                onClick={() => {
+                  if (mySquadId) {
+                    handleNavigate(`/view-team?id=${mySquadId}`);
+                  }
+                }}
               >
                 <span className="text-2xl font-medium text-primary-foreground">{isTournamentStarted ? tourStats.myPoints : 0}</span>
                 <span className="text-[10px] text-primary-foreground/70 whitespace-nowrap text-regular">Мои очки</span>
@@ -522,7 +526,16 @@ const League = () => {
               </div>
               <div
                 className="bg-secondary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all"
-                onClick={() => handleNavigate("/dream-team")}
+                onClick={() => {
+                  // Find squad with best tour points
+                  const leaderboard = leaderboardResponse?.data;
+                  if (leaderboard && leaderboard.length > 0) {
+                    const bestEntry = leaderboard.reduce((best, entry) => 
+                      entry.tour_points > best.tour_points ? entry : best
+                    );
+                    handleNavigate(`/view-team?id=${bestEntry.squad_id}`);
+                  }
+                }}
               >
                 <span className="text-xl font-medium text-foreground">{isTournamentStarted ? tourStats.bestPoints : 0}</span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Лучший результат</span>
@@ -609,11 +622,7 @@ const League = () => {
                     row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                   }`}
                   onClick={() => {
-                    if (row.isUser) {
-                      handleNavigate("/your-team");
-                    } else {
-                      handleNavigate(`/view-team?id=${row.id}&name=${encodeURIComponent(row.name)}`);
-                    }
+                    handleNavigate(`/view-team?id=${row.id}`);
                   }}
                 >
                   <div className="col-span-3 flex items-center gap-1">

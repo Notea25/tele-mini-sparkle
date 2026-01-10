@@ -8,6 +8,7 @@ const BackendTest = () => {
   const [usersResponse, setUsersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [squadsCreateResponse, setSquadsCreateResponse] = useState<ApiResponse<unknown> | null>(null);
   const [mySquadsResponse, setMySquadsResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [getSquadByIdResponse, setGetSquadByIdResponse] = useState<ApiResponse<unknown> | null>(null);
   const [deadlineResponse, setDeadlineResponse] = useState<ApiResponse<unknown> | null>(null);
   const [toursResponse, setToursResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playersResponse, setPlayersResponse] = useState<ApiResponse<unknown> | null>(null);
@@ -19,6 +20,7 @@ const BackendTest = () => {
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [loadingSquadsCreate, setLoadingSquadsCreate] = useState(false);
   const [loadingMySquads, setLoadingMySquads] = useState(false);
+  const [loadingGetSquadById, setLoadingGetSquadById] = useState(false);
   const [loadingDeadline, setLoadingDeadline] = useState(false);
   const [loadingTours, setLoadingTours] = useState(false);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
@@ -28,6 +30,7 @@ const BackendTest = () => {
   const [playerIdInput, setPlayerIdInput] = useState('1');
   const [tourIdInput, setTourIdInput] = useState('2');
   const [squadIdInput, setSquadIdInput] = useState('1');
+  const [getSquadIdInput, setGetSquadIdInput] = useState('7');
   const [captainIdInput, setCaptainIdInput] = useState('');
   const [viceCaptainIdInput, setViceCaptainIdInput] = useState('');
   const [mainPlayerIdsInput, setMainPlayerIdsInput] = useState('');
@@ -111,6 +114,21 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingMySquads(false);
+    }
+  };
+
+  const testGetSquadByIdApi = async () => {
+    setLoadingGetSquadById(true);
+    try {
+      const result = await squadsApi.getSquadById(parseInt(getSquadIdInput) || 7);
+      setGetSquadByIdResponse(result);
+    } catch (err) {
+      setGetSquadByIdResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingGetSquadById(false);
     }
   };
 
@@ -300,6 +318,19 @@ const BackendTest = () => {
           {loadingMySquads ? 'Загрузка...' : 'Тест: GET /api/squads/my_squads'}
         </Button>
 
+        <div className="flex gap-2 items-center">
+          <input
+            type="number"
+            value={getSquadIdInput}
+            onChange={(e) => setGetSquadIdInput(e.target.value)}
+            className="w-20 px-2 py-2 bg-muted text-foreground rounded border border-border"
+            placeholder="Squad ID"
+          />
+          <Button onClick={testGetSquadByIdApi} disabled={loadingGetSquadById} variant="default">
+            {loadingGetSquadById ? 'Загрузка...' : `Тест: GET /api/squads/get_squad_${getSquadIdInput}`}
+          </Button>
+        </div>
+
         <Button onClick={testDeadlineApi} disabled={loadingDeadline} variant="secondary">
           {loadingDeadline ? 'Загрузка...' : 'Тест: GET /api/tours/get_deadline_for_next_tour/116'}
         </Button>
@@ -404,6 +435,7 @@ const BackendTest = () => {
       {renderResponse(usersResponse, 'Ответ: Users Protected')}
       {renderResponse(squadsCreateResponse, 'Ответ: Squads Create')}
       {renderResponse(mySquadsResponse, 'Ответ: My Squads')}
+      {renderResponse(getSquadByIdResponse, 'Ответ: Get Squad By ID')}
       {renderResponse(deadlineResponse, 'Ответ: Deadline')}
       {renderResponse(toursResponse, 'Ответ: Tours (prev/current/next)')}
       {renderResponse(playersResponse, 'Ответ: Players')}

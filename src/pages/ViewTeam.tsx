@@ -1,198 +1,126 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { useState, useMemo } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationFieldManagement from "@/components/FormationFieldManagement";
-
+import { PlayerData } from "@/lib/teamData";
 import PlayerCard from "@/components/PlayerCard";
-import { generateTourData, getTourBoostInfo, MAX_TOURS, BoostType, BOOST_CONFIG } from "@/lib/tourData";
-import { getDisplayedPoints, calculateTotalTourPoints } from "@/lib/pointsCalculation";
-import { generateRandomTeam, PlayerData as TeamPlayerData } from "@/lib/teamData";
 import { clubLogos } from "@/lib/clubLogos";
-// Random team names (same as in TournamentTable)
-const teamNames = [
-  "FC Phoenix", "Red Bulls", "Golden Eagles", "Thunder FC", "Storm United",
-  "Blue Lions", "Silver Hawks", "Dark Knights", "Fire Dragons", "Ice Warriors",
-  "Royal Tigers", "Electric City", "Shadow Wolves", "Crimson Kings", "Emerald Stars",
-  "Diamond FC", "Platinum United", "Bronze Legends", "Copper Chiefs", "Steel Titans",
-  "Galaxy FC", "Cosmic Stars", "Meteor United", "Comet FC", "Asteroid FC",
-  "Ocean Waves", "River Flow", "Lake City", "Mountain FC", "Valley United",
-  "Forest Rangers", "Desert Hawks", "Tundra Bears", "Jungle Cats", "Savanna Lions",
-  "Arctic Foxes", "Tropical Storm", "Volcano FC", "Canyon City", "Prairie Dogs",
-  "Night Owls", "Dawn Breakers", "Sunset FC", "Twilight United", "Midnight FC",
-  "Victory FC", "Champion Stars", "Glory United", "Honor FC", "Pride City",
-  "Spirit FC", "Soul United", "Heart FC", "Mind Warriors", "Power FC",
-  "Speed Demons", "Flash FC", "Lightning FC", "Bolt United", "Spark City",
-  "Alpha FC", "Beta United", "Gamma FC", "Delta City", "Omega FC",
-  "Zenith Stars", "Apex United", "Summit FC", "Peak City", "Pinnacle FC",
-  "Nova FC", "Quantum United", "Fusion FC", "Energy City", "Dynamo FC",
-  "Rocket FC", "Jet United", "Turbo FC", "Nitro City", "Boost FC",
-  "Legend FC", "Myth United", "Epic FC", "Hero City", "Champion FC",
-  "Elite Stars", "Premier United", "Supreme FC", "Ultimate City", "Max FC",
-  "Prime FC", "Core United", "Base FC", "Root City", "Origin FC",
-  "Future FC", "Next United", "Forward FC", "Ahead City", "Beyond FC"
-];
-
-
-interface PlayerData {
-  id: number;
-  name: string;
-  team: string;
-  position: string;
-  points: number;
-  displayedPoints: number;
-  price: number;
-  slotIndex?: number;
-  isCaptain?: boolean;
-  isViceCaptain?: boolean;
-  isOnBench?: boolean;
-  hasRedCard?: boolean;
-  isInjured?: boolean;
-}
+import { useSquadById, EnrichedPlayer } from "@/hooks/useSquadById";
 
 const ViewTeam = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
-  const [currentTour, setCurrentTour] = useState(29);
-  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<EnrichedPlayer | null>(null);
   const [isPlayerCardOpen, setIsPlayerCardOpen] = useState(false);
 
-  const teamIdParam = searchParams.get("id");
-  const parsedTeamId = Number.parseInt(teamIdParam ?? "1", 10);
-  const teamId = Number.isFinite(parsedTeamId) ? parsedTeamId : 1;
+  // Get squad ID from URL params
+  const squadIdParam = searchParams.get("id");
+  const squadId = squadIdParam ? parseInt(squadIdParam, 10) : null;
 
-  const teamNameParam = searchParams.get("name");
-  const teamIndex = teamId - 1;
-  const teamName = teamNameParam || teamNames[teamIndex % teamNames.length];
+  const { squad, mainPlayers, benchPlayers, currentTour, tourPoints, isLoading, error } = useSquadById(squadId);
 
-  // Generate tour data for this team
-  const { tourBoosts } = useMemo(() => {
-    return generateTourData(teamId);
-  }, [teamId]);
-
-  // Get current tour boost info
-  const currentBoostInfo = getTourBoostInfo(tourBoosts[currentTour - 1]);
-  const currentBoostType = tourBoosts[currentTour - 1];
-
-  // Check which boosts are active for current tour
-  const isBenchBoostActive = currentBoostType === "bench";
-  const isCaptain3xBoostActive = currentBoostType === "captain3x";
-  const isDoublePowerBoostActive = currentBoostType === "double";
-
-  // Generate random players for this team and tour using centralized function
-  const { mainSquadPlayers, benchPlayers, captainId, viceCaptainId, totalTourPoints } = useMemo(() => {
-    const boostType = tourBoosts[currentTour - 1];
-    const seed = teamId * 100 + currentTour;
-    
-    // Use the centralized team generation function
-    const { mainSquad, bench } = generateRandomTeam(teamId, currentTour);
-    
-    // Deterministic captain and vice-captain selection based on seed
-    const captainSeed = Math.sin(seed * 7) * 10000;
-    const captainIdx = Math.floor((captainSeed - Math.floor(captainSeed)) * mainSquad.length);
-    let viceCaptainIdx = Math.floor((Math.sin(seed * 13) * 10000 - Math.floor(Math.sin(seed * 13) * 10000)) * mainSquad.length);
-    if (viceCaptainIdx === captainIdx) {
-      viceCaptainIdx = (viceCaptainIdx + 1) % mainSquad.length;
-    }
-    
-    // Deterministic injury and red card
-    const injuredIdx = Math.floor((Math.sin(seed * 17) * 10000 - Math.floor(Math.sin(seed * 17) * 10000)) * mainSquad.length);
-    let redCardIdx = Math.floor((Math.sin(seed * 23) * 10000 - Math.floor(Math.sin(seed * 23) * 10000)) * mainSquad.length);
-    if (redCardIdx === injuredIdx) {
-      redCardIdx = (redCardIdx + 1) % mainSquad.length;
-    }
-
-    // Add display points and captain/vice-captain info
-    const main: PlayerData[] = mainSquad.map((p, idx) => {
-      const isCaptain = idx === captainIdx;
-      const isViceCaptain = idx === viceCaptainIdx;
-      
-      return {
-        ...p,
-        displayedPoints: getDisplayedPoints(p.points, isCaptain, isViceCaptain, boostType),
-        isCaptain,
-        isViceCaptain,
-        hasRedCard: idx === redCardIdx,
-        isInjured: idx === injuredIdx,
-      };
-    });
-
-    const benchWithPoints: PlayerData[] = bench.map((p) => ({
-      ...p,
-      displayedPoints: p.points,
+  // Convert EnrichedPlayer to PlayerData for FormationFieldManagement
+  const mainSquadForField = useMemo((): PlayerData[] => {
+    return mainPlayers.map(p => ({
+      id: p.id,
+      name: p.name,
+      team: p.team_name,
+      position: p.position,
+      price: p.price,
+      points: p.points,
+      slotIndex: p.slotIndex,
+      isCaptain: squad?.captain_id === p.id,
+      isViceCaptain: squad?.vice_captain_id === p.id,
     }));
+  }, [mainPlayers, squad]);
 
-    // Calculate total points with boost logic
-    const total = calculateTotalTourPoints(main, benchWithPoints, boostType);
-
-    return { 
-      mainSquadPlayers: main, 
-      benchPlayers: benchWithPoints,
-      captainId: captainIdx,
-      viceCaptainId: viceCaptainIdx,
-      totalTourPoints: total,
-    };
-  }, [teamId, currentTour, tourBoosts]);
-
-  const handleTourChange = (direction: "prev" | "next") => {
-    if (direction === "prev" && currentTour > 1) {
-      setCurrentTour(currentTour - 1);
-    } else if (direction === "next" && currentTour < MAX_TOURS) {
-      setCurrentTour(currentTour + 1);
-    }
-  };
+  const benchForField = useMemo((): PlayerData[] => {
+    return benchPlayers.map(p => ({
+      id: p.id,
+      name: p.name,
+      team: p.team_name,
+      position: p.position,
+      price: p.price,
+      points: p.points,
+      slotIndex: p.slotIndex,
+    }));
+  }, [benchPlayers]);
 
   const handlePlayerClick = (player: PlayerData) => {
-    setSelectedPlayer(player);
-    setIsPlayerCardOpen(true);
+    const enrichedPlayer = mainPlayers.find(p => p.id === player.id) || 
+                           benchPlayers.find(p => p.id === player.id);
+    if (enrichedPlayer) {
+      setSelectedPlayer(enrichedPlayer);
+      setIsPlayerCardOpen(true);
+    }
   };
+
+  const getPositionLabel = (pos: string, count: number): string => {
+    if (pos === "ВР") return count === 1 ? "Вратарь" : "Вратари";
+    if (pos === "ЗЩ") return "Защита";
+    if (pos === "ПЗ") return "Полузащита";
+    if (pos === "НП") return "Нападение";
+    return pos;
+  };
+
+  if (!squadId) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">ID команды не указан</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-destructive">Ошибка загрузки: {error}</p>
+      </div>
+    );
+  }
+
+  if (!squad) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Команда не найдена</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <SportHeader />
 
-
       {/* Team Name */}
-      <div className="px-4 mt-4 flex items-center justify-center">
-        <h1 className="text-foreground text-3xl font-bold">{teamName}</h1>
+      <div className="px-4 mt-4 flex items-center justify-center gap-2">
+        <h1 className="text-foreground text-3xl font-bold">{squad.name}</h1>
       </div>
 
       {/* Tour Label with Gradient Lines */}
       <div className="px-4 mt-4 flex items-center justify-center gap-3">
         <div className="flex-1 h-px bg-gradient-to-r from-transparent to-muted-foreground/30" />
-        <span className="text-muted-foreground text-sm font-medium">{currentTour} тур</span>
+        <span className="text-muted-foreground text-sm font-medium">
+          {currentTour ? `${currentTour} тур` : "—"}
+        </span>
         <div className="flex-1 h-px bg-gradient-to-l from-transparent to-muted-foreground/30" />
       </div>
 
-      {/* Points Block with Navigation Arrows */}
+      {/* Points Block */}
       <div className="px-4 mt-3 flex items-center justify-center gap-3">
-        <button
-          onClick={() => handleTourChange("prev")}
-          disabled={currentTour <= 1}
-          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        
-        <div className="bg-primary rounded-full px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
-          <span className="text-2xl font-bold text-primary-foreground">{totalTourPoints}</span>
+        <div className="bg-primary rounded-xl px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
+          <span className="text-2xl font-bold text-primary-foreground">{tourPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
-          {currentBoostInfo && (
-            <div className="bg-secondary rounded-lg p-1.5 flex items-center justify-center ml-1" title={currentBoostInfo.label}>
-              <img src={currentBoostInfo.icon} alt={currentBoostInfo.label} className="w-5 h-5 object-contain" />
-            </div>
-          )}
         </div>
-        
-        <button
-          onClick={() => handleTourChange("next")}
-          disabled={currentTour >= MAX_TOURS}
-          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-secondary/50 transition-colors"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
       </div>
 
       {/* Tabs */}
@@ -225,14 +153,11 @@ const ViewTeam = () => {
       {activeTab === "formation" && (
         <div className="mt-6">
           <FormationFieldManagement
-            mainSquadPlayers={mainSquadPlayers.map(p => ({ ...p, points: p.displayedPoints }))}
-            benchPlayers={benchPlayers}
+            mainSquadPlayers={mainSquadForField}
+            benchPlayers={benchForField}
             onPlayerClick={handlePlayerClick}
-            captain={captainId}
-            viceCaptain={viceCaptainId}
-            isBenchBoostActive={isBenchBoostActive}
-            isDoublePowerBoostActive={isDoublePowerBoostActive}
-            isCaptain3xBoostActive={isCaptain3xBoostActive}
+            captain={squad.captain_id}
+            viceCaptain={squad.vice_captain_id}
             showPrice={false}
             showPointsInsteadOfTeam={true}
           />
@@ -247,20 +172,14 @@ const ViewTeam = () => {
 
           {/* Grouped by position */}
           {(["ВР", "ЗЩ", "ПЗ", "НП"] as const).map((position) => {
-            const playersInPosition = mainSquadPlayers.filter(p => p.position === position);
+            const playersInPosition = mainPlayers.filter(p => p.position === position);
             if (playersInPosition.length === 0) return null;
-
-            const getPositionLabel = (pos: string, count: number): string => {
-              if (pos === "ВР") return count === 1 ? "Вратарь" : "Вратари";
-              if (pos === "ЗЩ") return "Защита";
-              if (pos === "ПЗ") return "Полузащита";
-              if (pos === "НП") return "Нападение";
-              return pos;
-            };
 
             return (
               <div className="mb-6" key={position}>
-                <h3 className="text-primary font-medium mb-2">{getPositionLabel(position, playersInPosition.length)}</h3>
+                <h3 className="text-primary font-medium mb-2">
+                  {getPositionLabel(position, playersInPosition.length)}
+                </h3>
                 <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
                   <span className="flex-1">Игрок</span>
                   <div className="w-12 flex justify-center">Очки</div>
@@ -268,44 +187,45 @@ const ViewTeam = () => {
                 </div>
                 <div className="space-y-2">
                   {playersInPosition.map((player) => {
-                    const showCaptain3xBadge = isCaptain3xBoostActive && player.isCaptain;
-                    const showDoublePowerBadge = isDoublePowerBoostActive && (player.isCaptain || player.isViceCaptain);
-                    
+                    const isCaptain = squad.captain_id === player.id;
+                    const isViceCaptain = squad.vice_captain_id === player.id;
+
                     return (
                       <div
                         key={player.id}
-                        onClick={() => handlePlayerClick(player)}
-                        className={`bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
-                          showCaptain3xBadge || showDoublePowerBadge ? "border border-primary" : ""
-                        } ${player.hasRedCard || player.isInjured ? "border border-red-500" : ""}`}
+                        onClick={() => {
+                          setSelectedPlayer(player);
+                          setIsPlayerCardOpen(true);
+                        }}
+                        className="bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors"
                       >
                         <div className="flex-1 flex items-center gap-2 min-w-0">
-                          {clubLogos[player.team] && (
-                            <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                          {clubLogos[player.team_name] && (
+                            <img
+                              src={clubLogos[player.team_name]}
+                              alt={player.team_name}
+                              className="w-5 h-5 object-contain flex-shrink-0"
+                            />
                           )}
                           <span className="text-foreground font-medium truncate">{player.name}</span>
                           <span className="text-muted-foreground text-xs">{player.position}</span>
-                          {player.isCaptain && (
-                            <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">К</span>
+                          {isCaptain && (
+                            <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                              К
+                            </span>
                           )}
-                          {player.isViceCaptain && (
-                            <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">ВК</span>
-                          )}
-                          {showCaptain3xBadge && (
-                            <img src={BOOST_CONFIG.captain3x.icon} alt="3x" className="w-4 h-4" />
-                          )}
-                          {showDoublePowerBadge && !showCaptain3xBadge && (
-                            <img src={BOOST_CONFIG.double.icon} alt="2x" className="w-4 h-4" />
-                          )}
-                          {player.hasRedCard && (
-                            <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">КК</span>
-                          )}
-                          {player.isInjured && !player.hasRedCard && (
-                            <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">ТР</span>
+                          {isViceCaptain && (
+                            <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                              ВК
+                            </span>
                           )}
                         </div>
-                        <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.displayedPoints}</div>
-                        <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">{player.price.toFixed(1)}</div>
+                        <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
+                          {player.points}
+                        </div>
+                        <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
+                          {player.price}
+                        </div>
                       </div>
                     );
                   })}
@@ -322,35 +242,67 @@ const ViewTeam = () => {
             <div className="w-10 flex justify-center">Цена</div>
           </div>
           <div className="space-y-2">
-            {benchPlayers.map((player) => (
-              <div
-                key={player.id}
-                onClick={() => handlePlayerClick(player)}
-                className={`bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors ${
-                  isBenchBoostActive ? "border border-primary" : "opacity-70"
-                }`}
-              >
-                <div className="flex-1 flex items-center gap-2 min-w-0">
-                  {clubLogos[player.team] && (
-                    <img src={clubLogos[player.team]} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
-                  )}
-                  <span className="text-foreground font-medium truncate">{player.name}</span>
-                  <span className="text-muted-foreground text-xs">{player.position}</span>
-                  {isBenchBoostActive && (
-                    <img src={BOOST_CONFIG.bench.icon} alt="Bench+" className="w-4 h-4" />
-                  )}
+            {benchPlayers.map((player) => {
+              const isCaptain = squad.captain_id === player.id;
+              const isViceCaptain = squad.vice_captain_id === player.id;
+              
+              return (
+                <div
+                  key={player.id}
+                  onClick={() => {
+                    setSelectedPlayer(player);
+                    setIsPlayerCardOpen(true);
+                  }}
+                  className="bg-card rounded-xl px-4 py-2 flex items-center cursor-pointer hover:bg-card/80 transition-colors opacity-70"
+                >
+                  <div className="flex-1 flex items-center gap-2 min-w-0">
+                    {clubLogos[player.team_name] && (
+                      <img
+                        src={clubLogos[player.team_name]}
+                        alt={player.team_name}
+                        className="w-5 h-5 object-contain flex-shrink-0"
+                      />
+                    )}
+                    <span className="text-foreground font-medium truncate">{player.name}</span>
+                    <span className="text-muted-foreground text-xs">{player.position}</span>
+                    {isCaptain && (
+                      <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                        К
+                      </span>
+                    )}
+                    {isViceCaptain && (
+                      <span className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                        ВК
+                      </span>
+                    )}
+                  </div>
+                  <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
+                    {player.points}
+                  </div>
+                  <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
+                    {player.price}
+                  </div>
                 </div>
-                <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">{player.displayedPoints}</div>
-                <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">{player.price.toFixed(1)}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
 
       {/* Player Card Drawer */}
       <PlayerCard
-        player={selectedPlayer ? { ...selectedPlayer, points: selectedPlayer.displayedPoints } : null}
+        player={
+          selectedPlayer
+            ? {
+                id: selectedPlayer.id,
+                name: selectedPlayer.name,
+                team: selectedPlayer.team_name,
+                position: selectedPlayer.position,
+                price: selectedPlayer.price,
+                points: selectedPlayer.points,
+              }
+            : null
+        }
         isOpen={isPlayerCardOpen}
         onClose={() => setIsPlayerCardOpen(false)}
         variant="view"
