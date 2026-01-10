@@ -336,42 +336,49 @@ const TeamManagement = () => {
     const fromIsMain = !fromPlayer.isOnBench;
     const toIsMain = !toPlayer.isOnBench;
 
-    if (fromIsMain && toIsMain) {
-      // Both in main squad - just swap positions visually (no actual change needed for API)
-      toast.info("Игроки в основном составе не меняются местами");
-    } else if (!fromIsMain && !toIsMain) {
-      // Both on bench - swap bench order
-      const fromIdx = benchPlayersExt.findIndex(p => p.id === fromPlayerId);
-      const toIdx = benchPlayersExt.findIndex(p => p.id === toPlayerId);
-      if (fromIdx !== -1 && toIdx !== -1) {
-        const newBench = [...benchPlayersExt];
-        [newBench[fromIdx], newBench[toIdx]] = [newBench[toIdx], newBench[fromIdx]];
-        // Reassign slot indices
-        setBenchPlayersExt(newBench.map((p, i) => ({ ...p, slotIndex: i })));
-        toast.success(`${fromPlayer.name} ↔ ${toPlayer.name}`);
+    // Only allow swaps between main and bench with same position
+    if (fromIsMain === toIsMain) {
+      if (fromIsMain) {
+        toast.info("Игроки в основном составе не меняются местами");
+      } else {
+        // Both on bench - swap bench order
+        const fromIdx = benchPlayersExt.findIndex(p => p.id === fromPlayerId);
+        const toIdx = benchPlayersExt.findIndex(p => p.id === toPlayerId);
+        if (fromIdx !== -1 && toIdx !== -1) {
+          const newBench = [...benchPlayersExt];
+          [newBench[fromIdx], newBench[toIdx]] = [newBench[toIdx], newBench[fromIdx]];
+          setBenchPlayersExt(newBench.map((p, i) => ({ ...p, slotIndex: i })));
+          toast.success(`${fromPlayer.name} ↔ ${toPlayer.name}`);
+        }
       }
-    } else {
-      // One main, one bench - swap between main and bench
-      const mainPlayer = fromIsMain ? fromPlayer : toPlayer;
-      const benchPlayer = fromIsMain ? toPlayer : fromPlayer;
-      
-      // Remove main player from main, add bench player to main
-      const newMain = mainSquadPlayers
-        .filter(p => p.id !== mainPlayer.id)
-        .concat({ ...benchPlayer, isOnBench: false });
-      
-      // Remove bench player from bench, add main player to bench
-      const newBench = benchPlayersExt
-        .filter(p => p.id !== benchPlayer.id)
-        .concat({ ...mainPlayer, isOnBench: true });
-      
-      // Reassign slot indices
-      setMainSquadPlayers(reassignSlotIndices(newMain));
-      setBenchPlayersExt(newBench.map((p, i) => ({ ...p, slotIndex: i })));
-      
-      toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
+      exitSwapMode();
+      return;
+    }
+
+    // One main, one bench - check same position
+    const mainPlayer = fromIsMain ? fromPlayer : toPlayer;
+    const benchPlayer = fromIsMain ? toPlayer : fromPlayer;
+    
+    if (mainPlayer.position !== benchPlayer.position) {
+      toast.error("Можно менять только игроков с одинаковой позицией");
+      exitSwapMode();
+      return;
     }
     
+    // Swap players between main and bench (captain/vice-captain roles stay with the player)
+    const newMain = mainSquadPlayers
+      .filter(p => p.id !== mainPlayer.id)
+      .concat({ ...benchPlayer, isOnBench: false });
+    
+    const newBench = benchPlayersExt
+      .filter(p => p.id !== benchPlayer.id)
+      .concat({ ...mainPlayer, isOnBench: true });
+    
+    // Reassign slot indices
+    setMainSquadPlayers(reassignSlotIndices(newMain));
+    setBenchPlayersExt(newBench.map((p, i) => ({ ...p, slotIndex: i })));
+    
+    toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
     exitSwapMode();
   };
 
@@ -399,7 +406,6 @@ const TeamManagement = () => {
     const [movedPlayer] = newBench.splice(fromIndex, 1);
     newBench.splice(toIndex, 0, movedPlayer);
     
-    // Reassign slot indices
     setBenchPlayersExt(newBench.map((p, i) => ({ ...p, slotIndex: i })));
     toast.success("Порядок скамейки изменён");
   };
