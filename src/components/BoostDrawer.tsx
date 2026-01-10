@@ -28,8 +28,10 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
     title: "Скамейка+",
     description: (
       <>
-        <span className="text-foreground font-medium">Эффект:</span> Очки игроков, находящихся на скамейке запасных, засчитываются в общую сумму баллов команды наравне с игроками стартового состава.
-        <br /><br />
+        <span className="text-foreground font-medium">Эффект:</span> Очки игроков, находящихся на скамейке запасных,
+        засчитываются в общую сумму баллов команды наравне с игроками стартового состава.
+        <br />
+        <br />
         <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
       </>
     ),
@@ -40,11 +42,15 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
     description: (
       <>
         <span className="text-foreground font-medium">Эффект:</span> Очки, набранные твоим капитаном, утраиваются.
-        <br /><br />
+        <br />
+        <br />
         <span className="text-foreground font-medium">Особые условия:</span>
-        <br />1. Если капитан не вышел на поле, буст передаётся вице-капитану.
-        <br />2. Если и вице-капитан не появился на поле, буст сгорает.
-        <br /><br />
+        <br />
+        1. Если капитан не вышел на поле, буст передаётся вице-капитану.
+        <br />
+        2. Если и вице-капитан не появился на поле, буст сгорает.
+        <br />
+        <br />
         <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
       </>
     ),
@@ -54,12 +60,17 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
     title: "Трансферы+",
     description: (
       <>
-        <span className="text-foreground font-medium">Эффект:</span> Позволяет совершить неограниченное количество трансферов за один раз (без штрафа в -4 очка за каждый).
-        <br /><br />
+        <span className="text-foreground font-medium">Эффект:</span> Позволяет совершить неограниченное количество
+        трансферов за один раз (без штрафа в -4 очка за каждый).
+        <br />
+        <br />
         <span className="text-foreground font-medium">Особые условия:</span>
-        <br />1. Все внесённые изменения в состав становятся постоянными.
-        <br />2. Накопленные до активации буста бесплатные трансферы сгорают.
-        <br /><br />
+        <br />
+        1. Все внесённые изменения в состав становятся постоянными.
+        <br />
+        2. Накопленные до активации буста бесплатные трансферы сгорают.
+        <br />
+        <br />
         <span className="text-foreground font-medium">Важно:</span> Буст НЕЛЬЗЯ отменить после активации.
       </>
     ),
@@ -69,12 +80,17 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
     title: "Золотой тур",
     description: (
       <>
-        <span className="text-foreground font-medium">Эффект:</span> Позволяет совершать неограниченное количество бесплатных трансферов (без штрафа -4 очка) в рамках одного игрового тура.
-        <br /><br />
+        <span className="text-foreground font-medium">Эффект:</span> Позволяет совершать неограниченное количество
+        бесплатных трансферов (без штрафа -4 очка) в рамках одного игрового тура.
+        <br />
+        <br />
         <span className="text-foreground font-medium">Особые условия:</span>
-        <br />1. После окончания тура состав автоматически возвращается к тому, который был до активации буста.
-        <br />2. Накопленные бесплатные трансферы НЕ сгорают.
-        <br /><br />
+        <br />
+        1. После окончания тура состав автоматически возвращается к тому, который был до активации буста.
+        <br />
+        2. Накопленные бесплатные трансферы НЕ сгорают.
+        <br />
+        <br />
         <span className="text-foreground font-medium">Важно:</span> Буст НЕЛЬЗЯ отменить после активации.
       </>
     ),
@@ -84,16 +100,20 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
     title: "Двойная сила",
     description: (
       <>
-        <span className="text-foreground font-medium">Эффект:</span> Очки удваиваются как для капитана, так и для вице-капитана.
-        <br /><br />
+        <span className="text-foreground font-medium">Эффект:</span> Очки удваиваются как для капитана, так и для
+        вице-капитана.
+        <br />
+        <br />
         <span className="text-foreground font-medium">Особые условия:</span>
-        <br />1. Если капитан или вице-капитан не вышли на поле, буст НЕ переносится на других игроков.
-        <br /><br />
+        <br />
+        Если капитан или вице-капитан не вышли на поле, буст НЕ переносится на других игроков.
+        <br />
+        <br />
         <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
       </>
     ),
     canCancel: true,
-  }
+  },
 };
 
 const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1 }: BoostDrawerProps) => {
@@ -148,7 +168,6 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
   return (
     <Drawer open={isOpen} onOpenChange={handleClose}>
       <DrawerContent className="bg-card border-t border-border">
-        
         {showConfirmation ? (
           // Confirmation view for non-cancellable boosts
           <div className="px-6 pb-8">
@@ -158,12 +177,11 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
               </div>
               <h2 className="text-xl font-display text-foreground mb-2">Внимание!</h2>
               <p className="text-muted-foreground text-sm text-medium leading-relaxed">
-                Буст <span className="text-primary font-medium">{boostInfo?.title}</span> нельзя будет отменить после активации.
+                Буст <span className="text-primary font-medium">{boostInfo?.title}</span> нельзя будет отменить после
+                активации.
               </p>
               {chip.id === "transfers" && (
-                <p className="text-muted-foreground text-sm mt-2">
-                  Все накопленные бесплатные трансферы сгорят.
-                </p>
+                <p className="text-muted-foreground text-sm mt-2">Все накопленные бесплатные трансферы сгорят.</p>
               )}
               {chip.id === "golden" && (
                 <p className="text-muted-foreground text-sm mt-2">
@@ -171,7 +189,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                 </p>
               )}
             </div>
-            
+
             <div className="flex gap-3">
               <Button
                 onClick={handleCancelConfirmation}
@@ -192,11 +210,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
           <>
             <DrawerHeader className="flex flex-col items-center px-6 pb-6">
               <div className="mb-4">
-                <img 
-                  src={chip.icon} 
-                  alt={chip.label} 
-                  className="w-16 h-16 object-contain"
-                />
+                <img src={chip.icon} alt={chip.label} className="w-16 h-16 object-contain" />
               </div>
               <DrawerTitle className="text-2xl font-display text-foreground mb-4 text-center">
                 {boostInfo?.title || chip.label}
