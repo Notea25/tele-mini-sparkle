@@ -166,33 +166,43 @@ const TeamManagement = () => {
   const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueIdStr);
   const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueIdStr);
 
-  // Convert API players to PlayerDataExt format
-  const mainSquadPlayers = useMemo((): PlayerDataExt[] => {
-    return apiMainPlayers.map(p => ({
-      id: p.id,
-      name: p.name,
-      team: p.team_name,
-      position: p.position,
-      price: p.price,
-      points: p.points,
-      slotIndex: p.slotIndex,
-      isCaptain: squad?.captain_id === p.id,
-      isViceCaptain: squad?.vice_captain_id === p.id,
-      isOnBench: false,
-    }));
-  }, [apiMainPlayers, squad]);
+  // Local state for players (editable)
+  const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerDataExt[]>([]);
+  const [benchPlayersExt, setBenchPlayersExt] = useState<PlayerDataExt[]>([]);
 
-  const benchPlayersExt = useMemo((): PlayerDataExt[] => {
-    return apiBenchPlayers.map(p => ({
-      id: p.id,
-      name: p.name,
-      team: p.team_name,
-      position: p.position,
-      price: p.price,
-      points: p.points,
-      slotIndex: p.slotIndex,
-      isOnBench: true,
-    }));
+  // Initialize players from API data
+  useEffect(() => {
+    if (apiMainPlayers.length > 0) {
+      const converted = apiMainPlayers.map(p => ({
+        id: p.id,
+        name: p.name,
+        team: p.team_name,
+        position: p.position,
+        price: p.price,
+        points: p.points,
+        slotIndex: p.slotIndex,
+        isCaptain: squad?.captain_id === p.id,
+        isViceCaptain: squad?.vice_captain_id === p.id,
+        isOnBench: false,
+      }));
+      setMainSquadPlayers(converted);
+    }
+  }, [apiMainPlayers, squad?.captain_id, squad?.vice_captain_id]);
+
+  useEffect(() => {
+    if (apiBenchPlayers.length > 0) {
+      const converted = apiBenchPlayers.map(p => ({
+        id: p.id,
+        name: p.name,
+        team: p.team_name,
+        position: p.position,
+        price: p.price,
+        points: p.points,
+        slotIndex: p.slotIndex,
+        isOnBench: true,
+      }));
+      setBenchPlayersExt(converted);
+    }
   }, [apiBenchPlayers]);
 
   // Initialize captain/vice-captain from squad data
@@ -314,8 +324,54 @@ const TeamManagement = () => {
   };
 
   const handleSwapConfirm = (fromPlayerId: number, toPlayerId: number) => {
-    // TODO: Implement swap via API
-    toast.info("Замена игроков пока недоступна");
+    const fromPlayer = allPlayers.find(p => p.id === fromPlayerId);
+    const toPlayer = allPlayers.find(p => p.id === toPlayerId);
+    
+    if (!fromPlayer || !toPlayer) {
+      toast.error("Игрок не найден");
+      exitSwapMode();
+      return;
+    }
+
+    const fromIsMain = !fromPlayer.isOnBench;
+    const toIsMain = !toPlayer.isOnBench;
+
+    if (fromIsMain && toIsMain) {
+      // Both in main squad - just swap positions visually (no actual change needed for API)
+      toast.info("Игроки в основном составе не меняются местами");
+    } else if (!fromIsMain && !toIsMain) {
+      // Both on bench - swap bench order
+      const fromIdx = benchPlayersExt.findIndex(p => p.id === fromPlayerId);
+      const toIdx = benchPlayersExt.findIndex(p => p.id === toPlayerId);
+      if (fromIdx !== -1 && toIdx !== -1) {
+        const newBench = [...benchPlayersExt];
+        [newBench[fromIdx], newBench[toIdx]] = [newBench[toIdx], newBench[fromIdx]];
+        // Reassign slot indices
+        setBenchPlayersExt(newBench.map((p, i) => ({ ...p, slotIndex: i })));
+        toast.success(`${fromPlayer.name} ↔ ${toPlayer.name}`);
+      }
+    } else {
+      // One main, one bench - swap between main and bench
+      const mainPlayer = fromIsMain ? fromPlayer : toPlayer;
+      const benchPlayer = fromIsMain ? toPlayer : fromPlayer;
+      
+      // Remove main player from main, add bench player to main
+      const newMain = mainSquadPlayers
+        .filter(p => p.id !== mainPlayer.id)
+        .concat({ ...benchPlayer, isOnBench: false });
+      
+      // Remove bench player from bench, add main player to bench
+      const newBench = benchPlayersExt
+        .filter(p => p.id !== benchPlayer.id)
+        .concat({ ...mainPlayer, isOnBench: true });
+      
+      // Reassign slot indices
+      setMainSquadPlayers(reassignSlotIndices(newMain));
+      setBenchPlayersExt(newBench.map((p, i) => ({ ...p, slotIndex: i })));
+      
+      toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
+    }
+    
     exitSwapMode();
   };
 
@@ -337,14 +393,20 @@ const TeamManagement = () => {
 
   // Handle bench player reordering (swap between bench players)
   const handleBenchReorder = (fromIndex: number, toIndex: number) => {
-    // TODO: Implement via API
-    toast.info("Перестановка игроков пока недоступна");
+    if (fromIndex === toIndex) return;
+    
+    const newBench = [...benchPlayersExt];
+    const [movedPlayer] = newBench.splice(fromIndex, 1);
+    newBench.splice(toIndex, 0, movedPlayer);
+    
+    // Reassign slot indices
+    setBenchPlayersExt(newBench.map((p, i) => ({ ...p, slotIndex: i })));
+    toast.success("Порядок скамейки изменён");
   };
 
   // Handle swapping a main squad player with a bench player via long-press
   const handleSwapMainAndBench = (mainPlayerId: number, benchPlayerId: number) => {
-    // TODO: Implement via API
-    toast.info("Замена игроков пока недоступна");
+    handleSwapConfirm(mainPlayerId, benchPlayerId);
   };
 
 
