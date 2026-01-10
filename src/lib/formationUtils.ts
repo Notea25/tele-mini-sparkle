@@ -100,79 +100,52 @@ export const detectFormation = (mainSquadPlayers: { position: string }[]): Forma
 };
 
 // Check if a swap between two players would result in a valid formation
+// Now only allows same position swaps
 export const isSwapValid = (
   mainSquadPlayers: { position: string }[],
   fieldPlayer: { position: string },
   benchPlayer: { position: string }
 ): { valid: boolean; resultingFormation?: FormationKey; message?: string } => {
-  // Same position is always valid
+  // Only same position swaps are allowed
   if (fieldPlayer.position === benchPlayer.position) {
     const currentFormation = detectFormation(mainSquadPlayers);
     return { valid: true, resultingFormation: currentFormation || undefined };
   }
 
-  // Calculate new position counts after swap
-  const newCounts = {
-    GK: mainSquadPlayers.filter(p => p.position === "ВР").length,
-    DEF: mainSquadPlayers.filter(p => p.position === "ЗЩ").length,
-    MID: mainSquadPlayers.filter(p => p.position === "ПЗ").length,
-    FWD: mainSquadPlayers.filter(p => p.position === "НП").length,
-  };
-
-  // Remove field player's position, add bench player's position
-  const fieldPosKey = POSITION_MAP[fieldPlayer.position];
-  const benchPosKey = POSITION_MAP[benchPlayer.position];
-
-  newCounts[fieldPosKey]--;
-  newCounts[benchPosKey]++;
-
-  // Check if new counts match any valid formation
-  for (const [key, formation] of Object.entries(FORMATIONS)) {
-    if (
-      formation.GK === newCounts.GK &&
-      formation.DEF === newCounts.DEF &&
-      formation.MID === newCounts.MID &&
-      formation.FWD === newCounts.FWD
-    ) {
-      return { valid: true, resultingFormation: key as FormationKey };
-    }
-  }
-
   return { 
     valid: false, 
-    message: `Замена ${fieldPlayer.position} на ${benchPlayer.position} невозможна - нет подходящей схемы` 
+    message: `Можно менять только игроков с одинаковой позицией` 
   };
 };
 
-// Get all valid swap options for a player
+// Get all valid swap options for a player (only same position)
 export const getValidSwapOptions = (
   mainSquadPlayers: { id: number; position: string }[],
   benchPlayers: { id: number; position: string }[],
   selectedPlayer: { id: number; position: string; isOnBench?: boolean }
 ): { id: number; position: string; resultingFormation?: FormationKey }[] => {
   const validOptions: { id: number; position: string; resultingFormation?: FormationKey }[] = [];
+  const currentFormation = detectFormation(mainSquadPlayers);
 
   if (selectedPlayer.isOnBench) {
-    // Bench player - check which field players can be swapped
+    // Bench player - can only swap with field players of same position
     for (const fieldPlayer of mainSquadPlayers) {
-      const result = isSwapValid(mainSquadPlayers, fieldPlayer, selectedPlayer);
-      if (result.valid) {
+      if (fieldPlayer.position === selectedPlayer.position) {
         validOptions.push({ 
           id: fieldPlayer.id, 
           position: fieldPlayer.position,
-          resultingFormation: result.resultingFormation 
+          resultingFormation: currentFormation || undefined 
         });
       }
     }
   } else {
-    // Field player - check which bench players can be swapped
+    // Field player - can only swap with bench players of same position
     for (const benchPlayer of benchPlayers) {
-      const result = isSwapValid(mainSquadPlayers, selectedPlayer, benchPlayer);
-      if (result.valid) {
+      if (benchPlayer.position === selectedPlayer.position) {
         validOptions.push({ 
           id: benchPlayer.id, 
           position: benchPlayer.position,
-          resultingFormation: result.resultingFormation 
+          resultingFormation: currentFormation || undefined 
         });
       }
     }
