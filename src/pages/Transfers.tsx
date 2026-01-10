@@ -1165,12 +1165,10 @@ const Transfers = () => {
                 <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
               </div>
 
-              {/* Points */}
+              {/* Points - total season points without sign, white color */}
               <div className="w-14 flex-shrink-0 flex items-center justify-center">
-                <span className={`text-sm font-medium ${
-                  player.points > 0 ? "text-success" : player.points < 0 ? "text-destructive" : "text-foreground"
-                }`}>
-                  {player.points > 0 ? `+${player.points}` : player.points}
+                <span className="text-sm font-medium text-foreground">
+                  {player.points}
                 </span>
               </div>
 
