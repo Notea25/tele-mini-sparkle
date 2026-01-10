@@ -532,13 +532,8 @@ const League = () => {
               <div
                 className="bg-secondary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all"
                 onClick={() => {
-                  // Find squad with best tour points
-                  const leaderboard = leaderboardResponse?.data;
-                  if (leaderboard && leaderboard.length > 0) {
-                    const bestEntry = leaderboard.reduce((best, entry) => 
-                      entry.tour_points > best.tour_points ? entry : best
-                    );
-                    handleNavigate(`/view-team?id=${bestEntry.squad_id}`);
+                  if (tourStats.bestSquadId) {
+                    handleNavigate(`/view-team?id=${tourStats.bestSquadId}`);
                   }
                 }}
               >
