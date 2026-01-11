@@ -736,15 +736,15 @@ const TeamManagement = () => {
                 >
                   {isBlocked
                     ? "Заблокировано"
-                    : isDisabledByApi && usedInCurrentTour
-                      ? "Использован в этом туре"
-                      : isDisabledByApi
-                        ? "Недоступен"
-                        : chip.status === "pending"
-                          ? "Используется"
-                          : chip.status === "used"
-                            ? `${chip.usedInTour} тур`
-                            : chip.sublabel}
+                    : chip.status === "pending"
+                      ? "Используется"
+                      : chip.status === "used"
+                        ? (chip.sublabel?.startsWith("Использован")
+                            ? chip.sublabel
+                            : chip.usedInTour
+                              ? `${chip.usedInTour} тур`
+                              : "Использован")
+                        : chip.sublabel}
                 </span>
               </div>
             );
