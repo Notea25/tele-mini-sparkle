@@ -311,6 +311,21 @@ export interface CreateCustomLeagueResponse {
   invite_code: string;
 }
 
+// Тип для клубной лиги
+export interface ClubLeague {
+  id: number;
+  name: string;
+  description: string | null;
+  league_id: number;
+  type: string;
+  is_public: boolean;
+  invitation_only: boolean;
+  creator_id: number | null;
+  team_id: number;
+  registration_start: string;
+  registration_end: string;
+}
+
 // Методы для работы с кастомными лигами
 export const customLeaguesApi = {
   getByType: (leagueType: string) =>
@@ -326,4 +341,6 @@ export const customLeaguesApi = {
     apiRequest<{ success: boolean }>(`/api/custom_leagues/${customLeagueId}`, {
       method: 'DELETE',
     }),
+  getClubByTeam: (teamId: number) =>
+    apiRequest<ClubLeague>(`/api/custom_leagues/club/by_team/${teamId}`),
 };
