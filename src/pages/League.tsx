@@ -8,7 +8,7 @@ import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { squadsApi, toursApi, customLeaguesApi, UserSquad, LeaderboardEntry } from "@/lib/api";
+import { squadsApi, toursApi, customLeaguesApi, UserSquad, LeaderboardEntry, CustomLeagueLeaderboardEntry } from "@/lib/api";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -91,6 +91,38 @@ const League = () => {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
+
+  // Get club league id for leaderboard
+  const clubLeagueId = clubLeagueResponse?.data?.id;
+  
+  // Fetch club league leaderboard
+  const { data: clubLeaderboardResponse, isLoading: clubLeaderboardLoading } = useQuery({
+    queryKey: ['clubLeaderboard', clubLeagueId, currentTourId],
+    queryFn: () => (clubLeagueId && currentTourId) 
+      ? customLeaguesApi.getLeaderboard(clubLeagueId, currentTourId) 
+      : Promise.resolve({ success: false, data: undefined }),
+    enabled: !!clubLeagueId && !!currentTourId,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+
+  // Process club leaderboard data
+  const clubLeaderboardData = useMemo(() => {
+    const rawData = clubLeaderboardResponse?.data;
+    if (!Array.isArray(rawData) || rawData.length === 0) return [];
+    
+    return rawData.map((entry: CustomLeagueLeaderboardEntry) => ({
+      id: entry.squad_id,
+      position: entry.place,
+      name: entry.squad_name,
+      tourPoints: entry.tour_points,
+      totalPoints: entry.total_points,
+      isUser: entry.squad_id === mySquadId,
+      change: "same" as "up" | "down" | "same",
+    }));
+  }, [clubLeaderboardResponse?.data, mySquadId]);
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(() => {
     const savedTab = localStorage.getItem(LEAGUE_TAB_KEY);
     if (savedTab === "main" || savedTab === "leagues" || savedTab === "cup") {
@@ -983,7 +1015,7 @@ const League = () => {
             </p>
 
             {/* Club league content */}
-            {clubLeagueLoading ? (
+            {clubLeagueLoading || clubLeaderboardLoading ? (
               <div className="text-center py-8 text-muted-foreground">
                 Загрузка...
               </div>
@@ -991,14 +1023,33 @@ const League = () => {
               <div className="text-center py-8 text-muted-foreground bg-secondary/30 rounded-xl">
                 Нет данных
               </div>
-            ) : (
+            ) : clubLeaderboardData.length === 0 ? (
               <>
-                {/* Club league table header - same style as /view-league */}
+                {/* Club league table header */}
                 <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">
                   <span className="col-span-3 text-xs">Место</span>
                   <span className="col-span-4 text-xs">Название</span>
                   <span className="col-span-3 text-center">
-                    <span className="text-xs block whitespace-nowrap">{currentTour}-й тур</span>
+                    <span className="text-xs block whitespace-nowrap">{currentTourNumber}-й тур</span>
+                    <span className="text-[10px] italic block">(очки)</span>
+                  </span>
+                  <span className="col-span-2 text-right">
+                    <span className="text-xs block">Всего</span>
+                    <span className="text-[10px] italic block">(очков)</span>
+                  </span>
+                </div>
+                <div className="text-center py-8 text-muted-foreground bg-secondary/30 rounded-xl">
+                  Нет данных
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Club league table header */}
+                <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">
+                  <span className="col-span-3 text-xs">Место</span>
+                  <span className="col-span-4 text-xs">Название</span>
+                  <span className="col-span-3 text-center">
+                    <span className="text-xs block whitespace-nowrap">{currentTourNumber}-й тур</span>
                     <span className="text-[10px] italic block">(очки)</span>
                   </span>
                   <span className="col-span-2 text-right">
@@ -1007,33 +1058,34 @@ const League = () => {
                   </span>
                 </div>
 
-                {/* Club league data - full 100 users with user at position 9 */}
+                {/* Club league data from API */}
                 {(() => {
-                  const topTeamNames = ["Ars", "Diamande", "Stayki"];
-                  const clubLeagueFullData = Array.from({ length: 100 }, (_, i) => ({
-                    position: i + 1,
-                    change: i % 3 === 0 ? "up" : i % 3 === 1 ? "down" : ("same" as "up" | "down" | "same"),
-                    name: i === 8 ? "Alepyz" : i < 3 ? topTeamNames[i] : `Team ${i + 1}`,
-                    tourPoints: 32 - Math.floor(i / 10),
-                    totalPoints: 3123 - i * 15,
-                    isUser: i === 8,
-                    teamId: `team-${i + 1}`,
-                  }));
+                  // Find user's entry for collapsed view
+                  const userEntry = clubLeaderboardData.find(entry => entry.isUser);
+                  const userPosition = userEntry ? clubLeaderboardData.indexOf(userEntry) : -1;
 
-                  // When collapsed: show top 3 + user (position 9)
+                  // When collapsed: show top 3 + user (if not in top 3)
                   // When expanded: show paginated 10 items per page
-                  const displayData = showAllClubLeague
-                    ? clubLeagueFullData.slice((clubLeaguePage - 1) * 10, clubLeaguePage * 10)
-                    : [...clubLeagueFullData.slice(0, 3), clubLeagueFullData[8]];
+                  let displayData;
+                  if (showAllClubLeague) {
+                    displayData = clubLeaderboardData.slice((clubLeaguePage - 1) * 10, clubLeaguePage * 10);
+                  } else {
+                    const top3 = clubLeaderboardData.slice(0, 3);
+                    if (userEntry && userPosition >= 3) {
+                      displayData = [...top3, userEntry];
+                    } else {
+                      displayData = top3;
+                    }
+                  }
 
-                  const totalPages = Math.ceil(clubLeagueFullData.length / 10);
+                  const totalPages = Math.ceil(clubLeaderboardData.length / 10);
 
                   return (
                     <>
                       <div className="space-y-2">
-                        {displayData.map((row, idx) => (
+                        {displayData.map((row) => (
                           <div
-                            key={idx}
+                            key={row.id}
                             className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl cursor-pointer transition-colors hover:bg-secondary/70 ${
                               row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
                             }`}
@@ -1041,7 +1093,7 @@ const League = () => {
                               if (row.isUser) {
                                 handleNavigate("/your-team");
                               } else {
-                                handleNavigate(`/view-team?id=${row.teamId}&name=${encodeURIComponent(row.name)}`);
+                                handleNavigate(`/view-team?id=${row.id}&name=${encodeURIComponent(row.name)}`);
                               }
                             }}
                           >
@@ -1104,25 +1156,27 @@ const League = () => {
                       )}
 
                       {/* See all / collapse button */}
-                      <button
-                        className="w-full flex items-center justify-center gap-1 text-foreground text-sm py-4"
-                        onClick={() => {
-                          setShowAllClubLeague(!showAllClubLeague);
-                          if (!showAllClubLeague) setClubLeaguePage(1);
-                        }}
-                      >
-                        {showAllClubLeague ? (
-                          <>
-                            <ChevronUp className="w-4 h-4" />
-                            Скрыть
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="w-4 h-4" />
-                            Смотреть все
-                          </>
-                        )}
-                      </button>
+                      {clubLeaderboardData.length > 3 && (
+                        <button
+                          className="w-full flex items-center justify-center gap-1 text-foreground text-sm py-4"
+                          onClick={() => {
+                            setShowAllClubLeague(!showAllClubLeague);
+                            if (!showAllClubLeague) setClubLeaguePage(1);
+                          }}
+                        >
+                          {showAllClubLeague ? (
+                            <>
+                              <ChevronUp className="w-4 h-4" />
+                              Скрыть
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="w-4 h-4" />
+                              Смотреть все
+                            </>
+                          )}
+                        </button>
+                      )}
                     </>
                   );
                 })()}
