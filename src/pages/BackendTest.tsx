@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, ApiResponse, BoostType } from '@/lib/api';
+import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, customLeaguesApi, ApiResponse, BoostType } from '@/lib/api';
 
 const BackendTest = () => {
   const [leagueResponse, setLeagueResponse] = useState<ApiResponse<unknown> | null>(null);
@@ -18,6 +18,10 @@ const BackendTest = () => {
   const [boostApplyResponse, setBoostApplyResponse] = useState<ApiResponse<unknown> | null>(null);
   const [boostAvailableResponse, setBoostAvailableResponse] = useState<ApiResponse<unknown> | null>(null);
   const [boostRemoveResponse, setBoostRemoveResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [customLeaguesByTypeResponse, setCustomLeaguesByTypeResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [customLeaguesByLeagueResponse, setCustomLeaguesByLeagueResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [customLeagueCreateResponse, setCustomLeagueCreateResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [customLeagueDeleteResponse, setCustomLeagueDeleteResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -33,6 +37,10 @@ const BackendTest = () => {
   const [loadingBoostApply, setLoadingBoostApply] = useState(false);
   const [loadingBoostAvailable, setLoadingBoostAvailable] = useState(false);
   const [loadingBoostRemove, setLoadingBoostRemove] = useState(false);
+  const [loadingCustomLeaguesByType, setLoadingCustomLeaguesByType] = useState(false);
+  const [loadingCustomLeaguesByLeague, setLoadingCustomLeaguesByLeague] = useState(false);
+  const [loadingCustomLeagueCreate, setLoadingCustomLeagueCreate] = useState(false);
+  const [loadingCustomLeagueDelete, setLoadingCustomLeagueDelete] = useState(false);
   const [playerIdInput, setPlayerIdInput] = useState('1');
   const [tourIdInput, setTourIdInput] = useState('2');
   const [squadIdInput, setSquadIdInput] = useState('1');
@@ -48,6 +56,10 @@ const BackendTest = () => {
   const [availableBoostTourIdInput, setAvailableBoostTourIdInput] = useState('1');
   const [removeBoostSquadIdInput, setRemoveBoostSquadIdInput] = useState('1');
   const [removeBoostTourIdInput, setRemoveBoostTourIdInput] = useState('1');
+  const [customLeagueTypeInput, setCustomLeagueTypeInput] = useState('football');
+  const [customLeagueLeagueIdInput, setCustomLeagueLeagueIdInput] = useState('116');
+  const [customLeagueNameInput, setCustomLeagueNameInput] = useState('Test League');
+  const [customLeagueDeleteIdInput, setCustomLeagueDeleteIdInput] = useState('1');
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -299,6 +311,69 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingBoostRemove(false);
+    }
+  };
+
+  const testCustomLeaguesByType = async () => {
+    setLoadingCustomLeaguesByType(true);
+    try {
+      const result = await customLeaguesApi.getByType(customLeagueTypeInput);
+      setCustomLeaguesByTypeResponse(result);
+    } catch (err) {
+      setCustomLeaguesByTypeResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingCustomLeaguesByType(false);
+    }
+  };
+
+  const testCustomLeaguesByLeague = async () => {
+    setLoadingCustomLeaguesByLeague(true);
+    try {
+      const result = await customLeaguesApi.getByLeague(parseInt(customLeagueLeagueIdInput) || 116);
+      setCustomLeaguesByLeagueResponse(result);
+    } catch (err) {
+      setCustomLeaguesByLeagueResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingCustomLeaguesByLeague(false);
+    }
+  };
+
+  const testCustomLeagueCreate = async () => {
+    setLoadingCustomLeagueCreate(true);
+    try {
+      const result = await customLeaguesApi.create({
+        name: customLeagueNameInput,
+        league_id: parseInt(customLeagueLeagueIdInput) || 116,
+      });
+      setCustomLeagueCreateResponse(result);
+    } catch (err) {
+      setCustomLeagueCreateResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingCustomLeagueCreate(false);
+    }
+  };
+
+  const testCustomLeagueDelete = async () => {
+    setLoadingCustomLeagueDelete(true);
+    try {
+      const result = await customLeaguesApi.delete(parseInt(customLeagueDeleteIdInput) || 1);
+      setCustomLeagueDeleteResponse(result);
+    } catch (err) {
+      setCustomLeagueDeleteResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingCustomLeagueDelete(false);
     }
   };
 
@@ -593,6 +668,97 @@ const BackendTest = () => {
         </Button>
       </div>
 
+      {/* Custom Leagues By Type Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">GET /api/custom_leagues/by_type/{'{league_type}'}</h2>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">League Type</label>
+            <input
+              type="text"
+              value={customLeagueTypeInput}
+              onChange={(e) => setCustomLeagueTypeInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              placeholder="football"
+            />
+          </div>
+        </div>
+        <Button onClick={testCustomLeaguesByType} disabled={loadingCustomLeaguesByType} variant="default">
+          {loadingCustomLeaguesByType ? 'Загрузка...' : `Тест: GET /api/custom_leagues/by_type/${customLeagueTypeInput}`}
+        </Button>
+      </div>
+
+      {/* Custom Leagues By League Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">GET /api/custom_leagues/by_league/{'{league_id}'}</h2>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">League ID</label>
+            <input
+              type="number"
+              value={customLeagueLeagueIdInput}
+              onChange={(e) => setCustomLeagueLeagueIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+        </div>
+        <Button onClick={testCustomLeaguesByLeague} disabled={loadingCustomLeaguesByLeague} variant="default">
+          {loadingCustomLeaguesByLeague ? 'Загрузка...' : `Тест: GET /api/custom_leagues/by_league/${customLeagueLeagueIdInput}`}
+        </Button>
+      </div>
+
+      {/* Custom League Create Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">POST /api/custom_leagues/</h2>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Name</label>
+            <input
+              type="text"
+              value={customLeagueNameInput}
+              onChange={(e) => setCustomLeagueNameInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              placeholder="Test League"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">League ID</label>
+            <input
+              type="number"
+              value={customLeagueLeagueIdInput}
+              onChange={(e) => setCustomLeagueLeagueIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+        </div>
+        <Button onClick={testCustomLeagueCreate} disabled={loadingCustomLeagueCreate} variant="default">
+          {loadingCustomLeagueCreate ? 'Загрузка...' : 'Тест: POST /api/custom_leagues/'}
+        </Button>
+      </div>
+
+      {/* Custom League Delete Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">DELETE /api/custom_leagues/{'{custom_league_id}'}</h2>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Custom League ID</label>
+            <input
+              type="number"
+              value={customLeagueDeleteIdInput}
+              onChange={(e) => setCustomLeagueDeleteIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+        </div>
+        <Button onClick={testCustomLeagueDelete} disabled={loadingCustomLeagueDelete} variant="destructive">
+          {loadingCustomLeagueDelete ? 'Загрузка...' : `Тест: DELETE /api/custom_leagues/${customLeagueDeleteIdInput}`}
+        </Button>
+      </div>
+
+      {renderResponse(customLeagueDeleteResponse, 'Ответ: Custom League Delete')}
+      {renderResponse(customLeagueCreateResponse, 'Ответ: Custom League Create')}
+      {renderResponse(customLeaguesByLeagueResponse, 'Ответ: Custom Leagues By League')}
+      {renderResponse(customLeaguesByTypeResponse, 'Ответ: Custom Leagues By Type')}
       {renderResponse(boostRemoveResponse, 'Ответ: Boost Remove')}
       {renderResponse(boostApplyResponse, 'Ответ: Boost Apply')}
       {renderResponse(updatePlayersResponse, 'Ответ: Update Players')}
@@ -607,6 +773,7 @@ const BackendTest = () => {
       {renderResponse(deadlineResponse, 'Ответ: Deadline')}
       {renderResponse(toursResponse, 'Ответ: Tours (prev/current/next)')}
       {renderResponse(playersResponse, 'Ответ: Players')}
+      {renderResponse(boostAvailableResponse, 'Ответ: Boost Available')}
     </div>
   );
 };

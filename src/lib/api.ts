@@ -284,3 +284,46 @@ export const boostsApi = {
       method: 'DELETE',
     }),
 };
+
+// Типы для кастомных лиг
+export interface CustomLeague {
+  id: number;
+  name: string;
+  league_id: number;
+  owner_id: number;
+  is_commercial: boolean;
+  invite_code?: string;
+  created_at?: string;
+}
+
+export interface CreateCustomLeagueRequest {
+  name: string;
+  league_id: number;
+  is_commercial?: boolean;
+}
+
+export interface CreateCustomLeagueResponse {
+  id: number;
+  name: string;
+  league_id: number;
+  owner_id: number;
+  is_commercial: boolean;
+  invite_code: string;
+}
+
+// Методы для работы с кастомными лигами
+export const customLeaguesApi = {
+  getByType: (leagueType: string) =>
+    apiRequest<CustomLeague[]>(`/api/custom_leagues/by_type/${leagueType}`),
+  getByLeague: (leagueId: number) =>
+    apiRequest<CustomLeague[]>(`/api/custom_leagues/by_league/${leagueId}`),
+  create: (data: CreateCustomLeagueRequest) =>
+    apiRequest<CreateCustomLeagueResponse>('/api/custom_leagues/', {
+      method: 'POST',
+      body: data,
+    }),
+  delete: (customLeagueId: number) =>
+    apiRequest<{ success: boolean }>(`/api/custom_leagues/${customLeagueId}`, {
+      method: 'DELETE',
+    }),
+};
