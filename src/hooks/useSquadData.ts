@@ -18,6 +18,9 @@ interface UseSquadDataResult {
   mainPlayers: EnrichedPlayer[];
   benchPlayers: EnrichedPlayer[];
   currentTour: number | null;
+  currentTourId: number | null;
+  nextTourId: number | null;
+  boostTourId: number | null; // ID тура для бустов (next_tour.id или current_tour.id)
   tourPoints: number;
   isLoading: boolean;
   error: string | null;
@@ -174,12 +177,20 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
   }, [squad, playerMap]);
 
   const currentTour = toursData?.current_tour?.number || null;
+  const currentTourId = toursData?.current_tour?.id || null;
+  const nextTourId = toursData?.next_tour?.id || null;
+  
+  // For boosts: use next tour ID if available, otherwise current tour ID
+  const boostTourId = nextTourId || currentTourId;
 
   return {
     squad,
     mainPlayers,
     benchPlayers,
     currentTour,
+    currentTourId,
+    nextTourId,
+    boostTourId,
     tourPoints,
     isLoading,
     error,
