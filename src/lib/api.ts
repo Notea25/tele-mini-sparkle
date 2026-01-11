@@ -249,6 +249,7 @@ export interface BoostInfo {
   type: BoostType;
   description: string;
   available: boolean;
+  used_in_tour_number?: number | null; // Номер тура, в котором использован буст
 }
 
 export interface AvailableBoostsResponse {
