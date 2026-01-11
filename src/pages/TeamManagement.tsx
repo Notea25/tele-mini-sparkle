@@ -2,12 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronDown, ArrowLeftRight, X, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
 import { useSquadData, EnrichedPlayer } from "@/hooks/useSquadData";
-import { squadsApi, UpdateSquadPlayersRequest } from "@/lib/api";
+import { squadsApi, UpdateSquadPlayersRequest, boostsApi, BoostType } from "@/lib/api";
 import SportHeader from "@/components/SportHeader";
 import { PlayerData } from "@/lib/teamData";
 import { getValidSwapOptions, detectFormation, FORMATION_LABELS, FormationKey } from "@/lib/formationUtils";
@@ -51,6 +52,15 @@ const initialChips: BoostChip[] = [
   { id: "double", icon: boostDouble, label: "Двойная сила", sublabel: "Подробнее", status: "available" },
 ];
 
+// Mapping API boost types to local chip IDs
+const boostTypeToChipId: Record<BoostType, string> = {
+  'bench_boost': 'bench',
+  'triple_captain': 'captain3x',
+  'double_bet': 'double',
+  'transfers_plus': 'transfers', // Not used on this page
+  'gold_tour': 'gold', // Not used on this page
+};
+
 // Formation options - all 8 valid formations
 const formationOptions: { value: FormationKey; label: string }[] = Object.entries(FORMATION_LABELS).map(
   ([value, label]) => ({ value: value as FormationKey, label }),
@@ -78,6 +88,33 @@ const TeamManagement = () => {
   // Load squad data from API
   const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, isLoading, error } = useSquadData(leagueId);
   
+  // Fetch available boosts from API
+  const { data: boostsResponse, isLoading: boostsLoading } = useQuery({
+    queryKey: ['availableBoosts', squad?.id, currentTour],
+    queryFn: () => squad && currentTour ? boostsApi.getAvailable(squad.id, currentTour) : Promise.resolve(null),
+    enabled: !!squad?.id && !!currentTour,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+  
+  // Map API boosts to availability
+  const apiBoostAvailability = useMemo(() => {
+    const availability: Record<string, boolean> = {};
+    if (boostsResponse?.success && boostsResponse.data?.boosts) {
+      boostsResponse.data.boosts.forEach(boost => {
+        const chipId = boostTypeToChipId[boost.type];
+        if (chipId) {
+          availability[chipId] = boost.available;
+        }
+      });
+    }
+    return availability;
+  }, [boostsResponse]);
+  
+  const usedInCurrentTour = boostsResponse?.success ? boostsResponse.data?.used_in_current_tour : false;
+  
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [selectedFormation, setSelectedFormation] = useState("1-4-4-2");
   const [captain, setCaptain] = useState<number | null>(null);
@@ -88,7 +125,7 @@ const TeamManagement = () => {
   const [isSaving, setIsSaving] = useState(false);
   
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
-    // Load initial state from localStorage
+    // Load initial state from localStorage (fallback)
     const boostState = getBoostState();
     return initialChips.map((chip) => {
       if (boostState.pendingBoostId === chip.id) {
@@ -101,6 +138,33 @@ const TeamManagement = () => {
       return chip;
     });
   });
+  
+  // Update specialChips when API data arrives
+  useEffect(() => {
+    if (!boostsLoading && boostsResponse?.success) {
+      setSpecialChips(prev => prev.map(chip => {
+        // Check if API says boost is not available
+        const isAvailableFromApi = apiBoostAvailability[chip.id];
+        
+        // If boost was already used (from localStorage), keep that status
+        if (chip.status === 'used' || chip.status === 'pending') {
+          return chip;
+        }
+        
+        // If API says not available, mark as disabled
+        if (isAvailableFromApi === false) {
+          return { 
+            ...chip, 
+            status: 'used' as BoostStatus, 
+            sublabel: usedInCurrentTour ? 'Использован в этом туре' : 'Недоступен'
+          };
+        }
+        
+        return chip;
+      }));
+    }
+  }, [boostsLoading, boostsResponse, apiBoostAvailability, usedInCurrentTour]);
+  
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
   const [isConfirmBoostOpen, setIsConfirmBoostOpen] = useState(false);
@@ -612,52 +676,55 @@ const TeamManagement = () => {
         <div className="grid grid-cols-3 gap-3">
           {specialChips.map((chip) => {
             const isBlocked = otherPageBoostActive && chip.status === "available";
+            const isDisabledByApi = apiBoostAvailability[chip.id] === false;
+            const isDisabled = isBlocked || isDisabledByApi || chip.status === "used";
+            
             return (
               <div
                 key={chip.id}
-                onClick={() => openBoostDrawer(chip)}
-                className={`flex flex-col items-center justify-center py-4 rounded-xl cursor-pointer transition-all ${
-                  isBlocked
-                    ? "bg-card/30 opacity-50"
+                onClick={() => !isDisabled && openBoostDrawer(chip)}
+                className={`flex flex-col items-center justify-center py-4 rounded-xl transition-all ${
+                  isDisabled
+                    ? "bg-card/30 opacity-50 cursor-not-allowed"
                     : chip.status === "pending"
-                      ? "bg-card border-2 border-primary hover:bg-card/80"
-                      : chip.status === "used"
-                        ? "bg-card/50"
-                        : "bg-card hover:bg-card/80"
+                      ? "bg-card border-2 border-primary hover:bg-card/80 cursor-pointer"
+                      : "bg-card hover:bg-card/80 cursor-pointer"
                 }`}
               >
                 <img
                   src={chip.icon}
                   alt={chip.label}
                   className={`w-8 h-8 object-contain mb-1 transition-all ${
-                    isBlocked || chip.status === "used" ? "grayscale opacity-50" : ""
+                    isDisabled ? "grayscale opacity-50" : ""
                   }`}
                 />
                 <span
                   className={`text-[10px] font-medium text-center leading-tight ${
-                    isBlocked ? "text-muted-foreground" : "text-foreground"
+                    isDisabled ? "text-muted-foreground" : "text-foreground"
                   }`}
                 >
                   {chip.label}
                 </span>
                 <span
                   className={`text-[8px] ${
-                    isBlocked
+                    isDisabled
                       ? "text-muted-foreground"
                       : chip.status === "pending"
                         ? "text-primary"
-                        : chip.status === "used"
-                          ? "text-muted-foreground"
-                          : "text-foreground/60"
+                        : "text-foreground/60"
                   }`}
                 >
                   {isBlocked
                     ? "Заблокировано"
-                    : chip.status === "pending"
-                      ? "Используется"
-                      : chip.status === "used"
-                        ? `${chip.usedInTour} тур`
-                        : chip.sublabel}
+                    : isDisabledByApi && usedInCurrentTour
+                      ? "Использован в этом туре"
+                      : isDisabledByApi
+                        ? "Недоступен"
+                        : chip.status === "pending"
+                          ? "Используется"
+                          : chip.status === "used"
+                            ? `${chip.usedInTour} тур`
+                            : chip.sublabel}
                 </span>
               </div>
             );
