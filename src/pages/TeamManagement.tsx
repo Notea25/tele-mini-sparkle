@@ -86,13 +86,13 @@ const TeamManagement = () => {
   const leagueId = getLeagueId();
   
   // Load squad data from API
-  const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, isLoading, error } = useSquadData(leagueId);
+  const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, boostTourId, isLoading, error } = useSquadData(leagueId);
   
-  // Fetch available boosts from API
+  // Fetch available boosts from API - use boostTourId (next tour or current tour)
   const { data: boostsResponse, isLoading: boostsLoading } = useQuery({
-    queryKey: ['availableBoosts', squad?.id, currentTour],
-    queryFn: () => squad && currentTour ? boostsApi.getAvailable(squad.id, currentTour) : Promise.resolve(null),
-    enabled: !!squad?.id && !!currentTour,
+    queryKey: ['availableBoosts', squad?.id, boostTourId],
+    queryFn: () => squad && boostTourId ? boostsApi.getAvailable(squad.id, boostTourId) : Promise.resolve(null),
+    enabled: !!squad?.id && !!boostTourId,
     staleTime: 10 * 60 * 1000, // 10 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes
     refetchOnWindowFocus: false,
@@ -1137,7 +1137,7 @@ const TeamManagement = () => {
         onClose={() => setIsConfirmBoostOpen(false)}
         pendingBoost={specialChips.find((c) => c.status === "pending") || null}
         squadId={squad?.id || null}
-        tourId={currentTour}
+        tourId={boostTourId}
         onConfirm={() => {
           setIsConfirmBoostOpen(false);
           navigate("/league");
