@@ -234,6 +234,39 @@ const TeamManagement = () => {
       ),
     );
   };
+
+  // State for removing boost
+  const [isRemovingBoost, setIsRemovingBoost] = useState(false);
+
+  const removeBoost = async (chipId: string) => {
+    if (!squad?.id || !boostTourId) {
+      toast.error("Не удалось определить параметры для отмены буста");
+      return;
+    }
+
+    setIsRemovingBoost(true);
+    try {
+      const response = await boostsApi.remove(squad.id, boostTourId);
+      if (response.success) {
+        toast.success("Буст успешно отменён");
+        // Update local state - mark boost as available again
+        setSpecialChips((prev) =>
+          prev.map((chip) =>
+            chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее", usedInTour: undefined } : chip,
+          ),
+        );
+        setIsBoostDrawerOpen(false);
+        // Refetch boosts data
+        window.location.reload();
+      } else {
+        toast.error(response.error || "Ошибка при отмене буста");
+      }
+    } catch (err) {
+      toast.error("Ошибка при отмене буста");
+    } finally {
+      setIsRemovingBoost(false);
+    }
+  };
   // Deadline and teams using shared hooks
   const leagueIdStr = String(leagueId);
   const { deadlineDate, isLoading: deadlineLoading, timeLeft, formattedDeadline } = useDeadline(leagueIdStr);
@@ -699,16 +732,23 @@ const TeamManagement = () => {
             const isDisabledByApi = boostData?.available === false;
             const isDisabled = isBlocked || isDisabledByApi || chip.status === "used";
             
+            // Boosts that can be cancelled: bench, captain3x, double
+            const cancellableBoosts = ["bench", "captain3x", "double"];
+            const canBeRemoved = chip.status === "used" && cancellableBoosts.includes(chip.id);
+            const isClickable = !isBlocked && (chip.status === "available" || chip.status === "pending" || canBeRemoved);
+            
             return (
               <div
                 key={chip.id}
-                onClick={() => !isDisabled && openBoostDrawer(chip)}
+                onClick={() => isClickable && openBoostDrawer(chip)}
                 className={`flex flex-col items-center justify-center py-4 rounded-xl transition-all ${
-                  isDisabled
+                  !isClickable
                     ? "bg-card/30 opacity-50 cursor-not-allowed"
                     : chip.status === "pending"
                       ? "bg-card border-2 border-primary hover:bg-card/80 cursor-pointer"
-                      : "bg-card hover:bg-card/80 cursor-pointer"
+                      : chip.status === "used" && canBeRemoved
+                        ? "bg-card/60 hover:bg-card/80 cursor-pointer"
+                        : "bg-card hover:bg-card/80 cursor-pointer"
                 }`}
               >
                 <img
@@ -1148,7 +1188,9 @@ const TeamManagement = () => {
         onClose={() => setIsBoostDrawerOpen(false)}
         onApply={applyBoost}
         onCancel={cancelBoost}
+        onRemove={removeBoost}
         currentTour={currentTour}
+        isRemoving={isRemovingBoost}
       />
 
       {/* Confirm Boost Drawer */}

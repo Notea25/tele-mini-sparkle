@@ -279,4 +279,8 @@ export const boostsApi = {
       method: 'POST',
       body: data,
     }),
+  remove: (squadId: number, tourId: number) =>
+    apiRequest<ApplyBoostResponse>(`/api/boosts/remove/${squadId}/${tourId}`, {
+      method: 'DELETE',
+    }),
 };
