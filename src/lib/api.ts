@@ -241,3 +241,24 @@ export const playersApi = {
   getFullInfo: (playerId: number) =>
     apiRequest<PlayerFullInfoResponse>(`/api/players/${playerId}/full-info`),
 };
+
+// Типы для бустов
+export type BoostType = 'bench_boost' | 'triple_captain' | 'transfers_plus' | 'gold_tour' | 'double_bet';
+
+export interface BoostInfo {
+  type: BoostType;
+  description: string;
+  available: boolean;
+}
+
+export interface AvailableBoostsResponse {
+  available_boosts: boolean;
+  used_in_current_tour: boolean;
+  boosts: BoostInfo[];
+}
+
+// Методы для работы с бустами
+export const boostsApi = {
+  getAvailable: (squadId: number, tourId: number) =>
+    apiRequest<AvailableBoostsResponse>(`/api/boosts/available/${squadId}/${tourId}`),
+};
