@@ -362,7 +362,7 @@ const Index = () => {
                 leagueIcon={leagueData.leagueIcon}
                 league={leagueData.league}
                 participants={leagueData.participants}
-                userRank={leagueData.id === "football-belarus" && hasTeam ? leagueData.userRank : undefined}
+                userRank={leagueData.userRank}
                 date={leagueData.date}
                 time={leagueData.time}
                 glowColor={leagueData.glowColor}
@@ -373,7 +373,7 @@ const Index = () => {
                 apiLeagueId={"apiLeagueId" in leagueData ? leagueData.apiLeagueId : undefined}
                 isFavorite={favorites.includes(leagueData.id)}
                 onToggleFavorite={toggleFavorite}
-                hasTeam={leagueData.id === "football-belarus" && hasTeam}
+                hasTeam={leagueData.id === "football-belarus" && (hasTeam || belarusLeague?.your_place !== null)}
                 isLoading={"isLoading" in leagueData ? leagueData.isLoading : false}
               />
             )}
