@@ -237,6 +237,7 @@ const TeamManagement = () => {
 
   // State for removing boost
   const [isRemovingBoost, setIsRemovingBoost] = useState(false);
+  const [removeBoostDebugResponse, setRemoveBoostDebugResponse] = useState<unknown>(null);
 
   const removeBoost = async (chipId: string) => {
     if (!squad?.id || !boostTourId) {
@@ -245,8 +246,13 @@ const TeamManagement = () => {
     }
 
     setIsRemovingBoost(true);
+    setRemoveBoostDebugResponse(null);
     try {
       const response = await boostsApi.remove(squad.id, boostTourId);
+      // Debug mode - show response
+      setRemoveBoostDebugResponse(response);
+      setIsBoostDrawerOpen(false);
+      
       if (response.success) {
         toast.success("Буст успешно отменён");
         // Update local state - mark boost as available again
@@ -255,13 +261,12 @@ const TeamManagement = () => {
             chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее", usedInTour: undefined } : chip,
           ),
         );
-        setIsBoostDrawerOpen(false);
-        // Refetch boosts data
-        window.location.reload();
       } else {
         toast.error(response.error || "Ошибка при отмене буста");
       }
     } catch (err) {
+      const errorResponse = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+      setRemoveBoostDebugResponse(errorResponse);
       toast.error("Ошибка при отмене буста");
     } finally {
       setIsRemovingBoost(false);
@@ -1208,6 +1213,24 @@ const TeamManagement = () => {
           setIsConfirmBoostOpen(false);
         }}
       />
+
+      {/* Debug: Remove Boost Response */}
+      {removeBoostDebugResponse && (
+        <div className="fixed bottom-20 left-4 right-4 bg-card border border-border rounded-lg p-4 max-h-60 overflow-auto z-50">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-sm font-bold text-foreground">Debug: DELETE /api/boosts/remove/{squad?.id}/{boostTourId}</h3>
+            <button 
+              onClick={() => setRemoveBoostDebugResponse(null)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              ✕
+            </button>
+          </div>
+          <pre className="text-xs text-foreground whitespace-pre-wrap font-mono">
+            {JSON.stringify(removeBoostDebugResponse, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   );
 };
