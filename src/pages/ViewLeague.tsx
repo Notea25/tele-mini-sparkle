@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { Copy, User, ArrowRight } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
@@ -11,6 +12,8 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { customLeaguesApi, CustomLeagueLeaderboardEntry } from "@/lib/api";
+import { useSquadData } from "@/hooks/useSquadData";
 
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -36,6 +39,15 @@ const ViewLeague = () => {
   const isBeforeRegistration = searchParams.get("beforeRegistration") === "true";
   const participants = parseInt(searchParams.get("participants") || "0");
   
+  // Extract custom_league_id from URL param (numeric part)
+  const customLeagueId = useMemo(() => {
+    const numericId = parseInt(leagueId, 10);
+    return Number.isFinite(numericId) ? numericId : null;
+  }, [leagueId]);
+  
+  // Get current squad and tour info (league_id = 1 for Belarusian league)
+  const { squad, currentTour, currentTourId } = useSquadData(1);
+  
   // Check if league can be deleted (owner is only participant)
   const isUserCreatedLeague = leagueId.startsWith("league-");
   const canDeleteLeague = isOwner && isUserCreatedLeague && participants === 1;
@@ -43,6 +55,46 @@ const ViewLeague = () => {
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
   const [showLeaveConfirmDrawer, setShowLeaveConfirmDrawer] = useState(false);
   const [showDeleteConfirmDrawer, setShowDeleteConfirmDrawer] = useState(false);
+
+  // Fetch leaderboard from API
+  const { data: leaderboardResponse, isLoading: leaderboardLoading } = useQuery({
+    queryKey: ['viewLeagueLeaderboard', customLeagueId, currentTourId],
+    queryFn: async () => {
+      if (!customLeagueId || !currentTourId) return null;
+      return customLeaguesApi.getLeaderboard(customLeagueId, currentTourId);
+    },
+    enabled: !!customLeagueId && !!currentTourId,
+  });
+
+  // Process leaderboard data
+  const leagueStandings = useMemo((): Array<{
+    id: string;
+    position: number;
+    change: "up" | "down" | "same";
+    name: string;
+    tourPoints: number;
+    totalPoints: number;
+    isUser: boolean;
+  }> => {
+    if (!leaderboardResponse?.success || !leaderboardResponse.data) {
+      return [];
+    }
+    
+    const userSquadId = squad?.id;
+    
+    return leaderboardResponse.data.map((entry: CustomLeagueLeaderboardEntry) => ({
+      id: entry.squad_id.toString(),
+      position: entry.place,
+      change: "same" as const,
+      name: entry.squad_name,
+      tourPoints: entry.tour_points,
+      totalPoints: entry.total_points,
+      isUser: entry.squad_id === userSquadId,
+    }));
+  }, [leaderboardResponse, squad?.id]);
+
+  // Current tour number for display
+  const currentTourNumber = currentTour || 29;
 
   // Restore scroll position when returning to this page
   useEffect(() => {
@@ -128,23 +180,6 @@ const ViewLeague = () => {
 
   const currentPrize = commercialPrizes[leagueId];
 
-  // Current championship tour (should come from API/state in real implementation)
-  const currentTour = 29;
-
-  // Mock standings data
-  const leagueStandings = [
-    { id: "team-1", position: 1, change: "up", name: "Dream team", tourPoints: 32, totalPoints: 3123, isUser: false },
-    { id: "team-2", position: 2, change: "down", name: "Lucky Team", tourPoints: 32, totalPoints: 3108, isUser: false },
-    { id: "team-3", position: 3, change: "same", name: "Stayki", tourPoints: 32, totalPoints: 3093, isUser: false },
-    { id: "team-4", position: 4, change: "same", name: "Champions", tourPoints: 32, totalPoints: 3050, isUser: false },
-    { id: "team-5", position: 5, change: "up", name: "Football Pro", tourPoints: 32, totalPoints: 3020, isUser: false },
-    { id: "team-6", position: 6, change: "down", name: "Winners", tourPoints: 32, totalPoints: 3010, isUser: false },
-    { id: "team-7", position: 7, change: "same", name: "Best Team", tourPoints: 32, totalPoints: 3005, isUser: false },
-    { id: "team-8", position: 8, change: "up", name: "Legends", tourPoints: 32, totalPoints: 3000, isUser: false },
-    { id: "user-team", position: 9, change: "down", name: "Alepyz", tourPoints: 32, totalPoints: 2995, isUser: true },
-    { id: "team-10", position: 10, change: "same", name: "Dragons", tourPoints: 32, totalPoints: 2990, isUser: false },
-  ];
-
   const handleTeamClick = (team: typeof leagueStandings[0]) => {
     if (team.isUser) {
       handleNavigate("/your-team");
@@ -179,7 +214,7 @@ const ViewLeague = () => {
           <span className="col-span-3 text-xs">Место</span>
           <span className="col-span-4 text-xs">Название</span>
           <span className="col-span-3 text-center">
-            <span className="text-xs block whitespace-nowrap">{currentTour}-й тур</span>
+            <span className="text-xs block whitespace-nowrap">{currentTourNumber}-й тур</span>
             <span className="text-[10px] italic block">(очки)</span>
           </span>
           <span className="col-span-2 text-right">
@@ -190,31 +225,37 @@ const ViewLeague = () => {
 
         {/* League Standings */}
         <div className="space-y-2 mb-6">
-          {leagueStandings.map((row) => (
-            <div
-              key={row.id}
-              className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl cursor-pointer transition-colors hover:bg-secondary/70 ${
-                row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
-              }`}
-              onClick={() => handleTeamClick(row)}
-            >
-              <div className="col-span-3 flex items-center gap-1">
-                {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
-                {row.change === "down" && !row.isUser && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
-                {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
-                {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
-                {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
-                {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
-                {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
+          {leaderboardLoading ? (
+            <div className="text-center py-8 text-muted-foreground">Загрузка...</div>
+          ) : leagueStandings.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">Нет данных</div>
+          ) : (
+            leagueStandings.map((row) => (
+              <div
+                key={row.id}
+                className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl cursor-pointer transition-colors hover:bg-secondary/70 ${
+                  row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
+                }`}
+                onClick={() => handleTeamClick(row)}
+              >
+                <div className="col-span-3 flex items-center gap-1">
+                  {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                  {row.change === "down" && !row.isUser && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
+                  {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
+                  {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
+                  <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+                  {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
+                  {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
+                  {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
+                </div>
+                <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+                <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+                <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                  {row.totalPoints.toLocaleString()}
+                </span>
               </div>
-              <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-              <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-              <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                {row.totalPoints.toLocaleString()}
-              </span>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* Prize Section for Commercial Leagues */}
