@@ -16,9 +16,11 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
-import { getSavedTeam, getMainSquadAndBench, PlayerData, saveTeamTransfers, allPlayers } from "@/lib/teamData";
+import { getSavedTeam, PlayerData, saveTeamTransfers } from "@/lib/teamData";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
+import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
+import { useSquadData } from "@/hooks/useSquadData";
 import { clubLogos } from "@/lib/clubLogos";
 import FormationFieldTransfers from "@/components/FormationFieldTransfers";
 import PlayerCard from "@/components/PlayerCard";
@@ -80,6 +82,7 @@ interface PlayerDataExt extends PlayerData {
   slotIndex?: number;
   isCaptain?: boolean;
   isViceCaptain?: boolean;
+  team_logo?: string;
 }
 
 // Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
@@ -135,9 +138,13 @@ const Transfers = () => {
   const [pendingPositionFilter, setPendingPositionFilter] = useState<string | null>(null);
   const [pendingSlotIndex, setPendingSlotIndex] = useState<number | null>(null);
 
-  // Load teams from API with caching
+  // Load teams and players from API with caching
   const leagueId = localStorage.getItem("fantasySelectedLeagueId") || "116";
+  const leagueIdNum = parseInt(leagueId, 10) || 116;
   const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
+  const { players: apiPlayers, isLoading: isLoadingPlayers } = usePlayers(leagueId);
+  const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, isLoading: isLoadingSquad } = useSquadData(leagueIdNum);
+  
   const teams = ["Все команды", ...apiTeams.map((t) => t.name)];
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
   const positionToFilter: Record<string, string> = {
@@ -242,9 +249,36 @@ const Transfers = () => {
   // Confirm transfers drawer state
   const [showConfirmDrawer, setShowConfirmDrawer] = useState(false);
 
+  // Initialize players from API squad data
   useEffect(() => {
-    const { mainSquad, bench } = getMainSquadAndBench();
-    const allLoadedPlayers = [...mainSquad, ...bench];
+    if (isLoadingSquad || apiMainPlayers.length === 0) return;
+    
+    // Convert API players to local format
+    const mainSquadConverted = apiMainPlayers.map(p => ({
+      id: p.id,
+      name: p.name,
+      team: p.team_name,
+      position: p.position,
+      price: p.price,
+      points: p.points,
+      slotIndex: p.slotIndex,
+      team_logo: p.team_logo,
+      isCaptain: squad?.captain_id === p.id,
+      isViceCaptain: squad?.vice_captain_id === p.id,
+    }));
+    
+    const benchConverted = apiBenchPlayers.map(p => ({
+      id: p.id,
+      name: p.name,
+      team: p.team_name,
+      position: p.position,
+      price: p.price,
+      points: p.points,
+      slotIndex: p.slotIndex,
+      team_logo: p.team_logo,
+    }));
+    
+    const allLoadedPlayers = [...mainSquadConverted, ...benchConverted];
 
     const positionCounters: Record<string, number> = { ВР: 0, ЗЩ: 0, ПЗ: 0, НП: 0 };
     const reassignedPlayers = allLoadedPlayers.map((p) => {
@@ -258,7 +292,7 @@ const Transfers = () => {
       initialStateRef.current = JSON.stringify(reassignedPlayers.map((p) => p.id).sort());
       initialPlayersRef.current = reassignedPlayers;
     }
-  }, []);
+  }, [isLoadingSquad, apiMainPlayers, apiBenchPlayers, squad?.captain_id, squad?.vice_captain_id]);
 
   // Check for changes whenever players change
   useEffect(() => {
@@ -595,7 +629,7 @@ const Transfers = () => {
   // Filter players for available list
   const currentTeamPlayerIds = players.map((p) => p.id);
 
-  const filteredPlayers = allPlayers.filter((player) => {
+  const filteredPlayers = apiPlayers.filter((player) => {
     // Exclude already selected players
     if (currentTeamPlayerIds.includes(player.id)) return false;
 
@@ -770,7 +804,7 @@ const Transfers = () => {
             }
 
             const player = slot;
-            const clubLogoSrc = clubIcons[player.team];
+            const clubLogoSrc = player.team_logo || clubIcons[player.team] || clubLogo;
             const isNewPlayer = newPlayerIds.has(player.id);
             return (
               <div
@@ -783,9 +817,7 @@ const Transfers = () => {
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                   onClick={() => setSelectedPlayerForCard(player.id)}
                 >
-                  {clubLogoSrc && (
-                    <img src={clubLogoSrc} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
-                  )}
+                  <img src={clubLogoSrc} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
                   <span className="text-foreground font-medium text-medium truncate">{player.name}</span>
                   <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
                 </div>
@@ -1153,7 +1185,7 @@ const Transfers = () => {
             <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
               {/* Club icon */}
               <div className="w-6 flex-shrink-0 flex justify-center mr-2">
-                <img src={clubIcons[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
+                <img src={(player as TransformedPlayer).team_logo || clubIcons[player.team] || clubLogo} alt={player.team} className="w-5 h-5 object-contain" />
               </div>
 
               {/* Player name + position */}
