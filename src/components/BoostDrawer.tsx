@@ -20,7 +20,9 @@ interface BoostDrawerProps {
   onClose: () => void;
   onApply: (chipId: string) => void;
   onCancel?: (chipId: string) => void;
+  onRemove?: (chipId: string) => void;
   currentTour?: number;
+  isRemoving?: boolean;
 }
 
 const boostDescriptions: Record<string, { title: string; description: React.ReactNode; canCancel: boolean }> = {
@@ -116,7 +118,7 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
   },
 };
 
-const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1 }: BoostDrawerProps) => {
+const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, currentTour = 1, isRemoving = false }: BoostDrawerProps) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   if (!chip) return null;
@@ -148,6 +150,12 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
       onCancel(chip.id);
     }
     onClose();
+  };
+
+  const handleRemove = () => {
+    if (onRemove) {
+      onRemove(chip.id);
+    }
   };
 
   const handleClose = () => {
@@ -252,12 +260,23 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, currentTour = 1
                 </div>
               )}
               {chip.status === "used" && (
-                <Button
-                  onClick={handleClose}
-                  className="w-full rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
-                >
-                  Закрыть
-                </Button>
+                <div className="flex gap-3">
+                  {onRemove && boostInfo?.canCancel && (
+                    <Button
+                      onClick={handleRemove}
+                      disabled={isRemoving}
+                      className="flex-1 rounded-lg h-12 font-medium bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                    >
+                      {isRemoving ? "Отмена..." : "Отменить использование"}
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handleClose}
+                    className="flex-1 rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
+                  >
+                    Закрыть
+                  </Button>
+                </div>
               )}
             </div>
           </>
