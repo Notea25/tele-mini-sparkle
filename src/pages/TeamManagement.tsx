@@ -1194,7 +1194,7 @@ const TeamManagement = () => {
         onApply={applyBoost}
         onCancel={cancelBoost}
         onRemove={removeBoost}
-        currentTour={currentTour}
+        currentTour={nextTour || currentTour}
         isRemoving={isRemovingBoost}
       />
 
