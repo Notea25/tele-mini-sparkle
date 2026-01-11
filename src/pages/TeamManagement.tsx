@@ -86,7 +86,7 @@ const TeamManagement = () => {
   const leagueId = getLeagueId();
   
   // Load squad data from API
-  const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, boostTourId, isLoading, error } = useSquadData(leagueId);
+  const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, nextTour, boostTourId, isLoading, error } = useSquadData(leagueId);
   
   // Fetch available boosts from API - use boostTourId (next tour or current tour)
   const { data: boostsResponse, isLoading: boostsLoading } = useQuery({
@@ -658,6 +658,15 @@ const TeamManagement = () => {
         {/* Team name */}
         <div className="flex items-center justify-center mb-2">
           <h1 className="text-foreground text-3xl font-display">{squad?.name || "Моя команда"}</h1>
+        </div>
+
+        {/* Tour Label with Gradient Lines */}
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-muted-foreground/30" />
+          <span className="text-muted-foreground text-sm font-medium">
+            {nextTour ? `${nextTour} тур` : currentTour ? `${currentTour} тур` : "—"}
+          </span>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-muted-foreground/30" />
         </div>
 
         <div className="flex items-center justify-between text-sm text-regular">
