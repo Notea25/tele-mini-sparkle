@@ -1136,9 +1136,10 @@ const TeamManagement = () => {
         isOpen={isConfirmBoostOpen}
         onClose={() => setIsConfirmBoostOpen(false)}
         pendingBoost={specialChips.find((c) => c.status === "pending") || null}
+        squadId={squad?.id || null}
+        tourId={currentTour}
         onConfirm={() => {
           setIsConfirmBoostOpen(false);
-          toast.success("Изменения сохранены");
           navigate("/league");
         }}
         onChangeBoost={() => {
