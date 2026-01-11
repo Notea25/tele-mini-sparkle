@@ -99,18 +99,21 @@ const TeamManagement = () => {
     refetchOnMount: false,
   });
   
-  // Map API boosts to availability
-  const apiBoostAvailability = useMemo(() => {
-    const availability: Record<string, boolean> = {};
+  // Map API boosts to availability and used tour number
+  const apiBoostData = useMemo(() => {
+    const data: Record<string, { available: boolean; usedInTourNumber?: number | null }> = {};
     if (boostsResponse?.success && boostsResponse.data?.boosts) {
       boostsResponse.data.boosts.forEach(boost => {
         const chipId = boostTypeToChipId[boost.type];
         if (chipId) {
-          availability[chipId] = boost.available;
+          data[chipId] = {
+            available: boost.available,
+            usedInTourNumber: boost.used_in_tour_number,
+          };
         }
       });
     }
-    return availability;
+    return data;
   }, [boostsResponse]);
   
   const usedInCurrentTour = boostsResponse?.success ? boostsResponse.data?.used_in_current_tour : false;
@@ -143,27 +146,34 @@ const TeamManagement = () => {
   useEffect(() => {
     if (!boostsLoading && boostsResponse?.success) {
       setSpecialChips(prev => prev.map(chip => {
-        // Check if API says boost is not available
-        const isAvailableFromApi = apiBoostAvailability[chip.id];
+        const boostData = apiBoostData[chip.id];
         
         // If boost was already used (from localStorage), keep that status
         if (chip.status === 'used' || chip.status === 'pending') {
           return chip;
         }
         
-        // If API says not available, mark as disabled
-        if (isAvailableFromApi === false) {
+        // If API says not available, mark as disabled with tour number
+        if (boostData && boostData.available === false) {
+          let sublabel = 'Недоступен';
+          if (boostData.usedInTourNumber) {
+            sublabel = `Использован в ${boostData.usedInTourNumber} туре`;
+          } else if (usedInCurrentTour) {
+            sublabel = 'Использован в этом туре';
+          }
+          
           return { 
             ...chip, 
             status: 'used' as BoostStatus, 
-            sublabel: usedInCurrentTour ? 'Использован в этом туре' : 'Недоступен'
+            sublabel,
+            usedInTour: boostData.usedInTourNumber || undefined,
           };
         }
         
         return chip;
       }));
     }
-  }, [boostsLoading, boostsResponse, apiBoostAvailability, usedInCurrentTour]);
+  }, [boostsLoading, boostsResponse, apiBoostData, usedInCurrentTour]);
   
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
@@ -676,7 +686,8 @@ const TeamManagement = () => {
         <div className="grid grid-cols-3 gap-3">
           {specialChips.map((chip) => {
             const isBlocked = otherPageBoostActive && chip.status === "available";
-            const isDisabledByApi = apiBoostAvailability[chip.id] === false;
+            const boostData = apiBoostData[chip.id];
+            const isDisabledByApi = boostData?.available === false;
             const isDisabled = isBlocked || isDisabledByApi || chip.status === "used";
             
             return (
