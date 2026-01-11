@@ -257,8 +257,25 @@ export interface AvailableBoostsResponse {
   boosts: BoostInfo[];
 }
 
+// Типы для применения буста
+export interface ApplyBoostRequest {
+  squad_id: number;
+  tour_id: number;
+  type: BoostType;
+}
+
+export interface ApplyBoostResponse {
+  success: boolean;
+  message?: string;
+}
+
 // Методы для работы с бустами
 export const boostsApi = {
   getAvailable: (squadId: number, tourId: number) =>
     apiRequest<AvailableBoostsResponse>(`/api/boosts/available/${squadId}/${tourId}`),
+  apply: (data: ApplyBoostRequest) =>
+    apiRequest<ApplyBoostResponse>('/api/boosts/apply', {
+      method: 'POST',
+      body: data,
+    }),
 };

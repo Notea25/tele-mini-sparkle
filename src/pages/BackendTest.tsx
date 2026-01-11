@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, ApiResponse } from '@/lib/api';
+import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, ApiResponse, BoostType } from '@/lib/api';
 
 const BackendTest = () => {
   const [leagueResponse, setLeagueResponse] = useState<ApiResponse<unknown> | null>(null);
@@ -15,6 +15,7 @@ const BackendTest = () => {
   const [playerFullInfoResponse, setPlayerFullInfoResponse] = useState<ApiResponse<unknown> | null>(null);
   const [leaderboardResponse, setLeaderboardResponse] = useState<ApiResponse<unknown> | null>(null);
   const [updatePlayersResponse, setUpdatePlayersResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [boostApplyResponse, setBoostApplyResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -27,6 +28,7 @@ const BackendTest = () => {
   const [loadingPlayerFullInfo, setLoadingPlayerFullInfo] = useState(false);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
   const [loadingUpdatePlayers, setLoadingUpdatePlayers] = useState(false);
+  const [loadingBoostApply, setLoadingBoostApply] = useState(false);
   const [playerIdInput, setPlayerIdInput] = useState('1');
   const [tourIdInput, setTourIdInput] = useState('2');
   const [squadIdInput, setSquadIdInput] = useState('1');
@@ -35,6 +37,9 @@ const BackendTest = () => {
   const [viceCaptainIdInput, setViceCaptainIdInput] = useState('');
   const [mainPlayerIdsInput, setMainPlayerIdsInput] = useState('');
   const [benchPlayerIdsInput, setBenchPlayerIdsInput] = useState('');
+  const [boostSquadIdInput, setBoostSquadIdInput] = useState('1');
+  const [boostTourIdInput, setBoostTourIdInput] = useState('1');
+  const [boostTypeInput, setBoostTypeInput] = useState<BoostType>('bench_boost');
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -234,6 +239,25 @@ const BackendTest = () => {
     }
   };
 
+  const testBoostApplyApi = async () => {
+    setLoadingBoostApply(true);
+    try {
+      const result = await boostsApi.apply({
+        squad_id: parseInt(boostSquadIdInput) || 1,
+        tour_id: parseInt(boostTourIdInput) || 1,
+        type: boostTypeInput,
+      });
+      setBoostApplyResponse(result);
+    } catch (err) {
+      setBoostApplyResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingBoostApply(false);
+    }
+  };
+
   const renderResponse = (response: ApiResponse<unknown> | null, title: string) => {
     if (!response) return null;
     
@@ -427,6 +451,49 @@ const BackendTest = () => {
         </Button>
       </div>
 
+      {/* Boost Apply Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">POST /api/boosts/apply</h2>
+        <div className="grid grid-cols-3 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Squad ID</label>
+            <input
+              type="number"
+              value={boostSquadIdInput}
+              onChange={(e) => setBoostSquadIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Tour ID</label>
+            <input
+              type="number"
+              value={boostTourIdInput}
+              onChange={(e) => setBoostTourIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Boost Type</label>
+            <select
+              value={boostTypeInput}
+              onChange={(e) => setBoostTypeInput(e.target.value as BoostType)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            >
+              <option value="bench_boost">bench_boost</option>
+              <option value="triple_captain">triple_captain</option>
+              <option value="double_bet">double_bet</option>
+              <option value="transfers_plus">transfers_plus</option>
+              <option value="gold_tour">gold_tour</option>
+            </select>
+          </div>
+        </div>
+        <Button onClick={testBoostApplyApi} disabled={loadingBoostApply} variant="default">
+          {loadingBoostApply ? 'Загрузка...' : 'Тест: POST /api/boosts/apply'}
+        </Button>
+      </div>
+
+      {renderResponse(boostApplyResponse, 'Ответ: Boost Apply')}
       {renderResponse(updatePlayersResponse, 'Ответ: Update Players')}
       {renderResponse(leaderboardResponse, 'Ответ: Leaderboard')}
       {renderResponse(playerFullInfoResponse, 'Ответ: Player Full Info')}
