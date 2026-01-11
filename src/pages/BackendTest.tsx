@@ -17,6 +17,7 @@ const BackendTest = () => {
   const [updatePlayersResponse, setUpdatePlayersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [boostApplyResponse, setBoostApplyResponse] = useState<ApiResponse<unknown> | null>(null);
   const [boostAvailableResponse, setBoostAvailableResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [boostRemoveResponse, setBoostRemoveResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -31,6 +32,7 @@ const BackendTest = () => {
   const [loadingUpdatePlayers, setLoadingUpdatePlayers] = useState(false);
   const [loadingBoostApply, setLoadingBoostApply] = useState(false);
   const [loadingBoostAvailable, setLoadingBoostAvailable] = useState(false);
+  const [loadingBoostRemove, setLoadingBoostRemove] = useState(false);
   const [playerIdInput, setPlayerIdInput] = useState('1');
   const [tourIdInput, setTourIdInput] = useState('2');
   const [squadIdInput, setSquadIdInput] = useState('1');
@@ -44,6 +46,8 @@ const BackendTest = () => {
   const [boostTypeInput, setBoostTypeInput] = useState<BoostType>('bench_boost');
   const [availableBoostSquadIdInput, setAvailableBoostSquadIdInput] = useState('1');
   const [availableBoostTourIdInput, setAvailableBoostTourIdInput] = useState('1');
+  const [removeBoostSquadIdInput, setRemoveBoostSquadIdInput] = useState('1');
+  const [removeBoostTourIdInput, setRemoveBoostTourIdInput] = useState('1');
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -277,6 +281,24 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingBoostAvailable(false);
+    }
+  };
+
+  const testBoostRemoveApi = async () => {
+    setLoadingBoostRemove(true);
+    try {
+      const result = await boostsApi.remove(
+        parseInt(removeBoostSquadIdInput) || 1,
+        parseInt(removeBoostTourIdInput) || 1
+      );
+      setBoostRemoveResponse(result);
+    } catch (err) {
+      setBoostRemoveResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingBoostRemove(false);
     }
   };
 
@@ -543,7 +565,35 @@ const BackendTest = () => {
         </Button>
       </div>
 
-      {renderResponse(boostAvailableResponse, 'Ответ: Boost Available')}
+      {/* Boost Remove Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">DELETE /api/boosts/remove/{'{squad_id}'}/{'{tour_id}'}</h2>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Squad ID</label>
+            <input
+              type="number"
+              value={removeBoostSquadIdInput}
+              onChange={(e) => setRemoveBoostSquadIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Tour ID</label>
+            <input
+              type="number"
+              value={removeBoostTourIdInput}
+              onChange={(e) => setRemoveBoostTourIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+        </div>
+        <Button onClick={testBoostRemoveApi} disabled={loadingBoostRemove} variant="destructive">
+          {loadingBoostRemove ? 'Загрузка...' : `Тест: DELETE /api/boosts/remove/${removeBoostSquadIdInput}/${removeBoostTourIdInput}`}
+        </Button>
+      </div>
+
+      {renderResponse(boostRemoveResponse, 'Ответ: Boost Remove')}
       {renderResponse(boostApplyResponse, 'Ответ: Boost Apply')}
       {renderResponse(updatePlayersResponse, 'Ответ: Update Players')}
       {renderResponse(leaderboardResponse, 'Ответ: Leaderboard')}
