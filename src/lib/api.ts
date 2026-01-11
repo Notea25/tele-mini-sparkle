@@ -326,6 +326,17 @@ export interface ClubLeague {
   registration_end: string;
 }
 
+// Тип для лидерборда кастомной лиги
+export interface CustomLeagueLeaderboardEntry {
+  place: number;
+  squad_id: number;
+  squad_name: string;
+  user_id: number;
+  username: string;
+  tour_points: number;
+  total_points: number;
+}
+
 // Методы для работы с кастомными лигами
 export const customLeaguesApi = {
   getByType: (leagueType: string) =>
@@ -343,4 +354,6 @@ export const customLeaguesApi = {
     }),
   getClubByTeam: (teamId: number) =>
     apiRequest<ClubLeague>(`/api/custom_leagues/club/by_team/${teamId}`),
+  getLeaderboard: (customLeagueId: number, tourId: number) =>
+    apiRequest<CustomLeagueLeaderboardEntry[]>(`/api/custom_leagues/${customLeagueId}/leaderboard/${tourId}`),
 };
