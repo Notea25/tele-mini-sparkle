@@ -16,6 +16,7 @@ const BackendTest = () => {
   const [leaderboardResponse, setLeaderboardResponse] = useState<ApiResponse<unknown> | null>(null);
   const [updatePlayersResponse, setUpdatePlayersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [boostApplyResponse, setBoostApplyResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [boostAvailableResponse, setBoostAvailableResponse] = useState<ApiResponse<unknown> | null>(null);
   const [loadingLeague, setLoadingLeague] = useState(false);
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -29,6 +30,7 @@ const BackendTest = () => {
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
   const [loadingUpdatePlayers, setLoadingUpdatePlayers] = useState(false);
   const [loadingBoostApply, setLoadingBoostApply] = useState(false);
+  const [loadingBoostAvailable, setLoadingBoostAvailable] = useState(false);
   const [playerIdInput, setPlayerIdInput] = useState('1');
   const [tourIdInput, setTourIdInput] = useState('2');
   const [squadIdInput, setSquadIdInput] = useState('1');
@@ -40,6 +42,8 @@ const BackendTest = () => {
   const [boostSquadIdInput, setBoostSquadIdInput] = useState('1');
   const [boostTourIdInput, setBoostTourIdInput] = useState('1');
   const [boostTypeInput, setBoostTypeInput] = useState<BoostType>('bench_boost');
+  const [availableBoostSquadIdInput, setAvailableBoostSquadIdInput] = useState('1');
+  const [availableBoostTourIdInput, setAvailableBoostTourIdInput] = useState('1');
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -255,6 +259,24 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingBoostApply(false);
+    }
+  };
+
+  const testBoostAvailableApi = async () => {
+    setLoadingBoostAvailable(true);
+    try {
+      const result = await boostsApi.getAvailable(
+        parseInt(availableBoostSquadIdInput) || 1,
+        parseInt(availableBoostTourIdInput) || 1
+      );
+      setBoostAvailableResponse(result);
+    } catch (err) {
+      setBoostAvailableResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingBoostAvailable(false);
     }
   };
 
@@ -493,6 +515,35 @@ const BackendTest = () => {
         </Button>
       </div>
 
+      {/* Boost Available Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">GET /api/boosts/available/{'{squad_id}'}/{'{tour_id}'}</h2>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Squad ID</label>
+            <input
+              type="number"
+              value={availableBoostSquadIdInput}
+              onChange={(e) => setAvailableBoostSquadIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Tour ID</label>
+            <input
+              type="number"
+              value={availableBoostTourIdInput}
+              onChange={(e) => setAvailableBoostTourIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+        </div>
+        <Button onClick={testBoostAvailableApi} disabled={loadingBoostAvailable} variant="default">
+          {loadingBoostAvailable ? 'Загрузка...' : `Тест: GET /api/boosts/available/${availableBoostSquadIdInput}/${availableBoostTourIdInput}`}
+        </Button>
+      </div>
+
+      {renderResponse(boostAvailableResponse, 'Ответ: Boost Available')}
       {renderResponse(boostApplyResponse, 'Ответ: Boost Apply')}
       {renderResponse(updatePlayersResponse, 'Ответ: Update Players')}
       {renderResponse(leaderboardResponse, 'Ответ: Leaderboard')}
