@@ -170,15 +170,15 @@ const TeamManagement = () => {
           return { ...chip, status: 'pending' as BoostStatus, sublabel: 'Используется' };
         }
 
-        // Если в туре уже использован ЛЮБОЙ буст и текущий буст не pending
-        if (usedInCurrentTour && chip.status !== 'pending') {
-          // Проверяем - может быть именно этот буст использован
-          if (boostData && boostData.available === false && boostData.usedInTourNumber) {
-            // Этот буст использован в прошлом
+        // Если в туре уже использован ЛЮБОЙ буст
+        if (usedInCurrentTour) {
+          // Проверяем - может быть именно этот буст применён на следующий тур
+          if (boostData && boostData.available === false && boostData.usedInTourNumber === nextTour) {
+            // Этот буст применён на следующий тур - статус pending до дедлайна
             return {
               ...chip,
-              status: 'used' as BoostStatus,
-              sublabel: `Использован в ${boostData.usedInTourNumber} туре`,
+              status: 'pending' as BoostStatus,
+              sublabel: 'Используется',
               usedInTour: boostData.usedInTourNumber,
             };
           }
