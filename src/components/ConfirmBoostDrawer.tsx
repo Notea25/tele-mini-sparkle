@@ -8,11 +8,11 @@ import { toast } from "sonner";
 
 // Mapping local chip IDs to API boost types
 const chipIdToBoostType: Record<string, BoostType> = {
-  'bench': 'bench_boost',
-  'captain3x': 'triple_captain',
-  'double': 'double_bet',
-  'transfers': 'transfers_plus',
-  'gold': 'gold_tour',
+  bench: "bench_boost",
+  captain3x: "triple_captain",
+  double: "double_bet",
+  transfers: "transfers_plus",
+  gold: "gold_tour",
 };
 
 interface ConfirmBoostDrawerProps {
@@ -64,10 +64,10 @@ const ConfirmBoostDrawer = ({
         toast.success("Буст успешно применён");
         onConfirm();
       } else {
-        toast.error(`Ошибка: ${result.error || 'Неизвестная ошибка'}`);
+        toast.error(`Ошибка: ${result.error || "Неизвестная ошибка"}`);
       }
     } catch (err) {
-      toast.error(`Ошибка: ${err instanceof Error ? err.message : 'Неизвестная ошибка'}`);
+      toast.error(`Ошибка: ${err instanceof Error ? err.message : "Неизвестная ошибка"}`);
     } finally {
       setIsApplying(false);
     }
@@ -79,28 +79,18 @@ const ConfirmBoostDrawer = ({
         <DrawerContent className="bg-card border-t border-border">
           <div className="px-6 py-6">
             {/* Title */}
-            <h2 className="text-foreground text-xl font-display text-center mb-6">
-              Подтверждение буста
-            </h2>
+            <h2 className="text-foreground text-xl font-display text-center mb-6">Подтверждение буста</h2>
 
             {/* Boost card */}
             <div className="flex flex-col items-center justify-center p-6 bg-secondary/50 rounded-xl mb-6">
-              <img 
-                src={pendingBoost.icon} 
-                alt={pendingBoost.label} 
-                className="w-16 h-16 object-contain mb-3"
-              />
-              <span className="text-foreground text-lg font-medium text-center">
-                {pendingBoost.label}
-              </span>
-              <span className="text-primary text-sm mt-1">
-                Будет использован в этом туре
-              </span>
+              <img src={pendingBoost.icon} alt={pendingBoost.label} className="w-16 h-16 object-contain mb-3" />
+              <span className="text-foreground text-lg font-medium text-center">{pendingBoost.label}</span>
+              <span className="text-primary text-sm mt-1">Будет использован в этом туре</span>
             </div>
 
             {/* Warning text */}
             <p className="text-muted-foreground text-sm text-center mb-6 text-regular">
-              После подтверждения буст нельзя будет отменить. Буст можно использовать только один раз за сезон.
+              Буст можно использовать только один раз за сезон.
             </p>
 
             {/* Buttons */}
@@ -129,7 +119,6 @@ const ConfirmBoostDrawer = ({
           </div>
         </DrawerContent>
       </Drawer>
-
     </>
   );
 };
