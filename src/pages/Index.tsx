@@ -30,7 +30,7 @@ import extraligaLogo from "@/assets/extraliga-logo.png";
 import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
-//
+
 interface LeagueData {
   id: number;
   name: string;
@@ -182,7 +182,7 @@ const Index = () => {
 
   const handleJoinLeague = async () => {
     if (!leagueInviteData) return;
-    
+
     setIsJoiningLeague(true);
     try {
       // Get user's squad
@@ -192,22 +192,22 @@ const Index = () => {
         navigate("/create-team");
         return;
       }
-      
+
       const squadId = squadsResponse.data[0].id;
       const userLeagueId = parseInt(leagueInviteData.leagueId, 10);
-      
+
       if (!Number.isFinite(userLeagueId)) {
         toast.error("Неверный ID лиги");
         return;
       }
-      
+
       const response = await customLeaguesApi.joinUserLeague(userLeagueId, squadId);
-      
+
       if (response.success) {
         // Remove invite from localStorage after successful join
         localStorage.removeItem("fantasyLeagueInvite");
         // Invalidate cache so league list refreshes
-        queryClient.invalidateQueries({ queryKey: ['mySquadLeagues'] });
+        queryClient.invalidateQueries({ queryKey: ["mySquadLeagues"] });
         toast.success(`Вы вступили в лигу "${leagueInviteData.leagueName}"`);
         navigate("/league");
       } else {
