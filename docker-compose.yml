@@ -1,0 +1,12 @@
+services:
+  fantasy-frontend:
+    image: krisosmakov/fantasy-sports-belarus:latest 
+    container_name: fantasy-sports-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_TELEGRAM_BOT_TOKEN=ваш_токен_бота
+      - VITE_API_URL=http://31.222.229.78:3000 
+      - VITE_SUPABASE_URL=ваш_supabase_url
+      - VITE_SUPABASE_KEY=ваш_supabase_key
+    restart: unless-stopped
