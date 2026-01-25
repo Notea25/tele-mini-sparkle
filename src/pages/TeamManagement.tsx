@@ -285,9 +285,11 @@ const TeamManagement = () => {
       setIsBoostDrawerOpen(false);
       
       if (response.success) {
+        // Синхронизируем локальное состояние бустов с бэкендом
+        clearPendingBoost();
         toast.success("Буст успешно отменён");
-        // Refetch boosts data
-        window.location.reload();
+        // Обновляем данные о доступных бустах
+        await queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
       } else {
         toast.error(response.error || "Ошибка при отмене буста");
       }
@@ -1339,7 +1341,13 @@ const TeamManagement = () => {
         pendingBoost={specialChips.find((c) => c.status === "pending") || null}
         squadId={squad?.id || null}
         tourId={boostTourId}
-        onConfirm={() => {
+        onConfirm={async () => {
+          // Буст успешно применён на бэке — очищаем pending в localStorage
+          clearPendingBoost();
+          // Обновляем данные о доступных бустах для этого сквада и тура
+          if (squad?.id && boostTourId) {
+            await queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
+          }
           setIsConfirmBoostOpen(false);
           navigate("/league");
         }}
