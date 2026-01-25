@@ -253,6 +253,23 @@ const BackendTest = () => {
     }
   };
 
+  const testBoostAvailableApi = async () => {
+    setLoadingBoostAvailable(true);
+    try {
+      const squadId = parseInt(availableBoostSquadIdInput) || 1;
+      const tourId = parseInt(availableBoostTourIdInput) || 1;
+      const result = await boostsApi.getAvailable(squadId, tourId);
+      setBoostAvailableResponse(result);
+    } catch (err) {
+      setBoostAvailableResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingBoostAvailable(false);
+    }
+  };
+
   const testUpdatePlayersApi = async () => {
     setLoadingUpdatePlayers(true);
     try {
@@ -402,7 +419,7 @@ const BackendTest = () => {
     if (!response) return null;
     
     return (
-      <div className="space-y-4 mt-4">
+      <div className="space-y-4">
         <h2 className="text-xl font-semibold text-foreground">{title}</h2>
         
         {/* Статус */}
@@ -535,6 +552,36 @@ const BackendTest = () => {
             {loadingLeaderboard ? 'Загрузка...' : `Тест: GET /api/squads/leaderboard/${tourIdInput}`}
           </Button>
         </div>
+      </div>
+
+      {/* Boosts Available Test Section */}
+      <div className="mt-6 p-4 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">GET /api/boosts/available/{'{squad_id}/{tour_id}'}</h2>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Squad ID</label>
+            <input
+              type="number"
+              value={availableBoostSquadIdInput}
+              onChange={(e) => setAvailableBoostSquadIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Tour ID</label>
+            <input
+              type="number"
+              value={availableBoostTourIdInput}
+              onChange={(e) => setAvailableBoostTourIdInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+            />
+          </div>
+        </div>
+        <Button onClick={testBoostAvailableApi} disabled={loadingBoostAvailable} variant="default">
+          {loadingBoostAvailable
+            ? 'Загрузка...'
+            : `Тест: GET /api/boosts/available/${availableBoostSquadIdInput}/${availableBoostTourIdInput}`}
+        </Button>
       </div>
 
       {/* Update Players Test Section */}
