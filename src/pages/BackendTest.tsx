@@ -345,24 +345,6 @@ const BackendTest = () => {
     }
   };
 
-  const testBoostAvailableApi = async () => {
-    setLoadingBoostAvailable(true);
-    try {
-      const result = await boostsApi.getAvailable(
-        parseInt(availableBoostSquadIdInput) || 1,
-        parseInt(availableBoostTourIdInput) || 1
-      );
-      setBoostAvailableResponse(result);
-    } catch (err) {
-      setBoostAvailableResponse({
-        success: false,
-        error: err instanceof Error ? err.message : 'Unknown error',
-      });
-    } finally {
-      setLoadingBoostAvailable(false);
-    }
-  };
-
   const testBoostRemoveApi = async () => {
     setLoadingBoostRemove(true);
     try {
