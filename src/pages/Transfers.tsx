@@ -1122,7 +1122,7 @@ const Transfers = () => {
                     : chip.status === "pending"
                       ? "Используется"
                       : chip.status === "used"
-                        ? `${chip.usedInTour} тур`
+                        ? (chip.usedInTour ? `${chip.usedInTour} тур` : "Заблокирован")
                         : chip.sublabel}
                 </span>
               </div>

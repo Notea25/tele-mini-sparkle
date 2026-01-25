@@ -177,13 +177,24 @@ const TeamManagement = () => {
         const boostData = apiBoostData[chip.id];
         const boostState = getBoostState();
 
-        // pending-состояние управляется локально (из localStorage)
+        // 1) Локальный pending (ещё не отправлен/подтверждён на бэке)
         if (boostState.pendingBoostId === chip.id && boostState.pendingBoostPage === 'team-management') {
           return { ...chip, status: 'pending' as BoostStatus, sublabel: 'Используется' };
         }
 
-        // Если бэкенд говорит, что буст больше недоступен (уже использован в каком-то туре)
+        // 2) Если бэкенд говорит, что буст уже использован в каком-то туре
         if (boostData && boostData.available === false) {
+          // 2.1 Этот буст выбран на следующий тур — считаем, что он "используется" для ближайшего тура
+          if (nextTour && boostData.usedInTourNumber === nextTour) {
+            return {
+              ...chip,
+              status: 'pending' as BoostStatus,
+              sublabel: 'Используется',
+              usedInTour: boostData.usedInTourNumber || undefined,
+            };
+          }
+
+          // 2.2 Буст уже когда‑то был использован в прошлом туре — показываем тур
           return {
             ...chip,
             status: 'used' as BoostStatus,
@@ -194,20 +205,20 @@ const TeamManagement = () => {
           };
         }
 
-        // Если на следующий тур уже назначен какой-то буст, остальные считаем недоступными
-        if (usedForNextTour) {
+        // 3) На следующий тур уже выбран какой‑то другой буст — этот считаем заблокированным
+        if (usedForNextTour && activeNextTourBoostChipId && chip.id !== activeNextTourBoostChipId) {
           return {
             ...chip,
             status: 'used' as BoostStatus,
-            sublabel: 'Недоступен (буст уже выбран на следующий тур)',
+            sublabel: 'Заблокирован',
           };
         }
 
-        // В остальных случаях — буст доступен
-        return { ...chip, status: 'available' as BoostStatus, sublabel: 'Подробнее' };
+        // 4) В остальных случаях — буст доступен
+        return { ...chip, status: 'available' as BoostStatus, sublabel: 'Подробнее', usedInTour: undefined };
       }));
     }
-  }, [boostsLoading, boostsResponse, apiBoostData, usedForNextTour]);
+  }, [boostsLoading, boostsResponse, apiBoostData, usedForNextTour, nextTour, activeNextTourBoostChipId]);
   
   // Track initial boost state when data is loaded
   useEffect(() => {
@@ -870,7 +881,10 @@ const TeamManagement = () => {
           {specialChips.map((chip) => {
             const isBlocked = otherPageBoostActive && chip.status === "available";
             const boostData = apiBoostData[chip.id];
-            const isDisabledByApi = boostData?.available === false;
+            // Буст может быть недоступен из‑за API, но если он активен на следующий тур,
+            // мы показываем его как "используется", а не как серый/заблокированный.
+            const isDisabledByApi =
+              boostData?.available === false && !(nextTour && boostData.usedInTourNumber === nextTour);
             const isDisabled = isBlocked || isDisabledByApi || chip.status === "used";
             
             // Бусты, для которых вообще может быть доступна отмена: только командные бусты
@@ -935,7 +949,7 @@ const TeamManagement = () => {
                     : chip.status === "pending"
                       ? "Используется"
                       : chip.status === "used"
-                        ? (chip.sublabel?.startsWith("Использован")
+                        ? (chip.sublabel
                             ? chip.sublabel
                             : chip.usedInTour
                               ? `${chip.usedInTour} тур`
