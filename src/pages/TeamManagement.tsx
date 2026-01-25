@@ -170,58 +170,45 @@ const TeamManagement = () => {
           return { ...chip, status: 'pending' as BoostStatus, sublabel: 'Используется' };
         }
 
-        // Если в туре уже использован ЛЮБОЙ буст
-        if (usedInCurrentTour) {
-          // Проверяем - может быть именно этот буст применён на следующий тур
-          if (boostData && boostData.available === false && boostData.usedInTourNumber === nextTour) {
-            // Этот буст применён на следующий тур - статус pending до дедлайна
-            return {
-              ...chip,
-              status: 'pending' as BoostStatus,
-              sublabel: 'Используется',
-              usedInTour: boostData.usedInTourNumber,
-            };
-          }
-          // Другой буст использован в этом туре - показываем недоступен
-          return { ...chip, status: 'unavailable' as BoostStatus, sublabel: 'Недоступен' };
-        }
-
-        // Если бэкенд говорит, что буст больше недоступен
+        // Если бэкенд говорит, что буст больше недоступен (уже использован в каком-то туре)
         if (boostData && boostData.available === false) {
-          let sublabel = 'Недоступен';
-          if (boostData.usedInTourNumber) {
-            sublabel = `Использован в ${boostData.usedInTourNumber} туре`;
-          }
-
           return {
             ...chip,
             status: 'used' as BoostStatus,
-            sublabel,
+            sublabel: boostData.usedInTourNumber
+              ? `Использован в ${boostData.usedInTourNumber} туре`
+              : 'Использован',
             usedInTour: boostData.usedInTourNumber || undefined,
           };
         }
 
-        // Иначе оставляем чип доступным
+        // Если на следующий тур уже назначен какой-то буст, остальные считаем недоступными
+        if (usedForNextTour) {
+          return {
+            ...chip,
+            status: 'used' as BoostStatus,
+            sublabel: 'Недоступен (буст уже выбран на следующий тур)',
+          };
+        }
+
+        // В остальных случаях — буст доступен
         return { ...chip, status: 'available' as BoostStatus, sublabel: 'Подробнее' };
       }));
     }
-  }, [boostsLoading, boostsResponse, apiBoostData, usedInCurrentTour]);
+  }, [boostsLoading, boostsResponse, apiBoostData, usedForNextTour]);
   
   // Track initial boost state when data is loaded
   useEffect(() => {
     if (!boostsLoading && boostsResponse?.success && initialBoostState === null) {
-      // Check if any boost is already used in the current tour
-      const usedBoostInTour = boostsResponse.data?.used_in_current_tour;
-      if (usedBoostInTour) {
-        // Find which boost is used
-        const usedBoostData = boostsResponse.data?.boosts?.find(b => !b.available && b.used_in_tour_number === boostTourId);
-        const usedBoostChipId = usedBoostData ? boostTypeToChipId[usedBoostData.type] : undefined;
-        setInitialBoostState({ hasBoost: true, boostId: usedBoostChipId });
+      // Считаем, что если на следующий тур уже выбран какой-то буст,
+      // то буст "уже есть" и это базовое состояние
+      if (usedForNextTour) {
+        setInitialBoostState({ hasBoost: true });
       } else {
         setInitialBoostState({ hasBoost: false });
       }
     }
-  }, [boostsLoading, boostsResponse, boostTourId, initialBoostState]);
+  }, [boostsLoading, boostsResponse, initialBoostState, usedForNextTour]);
   
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
