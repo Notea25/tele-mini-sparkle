@@ -131,7 +131,7 @@ const TeamManagement = () => {
     return data;
   }, [boostsResponse]);
   
-  const usedInCurrentTour = boostsResponse?.success ? boostsResponse.data?.used_in_current_tour : false;
+  const usedForNextTour = boostsResponse?.success ? boostsResponse.data?.used_for_next_tour : false;
   
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [selectedFormation, setSelectedFormation] = useState("1-4-4-2");

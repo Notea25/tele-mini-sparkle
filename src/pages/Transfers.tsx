@@ -188,7 +188,7 @@ const Transfers = () => {
     return data;
   }, [boostsResponse]);
   
-  const usedInCurrentTour = boostsResponse?.success ? boostsResponse.data?.used_in_current_tour : false;
+  const usedForNextTour = boostsResponse?.success ? boostsResponse.data?.used_for_next_tour : false;
   
   const teams = ["Все команды", ...apiTeams.map((t) => t.name)];
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
@@ -211,42 +211,32 @@ const Transfers = () => {
           return { ...chip, status: 'pending' as BoostStatus, sublabel: 'Используется' };
         }
 
-        // Если в туре уже использован ЛЮБОЙ буст
-        if (usedInCurrentTour) {
-          // Проверяем - может быть именно этот буст применён на следующий тур
-          if (boostData && boostData.available === false && boostData.usedInTourNumber === nextTour) {
-            // Этот буст применён на следующий тур - статус pending до дедлайна
-            return {
-              ...chip,
-              status: 'pending' as BoostStatus,
-              sublabel: 'Используется',
-              usedInTour: boostData.usedInTourNumber,
-            };
-          }
-          // Другой буст использован в этом туре - показываем недоступен
-          return { ...chip, status: 'unavailable' as BoostStatus, sublabel: 'Недоступен' };
-        }
-
-        // Если бэкенд говорит, что буст больше недоступен (использован в прошлом туре)
+        // Если бэкенд говорит, что этот буст уже когда-то использовался
         if (boostData && boostData.available === false) {
-          let sublabel = 'Недоступен';
-          if (boostData.usedInTourNumber) {
-            sublabel = `Использован в ${boostData.usedInTourNumber} туре`;
-          }
-
           return {
             ...chip,
             status: 'used' as BoostStatus,
-            sublabel,
+            sublabel: boostData.usedInTourNumber
+              ? `Использован в ${boostData.usedInTourNumber} туре`
+              : 'Использован',
             usedInTour: boostData.usedInTourNumber || undefined,
           };
         }
 
-        // Иначе оставляем чип доступным
+        // Если на следующий тур уже назначен какой-то буст, остальные считаем недоступными
+        if (usedForNextTour) {
+          return {
+            ...chip,
+            status: 'used' as BoostStatus,
+            sublabel: 'Недоступен (буст уже выбран на следующий тур)',
+          };
+        }
+
+        // В остальных случаях — буст доступен
         return { ...chip, status: 'available' as BoostStatus, sublabel: 'Подробнее' };
       }));
     }
-  }, [boostsLoading, boostsResponse, apiBoostData, usedInCurrentTour]);
+  }, [boostsLoading, boostsResponse, apiBoostData, usedForNextTour]);
   
   // Check if boost is active on the other page
   useEffect(() => {
@@ -274,7 +264,7 @@ const Transfers = () => {
     setIsBoostDrawerOpen(true);
   };
 
-  const applyBoost = (chipId: string) => {
+  const applyBoost = async (chipId: string) => {
     const hasPendingBoost = specialChips.some((chip) => chip.status === "pending");
     const { pending, page } = hasAnyPendingBoost();
 
@@ -283,42 +273,56 @@ const Transfers = () => {
       return;
     }
 
-    if (chipId === "golden") {
-      const mainSquad = players.slice(0, 11).map((p) => ({
-        id: p.id,
-        name: p.name,
-        team: p.team,
-        position: p.position,
-        price: p.price,
-        points: p.points,
-        slotIndex: p.slotIndex,
-        isCaptain: p.isCaptain,
-        isViceCaptain: p.isViceCaptain,
-      }));
-      const bench = players.slice(11, 15).map((p) => ({
-        id: p.id,
-        name: p.name,
-        team: p.team,
-        position: p.position,
-        price: p.price,
-        points: p.points,
-        slotIndex: p.slotIndex,
-        isCaptain: p.isCaptain,
-        isViceCaptain: p.isViceCaptain,
-      }));
-      saveGoldenTourBackup(currentTour || 1, mainSquad, bench, captain, viceCaptain);
-      toast.info("Состав сохранён. После окончания тура он будет автоматически восстановлен.");
+    if (!squad || !boostTourId) {
+      toast.error("Бусты можно использовать только для следующего тура");
+      return;
     }
 
-    setPendingBoost(chipId, "transfers");
-    setSpecialChips((prev) =>
-      prev.map((chip) =>
-        chip.id === chipId ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" } : chip,
-      ),
-    );
+    // Трансферные бусты нельзя отменять, поэтому сразу применяем на бэкенде
+    if (chipId === "transfers" || chipId === "golden") {
+      try {
+        const boostType: BoostType = chipId === "transfers" ? "transfers_plus" : "gold_tour";
+        const body: ApplyBoostRequest = {
+          squad_id: squad.id,
+          tour_id: boostTourId,
+          type: boostType,
+        };
+
+        const result = await boostsApi.apply(body);
+        if (!result.success) {
+          toast.error(result.error || "Не удалось применить буст");
+          return;
+        }
+
+        toast.success("Буст использован для следующего тура");
+
+        // Локально помечаем буст как активный на этот тур
+        setPendingBoost(chipId, "transfers");
+        setSpecialChips((prev) =>
+          prev.map((chip) =>
+            chip.id === chipId
+              ? { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" }
+              : chip,
+          ),
+        );
+
+        // Обновляем данные о доступности бустов с сервера
+        queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Ошибка при применении буста");
+      }
+
+      return;
+    }
   };
 
   const cancelBoost = (chipId: string) => {
+    // Трансферные бусты нельзя отменять
+    if (chipId === "transfers" || chipId === "golden") {
+      toast.error("Этот буст нельзя отменить");
+      return;
+    }
+
     clearPendingBoost();
     setSpecialChips((prev) =>
       prev.map((chip) =>

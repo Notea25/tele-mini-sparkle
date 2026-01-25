@@ -371,14 +371,12 @@ export type BoostType = 'bench_boost' | 'triple_captain' | 'transfers_plus' | 'g
 
 export interface BoostInfo {
   type: BoostType;
-  description: string;
   available: boolean;
   used_in_tour_number?: number | null; // Номер тура, в котором использован буст
 }
 
 export interface AvailableBoostsResponse {
-  available_boosts: boolean;
-  used_in_current_tour: boolean;
+  used_for_next_tour: boolean;
   boosts: BoostInfo[];
 }
 

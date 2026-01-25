@@ -190,8 +190,8 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
   const nextTour = toursData?.next_tour?.number || null;
   const nextTourId = toursData?.next_tour?.id || null;
   
-  // For boosts: use next tour ID if available, otherwise current tour ID
-  const boostTourId = nextTourId || currentTourId;
+  // For boosts: бусты можно использовать ТОЛЬКО для следующего тура
+  const boostTourId = nextTourId;
 
   const isLoading = squadsLoading || playersLoading || toursLoading;
   const error = squadsError ? (squadsError instanceof Error ? squadsError.message : 'Unknown error') : null;
