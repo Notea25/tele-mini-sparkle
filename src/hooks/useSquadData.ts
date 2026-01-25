@@ -57,24 +57,24 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     refetchOnReconnect: true, // Refetch when reconnecting
   });
 
-  // Fetch players with react-query - longer cache as players don't change often
+  // Fetch players with react-query - no caching
   const { data: playersResponse, isLoading: playersLoading } = useQuery({
     queryKey: ['players', leagueId],
     queryFn: () => playersApi.getByLeague(leagueId),
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
 
-  // Fetch tours with react-query
+  // Fetch tours with react-query - no caching
   const { data: toursResponse, isLoading: toursLoading } = useQuery({
     queryKey: ['tours', leagueId],
     queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
 
   // Extract data
@@ -106,8 +106,8 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     queryKey: ['leaderboard', currentTourId],
     queryFn: () => currentTourId ? squadsApi.getLeaderboard(currentTourId) : Promise.resolve(null),
     enabled: !!currentTourId && !!squad,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 0,
+    gcTime: 0,
   });
 
   const tourPoints = useMemo(() => {

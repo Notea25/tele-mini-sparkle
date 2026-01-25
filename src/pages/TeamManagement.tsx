@@ -108,10 +108,10 @@ const TeamManagement = () => {
     queryKey: ['availableBoosts', squad?.id, boostTourId],
     queryFn: () => squad && boostTourId ? boostsApi.getAvailable(squad.id, boostTourId) : Promise.resolve(null),
     enabled: !!squad?.id && !!boostTourId,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
   });
   
   // Map API boosts to availability and used tour number

@@ -54,7 +54,8 @@ const ViewComLeague = () => {
       return commercialLeaguesApi.getLeaderboard(customLeagueId, currentTourId);
     },
     enabled: !!customLeagueId && !!currentTourId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0,
+    gcTime: 0,
   });
 
   // Check if user is participating based on leaderboard data

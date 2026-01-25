@@ -63,7 +63,8 @@ const ViewUserLeague = () => {
       return customLeaguesApi.getUserLeagueLeaderboard(leagueId, currentTourId);
     },
     enabled: !!leagueId && !!currentTourId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0,
+    gcTime: 0,
   });
 
   // Extract league data

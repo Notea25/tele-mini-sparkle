@@ -43,11 +43,9 @@ const League = () => {
   const { data: mySquadsResponse } = useQuery({
     queryKey: ['mySquads'],
     queryFn: () => squadsApi.getMySquads(),
-    staleTime: 10 * 60 * 1000, // 10 minutes - data considered fresh
-    gcTime: 30 * 60 * 1000, // 30 minutes - keep in cache
-    // При возврате на страницу хотим видеть актуальные данные о лигах и сквадах,
-    // поэтому позволяем рефетч на маунте, если данные помечены как устаревшие.
-    refetchOnWindowFocus: false,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   });
   
@@ -55,11 +53,9 @@ const League = () => {
   const { data: toursResponse } = useQuery({
     queryKey: ['tours', leagueId],
     queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnWindowFocus: false,
-    // При возврате на страницу /league после перехода на общий лидерборд
-    // хотим всегда иметь актуальные данные по текущему/предыдущему туру.
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   });
  
@@ -81,15 +77,11 @@ const League = () => {
     queryKey: ['leaderboard', currentTourId],
     queryFn: () => currentTourId ? squadsApi.getLeaderboard(currentTourId) : Promise.resolve({ success: false, data: [] }),
     enabled: !!currentTourId,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnWindowFocus: false,
-    // При возврате на /league после просмотра турнирной таблицы
-    // актуализируем превью-лидерборд по выбранному туру.
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
     refetchOnMount: 'always',
-    // Сохраняем предыдущие данные, чтобы блоки "Средний результат" и превью-таблица
-    // не мигали в нули/пустоту во время фонового рефетча.
-    keepPreviousData: true,
+    keepPreviousData: false,
   });
 
   // Get fav_team_id from current squad
@@ -100,10 +92,10 @@ const League = () => {
     queryKey: ['clubLeague', favTeamId],
     queryFn: () => favTeamId ? customLeaguesApi.getClubByTeam(favTeamId) : Promise.resolve({ success: false, data: undefined }),
     enabled: !!favTeamId,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
   });
   
   // Fetch club league leaderboard by fav_team_id
@@ -113,31 +105,29 @@ const League = () => {
       ? customLeaguesApi.getClubLeaderboard(currentTourId, favTeamId) 
       : Promise.resolve({ success: false, data: undefined }),
     enabled: !!favTeamId && !!currentTourId,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
   });
 
   // Fetch commercial leagues from API
   const { data: commercialLeaguesResponse, isLoading: commercialLeaguesLoading } = useQuery({
     queryKey: ['commercialLeagues', leagueId],
     queryFn: () => commercialLeaguesApi.getByLeague(leagueId),
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
   });
 
   // Fetch user's leagues from API
   const { data: mySquadLeaguesResponse, isLoading: myLeaguesLoading } = useQuery({
     queryKey: ['mySquadLeagues'],
     queryFn: () => customLeaguesApi.getMySquadLeagues(),
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnWindowFocus: false,
-    // When returning to the League page we want to see the latest list of user leagues,
-    // especially after creating or deleting a league, so always refetch on mount.
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   });
 
