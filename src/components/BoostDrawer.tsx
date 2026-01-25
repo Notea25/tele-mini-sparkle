@@ -24,6 +24,7 @@ interface BoostDrawerProps {
   currentTour?: number;
   isRemoving?: boolean;
   hasActiveBoostInTour?: boolean; // true if another boost is already pending in this tour
+  activeBoostChipId?: string | null; // ID буста, уже активированного на этот тур
 }
 
 const boostDescriptions: Record<string, { title: string; description: React.ReactNode; canCancel: boolean }> = {
@@ -119,13 +120,14 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
   },
 };
 
-const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, currentTour = 1, isRemoving = false, hasActiveBoostInTour = false }: BoostDrawerProps) => {
+const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, currentTour = 1, isRemoving = false, hasActiveBoostInTour = false, activeBoostChipId = null }: BoostDrawerProps) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showBlockedMessage, setShowBlockedMessage] = useState(false);
 
   if (!chip) return null;
 
   const boostInfo = boostDescriptions[chip.id];
+  const isThisChipActive = activeBoostChipId !== null && chip.id === activeBoostChipId;
 
   const handleApplyClick = () => {
     // If another boost is already active in this tour, show blocked message
@@ -287,23 +289,46 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
                 </div>
               )}
               {chip.status === "used" && (
-                <div className="flex gap-3">
-                  {onRemove && boostInfo?.canCancel && (
-                    <Button
-                      onClick={handleRemove}
-                      disabled={isRemoving}
-                      className="flex-1 rounded-lg h-12 font-medium bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                    >
-                      {isRemoving ? "Отмена..." : "Отменить"}
-                    </Button>
+                <>
+                  {isThisChipActive ? (
+                    <div className="flex gap-3">
+                      {onRemove && boostInfo?.canCancel && (
+                        <Button
+                          onClick={handleRemove}
+                          disabled={isRemoving}
+                          className="flex-1 rounded-lg h-12 font-medium bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                        >
+                          {isRemoving ? "Отмена..." : "Отменить"}
+                        </Button>
+                      )}
+                      <Button
+                        onClick={handleClose}
+                        className={`rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground ${onRemove && boostInfo?.canCancel ? 'flex-1' : 'w-full'}`}
+                      >
+                        Закрыть
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                        <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                        <p className="text-xs text-amber-500">
+                          В этом туре уже активирован другой буст
+                          {activeBoostChipId && boostDescriptions[activeBoostChipId]?.title
+                            ? `: «${boostDescriptions[activeBoostChipId].title}»`
+                            : ""}.
+                          {" "}Отмени его, чтобы использовать «{boostInfo?.title || chip.label}».
+                        </p>
+                      </div>
+                      <Button
+                        onClick={handleClose}
+                        className="w-full rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
+                      >
+                        Понятно
+                      </Button>
+                    </div>
                   )}
-                  <Button
-                    onClick={handleClose}
-                    className={`rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground ${onRemove && boostInfo?.canCancel ? 'flex-1' : 'w-full'}`}
-                  >
-                    Закрыть
-                  </Button>
-                </div>
+                </>
               )}
               {chip.status === "unavailable" && (
                 <Button

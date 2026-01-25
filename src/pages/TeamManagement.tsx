@@ -132,6 +132,18 @@ const TeamManagement = () => {
   }, [boostsResponse]);
   
   const usedForNextTour = boostsResponse?.success ? boostsResponse.data?.used_for_next_tour : false;
+
+  // ID буста, уже активированного на следующий тур (если есть)
+  const activeNextTourBoostChipId = useMemo(() => {
+    if (!usedForNextTour || !nextTour) return null;
+
+    // Ищем буст, который помечен как использованный именно в следующем туре
+    const entry = Object.entries(apiBoostData).find(
+      ([, data]) => data.available === false && data.usedInTourNumber === nextTour,
+    );
+
+    return (entry ? entry[0] : null) as string | null;
+  }, [apiBoostData, usedForNextTour, nextTour]);
   
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");
   const [selectedFormation, setSelectedFormation] = useState("1-4-4-2");
@@ -466,7 +478,7 @@ const TeamManagement = () => {
         await queryClient.invalidateQueries({ queryKey: ['my-squads'] });
         
         toast.success("Изменения сохранены");
-        navigate("/league");
+        // Остаёмся на странице "Моя команда" после сохранения
       } else {
         toast.error(`Ошибка: ${result.error || 'Неизвестная ошибка'}`);
       }
@@ -861,10 +873,17 @@ const TeamManagement = () => {
             const isDisabledByApi = boostData?.available === false;
             const isDisabled = isBlocked || isDisabledByApi || chip.status === "used";
             
-            // Boosts that can be cancelled: bench, captain3x, double
+            // Бусты, для которых вообще может быть доступна отмена: только командные бусты
             const cancellableBoosts = ["bench", "captain3x", "double"];
-            const canBeRemoved = chip.status === "used" && cancellableBoosts.includes(chip.id);
-            const isClickable = !isBlocked && (chip.status === "available" || chip.status === "pending" || canBeRemoved);
+            const isUsedCancellableChip = chip.status === "used" && cancellableBoosts.includes(chip.id);
+
+            // Карточка кликабельна, если:
+            // - буст доступен,
+            // - буст в состоянии pending,
+            // - или это любой "командный" буст в статусе used (для показа окна с информацией)
+            const isClickable =
+              !isBlocked &&
+              (chip.status === "available" || chip.status === "pending" || isUsedCancellableChip);
             
             return (
               <div
@@ -883,7 +902,7 @@ const TeamManagement = () => {
                     ? "bg-card/30 opacity-50 cursor-not-allowed"
                     : chip.status === "pending"
                       ? "bg-card border-2 border-primary hover:bg-card/80 cursor-pointer"
-                      : chip.status === "used" && canBeRemoved
+                      : chip.status === "used" && isUsedCancellableChip
                         ? "bg-card/60 hover:bg-card/80 cursor-pointer"
                         : "bg-card hover:bg-card/80 cursor-pointer"
                 }`}
@@ -1332,6 +1351,7 @@ const TeamManagement = () => {
         currentTour={nextTour || currentTour}
         isRemoving={isRemovingBoost}
         hasActiveBoostInTour={specialChips.some((c) => c.status === "pending") || otherPageBoostActive}
+        activeBoostChipId={activeNextTourBoostChipId}
       />
 
       {/* Confirm Boost Drawer */}
@@ -1349,7 +1369,7 @@ const TeamManagement = () => {
             await queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
           }
           setIsConfirmBoostOpen(false);
-          navigate("/league");
+          // Остаёмся на странице "Моя команда" после подтверждения буста
         }}
         onChangeBoost={() => {
           setIsConfirmBoostOpen(false);
