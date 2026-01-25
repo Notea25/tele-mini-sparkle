@@ -103,16 +103,26 @@ const TeamManagement = () => {
   // Load squad data from API
   const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, nextTour, boostTourId, isLoading, error } = useSquadData(leagueId);
   
-  // Fetch available boosts from API - use boostTourId (next tour or current tour)
-  const { data: boostsResponse, isLoading: boostsLoading } = useQuery({
+  // Fetch available boosts from API - всегда тянем свежие данные с бэка при заходе на страницу
+  const { data: boostsResponse, isLoading: boostsLoading, refetch: refetchBoosts } = useQuery({
     queryKey: ['availableBoosts', squad?.id, boostTourId],
-    queryFn: () => squad && boostTourId ? boostsApi.getAvailable(squad.id, boostTourId) : Promise.resolve(null),
+    queryFn: () =>
+      squad && boostTourId
+        ? boostsApi.getAvailable(squad.id, boostTourId)
+        : Promise.resolve(null),
     enabled: !!squad?.id && !!boostTourId,
     staleTime: 0,
     gcTime: 0,
     refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   });
+
+  // Гарантируем запрос к бэку при появлении squadId/boostTourId (при заходе на страницу или смене лиги/тура)
+  useEffect(() => {
+    if (squad?.id && boostTourId) {
+      refetchBoosts();
+    }
+  }, [squad?.id, boostTourId, refetchBoosts]);
   
   // Map API boosts to availability and used tour number
   const apiBoostData = useMemo(() => {
@@ -135,14 +145,25 @@ const TeamManagement = () => {
 
   // ID буста, уже активированного на следующий тур (если есть)
   const activeNextTourBoostChipId = useMemo(() => {
-    if (!usedForNextTour || !nextTour) return null;
+    if (!usedForNextTour) return null;
 
-    // Ищем буст, который помечен как использованный именно в следующем туре
-    const entry = Object.entries(apiBoostData).find(
-      ([, data]) => data.available === false && data.usedInTourNumber === nextTour,
-    );
+    // Сначала берём все бусты, которые по данным API уже недоступны (available === false)
+    const unavailableEntries = Object.entries(apiBoostData).filter(([, data]) => data.available === false);
 
-    return (entry ? entry[0] : null) as string | null;
+    // Если ровно один такой буст — считаем его активным на ближайший тур
+    if (unavailableEntries.length === 1) {
+      return unavailableEntries[0][0] as string;
+    }
+
+    // Если API возвращает номер тура использования — пробуем найти именно по nextTour
+    if (nextTour) {
+      const entryByNextTour = unavailableEntries.find(([, data]) => data.usedInTourNumber === nextTour);
+      if (entryByNextTour) {
+        return entryByNextTour[0] as string;
+      }
+    }
+
+    return null as string | null;
   }, [apiBoostData, usedForNextTour, nextTour]);
   
   const [activeTab, setActiveTab] = useState<"formation" | "list">("formation");

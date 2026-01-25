@@ -160,16 +160,26 @@ const Transfers = () => {
     'gold_tour': 'golden',
   };
   
-  // Fetch available boosts from API
-  const { data: boostsResponse, isLoading: boostsLoading } = useQuery({
+  // Fetch available boosts from API — всегда тянем свежие данные с бэка при заходе на страницу
+  const { data: boostsResponse, isLoading: boostsLoading, refetch: refetchBoosts } = useQuery({
     queryKey: ['availableBoosts', squad?.id, boostTourId],
-    queryFn: () => squad && boostTourId ? boostsApi.getAvailable(squad.id, boostTourId) : Promise.resolve(null),
+    queryFn: () =>
+      squad && boostTourId
+        ? boostsApi.getAvailable(squad.id, boostTourId)
+        : Promise.resolve(null),
     enabled: !!squad?.id && !!boostTourId,
     staleTime: 0,
     gcTime: 0,
     refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   });
+
+  // Гарантируем запрос к бэку при появлении squadId/boostTourId (при заходе на страницу или смене лиги/тура)
+  useEffect(() => {
+    if (squad?.id && boostTourId) {
+      refetchBoosts();
+    }
+  }, [squad?.id, boostTourId, refetchBoosts]);
   
   // Map API boosts to availability and used tour number
   const apiBoostData = useMemo(() => {
