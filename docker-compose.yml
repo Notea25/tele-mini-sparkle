@@ -1,6 +1,6 @@
 services:
   fantasy-frontend:
-    image: krisosmakov/fantasy-sports-belarus:latest 
+    image: krisosmakov/fantasy-app
     container_name: fantasy-sports-frontend
     ports:
       - "3000:80"
