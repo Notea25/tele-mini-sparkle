@@ -329,6 +329,83 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                 </div>
               </AccordionContent>
             </AccordionItem>
+            <AccordionItem value="leagues" className="border border-border rounded-xl overflow-hidden">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
+                <span className="text-foreground font-display">Призы</span>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
+                  <div>
+                    <h4 className="text-foreground font-medium text-medium mb-3">🏆 Призы по итогам сезона</h4>
+                    <div className="space-y-3 pl-1">
+                      <div className="flex items-start gap-2">
+                        <span className="text-primary font-bold min-w-[20px]">1</span>
+                        <span className="text-foreground font-medium">место - iPhone 17 Pro</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-primary font-bold min-w-[20px]">2</span>
+                        <span className="text-foreground font-medium">место - PlayStation 5</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-primary font-bold min-w-[20px]">3</span>
+                        <span className="text-foreground font-medium">место - AirPods Max</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-foreground font-medium text-medium mb-2">
+                      🎯 Дополнительные призы по ходу сезона
+                    </h4>
+                    <p className="mb-3">
+                      Помимо основных призов, в разделе коммерческих лиг проходят мини-турниры внутри сезона:
+                    </p>
+
+                    <div className="space-y-2 mb-3">
+                      <div className="flex items-start gap-2">
+                        <span className="text-primary">•</span>
+                        <span>
+                          Сезон состоит из <strong>30 туров</strong>
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-primary">•</span>
+                        <span>
+                          Каждый отрезок из <strong>3 туров</strong> - это отдельный мини-турнир
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-primary">•</span>
+                        <span>Победитель каждого отрезка получает приз</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-card border border-border/50 rounded-lg p-3">
+                      <div className="text-center font-bold text-foreground mb-1">Итого:</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
+                        <div className="p-2 bg-background rounded">
+                          <div className="text-lg font-bold text-primary">30 туров</div>
+                          <div className="text-xs">весь сезон</div>
+                        </div>
+                        <div className="p-2 bg-background rounded">
+                          <div className="text-lg font-bold text-primary">10 мини-турниров</div>
+                          <div className="text-xs">по 3 тура каждый</div>
+                        </div>
+                        <div className="p-2 bg-background rounded">
+                          <div className="text-lg font-bold text-primary">10 шансов</div>
+                          <div className="text-xs">на победу</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="mt-3 text-foreground font-medium">
+                      Даже если старт сезона был неудачным - каждый новый отрезок начинается с нуля и даёт новый шанс на
+                      победу!
+                    </p>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           </Accordion>
 
           {/* Bottom padding */}
