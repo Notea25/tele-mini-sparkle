@@ -196,7 +196,7 @@ const TeamManagement = () => {
         boostId: initialId,
       });
     }
-  }, [boostsLoading, boostsResponse, initialBoostState, activeNextTourBoostChipId]);
+  }, [boostsLoading, boostsResponse, initialBoostState, activeNextTourBoostId]);
   
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
@@ -1334,7 +1334,7 @@ const TeamManagement = () => {
         currentTour={nextTour || currentTour}
         isRemoving={isRemovingBoost}
         hasActiveBoostInTour={specialChips.some((c) => c.status === "pending") || otherPageBoostActive}
-        activeBoostChipId={activeNextTourBoostChipId}
+        activeBoostChipId={activeNextTourBoostId}
         contextPage="team-management"
         blockedByOtherSection={otherPageBoostActive}
       />
