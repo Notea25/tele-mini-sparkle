@@ -23,7 +23,7 @@ import { useTeams } from "@/hooks/useTeams";
 import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
 import { useSquadData } from "@/hooks/useSquadData";
 import { clubLogos } from "@/lib/clubLogos";
-import { squadsApi, boostsApi, BoostType } from "@/lib/api";
+import { squadsApi, boostsApi } from "@/lib/api";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
 import FormationField from "@/components/FormationField";
 import PlayerCard from "@/components/PlayerCard";
@@ -63,6 +63,9 @@ const clubIcons: Record<string, string> = {
 };
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
+import { BoostSection } from "@/constants/boosts";
+import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipStateForPage } from "@/lib/boostViewModel";
+import { PositionCode } from "@/constants/positions";
 
 // Special chips for transfers page UI - only 2 chips
 const initialChips: BoostChip[] = [
@@ -137,15 +140,6 @@ const Transfers = () => {
   
   const teamName = squad?.name || getSavedTeam().teamName || "Lucky Team";
   
-  // Mapping API boost types to local chip IDs
-  const boostTypeToChipId: Record<BoostType, string> = {
-    'bench_boost': 'bench',
-    'triple_captain': 'captain3x',
-    'double_bet': 'double',
-    'transfers_plus': 'transfers',
-    'gold_tour': 'golden',
-  };
-  
   // Fetch available boosts from API — всегда тянем свежие данные с бэка при заходе на страницу
   const { data: boostsResponse, isLoading: boostsLoading, refetch: refetchBoosts } = useQuery({
     queryKey: ['availableBoosts', squad?.id, boostTourId],
@@ -168,54 +162,26 @@ const Transfers = () => {
   }, [squad?.id, boostTourId, refetchBoosts]);
   
   // Map API boosts to availability and used tour number
-  const apiBoostData = useMemo(() => {
-    const data: Record<string, { available: boolean; usedInTourNumber?: number | null }> = {};
-    if (boostsResponse?.success && boostsResponse.data?.boosts) {
-      boostsResponse.data.boosts.forEach(boost => {
-        const chipId = boostTypeToChipId[boost.type];
-        if (chipId) {
-          data[chipId] = {
-            available: boost.available,
-            usedInTourNumber: boost.used_in_tour_number,
-          };
-        }
-      });
-    }
-    return data;
-  }, [boostsResponse]);
+  const availabilityMap = useMemo(
+    () => mapAvailableBoostsToView(boostsResponse?.success ? boostsResponse.data?.boosts : undefined),
+    [boostsResponse],
+  );
   
   const usedForNextTour = boostsResponse?.success ? boostsResponse.data?.used_for_next_tour : false;
   
   // ID буста, уже активированного на следующий тур (если есть)
-  const activeNextTourBoostChipId = useMemo(() => {
-    if (!usedForNextTour) return null;
-
-    // Сначала берём все бусты, которые по данным API уже недоступны (available === false)
-    const unavailableEntries = Object.entries(apiBoostData).filter(([, data]) => data.available === false);
-
-    // Если ровно один такой буст — считаем его активным на ближайший тур
-    if (unavailableEntries.length === 1) {
-      return unavailableEntries[0][0] as string;
-    }
-
-    // Если API возвращает номер тура использования — пробуем найти именно по nextTour
-    if (nextTour) {
-      const entryByNextTour = unavailableEntries.find(([, data]) => data.usedInTourNumber === nextTour);
-      if (entryByNextTour) {
-        return entryByNextTour[0] as string;
-      }
-    }
-
-    return null as string | null;
-  }, [apiBoostData, usedForNextTour, nextTour]);
+  const activeNextTourBoostId = useMemo(
+    () => getActiveNextTourBoostId(availabilityMap, usedForNextTour, nextTour ?? null),
+    [availabilityMap, usedForNextTour, nextTour],
+  );
   
   const teams = ["Все команды", ...apiTeams.map((t) => t.name)];
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
   const positionToFilter: Record<string, string> = {
-    ВР: "Вратари",
-    ЗЩ: "Защитники",
-    ПЗ: "Полузащитники",
-    НП: "Нападающие",
+    [PositionCode.GK]: "Вратари",
+    [PositionCode.DEF]: "Защитники",
+    [PositionCode.MID]: "Полузащитники",
+    [PositionCode.FWD]: "Нападающие",
   };
 
   // Update specialChips when API data arrives
@@ -229,59 +195,25 @@ const Transfers = () => {
         });
       }
 
-      setSpecialChips(prev =>
-        prev.map(chip => {
-          const boostData = apiBoostData[chip.id];
-
-          // Если бэкенд говорит, что этот буст уже использован в каком‑то туре
-          if (boostData && boostData.available === false) {
-            // Этот буст выбран на следующий тур — считаем, что он "используется" для ближайшего тура
-            if (
-              usedForNextTour &&
-              activeNextTourBoostChipId === chip.id &&
-              nextTour &&
-              boostData.usedInTourNumber === nextTour
-            ) {
-              return {
-                ...chip,
-                status: 'pending' as BoostStatus,
-                sublabel: 'Используется',
-                usedInTour: boostData.usedInTourNumber || undefined,
-              };
-            }
-
-            // Буст уже когда‑то был использован в прошлом туре — показываем тур
-            return {
-              ...chip,
-              status: 'used' as BoostStatus,
-              sublabel: boostData.usedInTourNumber
-                ? `Использован во ${boostData.usedInTourNumber} туре`
-                : 'Использован',
-              usedInTour: boostData.usedInTourNumber || undefined,
-            };
-          }
-
-          // Если на следующий тур уже выбран какой‑то другой буст — этот считаем недоступным
-          if (usedForNextTour && activeNextTourBoostChipId && chip.id !== activeNextTourBoostChipId) {
-            return {
-              ...chip,
-              status: 'used' as BoostStatus,
-              sublabel: 'Недоступен (буст уже выбран на следующий тур)',
-            };
-          }
-
-          // В остальных случаях — буст доступен
-          return { ...chip, status: 'available' as BoostStatus, sublabel: 'Подробнее', usedInTour: undefined };
+      setSpecialChips(
+        buildBoostChipStateForPage({
+          section: BoostSection.TRANSFERS,
+          baseChips: initialChips,
+          availabilityMap,
+          usedForNextTour,
+          activeNextTourBoostId,
+          nextTourNumber: nextTour ?? null,
+          pendingBoostId: null,
         }),
       );
     }
-  }, [boostsLoading, boostsResponse, apiBoostData, usedForNextTour, nextTour, activeNextTourBoostChipId]);
+  }, [boostsLoading, boostsResponse, availabilityMap, usedForNextTour, nextTour, activeNextTourBoostId]);
   
   // Check if boost is active on the other page
   useEffect(() => {
     const checkOtherPageBoost = () => {
       const { pending, boostId, page } = hasAnyPendingBoost();
-      if (pending && page === "team-management") {
+      if (pending && page === BoostSection.TEAM_MANAGEMENT) {
         setOtherPageBoostActive(true);
       } else {
         setOtherPageBoostActive(false);
@@ -796,18 +728,18 @@ const Transfers = () => {
   };
 
   // Group players by position for list view
-  const playersByPosition = {
-    ВР: players.filter((p) => p.position === "ВР"),
-    ЗЩ: players.filter((p) => p.position === "ЗЩ"),
-    ПЗ: players.filter((p) => p.position === "ПЗ"),
-    НП: players.filter((p) => p.position === "НП"),
+  const playersByPosition: Record<PositionCode, PlayerDataExt[]> = {
+    [PositionCode.GK]: players.filter((p) => p.position === PositionCode.GK),
+    [PositionCode.DEF]: players.filter((p) => p.position === PositionCode.DEF),
+    [PositionCode.MID]: players.filter((p) => p.position === PositionCode.MID),
+    [PositionCode.FWD]: players.filter((p) => p.position === PositionCode.FWD),
   };
 
-  const positionLabels: Record<string, string> = {
-    ВР: "Вратари",
-    ЗЩ: "Защита",
-    ПЗ: "Полузащита",
-    НП: "Нападение",
+  const positionLabels: Record<PositionCode, string> = {
+    [PositionCode.GK]: "Вратари",
+    [PositionCode.DEF]: "Защита",
+    [PositionCode.MID]: "Полузащита",
+    [PositionCode.FWD]: "Нападение",
   };
 
   const handleSellPlayer = (playerId: number) => {
@@ -966,7 +898,7 @@ const Transfers = () => {
     setCurrentPage(1);
   };
 
-  const renderListSection = (position: string, positionPlayers: PlayerDataExt[]) => {
+  const renderListSection = (position: PositionCode, positionPlayers: PlayerDataExt[]) => {
     const slotCount = TRANSFERS_FORMATION_SLOTS[position] || 0;
 
     const slots: (PlayerDataExt | { isEmpty: true; slotIndex: number })[] = [];

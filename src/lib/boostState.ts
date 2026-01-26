@@ -1,5 +1,6 @@
 // Shared boost state management between pages
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
+import { BoostId, BoostSection, TEAM_MANAGEMENT_BOOSTS, TRANSFER_BOOSTS } from "@/constants/boosts";
 
 const BOOST_STATE_KEY = "fantasyBoostState";
 const GOLDEN_TOUR_BACKUP_KEY = "fantasyGoldenTourBackup";
@@ -26,9 +27,9 @@ export interface GoldenTourBackup {
 }
 
 export interface BoostState {
-  pendingBoostId: string | null;
-  pendingBoostPage: "team-management" | "transfers" | null;
-  usedBoosts: { id: string; tour: number }[];
+  pendingBoostId: BoostId | null;
+  pendingBoostPage: BoostSection | null;
+  usedBoosts: { id: BoostId; tour: number }[];
   currentTour: number;
 }
 
@@ -57,7 +58,7 @@ export const saveBoostState = (state: BoostState): void => {
   }
 };
 
-export const setPendingBoost = (boostId: string, page: "team-management" | "transfers"): void => {
+export const setPendingBoost = (boostId: BoostId, page: BoostSection): void => {
   const state = getBoostState();
   state.pendingBoostId = boostId;
   state.pendingBoostPage = page;
@@ -71,7 +72,7 @@ export const clearPendingBoost = (): void => {
   saveBoostState(state);
 };
 
-export const markBoostAsUsed = (boostId: string, tour: number): void => {
+export const markBoostAsUsed = (boostId: BoostId, tour: number): void => {
   const state = getBoostState();
   state.usedBoosts.push({ id: boostId, tour });
   state.pendingBoostId = null;
@@ -79,13 +80,13 @@ export const markBoostAsUsed = (boostId: string, tour: number): void => {
   saveBoostState(state);
 };
 
-export const isBoostUsed = (boostId: string): { used: boolean; tour?: number } => {
+export const isBoostUsed = (boostId: BoostId): { used: boolean; tour?: number } => {
   const state = getBoostState();
   const usedBoost = state.usedBoosts.find(b => b.id === boostId);
   return usedBoost ? { used: true, tour: usedBoost.tour } : { used: false };
 };
 
-export const hasAnyPendingBoost = (): { pending: boolean; boostId?: string; page?: string } => {
+export const hasAnyPendingBoost = (): { pending: boolean; boostId?: BoostId; page?: BoostSection } => {
   const state = getBoostState();
   if (state.pendingBoostId) {
     return { pending: true, boostId: state.pendingBoostId, page: state.pendingBoostPage || undefined };
