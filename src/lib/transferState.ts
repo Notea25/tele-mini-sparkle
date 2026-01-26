@@ -70,16 +70,10 @@ export const calculateTransferCosts = (
   hasTransfersBoost: boolean,
   hasGoldenTourBoost: boolean
 ): { freeTransfersUsed: number; paidTransfers: number; pointsPenalty: number } => {
-  // Считаем, что трансферные бусты действуют весь тур, даже после повторных заходов на страницу.
-  const boostState = getBoostState();
-
-  const persistentBoostActive =
-    hasTransfersBoost ||
-    hasGoldenTourBoost ||
-    // Если в boostState есть активный буст "transfers" или "golden" на странице трансферов,
-    // считаем, что все трансферы в этом туре бесплатны.
-    (boostState.pendingBoostPage === "transfers" &&
-      (boostState.pendingBoostId === "transfers" || boostState.pendingBoostId === "golden"));
+  // Считаем, что трансферные бусты действуют весь тур, пока активен буст для текущего тура.
+  // Здесь мы доверяем только флагам hasTransfersBoost/hasGoldenTourBoost, вычисленным на основе API данных,
+  // и не используем локальный boostState.pendingBoost* для определения активности.
+  const persistentBoostActive = hasTransfersBoost || hasGoldenTourBoost;
 
   // With boosts, all transfers are free
   if (persistentBoostActive) {
@@ -113,14 +107,9 @@ export const recordTransfers = (
   const state = getTransferState();
   const costs = calculateTransferCosts(numTransfers, hasTransfersBoost, hasGoldenTourBoost);
 
-  const boostState = getBoostState();
-  const persistentBoostActive =
-    hasTransfersBoost ||
-    hasGoldenTourBoost ||
-    (boostState.pendingBoostPage === "transfers" &&
-      (boostState.pendingBoostId === "transfers" || boostState.pendingBoostId === "golden"));
+  const persistentBoostActive = hasTransfersBoost || hasGoldenTourBoost;
   
-  // With boosts (включая сохранённый в boostState), трансферы не тратят бесплатную квоту и не дают штраф
+  // With boosts трансферы не тратят бесплатную квоту и не дают штраф
   if (!persistentBoostActive) {
     state.transfersUsedThisTour += numTransfers;
     state.pointsPenalty += costs.pointsPenalty;

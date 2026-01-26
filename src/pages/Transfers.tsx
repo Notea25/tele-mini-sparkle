@@ -30,8 +30,6 @@ import PlayerCard from "@/components/PlayerCard";
 import BoostDrawer from "@/components/BoostDrawer";
 import ConfirmTransfersDrawer from "@/components/ConfirmTransfersDrawer";
 import {
-  getBoostState,
-  setPendingBoost,
   clearPendingBoost,
   hasAnyPendingBoost,
   TRANSFER_BOOSTS,
@@ -107,19 +105,7 @@ const Transfers = () => {
   const [viceCaptain, setViceCaptain] = useState<number | null>(null);
   const [selectedPlayerForCard, setSelectedPlayerForCard] = useState<number | null>(null);
   const [buyPlayerForCard, setBuyPlayerForCard] = useState<PlayerData | null>(null);
-  const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
-    const boostState = getBoostState();
-    return initialChips.map((chip) => {
-      if (boostState.pendingBoostId === chip.id) {
-        return { ...chip, status: "pending" as BoostStatus, sublabel: "Используется" };
-      }
-      const usedBoost = boostState.usedBoosts.find((b) => b.id === chip.id);
-      if (usedBoost) {
-        return { ...chip, status: "used" as BoostStatus, usedInTour: usedBoost.tour };
-      }
-      return chip;
-    });
-  });
+  const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => initialChips);
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
   const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
@@ -200,6 +186,29 @@ const Transfers = () => {
   
   const usedForNextTour = boostsResponse?.success ? boostsResponse.data?.used_for_next_tour : false;
   
+  // ID буста, уже активированного на следующий тур (если есть)
+  const activeNextTourBoostChipId = useMemo(() => {
+    if (!usedForNextTour) return null;
+
+    // Сначала берём все бусты, которые по данным API уже недоступны (available === false)
+    const unavailableEntries = Object.entries(apiBoostData).filter(([, data]) => data.available === false);
+
+    // Если ровно один такой буст — считаем его активным на ближайший тур
+    if (unavailableEntries.length === 1) {
+      return unavailableEntries[0][0] as string;
+    }
+
+    // Если API возвращает номер тура использования — пробуем найти именно по nextTour
+    if (nextTour) {
+      const entryByNextTour = unavailableEntries.find(([, data]) => data.usedInTourNumber === nextTour);
+      if (entryByNextTour) {
+        return entryByNextTour[0] as string;
+      }
+    }
+
+    return null as string | null;
+  }, [apiBoostData, usedForNextTour, nextTour]);
+  
   const teams = ["Все команды", ...apiTeams.map((t) => t.name)];
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
   const positionToFilter: Record<string, string> = {
@@ -212,41 +221,53 @@ const Transfers = () => {
   // Update specialChips when API data arrives
   useEffect(() => {
     if (!boostsLoading && boostsResponse?.success) {
-      setSpecialChips(prev => prev.map(chip => {
-        const boostData = apiBoostData[chip.id];
-        const boostState = getBoostState();
+      setSpecialChips(prev =>
+        prev.map(chip => {
+          const boostData = apiBoostData[chip.id];
 
-        // pending-состояние управляется локально (из localStorage)
-        if (boostState.pendingBoostId === chip.id && boostState.pendingBoostPage === 'transfers') {
-          return { ...chip, status: 'pending' as BoostStatus, sublabel: 'Используется' };
-        }
+          // Если бэкенд говорит, что этот буст уже использован в каком‑то туре
+          if (boostData && boostData.available === false) {
+            // Этот буст выбран на следующий тур — считаем, что он "используется" для ближайшего тура
+            if (
+              usedForNextTour &&
+              activeNextTourBoostChipId === chip.id &&
+              nextTour &&
+              boostData.usedInTourNumber === nextTour
+            ) {
+              return {
+                ...chip,
+                status: 'pending' as BoostStatus,
+                sublabel: 'Используется',
+                usedInTour: boostData.usedInTourNumber || undefined,
+              };
+            }
 
-        // Если бэкенд говорит, что этот буст уже когда-то использовался
-        if (boostData && boostData.available === false) {
-          return {
-            ...chip,
-            status: 'used' as BoostStatus,
-            sublabel: boostData.usedInTourNumber
-              ? `Использован в ${boostData.usedInTourNumber} туре`
-              : 'Использован',
-            usedInTour: boostData.usedInTourNumber || undefined,
-          };
-        }
+            // Буст уже когда‑то был использован в прошлом туре — показываем тур
+            return {
+              ...chip,
+              status: 'used' as BoostStatus,
+              sublabel: boostData.usedInTourNumber
+                ? `Использован в ${boostData.usedInTourNumber} туре`
+                : 'Использован',
+              usedInTour: boostData.usedInTourNumber || undefined,
+            };
+          }
 
-        // Если на следующий тур уже назначен какой-то буст, остальные считаем недоступными
-        if (usedForNextTour) {
-          return {
-            ...chip,
-            status: 'used' as BoostStatus,
-            sublabel: 'Недоступен (буст уже выбран на следующий тур)',
-          };
-        }
+          // Если на следующий тур уже выбран какой‑то другой буст — этот считаем недоступным
+          if (usedForNextTour && activeNextTourBoostChipId && chip.id !== activeNextTourBoostChipId) {
+            return {
+              ...chip,
+              status: 'used' as BoostStatus,
+              sublabel: 'Недоступен (буст уже выбран на следующий тур)',
+            };
+          }
 
-        // В остальных случаях — буст доступен
-        return { ...chip, status: 'available' as BoostStatus, sublabel: 'Подробнее' };
-      }));
+          // В остальных случаях — буст доступен
+          return { ...chip, status: 'available' as BoostStatus, sublabel: 'Подробнее', usedInTour: undefined };
+        }),
+      );
     }
-  }, [boostsLoading, boostsResponse, apiBoostData, usedForNextTour]);
+  }, [boostsLoading, boostsResponse, apiBoostData, usedForNextTour, nextTour, activeNextTourBoostChipId]);
   
   // Check if boost is active on the other page
   useEffect(() => {
@@ -306,8 +327,7 @@ const Transfers = () => {
 
         toast.success("Буст использован для следующего тура");
 
-        // Локально помечаем буст как активный на этот тур
-        setPendingBoost(chipId, "transfers");
+        // Локально помечаем буст как активный на этот тур (пока не придут данные с бэка)
         setSpecialChips((prev) =>
           prev.map((chip) =>
             chip.id === chipId

@@ -260,23 +260,16 @@ const TeamManagement = () => {
   const [isConfirmBoostOpen, setIsConfirmBoostOpen] = useState(false);
   const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
 
-  // Check if boost is active on the other page
+  // Check if boost is active on the other page (раздел "Трансферы")
   useEffect(() => {
-    const checkOtherPageBoost = () => {
-      const { pending, boostId, page } = hasAnyPendingBoost();
-      if (pending && page === "transfers") {
-        setOtherPageBoostActive(true);
-      } else {
-        setOtherPageBoostActive(false);
-      }
-    };
-    checkOtherPageBoost();
-
-    // Listen for storage changes from other tabs/pages
-    const handleStorageChange = () => checkOtherPageBoost();
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+    // Если на следующий тур уже выбран буст и он НЕ относится к разделу "Моя команда",
+    // считаем, что активен буст в разделе "Трансферы"
+    if (activeNextTourBoostChipId && !TEAM_MANAGEMENT_BOOSTS.includes(activeNextTourBoostChipId)) {
+      setOtherPageBoostActive(true);
+    } else {
+      setOtherPageBoostActive(false);
+    }
+  }, [activeNextTourBoostChipId]);
 
   const openBoostDrawer = (chip: BoostChip) => {
     // Check if boost is active on other page
