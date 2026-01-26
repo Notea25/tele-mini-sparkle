@@ -23,7 +23,7 @@ import { useTeams } from "@/hooks/useTeams";
 import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
 import { useSquadData } from "@/hooks/useSquadData";
 import { clubLogos } from "@/lib/clubLogos";
-import { squadsApi, boostsApi } from "@/lib/api";
+import { squadsApi, boostsApi, BoostType, ApplyBoostRequest } from "@/lib/api";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
 import FormationField from "@/components/FormationField";
 import PlayerCard from "@/components/PlayerCard";
@@ -1143,7 +1143,7 @@ const Transfers = () => {
           </div>
           <div className="px-4">
             {Object.entries(playersByPosition).map(([position, positionPlayers]) =>
-              renderListSection(position, positionPlayers),
+              renderListSection(position as PositionCode, positionPlayers),
             )}
           </div>
         </>
