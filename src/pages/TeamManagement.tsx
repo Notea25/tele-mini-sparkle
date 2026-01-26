@@ -175,8 +175,11 @@ const TeamManagement = () => {
   // Saving state
   const [isSaving, setIsSaving] = useState(false);
   
-  // Track initial boost state to detect changes (MUST be declared before useEffect that uses it)
-  const [initialBoostState, setInitialBoostState] = useState<{ hasBoost: boolean; boostId?: string } | null>(null);
+  // Track initial boost state from backend (какой буст был выбран на следующий тур при заходе на страницу)
+  const [initialBoostState, setInitialBoostState] = useState<{
+    hasBoost: boolean;
+    boostId: string | null;
+  } | null>(null);
   
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
     // Инициализируем только состояние "pending" из localStorage.
@@ -241,18 +244,16 @@ const TeamManagement = () => {
     }
   }, [boostsLoading, boostsResponse, apiBoostData, usedForNextTour, nextTour, activeNextTourBoostChipId]);
   
-  // Track initial boost state when data is loaded
+  // Track initial boost state when data is loaded (сохраняем буст, который был выбран на следующий тур на момент захода)
   useEffect(() => {
     if (!boostsLoading && boostsResponse?.success && initialBoostState === null) {
-      // Считаем, что если на следующий тур уже выбран какой-то буст,
-      // то буст "уже есть" и это базовое состояние
-      if (usedForNextTour) {
-        setInitialBoostState({ hasBoost: true });
-      } else {
-        setInitialBoostState({ hasBoost: false });
-      }
+      const initialId = activeNextTourBoostChipId ?? null;
+      setInitialBoostState({
+        hasBoost: !!initialId,
+        boostId: initialId,
+      });
     }
-  }, [boostsLoading, boostsResponse, initialBoostState, usedForNextTour]);
+  }, [boostsLoading, boostsResponse, initialBoostState, activeNextTourBoostChipId]);
   
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
@@ -306,42 +307,85 @@ const TeamManagement = () => {
   };
 
   const cancelBoost = (chipId: string) => {
+    // Отмена выбранного буста на странице "Моя команда" — только на фронте.
+    // Сбрасываем pending в localStorage и делаем все командные бусты снова доступными
+    // (кроме тех, что уже были использованы в прошлых турах по данным API).
     clearPendingBoost();
     setSpecialChips((prev) =>
-      prev.map((chip) =>
-        chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее" } : chip,
-      ),
+      prev.map((chip) => {
+        if (!TEAM_MANAGEMENT_BOOSTS.includes(chip.id)) return chip;
+
+        const boostData = apiBoostData[chip.id];
+
+        // Если буст уже был реально использован в прошлом туре — оставляем как "Использован"
+        if (
+          boostData &&
+          boostData.available === false &&
+          boostData.usedInTourNumber &&
+          (!nextTour || boostData.usedInTourNumber !== nextTour)
+        ) {
+          return {
+            ...chip,
+            status: 'used' as BoostStatus,
+            sublabel: boostData.usedInTourNumber
+              ? `Использован в ${boostData.usedInTourNumber} туре`
+              : 'Использован',
+            usedInTour: boostData.usedInTourNumber || undefined,
+          };
+        }
+
+        // Во всех остальных случаях делаем буст снова доступным
+        return {
+          ...chip,
+          status: 'available' as BoostStatus,
+          sublabel: 'Подробнее',
+          usedInTour: undefined,
+        };
+      }),
     );
   };
 
-  // State for removing boost
+  // State for removing boost (кнопка "Отменить" для уже выбранного на тур буста)
   const [isRemovingBoost, setIsRemovingBoost] = useState(false);
 
-  const removeBoost = async (chipId: string) => {
-    if (!squad?.id || !boostTourId) {
-      toast.error("Не удалось определить параметры для отмены буста");
-      return;
-    }
+  const removeBoost = (chipId: string) => {
+    // На странице "Моя команда" при нажатии "Отменить" в бусте, который уже выбран на следующий тур,
+    // мы тоже только меняем фронтовое состояние, а реальный DELETE пойдёт при нажатии "Сохранить".
+    setIsRemovingBoost(false);
 
-    setIsRemovingBoost(true);
-    try {
-      const response = await boostsApi.remove(squad.id, boostTourId);
-      setIsBoostDrawerOpen(false);
-      
-      if (response.success) {
-        // Синхронизируем локальное состояние бустов с бэкендом
-        clearPendingBoost();
-        toast.success("Буст успешно отменён");
-        // Обновляем данные о доступных бустах
-        await queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
-      } else {
-        toast.error(response.error || "Ошибка при отмене буста");
-      }
-    } catch (err) {
-      toast.error("Ошибка при отмене буста");
-    } finally {
-      setIsRemovingBoost(false);
-    }
+    clearPendingBoost();
+    setSpecialChips((prev) =>
+      prev.map((chip) => {
+        if (!TEAM_MANAGEMENT_BOOSTS.includes(chip.id)) return chip;
+
+        const boostData = apiBoostData[chip.id];
+
+        if (
+          boostData &&
+          boostData.available === false &&
+          boostData.usedInTourNumber &&
+          (!nextTour || boostData.usedInTourNumber !== nextTour)
+        ) {
+          return {
+            ...chip,
+            status: 'used' as BoostStatus,
+            sublabel: boostData.usedInTourNumber
+              ? `Использован в ${boostData.usedInTourNumber} туре`
+              : 'Использован',
+            usedInTour: boostData.usedInTourNumber || undefined,
+          };
+        }
+
+        return {
+          ...chip,
+          status: 'available' as BoostStatus,
+          sublabel: 'Подробнее',
+          usedInTour: undefined,
+        };
+      }),
+    );
+
+    setIsBoostDrawerOpen(false);
   };
   // Deadline and teams using shared hooks
   const leagueIdStr = String(leagueId);
@@ -434,23 +478,27 @@ const TeamManagement = () => {
     };
   };
 
-  // Handle save - directly save to backend
+  // Handle save - сохраняем состав и при необходимости синхронизируем бусты с бэкендом
   const handleSaveClick = async () => {
-    const pendingBoost = specialChips.find((c) => c.status === "pending");
-    
-    // Only show confirmation if boost state has changed:
-    // 1. New boost was added (pending boost exists but wasn't there initially)
-    // 2. Boost was removed (pending boost doesn't exist but was there initially)
-    if (pendingBoost) {
-      // Check if this is a NEW boost (not just re-saving an already applied one)
-      const isNewBoost = !initialBoostState?.hasBoost || initialBoostState.boostId !== pendingBoost.id;
-      
-      if (isNewBoost) {
-        // This is a new or changed boost - show confirmation
-        setIsConfirmBoostOpen(true);
-        return;
-      }
-      // If it's the same boost that was already applied, just save normally (skip confirmation)
+    // Начальное состояние буста из бэкенда при заходе на страницу
+    const initialBoostId = initialBoostState?.boostId ?? null;
+
+    // Текущее целевое состояние: ищем буст, который помечен как "Используется" (pending)
+    // среди командных бустов на этой странице
+    const currentPendingChip = specialChips.find(
+      (c) => c.status === "pending" && TEAM_MANAGEMENT_BOOSTS.includes(c.id),
+    );
+    const finalBoostId = currentPendingChip ? currentPendingChip.id : null;
+
+    const sameAsInitial = initialBoostId === finalBoostId;
+    const needDelete = initialBoostId !== null && !sameAsInitial; // был буст, но теперь другой или отсутствует
+    const needApply = finalBoostId !== null && !sameAsInitial; // выбран новый/другой буст
+
+    // Если нужно применить новый/другой буст — открываем подтверждение и ждём решения пользователя.
+    // DELETE/POST будут отправлены из ConfirmBoostDrawer.
+    if (needApply) {
+      setIsConfirmBoostOpen(true);
+      return;
     }
     
     if (!squad) return;
@@ -508,6 +556,22 @@ const TeamManagement = () => {
       if (result.success) {
         // Invalidate squad cache to ensure fresh data on other pages
         await queryClient.invalidateQueries({ queryKey: ['my-squads'] });
+
+        // Если пользователь отменил буст (initialBoostId был, а finalBoostId = null),
+        // то после сохранения состава отправляем DELETE на бэкенд.
+        if (needDelete && !needApply && squad.id && boostTourId) {
+          const response = await boostsApi.remove(squad.id, boostTourId);
+          if (!response.success) {
+            toast.error(response.error || "Ошибка при отмене буста");
+          } else {
+            clearPendingBoost();
+          }
+        }
+
+        // После нажатия "Сохранить" всегда перечитываем доступные бусты для актуального состояния
+        if (squad.id && boostTourId) {
+          await queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
+        }
         
         toast.success("Изменения сохранены");
         // Остаёмся на странице "Моя команда" после сохранения
@@ -1393,11 +1457,12 @@ const TeamManagement = () => {
       <ConfirmBoostDrawer
         isOpen={isConfirmBoostOpen}
         onClose={() => setIsConfirmBoostOpen(false)}
-        pendingBoost={specialChips.find((c) => c.status === "pending") || null}
+        pendingBoost={specialChips.find((c) => c.status === "pending" && TEAM_MANAGEMENT_BOOSTS.includes(c.id)) || null}
         squadId={squad?.id || null}
         tourId={boostTourId}
+        initialBoostChipId={initialBoostState?.boostId ?? null}
         onConfirm={async () => {
-          // Буст успешно применён на бэке — очищаем pending в localStorage
+          // Буст успешно синхронизирован на бэке — очищаем pending в localStorage
           clearPendingBoost();
           // Обновляем данные о доступных бустах для этого сквада и тура
           if (squad?.id && boostTourId) {

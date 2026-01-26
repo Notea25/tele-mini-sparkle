@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -23,6 +23,11 @@ interface ConfirmBoostDrawerProps {
   pendingBoost: BoostChip | null;
   squadId: number | null;
   tourId: number | null;
+  /**
+   * Изначально выбранный буст на следующий тур (по данным GET /api/boosts/available при заходе на страницу).
+   * Если он отличается от pendingBoost.id, перед применением нового буста нужно вызвать DELETE /remove.
+   */
+  initialBoostChipId?: string | null;
 }
 
 const ConfirmBoostDrawer = ({
@@ -33,6 +38,7 @@ const ConfirmBoostDrawer = ({
   pendingBoost,
   squadId,
   tourId,
+  initialBoostChipId = null,
 }: ConfirmBoostDrawerProps) => {
   const [isApplying, setIsApplying] = useState(false);
 
@@ -50,14 +56,24 @@ const ConfirmBoostDrawer = ({
       return;
     }
 
-    const body: ApplyBoostRequest = {
-      squad_id: squadId,
-      tour_id: tourId,
-      type: boostType,
-    };
-
     setIsApplying(true);
     try {
+      // Если на момент захода на страницу был выбран другой буст на следующий тур — сначала удаляем его
+      if (initialBoostChipId && initialBoostChipId !== pendingBoost.id) {
+        const removeResult = await boostsApi.remove(squadId, tourId);
+        if (!removeResult.success) {
+          toast.error(removeResult.error || "Ошибка при отмене предыдущего буста");
+          setIsApplying(false);
+          return;
+        }
+      }
+
+      const body: ApplyBoostRequest = {
+        squad_id: squadId,
+        tour_id: tourId,
+        type: boostType,
+      };
+
       const result = await boostsApi.apply(body);
 
       if (result.success) {
