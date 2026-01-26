@@ -12,17 +12,16 @@ interface RulesDrawerProps {
   isOpen: boolean;
   onClose: () => void;
 }
-const RulesDrawer = ({
-  isOpen,
-  onClose
-}: RulesDrawerProps) => {
-  return <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
+  return (
+    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-background border-t border-border max-h-[90vh] flex flex-col">
         <DrawerHeader className="border-b border-border pb-4 flex-shrink-0 relative">
-          <DrawerTitle className="text-foreground text-xl font-display text-center">
-            Правила игры
-          </DrawerTitle>
-          <button onClick={() => onClose()} className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors">
+          <DrawerTitle className="text-foreground text-xl font-display text-center">Правила игры</DrawerTitle>
+          <button
+            onClick={() => onClose()}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"
+          >
             <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </DrawerHeader>
@@ -37,7 +36,8 @@ const RulesDrawer = ({
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
                 <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
-                    Мы выделим тебе бюджет в <span className="text-primary font-semibold">100 миллионов</span> — собери команду своей мечты!
+                    Мы выделим тебе бюджет в <span className="text-primary font-semibold">100 миллионов</span> — собери
+                    команду своей мечты!
                   </p>
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">Состав команды</h4>
@@ -51,8 +51,8 @@ const RulesDrawer = ({
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">Капитан и вице-капитан</h4>
                     <p>
-                      Капитан получает <span className="text-primary font-semibold">×2 очков</span> за свои
-                      действия. Вице-капитан получит ×2 очков, если капитан не выйдет на поле.
+                      Капитан получает <span className="text-primary font-semibold">×2 очков</span> за свои действия.
+                      Вице-капитан получит ×2 очков, если капитан не выйдет на поле.
                     </p>
                   </div>
                 </div>
@@ -67,7 +67,9 @@ const RulesDrawer = ({
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
                 <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
-                    Каждый игрок на своей позиции получает виртуальные очки за <span className="text-primary font-semibold">реальные действия</span> на футбольном поле. Количество очков зависит от амплуа.
+                    Каждый игрок на своей позиции получает виртуальные очки за{" "}
+                    <span className="text-primary font-semibold">реальные действия</span> на футбольном поле. Количество
+                    очков зависит от амплуа.
                   </p>
 
                   <img src={scoringExample} alt="Scoring Example" className="w-full rounded-xl" />
@@ -104,7 +106,9 @@ const RulesDrawer = ({
                         <li>• Полузащитник: +1 очко</li>
                         <li>• Нападающий: 0 очков</li>
                       </ul>
-                      <p className="text-xs text-muted-foreground/70 italic mt-1">*Матч, в котором команда не пропустила ни одного гола</p>
+                      <p className="text-xs text-muted-foreground/70 italic mt-1">
+                        *Матч, в котором команда не пропустила ни одного гола
+                      </p>
                     </div>
 
                     <div>
@@ -121,7 +125,9 @@ const RulesDrawer = ({
                         <li>• Вратарь: +0.5 очка</li>
                         <li>• Остальные позиции: 0 очков</li>
                       </ul>
-                      <p className="text-xs text-muted-foreground/70 italic mt-1">*Если, условно, 1.5 — считается за 2</p>
+                      <p className="text-xs text-muted-foreground/70 italic mt-1">
+                        *Если, условно, 1.5 — считается за 2
+                      </p>
                     </div>
 
                     <div>
@@ -132,7 +138,10 @@ const RulesDrawer = ({
                         <li>• Желтая карточка: −1 очко (все позиции)</li>
                         <li>• Прямая красная карточка: −3 очка (все позиции)</li>
                       </ul>
-                      <p className="text-xs text-muted-foreground/70 italic mt-1">*Если первая желтая −1 очко, вторая желтая=красная еще −2 очка. Итого: желтая + желтая = красная (−3 очка)</p>
+                      <p className="text-xs text-muted-foreground/70 italic mt-1">
+                        *Если первая желтая −1 очко, вторая желтая=красная еще −2 очка. Итого: желтая + желтая = красная
+                        (−3 очка)
+                      </p>
                     </div>
 
                     <div>
@@ -141,7 +150,10 @@ const RulesDrawer = ({
                         <li>• Вратарь: −1 очко</li>
                         <li>• Защитник: −1 очко</li>
                       </ul>
-                      <p className="text-xs text-muted-foreground/70 italic mt-1">*Если пропущен 1 мяч — очки не отнимаются. Например: 1 пропущен (нет минуса), 2 пропущено (−1 очко), 3 пропущено (−1 очко), 4 пропущено (−2 очка)</p>
+                      <p className="text-xs text-muted-foreground/70 italic mt-1">
+                        *Если пропущен 1 мяч — очки не отнимаются. Например: 1 пропущен (нет минуса), 2 пропущено (−1
+                        очко), 3 пропущено (−1 очко), 4 пропущено (−2 очка)
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -156,7 +168,9 @@ const RulesDrawer = ({
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
                 <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
-                    Не нравится игрок? Смело отправляй его на скамейку или продавай. Перед каждым туром у тебя есть <span className="text-primary font-semibold">2 бесплатных трансфера</span>. Если команда совсем не радует — активируй буст и меняй всех, кого подскажет сердце и интуиция.
+                    Не нравится игрок? Смело отправляй его на скамейку или продавай. Перед каждым туром у тебя есть{" "}
+                    <span className="text-primary font-semibold">2 бесплатных трансфера</span>. Если команда совсем не
+                    радует — активируй буст и меняй всех, кого подскажет сердце и интуиция.
                   </p>
 
                   <div>
@@ -172,7 +186,8 @@ const RulesDrawer = ({
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">Дедлайн</h4>
                     <p>
-                      Все трансферы должны быть сделаны до начала первого матча тура. После дедлайна изменения невозможны.
+                      Все трансферы должны быть сделаны до начала первого матча тура. После дедлайна изменения
+                      невозможны.
                     </p>
                   </div>
                 </div>
@@ -202,7 +217,8 @@ const RulesDrawer = ({
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">Ручные замены</h4>
                     <p>
-                      До дедлайна вы можете вручную менять местами игроков основного состава и скамейки в разделе «Моя команда».
+                      До дедлайна вы можете вручную менять местами игроков основного состава и скамейки в разделе «Моя
+                      команда».
                     </p>
                   </div>
                 </div>
@@ -217,7 +233,8 @@ const RulesDrawer = ({
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
                 <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
-                    Бусты — это специальные усиления, которые можно использовать один раз за сезон. Каждый буст активируется на один тур.
+                    Бусты — это специальные усиления, которые можно использовать один раз за сезон. Каждый буст
+                    активируется на один тур.
                   </p>
 
                   <div className="space-y-3">
@@ -250,7 +267,7 @@ const RulesDrawer = ({
                         <img src={boostTransfers} alt="Трансферы+" className="w-5 h-5 object-contain" />
                         <h4 className="text-foreground font-medium text-medium">Трансферы+</h4>
                       </div>
-                      <p className="text-xs text-regular">Неограниченные трансферы без штрафа. Изменения постоянные, бесплатные трансферы сгорают</p>
+                      <p className="text-xs text-regular">Неограниченные трансферы без штрафа. Изменения постоянные</p>
                     </div>
 
                     <div className="p-3 bg-card rounded-xl border border-border">
@@ -258,7 +275,9 @@ const RulesDrawer = ({
                         <img src={boostGolden} alt="Золотой тур" className="w-5 h-5 object-contain" />
                         <h4 className="text-foreground font-medium text-medium">Золотой тур</h4>
                       </div>
-                      <p className="text-xs text-regular">Неограниченные трансферы на один тур. После тура состав возвращается, бесплатные трансферы сохраняются</p>
+                      <p className="text-xs text-regular">
+                        Неограниченные трансферы на один тур. После тура состав возвращается
+                      </p>
                     </div>
                   </div>
 
@@ -277,35 +296,35 @@ const RulesDrawer = ({
               <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
                 <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
                   <p>
-                    Играй против других пользователей в общей лиге, <span className="text-primary font-semibold">борись с друзьями</span> в частных лигах и выигрывай призы в коммерческих.
+                    Играй против других пользователей в общей лиге,{" "}
+                    <span className="text-primary font-semibold">борись с друзьями</span> в частных лигах и выигрывай
+                    призы в коммерческих.
                   </p>
 
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">Общая лига</h4>
                     <p>
-                      Все пользователи автоматически участвуют в общей лиге. Соревнуйся со всеми игроками фэнтези-футбола.
+                      Все пользователи автоматически участвуют в общей лиге. Соревнуйся со всеми игроками
+                      фэнтези-футбола.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">Частные лиги</h4>
-                    <p>
-                      Создай свою лигу и пригласи друзей по уникальному коду. Соревнуйтесь только между собой!
-                    </p>
+                    <p>Создай свою лигу и пригласи друзей по уникальному коду. Соревнуйтесь только между собой!</p>
                   </div>
 
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">Коммерческие лиги</h4>
                     <p>
-                      Участвуй в специальных лигах от спонсоров с реальными призами: фрибеты, техника, VIP-абонементы и многое другое.
+                      Участвуй в специальных лигах от спонсоров с реальными призами: фрибеты, техника, VIP-абонементы и
+                      многое другое.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">Клубные лиги</h4>
-                    <p>
-                      Мы добавим тебя в лигу твоего любимого клуба — там свои.
-                    </p>
+                    <p>Мы добавим тебя в лигу твоего любимого клуба — там свои.</p>
                   </div>
                 </div>
               </AccordionContent>
@@ -316,6 +335,7 @@ const RulesDrawer = ({
           <div className="h-6" />
         </div>
       </DrawerContent>
-    </Drawer>;
+    </Drawer>
+  );
 };
 export default RulesDrawer;
