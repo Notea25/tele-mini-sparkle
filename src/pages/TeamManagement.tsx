@@ -245,14 +245,24 @@ const TeamManagement = () => {
     );
   };
 
-  const cancelBoost = (_chipId: string) => {
+  const cancelBoost = (chipId: string) => {
     // Отмена возможна только до дедлайна тура
     if (deadlineDate && new Date(deadlineDate).getTime() <= Date.now()) {
       toast.error("Буст нельзя отменить после дедлайна тура");
       return;
     }
 
-    // Сбрасываем pending в localStorage и полностью пересобираем состояние бустов
+    // Ищем буст в текущем состоянии
+    const chip = specialChips.find((c) => c.id === chipId);
+    const boostData = availabilityMap[chipId as keyof typeof availabilityMap];
+
+    // Если по данным бэка буст уже сохранён на тур (available === false), запрещаем отмену
+    if (boostData && boostData.available === false) {
+      toast.error("Этот буст уже сохранён и не может быть отменён");
+      return;
+    }
+
+    // В остальных случаях считаем, что это локальный pending до сохранения — его можно сбросить
     clearPendingBoost();
     const state = getBoostState();
     setSpecialChips(
@@ -272,31 +282,9 @@ const TeamManagement = () => {
   const [isRemovingBoost, setIsRemovingBoost] = useState(false);
 
   const removeBoost = (_chipId: string) => {
-    // Отмена возможна только до дедлайна тура
-    if (deadlineDate && new Date(deadlineDate).getTime() <= Date.now()) {
-      toast.error("Буст нельзя отменить после дедлайна тура");
-      return;
-    }
-
-    // На странице "Моя команда" при нажатии "Отменить" мы только меняем фронтовое состояние,
-    // а реальный DELETE пойдёт при нажатии "Сохранить".
+    // Логику делаем как на странице "Трансферы" — после сохранения буст отменить нельзя
+    toast.error("Этот буст нельзя отменить после сохранения");
     setIsRemovingBoost(false);
-
-    clearPendingBoost();
-    const state = getBoostState();
-    setSpecialChips(
-      buildBoostChipStateForPage({
-        section: BoostSection.TEAM_MANAGEMENT,
-        baseChips: initialChips,
-        availabilityMap,
-        usedForNextTour,
-        activeNextTourBoostId,
-        nextTourNumber: nextTour ?? null,
-        pendingBoostId: state.pendingBoostId,
-      }),
-    );
-
-    setIsBoostDrawerOpen(false);
   };
   // Deadline and teams using shared hooks
   const leagueIdStr = String(leagueId);
