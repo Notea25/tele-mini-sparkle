@@ -329,7 +329,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                 </div>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="leagues" className="border border-border rounded-xl overflow-hidden">
+            <AccordionItem value="prizes" className="border border-border rounded-xl overflow-hidden">
               <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
                 <span className="text-foreground font-display">Призы</span>
               </AccordionTrigger>
