@@ -197,6 +197,14 @@ const TeamManagement = () => {
   // Update specialChips when API data arrives
   useEffect(() => {
     if (!boostsLoading && boostsResponse?.success) {
+      if (process.env.NODE_ENV === "development") {
+        console.log("[Boosts][TeamManagement] availableBoosts", {
+          squadId: squad?.id,
+          boostTourId,
+          response: boostsResponse,
+        });
+      }
+
       setSpecialChips(prev => prev.map(chip => {
         const boostData = apiBoostData[chip.id];
         const boostState = getBoostState();
@@ -223,7 +231,7 @@ const TeamManagement = () => {
             ...chip,
             status: 'used' as BoostStatus,
             sublabel: boostData.usedInTourNumber
-              ? `Использован в ${boostData.usedInTourNumber} туре`
+              ? `Использован во ${boostData.usedInTourNumber} туре`
               : 'Использован',
             usedInTour: boostData.usedInTourNumber || undefined,
           };
@@ -272,11 +280,7 @@ const TeamManagement = () => {
   }, [activeNextTourBoostChipId]);
 
   const openBoostDrawer = (chip: BoostChip) => {
-    // Check if boost is active on other page
-    if (otherPageBoostActive) {
-      toast.error("В этом туре уже активирован буст в разделе Трансферы");
-      return;
-    }
+    // Даже если буст заблокирован, открываем плашку с описанием и объяснением причины блокировки
     setSelectedBoostChip(chip);
     setIsBoostDrawerOpen(true);
   };
@@ -300,6 +304,12 @@ const TeamManagement = () => {
   };
 
   const cancelBoost = (chipId: string) => {
+    // Отмена возможна только до дедлайна тура
+    if (deadlineDate && new Date(deadlineDate).getTime() <= Date.now()) {
+      toast.error("Буст нельзя отменить после дедлайна тура");
+      return;
+    }
+
     // Отмена выбранного буста на странице "Моя команда" — только на фронте.
     // Сбрасываем pending в localStorage и делаем все командные бусты снова доступными
     // (кроме тех, что уже были использованы в прошлых турах по данным API).
@@ -321,7 +331,7 @@ const TeamManagement = () => {
             ...chip,
             status: 'used' as BoostStatus,
             sublabel: boostData.usedInTourNumber
-              ? `Использован в ${boostData.usedInTourNumber} туре`
+              ? `Использован во ${boostData.usedInTourNumber} туре`
               : 'Использован',
             usedInTour: boostData.usedInTourNumber || undefined,
           };
@@ -342,6 +352,12 @@ const TeamManagement = () => {
   const [isRemovingBoost, setIsRemovingBoost] = useState(false);
 
   const removeBoost = (chipId: string) => {
+    // Отмена возможна только до дедлайна тура
+    if (deadlineDate && new Date(deadlineDate).getTime() <= Date.now()) {
+      toast.error("Буст нельзя отменить после дедлайна тура");
+      return;
+    }
+
     // На странице "Моя команда" при нажатии "Отменить" в бусте, который уже выбран на следующий тур,
     // мы тоже только меняем фронтовое состояние, а реальный DELETE пойдёт при нажатии "Сохранить".
     setIsRemovingBoost(false);
@@ -363,7 +379,7 @@ const TeamManagement = () => {
             ...chip,
             status: 'used' as BoostStatus,
             sublabel: boostData.usedInTourNumber
-              ? `Использован в ${boostData.usedInTourNumber} туре`
+              ? `Использован во ${boostData.usedInTourNumber} туре`
               : 'Использован',
             usedInTour: boostData.usedInTourNumber || undefined,
           };
@@ -981,11 +997,8 @@ const TeamManagement = () => {
               <div
                 key={chip.id}
                 onClick={() => {
-                  if (isBlocked) {
-                    toast.error("В этом туре уже активирован буст в разделе Трансферы");
-                    return;
-                  }
-                  if (isClickable) {
+                  // Даже если буст заблокирован, всегда открываем плашку с описанием и причиной блокировки
+                  if (isBlocked || isClickable) {
                     openBoostDrawer(chip);
                   }
                 }}
@@ -1023,7 +1036,7 @@ const TeamManagement = () => {
                   }`}
                 >
                   {isBlocked
-                    ? "Заблокировано"
+                    ? "Заблокирован"
                     : chip.status === "pending"
                       ? "Используется"
                       : chip.status === "used"
@@ -1444,6 +1457,8 @@ const TeamManagement = () => {
         isRemoving={isRemovingBoost}
         hasActiveBoostInTour={specialChips.some((c) => c.status === "pending") || otherPageBoostActive}
         activeBoostChipId={activeNextTourBoostChipId}
+        contextPage="team-management"
+        blockedByOtherSection={otherPageBoostActive}
       />
 
       {/* Confirm Boost Drawer */}

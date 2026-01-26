@@ -23,8 +23,10 @@ interface BoostDrawerProps {
   onRemove?: (chipId: string) => void;
   currentTour?: number;
   isRemoving?: boolean;
-  hasActiveBoostInTour?: boolean; // true if another boost is already pending in this tour
+  hasActiveBoostInTour?: boolean; // true if another boost is already pending in this tour (на любой странице)
   activeBoostChipId?: string | null; // ID буста, уже активированного на этот тур
+  contextPage?: "team-management" | "transfers"; // в каком разделе открыт дровер
+  blockedByOtherSection?: boolean; // true, если буст заблокирован бустом в другом разделе
 }
 
 const boostDescriptions: Record<string, { title: string; description: React.ReactNode; canCancel: boolean }> = {
@@ -72,8 +74,6 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
         <br />
         1. Все внесённые изменения в состав становятся постоянными.
         <br />
-        2. Накопленные до активации буста бесплатные трансферы сгорают.
-        <br />
         <br />
         <span className="text-foreground font-medium">Важно:</span> Буст НЕЛЬЗЯ отменить после активации.
       </>
@@ -91,8 +91,6 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
         <span className="text-foreground font-medium">Особые условия:</span>
         <br />
         1. После окончания тура состав автоматически возвращается к тому, который был до активации буста.
-        <br />
-        2. Накопленные бесплатные трансферы НЕ сгорают.
         <br />
         <br />
         <span className="text-foreground font-medium">Важно:</span> Буст НЕЛЬЗЯ отменить после активации.
@@ -120,9 +118,8 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
   },
 };
 
-const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, currentTour = 1, isRemoving = false, hasActiveBoostInTour = false, activeBoostChipId = null }: BoostDrawerProps) => {
+const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, currentTour = 1, isRemoving = false, hasActiveBoostInTour = false, activeBoostChipId = null, contextPage = "team-management", blockedByOtherSection = false }: BoostDrawerProps) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showBlockedMessage, setShowBlockedMessage] = useState(false);
 
   if (!chip) return null;
 
@@ -130,10 +127,8 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
   const isThisChipActive = activeBoostChipId !== null && chip.id === activeBoostChipId;
 
   const handleApplyClick = () => {
-    // If another boost is already active in this tour, show blocked message
+    // Если в этом туре уже активирован другой буст, повторно активировать нельзя
     if (hasActiveBoostInTour) {
-      setShowBlockedMessage(true);
-      setTimeout(() => setShowBlockedMessage(false), 3000);
       return;
     }
     
@@ -171,7 +166,6 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
 
   const handleClose = () => {
     setShowConfirmation(false);
-    setShowBlockedMessage(false);
     onClose();
   };
 
@@ -180,11 +174,65 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
 
   const getStatusText = () => {
     if (chip.status === "pending") {
-      return `Используется в ${currentTour} туре`;
+      return `Использован во ${currentTour} туре`;
     }
     if (chip.status === "used" && chip.usedInTour) {
-      return `Использовано в ${chip.usedInTour} туре`;
+      return `Использован во ${chip.usedInTour} туре`;
     }
+    return null;
+  };
+
+  const renderBlockedInfo = () => {
+    if (!isBlocked) return null;
+
+    // Заблокирован бустом в другом разделе
+    if (blockedByOtherSection) {
+      if (contextPage === "transfers") {
+        return (
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3">
+            <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-amber-500">
+              Чтобы использовать этот буст, отмените активированный буст в разделе "Моя команда".
+            </p>
+          </div>
+        );
+      }
+
+      if (contextPage === "team-management") {
+        return (
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3">
+            <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-amber-500">
+              Вы уже используете буст в разделе "Трансферы". Его нельзя отменить.
+            </p>
+          </div>
+        );
+      }
+    }
+
+    // Заблокирован другим бустом в этом же разделе
+    if (contextPage === "team-management") {
+      return (
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3">
+          <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-500">
+            Чтобы использовать этот буст, отмените активированный буст в разделе "Моя команда".
+          </p>
+        </div>
+      );
+    }
+
+    if (contextPage === "transfers") {
+      return (
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3">
+          <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-500">
+            Чтобы использовать этот буст, отмените активированный буст в разделе "Моя команда".
+          </p>
+        </div>
+      );
+    }
+
     return null;
   };
 
@@ -194,7 +242,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
         {showConfirmation ? (
           // Confirmation view for non-cancellable boosts
           <div className="px-6 pb-8">
-            <div className="flex flex-col items-center text-center mb-6">
+          <div className="flex flex-col items-center text-center mb-6">
               <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mb-4">
                 <AlertTriangle className="w-8 h-8 text-amber-500" />
               </div>
@@ -203,9 +251,6 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
                 Буст <span className="text-primary font-medium">{boostInfo?.title}</span> нельзя будет отменить после
                 активации.
               </p>
-              {chip.id === "transfers" && (
-                <p className="text-muted-foreground text-sm mt-2">Все накопленные бесплатные трансферы сгорят.</p>
-              )}
               {chip.id === "golden" && (
                 <p className="text-muted-foreground text-sm mt-2">
                   После окончания тура твой состав автоматически вернётся к текущему.
@@ -248,26 +293,19 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
               )}
             </DrawerHeader>
             <div className="px-6 pb-8">
+              {renderBlockedInfo()}
               {chip.status === "available" && (
                 <div className="flex flex-col gap-2">
                   <Button
                     onClick={handleApplyClick}
                     className={`w-full rounded-lg h-12 font-medium ${
-                      isBlocked 
-                        ? "bg-muted text-muted-foreground cursor-not-allowed hover:bg-muted" 
+                      isBlocked
+                        ? "bg-muted text-muted-foreground cursor-not-allowed hover:bg-muted"
                         : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
                     }`}
                   >
                     Использовать
                   </Button>
-                  {showBlockedMessage && (
-                    <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
-                      <Info className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                      <p className="text-xs text-amber-500">
-                        В одном туре можно использовать только 1 буст
-                      </p>
-                    </div>
-                  )}
                 </div>
               )}
               {chip.status === "pending" && (

@@ -221,6 +221,14 @@ const Transfers = () => {
   // Update specialChips when API data arrives
   useEffect(() => {
     if (!boostsLoading && boostsResponse?.success) {
+      if (process.env.NODE_ENV === "development") {
+        console.log("[Boosts][Transfers] availableBoosts", {
+          squadId: squad?.id,
+          boostTourId,
+          response: boostsResponse,
+        });
+      }
+
       setSpecialChips(prev =>
         prev.map(chip => {
           const boostData = apiBoostData[chip.id];
@@ -247,7 +255,7 @@ const Transfers = () => {
               ...chip,
               status: 'used' as BoostStatus,
               sublabel: boostData.usedInTourNumber
-                ? `Использован в ${boostData.usedInTourNumber} туре`
+                ? `Использован во ${boostData.usedInTourNumber} туре`
                 : 'Использован',
               usedInTour: boostData.usedInTourNumber || undefined,
             };
@@ -287,10 +295,7 @@ const Transfers = () => {
   }, []);
 
   const openBoostDrawer = (chip: BoostChip) => {
-    if (otherPageBoostActive) {
-      toast.error("В этом туре уже активирован буст в разделе Управление командой");
-      return;
-    }
+    // Даже если буст заблокирован, открываем плашку с описанием и объяснением причины блокировки
     setSelectedBoostChip(chip);
     setIsBoostDrawerOpen(true);
   };
@@ -1106,10 +1111,7 @@ const Transfers = () => {
               <div
                 key={chip.id}
                 onClick={() => {
-                  if (isBlocked) {
-                    toast.error("В этом туре уже активирован буст в разделе Моя команда");
-                    return;
-                  }
+                  // Даже если буст заблокирован, всегда открываем плашку с описанием и причиной блокировки
                   openBoostDrawer(chip);
                 }}
                 className={`flex flex-col items-center justify-center py-4 px-2 rounded-xl cursor-pointer transition-all ${
@@ -1148,7 +1150,7 @@ const Transfers = () => {
                   }`}
                 >
                   {isBlocked
-                    ? "Заблокировано"
+                    ? "Заблокирован"
                     : chip.status === "pending"
                       ? "Используется"
                       : chip.status === "used"
@@ -1643,6 +1645,8 @@ const Transfers = () => {
         currentTour={currentTour || 1}
         isRemoving={isRemovingBoost}
         hasActiveBoostInTour={specialChips.some((c) => c.status === "pending") || otherPageBoostActive}
+        contextPage="transfers"
+        blockedByOtherSection={otherPageBoostActive}
       />
 
       {/* Exit Confirmation Dialog */}
