@@ -155,8 +155,5 @@ export const resetAllBoosts = (): void => {
   }
 };
 
-// Team management boosts
-export const TEAM_MANAGEMENT_BOOSTS = ["bench", "captain3x", "double"];
-
-// Transfer boosts
-export const TRANSFER_BOOSTS = ["transfers", "golden"];
+// Re-export for convenience
+export { TEAM_MANAGEMENT_BOOSTS, TRANSFER_BOOSTS };

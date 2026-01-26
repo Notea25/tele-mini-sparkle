@@ -25,6 +25,7 @@ import aplLogo from "@/assets/apl-logo.png";
 import btnTeamIcon from "@/assets/btn-team-icon.png";
 import btnTransfersIcon from "@/assets/btn-transfers-icon.png";
 import { getGoldenTourBackup, clearGoldenTourBackup, getBoostState, markBoostAsUsed } from "@/lib/boostState";
+import { BoostId } from "@/constants/boosts";
 import { restoreTeamFromBackup } from "@/lib/teamData";
 import { safeGetItem } from "@/lib/safeStorage";
 import cupComingSoon from "@/assets/cup-coming-soon.png";
@@ -81,7 +82,7 @@ const League = () => {
     gcTime: 0,
     refetchOnWindowFocus: true,
     refetchOnMount: 'always',
-    keepPreviousData: false,
+    placeholderData: (prev) => prev,
   });
 
   // Get fav_team_id from current squad
@@ -206,7 +207,7 @@ const League = () => {
       );
       
       // Mark the boost as used and clear the backup
-      markBoostAsUsed("golden", backup.tour);
+      markBoostAsUsed(BoostId.GOLDEN, backup.tour);
       clearGoldenTourBackup();
       
       toast.success("Тур завершён. Состав восстановлен после Золотого тура.");

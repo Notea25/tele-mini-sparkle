@@ -22,7 +22,6 @@ import {
   clearPendingBoost,
   hasAnyPendingBoost,
   resetAllBoosts,
-  TEAM_MANAGEMENT_BOOSTS,
 } from "@/lib/boostState";
 import { clubLogos } from "@/lib/clubLogos";
 import clubBelshina from "@/assets/club-belshina.png";
@@ -46,8 +45,8 @@ const clubIcons: Record<string, string> = {
 };
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
-import { BoostSection, TEAM_MANAGEMENT_BOOSTS } from "@/constants/boosts";
-import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipStateForPage } from "@/lib/boostViewModel";
+import { BoostSection, TEAM_MANAGEMENT_BOOSTS, BoostId } from "@/constants/boosts";
+import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipStateForPage, BoostAvailabilityMap } from "@/lib/boostViewModel";
 import { PositionCode, getPositionLabel } from "@/constants/positions";
 import { isValidFormation } from "@/constants/formations";
 
@@ -150,10 +149,17 @@ const TeamManagement = () => {
   
   const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
     const state = getBoostState();
+    const emptyAvailabilityMap: BoostAvailabilityMap = {
+      [BoostId.BENCH]: { available: true },
+      [BoostId.CAPTAIN3X]: { available: true },
+      [BoostId.DOUBLE]: { available: true },
+      [BoostId.TRANSFERS]: { available: true },
+      [BoostId.GOLDEN]: { available: true },
+    };
     return buildBoostChipStateForPage({
       section: BoostSection.TEAM_MANAGEMENT,
       baseChips: initialChips,
-      availabilityMap: {},
+      availabilityMap: emptyAvailabilityMap,
       usedForNextTour: false,
       activeNextTourBoostId: null,
       nextTourNumber: null,
@@ -385,7 +391,7 @@ const TeamManagement = () => {
     // Текущее целевое состояние: ищем буст, который помечен как "Используется" (pending)
     // среди командных бустов на этой странице
     const currentPendingChip = specialChips.find(
-      (c) => c.status === "pending" && TEAM_MANAGEMENT_BOOSTS.includes(c.id),
+      (c) => c.status === "pending" && TEAM_MANAGEMENT_BOOSTS.includes(c.id as BoostId),
     );
     const finalBoostId = currentPendingChip ? currentPendingChip.id : null;
 
@@ -1031,7 +1037,7 @@ const TeamManagement = () => {
           {/* Main Squad */}
           <h2 className="text-foreground text-xl font-bold mb-4">Основной состав</h2>
 
-          {Object.entries(playersByPosition).map(([position, players]) => renderListSection(position, players))}
+          {Object.entries(playersByPosition).map(([position, players]) => renderListSection(position as PositionCode, players))}
 
           {/* Bench */}
           <h2 className="text-foreground text-xl font-bold mb-4 mt-8">Замены</h2>
@@ -1331,7 +1337,7 @@ const TeamManagement = () => {
       <ConfirmBoostDrawer
         isOpen={isConfirmBoostOpen}
         onClose={() => setIsConfirmBoostOpen(false)}
-        pendingBoost={specialChips.find((c) => c.status === "pending" && TEAM_MANAGEMENT_BOOSTS.includes(c.id)) || null}
+        pendingBoost={specialChips.find((c) => c.status === "pending" && TEAM_MANAGEMENT_BOOSTS.includes(c.id as BoostId)) || null}
         squadId={squad?.id || null}
         tourId={boostTourId}
         initialBoostChipId={initialBoostState?.boostId ?? null}
