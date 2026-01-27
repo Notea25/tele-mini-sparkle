@@ -251,45 +251,15 @@ const TeamManagement = () => {
     );
   };
 
-  const cancelBoost = (chipId: string) => {
-    // Отмена возможна только до дедлайна тура
-    if (deadlineDate && new Date(deadlineDate).getTime() <= Date.now()) {
-      toast.error("Буст нельзя отменить после дедлайна тура");
-      return;
-    }
-
-    // Ищем буст в текущем состоянии
-    const chip = specialChips.find((c) => c.id === chipId);
-    const boostData = availabilityMap[chipId as keyof typeof availabilityMap];
-
-    // Если по данным бэка буст уже сохранён на тур (available === false), запрещаем отмену
-    if (boostData && boostData.available === false) {
-      toast.error("Этот буст уже сохранён и не может быть отменён");
-      return;
-    }
-
-    // В остальных случаях считаем, что это локальный pending до сохранения — его можно сбросить
-    clearPendingBoost();
-    const state = getBoostState();
-    setSpecialChips(
-      buildBoostChipStateForPage({
-        section: BoostSection.TEAM_MANAGEMENT,
-        baseChips: initialChips,
-        availabilityMap,
-        usedForNextTour,
-        activeNextTourBoostId,
-        nextTourNumber: nextTour ?? null,
-        pendingBoostId: state.pendingBoostId,
-      }),
-    );
+  const cancelBoost = (_chipId: string) => {
+    toast.error("Бусты нельзя отменить после активации");
   };
 
   // State for removing boost (кнопка "Отменить" для уже выбранного на тур буста)
   const [isRemovingBoost, setIsRemovingBoost] = useState(false);
 
   const removeBoost = (_chipId: string) => {
-    // Логику делаем как на странице "Трансферы" — после сохранения буст отменить нельзя
-    toast.error("Этот буст нельзя отменить после сохранения");
+    toast.error("Бусты нельзя отменить после активации");
     setIsRemovingBoost(false);
   };
   // Deadline and teams using shared hooks
@@ -395,12 +365,23 @@ const TeamManagement = () => {
     );
     const finalBoostId = currentPendingChip ? currentPendingChip.id : null;
 
-    const sameAsInitial = initialBoostId === finalBoostId;
-    const needDelete = initialBoostId !== null && !sameAsInitial; // был буст, но теперь другой или отсутствует
-    const needApply = finalBoostId !== null && !sameAsInitial; // выбран новый/другой буст
+    const hasInitialBoost = initialBoostId !== null;
+    const hasFinalBoost = finalBoostId !== null;
 
-    // Если нужно применить новый/другой буст — открываем подтверждение и ждём решения пользователя.
-    // DELETE/POST будут отправлены из ConfirmBoostDrawer.
+    // Нельзя изменить или удалить уже выбранный буст
+    if (hasInitialBoost && hasFinalBoost && initialBoostId !== finalBoostId) {
+      toast.error("В этом туре уже выбран буст, его нельзя изменить");
+      return;
+    }
+
+    if (hasInitialBoost && !hasFinalBoost) {
+      toast.error("Этот буст уже выбран для тура и не может быть отменён");
+      return;
+    }
+
+    const needApply = !hasInitialBoost && hasFinalBoost;
+
+    // Если нужно применить новый буст — открываем подтверждение и ждём решения пользователя.
     if (needApply) {
       setIsConfirmBoostOpen(true);
       return;
@@ -450,17 +431,6 @@ const TeamManagement = () => {
       if (result.success) {
         // Invalidate squad cache to ensure fresh data on other pages
         await queryClient.invalidateQueries({ queryKey: ['my-squads'] });
-
-        // Если пользователь отменил буст (initialBoostId был, а finalBoostId = null),
-        // то после сохранения состава отправляем DELETE на бэкенд.
-        if (needDelete && !needApply && squad.id && boostTourId) {
-          const response = await boostsApi.remove(squad.id, boostTourId);
-          if (!response.success) {
-            toast.error(response.error || "Ошибка при отмене буста");
-          } else {
-            clearPendingBoost();
-          }
-        }
 
         // После нажатия "Сохранить" всегда перечитываем доступные бусты для актуального состояния
         if (squad.id && boostTourId) {
@@ -852,18 +822,9 @@ const TeamManagement = () => {
           {specialChips.map((chip) => {
             const isBlocked = otherPageBoostActive && chip.status === "available";
             const isDisabled = isBlocked || chip.status === "used";
-            
-            // Бусты, для которых вообще может быть доступна отмена: только командные бусты
-            const cancellableBoosts = ["bench", "captain3x", "double"];
-            const isUsedCancellableChip = chip.status === "used" && cancellableBoosts.includes(chip.id);
 
-            // Карточка кликабельна, если:
-            // - буст доступен,
-            // - буст в состоянии pending,
-            // - или это любой "командный" буст в статусе used (для показа окна с информацией)
-            const isClickable =
-              !isBlocked &&
-              (chip.status === "available" || chip.status === "pending" || isUsedCancellableChip);
+            // Карточка кликабельна, если буст доступен или уже выбран (pending)
+            const isClickable = !isBlocked && (chip.status === "available" || chip.status === "pending");
             
             return (
               <div
@@ -877,11 +838,9 @@ const TeamManagement = () => {
                 className={`flex flex-col items-center justify-center py-4 rounded-xl transition-all ${
                   !isClickable
                     ? "bg-card/30 opacity-50 cursor-not-allowed"
-                    : chip.status === "pending"
+                      : chip.status === "pending"
                       ? "bg-card border-2 border-primary hover:bg-card/80 cursor-pointer"
-                      : chip.status === "used" && isUsedCancellableChip
-                        ? "bg-card/60 hover:bg-card/80 cursor-pointer"
-                        : "bg-card hover:bg-card/80 cursor-pointer"
+                      : "bg-card hover:bg-card/80 cursor-pointer"
                 }`}
               >
                 <img

@@ -38,10 +38,10 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
         засчитываются в общую сумму баллов команды наравне с игроками стартового состава.
         <br />
         <br />
-        <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
+        <span className="text-foreground font-medium">Важно:</span> После активации буст НЕЛЬЗЯ отменить.
       </>
     ),
-    canCancel: true,
+    canCancel: false,
   },
   captain3x: {
     title: "3× Капитан",
@@ -57,10 +57,10 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
         2. Если и вице-капитан не появился на поле, буст сгорает.
         <br />
         <br />
-        <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
+        <span className="text-foreground font-medium">Важно:</span> После активации буст НЕЛЬЗЯ отменить.
       </>
     ),
-    canCancel: true,
+    canCancel: false,
   },
   transfers: {
     title: "Трансферы+",
@@ -111,10 +111,10 @@ const boostDescriptions: Record<string, { title: string; description: React.Reac
         Если капитан или вице-капитан не вышли на поле, буст НЕ переносится на других игроков.
         <br />
         <br />
-        <span className="text-foreground font-medium">Важно:</span> Буст можно отменить до наступления дедлайна тура.
+        <span className="text-foreground font-medium">Важно:</span> После активации буст НЕЛЬЗЯ отменить.
       </>
     ),
-    canCancel: true,
+    canCancel: false,
   },
 };
 
@@ -192,7 +192,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
           <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3">
             <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
             <p className="text-xs text-amber-500">
-              Чтобы использовать этот буст, отмените активированный буст в разделе "Моя команда".
+              Вы уже используете буст в разделе "Моя команда". Одновременно можно использовать только один буст.
             </p>
           </div>
         );
@@ -203,7 +203,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
           <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3">
             <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
             <p className="text-xs text-amber-500">
-              Вы уже используете буст в разделе "Трансферы". Его нельзя отменить.
+              Вы уже используете буст в разделе "Трансферы". Одновременно можно использовать только один буст.
             </p>
           </div>
         );
@@ -216,7 +216,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
         <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3">
           <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-amber-500">
-            Чтобы использовать этот буст, отмените активированный буст в разделе "Моя команда".
+            В этом туре уже используется другой буст. Одновременно можно использовать только один буст.
           </p>
         </div>
       );
@@ -227,7 +227,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
         <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3">
           <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-amber-500">
-            Чтобы использовать этот буст, отмените активированный буст в разделе "Моя команда".
+            В этом туре уже используется буст в разделе "Моя команда". Одновременно можно использовать только один буст.
           </p>
         </div>
       );
@@ -330,18 +330,9 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
                 <>
                   {isThisChipActive ? (
                     <div className="flex gap-3">
-                      {onRemove && boostInfo?.canCancel && (
-                        <Button
-                          onClick={handleRemove}
-                          disabled={isRemoving}
-                          className="flex-1 rounded-lg h-12 font-medium bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                        >
-                          {isRemoving ? "Отмена..." : "Отменить"}
-                        </Button>
-                      )}
                       <Button
                         onClick={handleClose}
-                        className={`rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground ${onRemove && boostInfo?.canCancel ? 'flex-1' : 'w-full'}`}
+                        className="w-full rounded-lg h-12 font-medium bg-secondary hover:bg-secondary/80 text-foreground"
                       >
                         Закрыть
                       </Button>
@@ -355,7 +346,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
                           {activeBoostChipId && boostDescriptions[activeBoostChipId]?.title
                             ? `: «${boostDescriptions[activeBoostChipId].title}»`
                             : ""}.
-                          {" "}Отмени его, чтобы использовать «{boostInfo?.title || chip.label}».
+                          {" "}Одновременно можно использовать только один буст.
                         </p>
                       </div>
                       <Button

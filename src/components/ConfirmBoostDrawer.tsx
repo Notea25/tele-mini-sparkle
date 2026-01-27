@@ -58,16 +58,6 @@ const ConfirmBoostDrawer = ({
 
     setIsApplying(true);
     try {
-      // Если на момент захода на страницу был выбран другой буст на следующий тур — сначала удаляем его
-      if (initialBoostChipId && initialBoostChipId !== pendingBoost.id) {
-        const removeResult = await boostsApi.remove(squadId, tourId);
-        if (!removeResult.success) {
-          toast.error(removeResult.error || "Ошибка при отмене предыдущего буста");
-          setIsApplying(false);
-          return;
-        }
-      }
-
       const body: ApplyBoostRequest = {
         squad_id: squadId,
         tour_id: tourId,
@@ -106,7 +96,7 @@ const ConfirmBoostDrawer = ({
 
             {/* Warning text */}
             <p className="text-muted-foreground text-sm text-center mb-6 text-regular">
-              Буст можно использовать только один раз за сезон.
+              Буст можно использовать только один раз за сезон. После активации отменить его нельзя.
             </p>
 
             {/* Buttons */}

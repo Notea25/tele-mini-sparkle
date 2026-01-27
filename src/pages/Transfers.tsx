@@ -283,46 +283,12 @@ const Transfers = () => {
     }
   };
 
-  const cancelBoost = (chipId: string) => {
-    // Трансферные бусты нельзя отменять
-    if (chipId === "transfers" || chipId === "golden") {
-      toast.error("Этот буст нельзя отменить");
-      return;
-    }
-
-    clearPendingBoost();
-    setSpecialChips((prev) =>
-      prev.map((chip) =>
-        chip.id === chipId ? { ...chip, status: "available" as BoostStatus, sublabel: "Подробнее" } : chip,
-      ),
-    );
+  const cancelBoost = (_chipId: string) => {
+    toast.error("Бусты нельзя отменить после активации");
   };
 
-  const removeBoost = async (chipId: string) => {
-    if (!squad?.id || !boostTourId) {
-      toast.error("Не удалось определить параметры для отмены буста");
-      return;
-    }
-
-    setIsRemovingBoost(true);
-    try {
-      const response = await boostsApi.remove(squad.id, boostTourId);
-      setIsBoostDrawerOpen(false);
-      
-      if (response.success) {
-        toast.success("Буст успешно отменён");
-        // Clear pending boost from localStorage
-        clearPendingBoost();
-        // Refetch boosts data
-        await queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
-      } else {
-        toast.error(response.error || "Ошибка при отмене буста");
-      }
-    } catch (err) {
-      toast.error("Ошибка при отмене буста");
-    } finally {
-      setIsRemovingBoost(false);
-    }
+  const removeBoost = async (_chipId: string) => {
+    toast.error("Бусты нельзя отменить после активации");
   };
 
   // Deadline countdown using shared hook (leagueId defined above with useTeams)
