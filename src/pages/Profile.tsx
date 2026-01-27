@@ -77,11 +77,12 @@ const Profile = () => {
             })();
 
             const nameFromBackend = user.username || savedProfile.userName;
+            const photoFromBackend = user.photo_url || savedProfile.profileImage;
 
             const updated: ProfileData = {
               userName: nameFromBackend,
               birthDate: birthDateFromBackend,
-              profileImage: savedProfile.profileImage,
+              profileImage: photoFromBackend,
               createdAt: registrationDate,
             };
 
@@ -103,7 +104,7 @@ const Profile = () => {
     profile.userName !== savedProfile.userName || 
     profile.profileImage !== savedProfile.profileImage;
 
-  // Save changes to backend (username) and localStorage (avatar etc.)
+  // Save changes to backend (username, photo_url) and localStorage
   const handleSaveChanges = async () => {
     if (isSaving) return;
 
@@ -116,12 +117,19 @@ const Profile = () => {
     setIsSaving(true);
     try {
       if (backendUser) {
-        const response = await usersApi.update(backendUser.id, {
+        const updateData: Partial<Pick<UserProfile, 'username' | 'photo_url'>> = {
           username: profile.userName.trim(),
-        });
+        };
+        
+        // Only send photo_url if it changed
+        if (profile.profileImage !== savedProfile.profileImage) {
+          updateData.photo_url = profile.profileImage;
+        }
+
+        const response = await usersApi.update(backendUser.id, updateData);
 
         if (!response.success) {
-          toast.error("Не удалось сохранить имя на сервере");
+          toast.error("Не удалось сохранить данные на сервере");
           return;
         }
 
