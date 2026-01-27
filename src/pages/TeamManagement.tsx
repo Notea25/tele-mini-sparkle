@@ -166,8 +166,6 @@ const TeamManagement = () => {
   
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
-  const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
-  const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
   const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
 
   // Check if boost is active on the other page (раздел "Трансферы")
