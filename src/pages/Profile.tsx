@@ -142,6 +142,9 @@ const Profile = () => {
       localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
       setSavedProfile(profile);
       toast.success("Изменения сохранены");
+      
+      // Notify other components that profile was updated
+      window.dispatchEvent(new Event('profileUpdated'));
     } catch (error) {
       console.error("Profile save failed", error);
       toast.error("Ошибка при сохранении изменений");

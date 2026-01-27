@@ -2,6 +2,7 @@ import { ChevronLeft } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTelegram } from "@/providers/TelegramProvider";
+import { usersApi, UserProfile } from "@/lib/api";
 import logo from "@/assets/logo-new.png";
 import {
   AlertDialog,
@@ -13,8 +14,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 
 interface SportHeaderProps {
   backTo?: string;
@@ -34,27 +33,40 @@ const SportHeader = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<"home" | "back" | "profile" | null>(null);
+  const [backendUser, setBackendUser] = useState<UserProfile | null>(null);
   const { user } = useTelegram();
   const location = useLocation();
   const navigate = useNavigate();
 
   const isHomePage = location.pathname === "/";
 
-  // Get profile image from localStorage
-  const getProfileImage = (): string | null => {
-    try {
-      const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
-      if (saved) {
-        const profile = JSON.parse(saved);
-        return profile.profileImage || null;
+  // Load user profile from backend
+  useEffect(() => {
+    const loadBackendProfile = async () => {
+      try {
+        const response = await usersApi.getProtected();
+        if (response.success && response.data) {
+          const anyData = response.data as any;
+          const user = anyData.user as UserProfile | undefined;
+          if (user) {
+            setBackendUser(user);
+          }
+        }
+      } catch {
+        // Silently fail if backend request fails
       }
-    } catch {
-      return null;
-    }
-    return null;
-  };
+    };
 
-  const profileImage = getProfileImage();
+    void loadBackendProfile();
+
+    // Listen for profile updates
+    const handleProfileUpdate = () => {
+      void loadBackendProfile();
+    };
+
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+    return () => window.removeEventListener('profileUpdated', handleProfileUpdate);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -157,12 +169,12 @@ const SportHeader = ({
             </button>
           </div>
           <Link to="/profile" onClick={handleProfileClick}>
-            {profileImage ? (
-              <img src={profileImage} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
-            ) : user?.photo_url ? (
-              <img src={user.photo_url} alt={user.first_name || "User"} className="w-8 h-8 rounded-full object-cover" />
+            {backendUser?.photo_url ? (
+              <img src={backendUser.photo_url} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent" />
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-xl">
+                👤
+              </div>
             )}
           </Link>
         </div>
