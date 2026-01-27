@@ -7,6 +7,7 @@ import boostDouble from "@/assets/boost-double.png";
 import boostBench from "@/assets/boost-bench.png";
 import boostTransfers from "@/assets/boost-transfers.png";
 import boostGolden from "@/assets/boost-golden.png";
+import prizes from "@/assets/prizes.png";
 
 interface RulesDrawerProps {
   isOpen: boolean;
@@ -351,8 +352,8 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                         <span className="text-foreground font-medium">место - AirPods Max</span>
                       </div>
                     </div>
+                    <img src={prizes} alt="Призы за сезон" className="w-full rounded-xl mt-2 mb-4" />
                   </div>
-
                   <div>
                     <h4 className="text-foreground font-medium text-medium mb-2">
                       🎯 Дополнительные призы по ходу сезона
