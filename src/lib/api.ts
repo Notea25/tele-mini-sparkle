@@ -299,9 +299,33 @@ export const squadsApi = {
   },
 };
 
-// Методы для работы с пользователями
+// Типы и методы для работы с пользователями
+export interface UserProfile {
+  id: number;
+  username: string;
+  photo_url?: string | null;
+  birth_date?: string | null;
+  registration_date?: string | null;
+}
+
+export interface ProtectedUserResponse {
+  message: string;
+  user_id: number;
+  authenticated: boolean;
+  user?: UserProfile;
+}
+
 export const usersApi = {
-  getProtected: () => apiRequest<unknown>('/api/users/protected'),
+  getProtected: () => apiRequest<ProtectedUserResponse>('/api/users/protected'),
+  getById: (id: number) => apiRequest<UserProfile>(`/api/users/${id}`),
+  update: (
+    userId: number,
+    data: Partial<Pick<UserProfile, 'username' | 'birth_date' | 'photo_url'>>,
+  ) =>
+    apiRequest<{ status: string; user: UserProfile }>(`/api/users/update?user_id=${userId}`, {
+      method: 'PUT',
+      body: data,
+    }),
 };
 
 // Типы для игроков

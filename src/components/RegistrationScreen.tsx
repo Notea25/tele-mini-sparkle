@@ -3,6 +3,10 @@ import { Button } from "@/components/ui/button";
 import playersWelcome from "@/assets/players-welcome.png";
 import logo from "@/assets/logo-new.png";
 import { Filter } from "bad-words";
+import { usersApi } from "@/lib/api";
+import { getUserId } from "@/lib/authStorage";
+import { markRegistrationCompleted } from "@/lib/onboardingUtils";
+import { toast } from "sonner";
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 
@@ -44,6 +48,7 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
   const [isBirthDateFocused, setIsBirthDateFocused] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const scrollToButton = () => {
@@ -128,7 +133,16 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
     return true;
   };
 
-  const handleSubmit = () => {
+  const formatBirthDateToISO = (value: string): string | null => {
+    const match = value.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (!match) return null;
+    const [, day, month, year] = match;
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
+
     const trimmedNickname = nickname.trim();
 
     const isNicknameValid = validateNickname(trimmedNickname);
@@ -136,18 +150,60 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
     if (!isNicknameValid || !isBirthDateValid) return;
 
-    // Save to profile storage
-    const profileData = {
-      userName: trimmedNickname,
-      birthDate: birthDate,
-      profileImage: null,
-      createdAt: new Date().toLocaleDateString("ru-RU"),
-    };
+    const isoBirthDate = formatBirthDateToISO(birthDate);
+    if (!isoBirthDate) {
+      setBirthDateError("Укажи дату в формате ДД.ММ.ГГГГ");
+      return;
+    }
 
-    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileData));
-    localStorage.setItem("fantasyRegistrationCompleted", "true");
+    const userId = getUserId();
 
-    onComplete();
+    // Если по какой-то причине нет userId (например, не успел сохраниться после логина),
+    // не блокируем пользователя и сохраняем данные локально, как раньше.
+    if (!userId) {
+      const profileData = {
+        userName: trimmedNickname,
+        birthDate: birthDate,
+        profileImage: null,
+        createdAt: new Date().toLocaleDateString("ru-RU"),
+      };
+
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileData));
+      markRegistrationCompleted();
+      onComplete();
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await usersApi.update(userId, {
+        username: trimmedNickname,
+        birth_date: isoBirthDate,
+      });
+
+      if (!response.success) {
+        toast.error("Не удалось сохранить данные, попробуй еще раз");
+        return;
+      }
+
+      // Сохраняем данные локально (для профиля/аватарки и оффлайна)
+      const profileData = {
+        userName: trimmedNickname,
+        birthDate: birthDate,
+        profileImage: null,
+        createdAt: new Date().toLocaleDateString("ru-RU"),
+      };
+
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileData));
+      markRegistrationCompleted();
+
+      onComplete();
+    } catch (error) {
+      console.error("Registration update failed", error);
+      toast.error("Ошибка при сохранении данных, попробуй еще раз");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBirthDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,10 +305,11 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
         <Button
           ref={buttonRef}
           onClick={handleSubmit}
-          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
+          disabled={isSubmitting}
+          className="w-full h-[44px] font-rubik text-[16px] font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg disabled:opacity-70 disabled:cursor-not-allowed"
           style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
         >
-          Готово
+          {isSubmitting ? "Сохранение..." : "Готово"}
         </Button>
       </div>
     </div>

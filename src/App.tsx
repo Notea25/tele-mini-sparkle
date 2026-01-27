@@ -10,6 +10,7 @@ import SplashScreen from "./components/SplashScreen";
 import OnboardingScreen from "./components/OnboardingScreen";
 import RegistrationScreen from "./components/RegistrationScreen";
 import { shouldShowOnboarding, markOnboardingCompleted, shouldShowRegistration } from "./lib/onboardingUtils";
+import { usersApi } from "./lib/api";
 import Index from "./pages/Index";
 import CreateTeam from "./pages/CreateTeam";
 import TeamBuilder from "./pages/TeamBuilder";
@@ -90,29 +91,59 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // Check screens after splash completes
-    if (!showSplash) {
-      // Check if user is registered
-      const isRegistered = !shouldShowRegistration();
-      
-      // If league invite and user registered, skip onboarding
+    const decideScreens = async () => {
+      // Ждём завершения заставки
+      if (showSplash) return;
+
+      let isRegisteredBackend: boolean | null = null;
+
+      try {
+        const response = await usersApi.getProtected();
+        if (response.success && response.data) {
+          const anyData = response.data as any;
+          const user = anyData.user;
+          const hasName = !!user?.username;
+          const hasBirthDate = !!user?.birth_date;
+          if (hasName && hasBirthDate) {
+            isRegisteredBackend = true;
+          } else {
+            isRegisteredBackend = false;
+          }
+        }
+      } catch {
+        // Если запрос не удался (нет токена, dev-режим и т.п.) — fallback к локальной логике
+      }
+
+      const isRegistered =
+        isRegisteredBackend !== null
+          ? isRegisteredBackend
+          : !shouldShowRegistration();
+
+      // Если это инвайт в лигу и пользователь уже зарегистрирован — ничего не показываем
       if (isLeagueInvite && isRegistered) {
-        // User already registered, will see league invite modal
         return;
       }
-      
-      // If referral and user already registered, skip onboarding/registration
+
+      // Если это реферальная ссылка и пользователь зарегистрирован — тоже ничего не показываем
       if (isReferral && isRegistered) {
-        // User already registered, will be redirected to /create-team via Index
         return;
       }
-      
+
+      // Если по данным бэка пользователь уже заполнил имя и дату рождения,
+      // не показываем онбординг/регистрацию даже на новом устройстве.
+      if (isRegistered) {
+        return;
+      }
+
+      // Пользователь ещё не завершил регистрацию
       if (shouldShowOnboarding()) {
         setShowOnboarding(true);
-      } else if (shouldShowRegistration()) {
+      } else {
         setShowRegistration(true);
       }
-    }
+    };
+
+    void decideScreens();
   }, [showSplash, isReferral, isLeagueInvite]);
 
   const handleOnboardingComplete = () => {

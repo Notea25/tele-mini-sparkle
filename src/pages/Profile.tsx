@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
@@ -6,6 +6,7 @@ import SportHeader from "@/components/SportHeader";
 import { Button } from "@/components/ui/button";
 import InviteFriendsDrawer from "@/components/InviteFriendsDrawer";
 import ImageCropDrawer from "@/components/ImageCropDrawer";
+import { usersApi, UserProfile } from "@/lib/api";
 
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
@@ -30,6 +31,8 @@ const Profile = () => {
   const [inviteDrawerOpen, setInviteDrawerOpen] = useState(false);
   const [cropDrawerOpen, setCropDrawerOpen] = useState(false);
   const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
+  const [backendUser, setBackendUser] = useState<UserProfile | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   
   // Load saved profile
   const [savedProfile, setSavedProfile] = useState<ProfileData>(() => {
@@ -47,21 +50,96 @@ const Profile = () => {
   // Current editable profile state
   const [profile, setProfile] = useState<ProfileData>(savedProfile);
 
+  // Подтягиваем данные пользователя с бэка (имя, дата рождения, дата регистрации)
+  useEffect(() => {
+    const loadBackendProfile = async () => {
+      try {
+        const response = await usersApi.getProtected();
+        if (response.success && response.data) {
+          const anyData = response.data as any;
+          const user = anyData.user as UserProfile | undefined;
+          if (user) {
+            setBackendUser(user);
+
+            const registrationDate = user.registration_date
+              ? new Date(user.registration_date).toLocaleDateString("ru-RU")
+              : savedProfile.createdAt;
+
+            const birthDateFromBackend = (() => {
+              const value = user.birth_date;
+              if (!value || typeof value !== "string") return savedProfile.birthDate;
+              const parts = value.split("-");
+              if (parts.length === 3) {
+                const [year, month, day] = parts;
+                return `${day}.${month}.${year}`;
+              }
+              return savedProfile.birthDate;
+            })();
+
+            const nameFromBackend = user.username || savedProfile.userName;
+
+            const updated: ProfileData = {
+              userName: nameFromBackend,
+              birthDate: birthDateFromBackend,
+              profileImage: savedProfile.profileImage,
+              createdAt: registrationDate,
+            };
+
+            setSavedProfile(updated);
+            setProfile(updated);
+          }
+        }
+      } catch {
+        // Если запрос не удался, просто остаёмся на локальном профиле
+      }
+    };
+
+    void loadBackendProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Check if there are unsaved changes
   const hasUnsavedChanges = 
     profile.userName !== savedProfile.userName || 
     profile.profileImage !== savedProfile.profileImage;
 
-  // Save changes to localStorage
-  const handleSaveChanges = () => {
+  // Save changes to backend (username) and localStorage (avatar etc.)
+  const handleSaveChanges = async () => {
+    if (isSaving) return;
+
     // Validate minimum length
     if (profile.userName.trim().length < 2) {
       toast.error("Имя должно содержать минимум 2 символа");
       return;
     }
-    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
-    setSavedProfile(profile);
-    toast.success("Изменения сохранены");
+
+    setIsSaving(true);
+    try {
+      if (backendUser) {
+        const response = await usersApi.update(backendUser.id, {
+          username: profile.userName.trim(),
+        });
+
+        if (!response.success) {
+          toast.error("Не удалось сохранить имя на сервере");
+          return;
+        }
+
+        const updatedUser = (response.data as any)?.user as UserProfile | undefined;
+        if (updatedUser) {
+          setBackendUser(updatedUser);
+        }
+      }
+
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+      setSavedProfile(profile);
+      toast.success("Изменения сохранены");
+    } catch (error) {
+      console.error("Profile save failed", error);
+      toast.error("Ошибка при сохранении изменений");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Discard changes
@@ -232,9 +310,10 @@ const Profile = () => {
           {hasUnsavedChanges && (
             <Button
               onClick={handleSaveChanges}
-              className="w-full bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-lg h-12 shadow-neon"
+              disabled={isSaving}
+              className="w-full bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded-lg h-12 shadow-neon disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Сохранить изменения
+              {isSaving ? "Сохранение..." : "Сохранить изменения"}
             </Button>
           )}
 
