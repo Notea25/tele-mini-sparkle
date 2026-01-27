@@ -31,3 +31,11 @@ export const BOOST_TYPE_TO_ID: Record<BoostType, BoostId> = {
   transfers_plus: BoostId.TRANSFERS,
   gold_tour: BoostId.GOLDEN,
 };
+
+export const BOOST_ID_TO_TYPE: Record<BoostId, BoostType> = {
+  [BoostId.BENCH]: "bench_boost",
+  [BoostId.CAPTAIN3X]: "triple_captain",
+  [BoostId.DOUBLE]: "double_bet",
+  [BoostId.TRANSFERS]: "transfers_plus",
+  [BoostId.GOLDEN]: "gold_tour",
+};

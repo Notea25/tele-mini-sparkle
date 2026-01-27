@@ -15,12 +15,7 @@ import { getValidSwapOptions, detectFormation, FORMATION_LABELS, FormationKey, i
 import FormationField from "@/components/FormationField";
 import PlayerCard from "@/components/PlayerCard";
 import BoostDrawer from "@/components/BoostDrawer";
-import ConfirmBoostDrawer from "@/components/ConfirmBoostDrawer";
 import {
-  getBoostState,
-  setPendingBoost,
-  clearPendingBoost,
-  hasAnyPendingBoost,
   resetAllBoosts,
 } from "@/lib/boostState";
 import { clubLogos } from "@/lib/clubLogos";
@@ -45,10 +40,11 @@ const clubIcons: Record<string, string> = {
 };
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
-import { BoostSection, TEAM_MANAGEMENT_BOOSTS, BoostId } from "@/constants/boosts";
+import { BoostSection, TEAM_MANAGEMENT_BOOSTS, BoostId, BOOST_ID_TO_TYPE } from "@/constants/boosts";
 import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipStateForPage, BoostAvailabilityMap } from "@/lib/boostViewModel";
 import { PositionCode, getPositionLabel } from "@/constants/positions";
 import { isValidFormation } from "@/constants/formations";
+import type { ApplyBoostRequest } from "@/lib/api";
 
 // Special chips data with icons - only team management boosts
 const initialChips: BoostChip[] = [
@@ -141,31 +137,7 @@ const TeamManagement = () => {
   // Saving state
   const [isSaving, setIsSaving] = useState(false);
   
-  // Track initial boost state from backend (какой буст был выбран на следующий тур при заходе на страницу)
-  const [initialBoostState, setInitialBoostState] = useState<{
-    hasBoost: boolean;
-    boostId: string | null;
-  } | null>(null);
-  
-  const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => {
-    const state = getBoostState();
-    const emptyAvailabilityMap: BoostAvailabilityMap = {
-      [BoostId.BENCH]: { available: true },
-      [BoostId.CAPTAIN3X]: { available: true },
-      [BoostId.DOUBLE]: { available: true },
-      [BoostId.TRANSFERS]: { available: true },
-      [BoostId.GOLDEN]: { available: true },
-    };
-    return buildBoostChipStateForPage({
-      section: BoostSection.TEAM_MANAGEMENT,
-      baseChips: initialChips,
-      availabilityMap: emptyAvailabilityMap,
-      usedForNextTour: false,
-      activeNextTourBoostId: null,
-      nextTourNumber: null,
-      pendingBoostId: state.pendingBoostId,
-    });
-  });
+  const [specialChips, setSpecialChips] = useState<BoostChip[]>(() => initialChips);
   
   // Update specialChips when API data arrives
   useEffect(() => {
@@ -178,7 +150,6 @@ const TeamManagement = () => {
         });
       }
 
-      const state = getBoostState();
       setSpecialChips(
         buildBoostChipStateForPage({
           section: BoostSection.TEAM_MANAGEMENT,
@@ -187,26 +158,16 @@ const TeamManagement = () => {
           usedForNextTour,
           activeNextTourBoostId,
           nextTourNumber: nextTour ?? null,
-          pendingBoostId: state.pendingBoostId,
+          pendingBoostId: null,
         }),
       );
     }
   }, [boostsLoading, boostsResponse, availabilityMap, usedForNextTour, nextTour, activeNextTourBoostId]);
   
-  // Track initial boost state when data is loaded (сохраняем буст, который был выбран на следующий тур на момент захода)
-  useEffect(() => {
-    if (!boostsLoading && boostsResponse?.success && initialBoostState === null) {
-      const initialId = activeNextTourBoostId ?? null;
-      setInitialBoostState({
-        hasBoost: !!initialId,
-        boostId: initialId,
-      });
-    }
-  }, [boostsLoading, boostsResponse, initialBoostState, activeNextTourBoostId]);
-  
   const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
-  const [isConfirmBoostOpen, setIsConfirmBoostOpen] = useState(false);
+  const [selectedBoostChip, setSelectedBoostChip] = useState<BoostChip | null>(null);
+  const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
   const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
 
   // Check if boost is active on the other page (раздел "Трансферы")
@@ -223,32 +184,50 @@ const TeamManagement = () => {
     setSelectedBoostChip(chip);
     setIsBoostDrawerOpen(true);
   };
+  
+  const applyBoost = async (chipId: string) => {
+    if (!squad || !boostTourId) {
+      toast.error("Бусты можно использовать только для следующего тура");
+      return;
+    }
 
-  const applyBoost = (chipId: string) => {
-    // Check if another boost is already pending (local or from other page)
-    const hasPendingBoost = specialChips.some((chip) => chip.status === "pending");
-    const { pending, page } = hasAnyPendingBoost();
-
-    if (hasPendingBoost || (pending && page && page !== BoostSection.TEAM_MANAGEMENT)) {
+    // Нельзя активировать больше одного буста на тур (в любой из секций)
+    const hasActiveBoostHere = specialChips.some((chip) => chip.status === "pending");
+    if (hasActiveBoostHere || otherPageBoostActive) {
       toast.error("В одном туре можно использовать только 1 буст");
       return;
     }
 
-    // Сохраняем pending в локальное состояние и localStorage
-    setPendingBoost(chipId as any, BoostSection.TEAM_MANAGEMENT);
+    const boostType = BOOST_ID_TO_TYPE[chipId as BoostId];
+    if (!boostType) {
+      toast.error("Неизвестный тип буста");
+      return;
+    }
 
-    const state = getBoostState();
-    setSpecialChips(
-        buildBoostChipStateForPage({
-        section: BoostSection.TEAM_MANAGEMENT,
-        baseChips: initialChips,
-        availabilityMap,
-        usedForNextTour,
-        activeNextTourBoostId,
-        nextTourNumber: nextTour ?? null,
-        pendingBoostId: state.pendingBoostId,
-      }),
-    );
+    try {
+      const body: ApplyBoostRequest = {
+        squad_id: squad.id,
+        tour_id: boostTourId,
+        type: boostType,
+      };
+
+      const result = await boostsApi.apply(body);
+      if (!result.success) {
+        toast.error(result.error || "Не удалось применить буст");
+        return;
+      }
+
+      toast.success("Буст использован для следующего тура");
+
+      // Обновляем данные о доступности бустов и составе
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] }),
+        queryClient.invalidateQueries({ queryKey: ['squad', squad.id] }),
+        queryClient.invalidateQueries({ queryKey: ['squadTour', squad.id, currentTour ?? 0] }),
+      ]);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Ошибка при применении буста");
+    }
   };
 
   const cancelBoost = (_chipId: string) => {
@@ -353,40 +332,8 @@ const TeamManagement = () => {
     };
   };
 
-  // Handle save - сохраняем состав и при необходимости синхронизируем бусты с бэкендом
+  // Handle save - сохраняем только состав (бусты применяются отдельно при подтверждении в окне буста)
   const handleSaveClick = async () => {
-    // Начальное состояние буста из бэкенда при заходе на страницу
-    const initialBoostId = initialBoostState?.boostId ?? null;
-
-    // Текущее целевое состояние: ищем буст, который помечен как "Используется" (pending)
-    // среди командных бустов на этой странице
-    const currentPendingChip = specialChips.find(
-      (c) => c.status === "pending" && TEAM_MANAGEMENT_BOOSTS.includes(c.id as BoostId),
-    );
-    const finalBoostId = currentPendingChip ? currentPendingChip.id : null;
-
-    const hasInitialBoost = initialBoostId !== null;
-    const hasFinalBoost = finalBoostId !== null;
-
-    // Нельзя изменить или удалить уже выбранный буст
-    if (hasInitialBoost && hasFinalBoost && initialBoostId !== finalBoostId) {
-      toast.error("В этом туре уже выбран буст, его нельзя изменить");
-      return;
-    }
-
-    if (hasInitialBoost && !hasFinalBoost) {
-      toast.error("Этот буст уже выбран для тура и не может быть отменён");
-      return;
-    }
-
-    const needApply = !hasInitialBoost && hasFinalBoost;
-
-    // Если нужно применить новый буст — открываем подтверждение и ждём решения пользователя.
-    if (needApply) {
-      setIsConfirmBoostOpen(true);
-      return;
-    }
-    
     if (!squad) return;
     
     // Validate main squad positions (frontend uses Russian position codes)
@@ -432,11 +379,6 @@ const TeamManagement = () => {
         // Invalidate squad cache to ensure fresh data on other pages
         await queryClient.invalidateQueries({ queryKey: ['my-squads'] });
 
-        // После нажатия "Сохранить" всегда перечитываем доступные бусты для актуального состояния
-        if (squad.id && boostTourId) {
-          await queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
-        }
-        
         toast.success("Изменения сохранены");
         // Остаёмся на странице "Моя команда" после сохранения
       } else {
@@ -1292,28 +1234,7 @@ const TeamManagement = () => {
         blockedByOtherSection={otherPageBoostActive}
       />
 
-      {/* Confirm Boost Drawer */}
-      <ConfirmBoostDrawer
-        isOpen={isConfirmBoostOpen}
-        onClose={() => setIsConfirmBoostOpen(false)}
-        pendingBoost={specialChips.find((c) => c.status === "pending" && TEAM_MANAGEMENT_BOOSTS.includes(c.id as BoostId)) || null}
-        squadId={squad?.id || null}
-        tourId={boostTourId}
-        initialBoostChipId={initialBoostState?.boostId ?? null}
-        onConfirm={async () => {
-          // Буст успешно синхронизирован на бэке — очищаем pending в localStorage
-          clearPendingBoost();
-          // Обновляем данные о доступных бустах для этого сквада и тура
-          if (squad?.id && boostTourId) {
-            await queryClient.invalidateQueries({ queryKey: ['availableBoosts', squad.id, boostTourId] });
-          }
-          setIsConfirmBoostOpen(false);
-          // Остаёмся на странице "Моя команда" после подтверждения буста
-        }}
-        onChangeBoost={() => {
-          setIsConfirmBoostOpen(false);
-        }}
-      />
+      {/* Confirm Boost Drawer (не используется, подтверждение буста происходит внутри окна буста) */}
 
       {/* Developer Mode: Reset Boosts Button */}
       {process.env.NODE_ENV === 'development' && (

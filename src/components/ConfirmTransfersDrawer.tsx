@@ -1,6 +1,6 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftRight, AlertCircle } from "lucide-react";
+import { ArrowLeftRight } from "lucide-react";
 import jerseyDinamoMinsk from "@/assets/jerseys/dinamoJersey.png";
 import jerseyBate from "@/assets/jerseys/bateJersey.png";
 import jerseyBateGk from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
@@ -15,7 +15,6 @@ import jerseyTorpedo from "@/assets/jerseys/torpedoJersey.png";
 import jerseyVitebsk from "@/assets/jerseys/vitebskJersey.png";
 import jerseyVitebskGk from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
 import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
-import { BoostChip } from "@/components/BoostDrawer";
 import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
 
 interface TransferRecord {
@@ -46,7 +45,6 @@ interface ConfirmTransfersDrawerProps {
   pointsPenalty?: number;
   remainingBudget: number;
   hasTransferBoost?: boolean;
-  boosts?: BoostChip[];
 }
 
 const ConfirmTransfersDrawer = ({
@@ -59,26 +57,15 @@ const ConfirmTransfersDrawer = ({
   pointsPenalty = 0,
   remainingBudget,
   hasTransferBoost = false,
-  boosts = [],
 }: ConfirmTransfersDrawerProps) => {
-  // Check if any boost is active (pending)
-  const hasActiveBoost = boosts.some((b) => b.status === "pending");
-
-  const getBoostStatusText = (boost: BoostChip) => {
-    if (boost.status === "pending") {
-      return "Используется";
-    }
-    if (boost.status === "used" && boost.usedInTour) {
-      return `${boost.usedInTour} тур`;
-    }
-    return "Не использован";
-  };
-
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+  
       <DrawerContent className="bg-card border-border max-h-[85vh]">
         <DrawerHeader>
           <DrawerTitle className="text-foreground text-center text-xl">Подтверди замены</DrawerTitle>
+          <p className="text-muted-foreground text-sm text-center mt-1">
+            Вы действительно хотите сохранить текущий состав?
+          </p>
         </DrawerHeader>
 
         <div className="px-4 pb-6 overflow-y-auto">
@@ -122,54 +109,7 @@ const ConfirmTransfersDrawer = ({
             <p className="text-center text-muted-foreground py-6">Нет изменений для сохранения</p>
           )}
 
-          {/* Boosts Section - only show if there are boosts */}
-          {boosts.length > 0 && (
-            <div className="mb-4">
-              <div className="grid grid-cols-5 gap-1">
-                {boosts.map((boost) => (
-                  <div
-                    key={boost.id}
-                    className={`flex flex-col items-center p-2 rounded-lg relative ${
-                      boost.status === "pending" ? "bg-card border border-primary" : "bg-card/50 grayscale opacity-60"
-                    }`}
-                  >
-                    <img
-                      src={boost.icon}
-                      alt={boost.label}
-                      className={`w-5 h-5 mb-0.5 ${boost.status !== "pending" ? "grayscale" : ""}`}
-                    />
-                    <span
-                      className={`text-[8px] font-medium text-center leading-tight ${
-                        boost.status === "pending" ? "text-foreground" : "text-muted-foreground"
-                      }`}
-                    >
-                      {boost.label}
-                    </span>
-                    <span
-                      className={`text-[7px] text-center leading-tight ${
-                        boost.status === "pending" ? "text-primary" : "text-muted-foreground"
-                      }`}
-                    >
-                      {getBoostStatusText(boost)}
-                    </span>
-                    {/* Alert circle indicator */}
-                    <div
-                      className={
-                        "absolute top-1 right-1 rounded-full p-0.5 " +
-                        (boost.status === "pending" ? "bg-card" : "bg-card/70")
-                      }
-                    >
-                      <AlertCircle
-                        className={`w-3 h-3 ${
-                          boost.status === "pending" ? "text-primary" : "text-muted-foreground/50"
-                        }`}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Boosts Section удалена: бусты подтверждаются отдельно в своих окнах */}
 
           {/* Stats Section */}
           <div className="mb-6">

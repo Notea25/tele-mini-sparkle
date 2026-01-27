@@ -30,8 +30,6 @@ import PlayerCard from "@/components/PlayerCard";
 import BoostDrawer from "@/components/BoostDrawer";
 import ConfirmTransfersDrawer from "@/components/ConfirmTransfersDrawer";
 import {
-  clearPendingBoost,
-  hasAnyPendingBoost,
   TRANSFER_BOOSTS,
   saveGoldenTourBackup,
   getGoldenTourBackup,
@@ -63,7 +61,7 @@ const clubIcons: Record<string, string> = {
 };
 
 import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
-import { BoostSection } from "@/constants/boosts";
+import { BoostSection, TEAM_MANAGEMENT_BOOSTS, BoostId, BOOST_ID_TO_TYPE } from "@/constants/boosts";
 import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipStateForPage } from "@/lib/boostViewModel";
 import { PositionCode } from "@/constants/positions";
 
@@ -209,22 +207,14 @@ const Transfers = () => {
     }
   }, [boostsLoading, boostsResponse, availabilityMap, usedForNextTour, nextTour, activeNextTourBoostId]);
   
-  // Check if boost is active on the other page
+  // Check if boost is active on the other page (раздел "Моя команда")
   useEffect(() => {
-    const checkOtherPageBoost = () => {
-      const { pending, boostId, page } = hasAnyPendingBoost();
-      if (pending && page === BoostSection.TEAM_MANAGEMENT) {
-        setOtherPageBoostActive(true);
-      } else {
-        setOtherPageBoostActive(false);
-      }
-    };
-    checkOtherPageBoost();
-
-    const handleStorageChange = () => checkOtherPageBoost();
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+    if (activeNextTourBoostId && TEAM_MANAGEMENT_BOOSTS.includes(activeNextTourBoostId)) {
+      setOtherPageBoostActive(true);
+    } else {
+      setOtherPageBoostActive(false);
+    }
+  }, [activeNextTourBoostId]);
 
   const openBoostDrawer = (chip: BoostChip) => {
     // Даже если буст заблокирован, открываем плашку с описанием и объяснением причины блокировки
@@ -233,23 +223,26 @@ const Transfers = () => {
   };
 
   const applyBoost = async (chipId: string) => {
-    const hasPendingBoost = specialChips.some((chip) => chip.status === "pending");
-    const { pending, page } = hasAnyPendingBoost();
-
-    if (hasPendingBoost || (pending && page !== "transfers")) {
-      toast.error("В одном туре можно использовать только 1 буст");
+    if (!squad || !boostTourId) {
+      toast.error("Бусты можно использовать только для следующего тура");
       return;
     }
 
-    if (!squad || !boostTourId) {
-      toast.error("Бусты можно использовать только для следующего тура");
+    // Нельзя активировать больше одного буста на тур (в любой из секций)
+    const hasActiveBoostHere = specialChips.some((chip) => chip.status === "pending");
+    if (hasActiveBoostHere || otherPageBoostActive) {
+      toast.error("В одном туре можно использовать только 1 буст");
       return;
     }
 
     // Трансферные бусты нельзя отменять, поэтому сразу применяем на бэкенде
     if (chipId === "transfers" || chipId === "golden") {
       try {
-        const boostType: BoostType = chipId === "transfers" ? "transfers_plus" : "gold_tour";
+        const boostType = BOOST_ID_TO_TYPE[chipId as BoostId];
+        if (!boostType) {
+          toast.error("Неизвестный тип буста");
+          return;
+        }
         const body: ApplyBoostRequest = {
           squad_id: squad.id,
           tour_id: boostTourId,
@@ -1694,13 +1687,6 @@ const Transfers = () => {
         pointsPenalty={transferCosts.pointsPenalty}
         remainingBudget={Math.round(budget)}
         hasTransferBoost={hasAnyTransferBoost}
-        boosts={allBoostsTemplate.map((boost) => {
-          const currentChip = specialChips.find((c) => c.id === boost.id);
-          if (currentChip) {
-            return currentChip;
-          }
-          return boost;
-        })}
       />
 
       {/* Home Button */}
