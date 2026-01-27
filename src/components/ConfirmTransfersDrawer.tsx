@@ -59,7 +59,7 @@ const ConfirmTransfersDrawer = ({
   hasTransferBoost = false,
 }: ConfirmTransfersDrawerProps) => {
   return (
-  
+    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-card border-border max-h-[85vh]">
         <DrawerHeader>
           <DrawerTitle className="text-foreground text-center text-xl">Подтверди замены</DrawerTitle>
