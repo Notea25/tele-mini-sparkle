@@ -760,50 +760,51 @@ const TeamManagement = () => {
       <div className="px-4 mt-4">
         <div className="grid grid-cols-3 gap-3">
           {specialChips.map((chip) => {
-            const isBlocked = otherPageBoostActive && chip.status === "available";
-            const isDisabled = isBlocked || chip.status === "used";
+            // Заблокирован бустом в другом разделе ("Трансферы")
+            const isBlockedByOtherSection = otherPageBoostActive && chip.status === "available";
+            // Заблокирован другим бустом в этом же разделе для текущего тура (нет usedInTour)
+            const isBlockedBySameSection = chip.status === "used" && !chip.usedInTour;
+            const isBlocked = isBlockedByOtherSection || isBlockedBySameSection;
+            const isUsedHistorical = chip.status === "used" && !!chip.usedInTour;
 
-            // Карточка кликабельна, если буст доступен или уже выбран (pending)
-            const isClickable = !isBlocked && (chip.status === "available" || chip.status === "pending");
-            
             return (
               <div
                 key={chip.id}
                 onClick={() => {
-                  // Даже если буст заблокирован, всегда открываем плашку с описанием и причиной блокировки
-                  if (isBlocked || isClickable) {
-                    openBoostDrawer(chip);
-                  }
+                  // Всегда открываем дроуер: и для активных, и для заблокированных, и для уже использованных бустов
+                  openBoostDrawer(chip);
                 }}
-                className={`flex flex-col items-center justify-center py-4 rounded-xl transition-all ${
-                  !isClickable
-                    ? "bg-card/30 opacity-50 cursor-not-allowed"
-                      : chip.status === "pending"
-                      ? "bg-card border-2 border-primary hover:bg-card/80 cursor-pointer"
-                      : "bg-card hover:bg-card/80 cursor-pointer"
+                className={`flex flex-col items-center justify-center py-4 rounded-xl transition-all cursor-pointer ${
+                  chip.status === "pending"
+                    ? "bg-card border-2 border-primary hover:bg-card/80"
+                    : isBlocked || isUsedHistorical
+                      ? "bg-card/30 opacity-50"
+                      : "bg-card hover:bg-card/80"
                 }`}
               >
                 <img
                   src={chip.icon}
                   alt={chip.label}
                   className={`w-8 h-8 object-contain mb-1 transition-all ${
-                    isDisabled ? "grayscale opacity-50" : ""
+                    isBlocked || chip.status === "used" ? "grayscale opacity-50" : ""
                   }`}
                 />
                 <span
                   className={`text-[10px] font-medium text-center leading-tight ${
-                    isDisabled ? "text-muted-foreground" : "text-foreground"
+                    isBlocked || chip.status === "used" ? "text-muted-foreground" : "text-foreground"
                   }`}
                 >
                   {chip.label}
                 </span>
                 <span
                   className={`text-[8px] ${
-                    isDisabled
+                    isBlocked
                       ? "text-muted-foreground"
                       : chip.status === "pending"
                         ? "text-primary"
-                        : "text-foreground/60"
+                        : chip.status === "used"
+                          ? "text-muted-foreground"
+                          : "text-foreground/60"
                   }`}
                 >
                   {isBlocked
@@ -811,11 +812,9 @@ const TeamManagement = () => {
                     : chip.status === "pending"
                       ? "Используется"
                       : chip.status === "used"
-                        ? (chip.sublabel
-                            ? chip.sublabel
-                            : chip.usedInTour
-                              ? `${chip.usedInTour} тур`
-                              : "Использован")
+                        ? (chip.usedInTour
+                            ? `${chip.usedInTour} тур`
+                            : "Использован")
                         : chip.sublabel}
                 </span>
               </div>
