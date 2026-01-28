@@ -1474,15 +1474,21 @@ const TeamBuilder = () => {
                   const leagueIdNum = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116');
                   const favTeamId = parseInt(localStorage.getItem('fantasyFavoriteTeam') || '0');
 
-                  const requestBody = {
+                  const requestBody: any = {
                     name: teamName,
                     league_id: leagueIdNum,
                     fav_team_id: favTeamId,
                     main_player_ids: mainPlayerIds,
                     bench_player_ids: benchPlayerIds,
-                    captain_id: captain,
-                    vice_captain_id: viceCaptain,
                   };
+                  
+                  // Only include captain/vice-captain if they are set
+                  if (captain !== null) {
+                    requestBody.captain_id = captain;
+                  }
+                  if (viceCaptain !== null) {
+                    requestBody.vice_captain_id = viceCaptain;
+                  }
 
                   const response = await squadsApi.create(requestBody);
                   if (response.success && response.data) {

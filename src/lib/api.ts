@@ -181,6 +181,8 @@ export interface CreateSquadRequest {
   fav_team_id: number;
   main_player_ids: number[];
   bench_player_ids: number[];
+  captain_id?: number | null;
+  vice_captain_id?: number | null;
 }
 
 export interface CreateSquadResponse {
