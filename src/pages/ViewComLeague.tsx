@@ -38,6 +38,18 @@ const ViewComLeague = () => {
     return Number.isFinite(numericId) ? numericId : null;
   }, [leagueId]);
   
+  // Fetch full commercial league data for tour information
+  const { data: commercialLeagueResponse } = useQuery({
+    queryKey: ['commercialLeague', customLeagueId],
+    queryFn: async () => {
+      if (!customLeagueId) return null;
+      return commercialLeaguesApi.getById(customLeagueId);
+    },
+    enabled: !!customLeagueId,
+    staleTime: 0,
+    gcTime: 0,
+  });
+  
   // Get league ID from localStorage (default 116)
   const sportLeagueId = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116', 10);
   
@@ -97,6 +109,26 @@ const ViewComLeague = () => {
     }));
   }, [leaderboardResponse, squad?.id]);
 
+  // Calculate tour period from commercial league data
+  const tourPeriod = useMemo(() => {
+    const league = commercialLeagueResponse?.data;
+    if (!league || !league.tours || league.tours.length === 0) {
+      return null;
+    }
+    
+    const tours = league.tours;
+    const tourNumbers = tours.map(t => t.number).sort((a, b) => a - b);
+    const startTour = tourNumbers[0];
+    const endTour = tourNumbers[tourNumbers.length - 1];
+    
+    if (tourNumbers.length > 1) {
+      return `${startTour} тур - ${endTour} тур`;
+    } else if (tourNumbers.length === 1) {
+      return `${startTour} тур`;
+    }
+    return null;
+  }, [commercialLeagueResponse?.data]);
+  
   // Current tour number for display
   const currentTourNumber = currentTour || 29;
 
@@ -198,7 +230,11 @@ const ViewComLeague = () => {
           <span className="col-span-3 text-xs">Место</span>
           <span className="col-span-4 text-xs">Название</span>
           <span className="col-span-3 text-center">
-            <span className="text-xs block whitespace-nowrap">{currentTourNumber}-й тур</span>
+            {tourPeriod ? (
+              <span className="text-xs block whitespace-nowrap">{tourPeriod}</span>
+            ) : (
+              <span className="text-xs block whitespace-nowrap">{currentTourNumber}-й тур</span>
+            )}
             <span className="text-[10px] italic block">(очки)</span>
           </span>
           <span className="col-span-2 text-right">
