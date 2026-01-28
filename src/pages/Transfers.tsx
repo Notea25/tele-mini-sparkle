@@ -1664,6 +1664,29 @@ const Transfers = () => {
           // This ensures correct distribution even after multiple transfers with active boosts
           const { mainSquad, bench } = distributePlayersToMainAndBench(players);
           
+          // Validate distribution result
+          const totalDistributed = mainSquad.length + bench.length;
+          if (totalDistributed !== 15) {
+            console.error('[Transfers] Distribution error:', {
+              totalPlayers: players.length,
+              mainSquadSize: mainSquad.length,
+              benchSize: bench.length,
+              totalDistributed,
+            });
+            toast.error(`Ошибка распределения: ${totalDistributed}/15 игроков`);
+            return;
+          }
+          if (mainSquad.length !== 11) {
+            console.error('[Transfers] Invalid main squad size:', mainSquad.length, 'expected 11');
+            toast.error(`Некорректное количество игроков в основе: ${mainSquad.length}/11`);
+            return;
+          }
+          if (bench.length !== 4) {
+            console.error('[Transfers] Invalid bench size:', bench.length, 'expected 4');
+            toast.error(`Некорректное количество игроков на скамейке: ${bench.length}/4`);
+            return;
+          }
+          
           // Validate main squad positions (frontend uses Russian position codes)
           const mainPositionCounts: Record<string, number> = {};
           mainSquad.forEach(player => {
@@ -1712,6 +1735,14 @@ const Transfers = () => {
           const transferCount = getTransferRecords().length;
           const result = recordTransfers(transferCount, hasTransfersBoost, hasGoldenTourBoost);
 
+          // Debug: log distribution results
+          console.log('[Transfers] Distribution result:', {
+            mainSquad: mainSquad.map(p => ({ id: p.id, name: p.name, position: p.position, slotIndex: p.slotIndex })),
+            bench: bench.map(p => ({ id: p.id, name: p.name, position: p.position, slotIndex: p.slotIndex })),
+            mainPositionCounts,
+            benchPositionCounts,
+          });
+
           // Save via API
           if (squad?.id) {
             const response = await squadsApi.replacePlayers(
@@ -1725,7 +1756,14 @@ const Transfers = () => {
             );
             
             if (!response.success) {
-              toast.error(response.error || "Ошибка сохранения");
+              console.error('[Transfers] Save failed:', response);
+              
+              // Show detailed error message
+              const errorMessage = response.error 
+                ? `Ошибка: ${response.error}` 
+                : `Ошибка сохранения (${response.status || 'unknown'} ${response.statusText || ''})`;
+              
+              toast.error(errorMessage, { duration: 5000 });
               return;
             }
             
