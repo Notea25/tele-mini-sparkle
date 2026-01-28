@@ -691,8 +691,15 @@ const Transfers = () => {
   const hasAnyTransferBoost = hasTransfersBoost || hasGoldenTourBoost;
 
   // Calculate pending transfer costs
+  // Use squad.replacements from backend as source of truth for available free transfers
   const pendingTransferCount = getTransferRecords().length;
-  const transferCosts = calculateTransferCosts(pendingTransferCount, hasTransfersBoost, hasGoldenTourBoost);
+  const transferCosts = calculateTransferCosts(
+    pendingTransferCount, 
+    hasTransfersBoost, 
+    hasGoldenTourBoost, 
+    nextTour,
+    squad?.replacements  // Backend data as source of truth
+  );
 
   // Calculate free transfers remaining from squad.replacements
   const freeTransfersRemaining = hasAnyTransferBoost
@@ -1749,7 +1756,7 @@ const Transfers = () => {
             });
           }
           
-          const result = recordTransfers(transferCount, hasTransfersBoost, hasGoldenTourBoost);
+          const result = recordTransfers(transferCount, hasTransfersBoost, hasGoldenTourBoost, nextTour, squad?.replacements);
 
           // Debug: log distribution results
           console.log('[Transfers] Distribution result:', {
