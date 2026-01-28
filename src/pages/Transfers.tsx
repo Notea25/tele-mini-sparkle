@@ -1733,6 +1733,22 @@ const Transfers = () => {
           }
 
           const transferCount = getTransferRecords().length;
+          
+          // Check if we have free transfers or boosts
+          const freeTransfers = squad?.replacements ?? 0;
+          const willHavePenalty = !hasAnyTransferBoost && transferCount > freeTransfers;
+          
+          if (willHavePenalty) {
+            const paidTransfersCount = transferCount - freeTransfers;
+            const penalty = paidTransfersCount * 4;
+            console.warn('[Transfers] Paid transfers will be applied:', {
+              totalTransfers: transferCount,
+              freeTransfers,
+              paidTransfers: paidTransfersCount,
+              penalty,
+            });
+          }
+          
           const result = recordTransfers(transferCount, hasTransfersBoost, hasGoldenTourBoost);
 
           // Debug: log distribution results
@@ -1741,6 +1757,12 @@ const Transfers = () => {
             bench: bench.map(p => ({ id: p.id, name: p.name, position: p.position, slotIndex: p.slotIndex })),
             mainPositionCounts,
             benchPositionCounts,
+            transferInfo: {
+              transferCount,
+              freeTransfers,
+              hasBoost: hasAnyTransferBoost,
+              willHavePenalty,
+            },
           });
 
           // Save via API
@@ -1758,10 +1780,27 @@ const Transfers = () => {
             if (!response.success) {
               console.error('[Transfers] Save failed:', response);
               
-              // Show detailed error message
-              const errorMessage = response.error 
-                ? `Ошибка: ${response.error}` 
-                : `Ошибка сохранения (${response.status || 'unknown'} ${response.statusText || ''})`;
+              // Extract error message from response.data.detail or response.error
+              const backendDetail = (response.data as any)?.detail;
+              
+              // Special handling for "No replacements left" error
+              if (backendDetail === 'No replacements left') {
+                const paidTransfersCount = transferCount - freeTransfers;
+                const penalty = paidTransfersCount * 4;
+                toast.error(
+                  `Бэкенд не поддерживает платные трансферы. ` +
+                  `Вы хотели сделать ${transferCount} замен (бесплатных: ${freeTransfers}, платных: ${paidTransfersCount}, штраф: -${penalty} очков). ` +
+                  `Нужно исправить серверную логику.`,
+                  { duration: 8000 }
+                );
+                return;
+              }
+              
+              const errorMessage = backendDetail
+                ? `Ошибка: ${backendDetail}`
+                : response.error 
+                  ? `Ошибка: ${response.error}` 
+                  : `Ошибка сохранения (${response.status || 'unknown'} ${response.statusText || ''})`;
               
               toast.error(errorMessage, { duration: 5000 });
               return;
