@@ -1480,6 +1480,8 @@ const TeamBuilder = () => {
                     fav_team_id: favTeamId,
                     main_player_ids: mainPlayerIds,
                     bench_player_ids: benchPlayerIds,
+                    captain_id: captain,
+                    vice_captain_id: viceCaptain,
                   };
 
                   const response = await squadsApi.create(requestBody);
