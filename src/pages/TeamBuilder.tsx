@@ -1474,6 +1474,29 @@ const TeamBuilder = () => {
                   const leagueIdNum = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116');
                   const favTeamId = parseInt(localStorage.getItem('fantasyFavoriteTeam') || '0');
 
+                  // Auto-assign captain and vice-captain if not selected
+                  // Choose most expensive players from main squad
+                  let finalCaptain = captain;
+                  let finalViceCaptain = viceCaptain;
+                  
+                  if (!finalCaptain || !finalViceCaptain) {
+                    const mainSquadPlayers = mainPlayerIds
+                      .map(id => players.find(p => p.id === id))
+                      .filter((p): p is typeof players[0] => p !== undefined)
+                      .sort((a, b) => (b.price || 0) - (a.price || 0));
+                    
+                    if (!finalCaptain && mainSquadPlayers.length > 0) {
+                      finalCaptain = mainSquadPlayers[0].id;
+                    }
+                    if (!finalViceCaptain && mainSquadPlayers.length > 1) {
+                      // Vice-captain must be different from captain
+                      const viceCaptainCandidate = mainSquadPlayers.find(p => p.id !== finalCaptain);
+                      if (viceCaptainCandidate) {
+                        finalViceCaptain = viceCaptainCandidate.id;
+                      }
+                    }
+                  }
+
                   const requestBody: any = {
                     name: teamName,
                     league_id: leagueIdNum,
@@ -1482,12 +1505,12 @@ const TeamBuilder = () => {
                     bench_player_ids: benchPlayerIds,
                   };
                   
-                  // Only include captain/vice-captain if they are set
-                  if (captain !== null) {
-                    requestBody.captain_id = captain;
+                  // Always include captain/vice-captain (auto-assigned if needed)
+                  if (finalCaptain !== null) {
+                    requestBody.captain_id = finalCaptain;
                   }
-                  if (viceCaptain !== null) {
-                    requestBody.vice_captain_id = viceCaptain;
+                  if (finalViceCaptain !== null) {
+                    requestBody.vice_captain_id = finalViceCaptain;
                   }
 
                   const response = await squadsApi.create(requestBody);
