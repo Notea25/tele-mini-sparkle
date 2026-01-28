@@ -1,5 +1,5 @@
 // Points calculation utilities for fantasy league
-import { BoostType } from "./tourData";
+import { BoostType } from "./api";
 
 interface PlayerForCalculation {
   id: number;

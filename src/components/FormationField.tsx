@@ -918,7 +918,6 @@ import boostBadgeBench from "@/assets/boost-badge-bench.png";
 import { X, Plus, ArrowUp } from "lucide-react";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
-import { BOOST_CONFIG } from "@/lib/tourData";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 
 // Player data interface

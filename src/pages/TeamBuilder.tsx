@@ -41,8 +41,6 @@ import EditTeamNameModal from "@/components/EditTeamNameModal";
 import clubLogo from "@/assets/club-logo.png";
 import homeIcon from "@/assets/home-icon.png";
 import { clubLogos } from "@/lib/clubLogos";
-
-import { allPlayers, allTeams } from "@/lib/teamData";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
@@ -205,8 +203,8 @@ const TeamBuilder = () => {
     };
   }, [isSearchFocused, ensureSearchVisibleOnce]);
 
-  // Use API players if available, otherwise fallback to static
-  const teams = ["Все команды", ...(apiTeams.length > 0 ? apiTeams.map(t => t.name) : allTeams)];
+  // Use API players
+  const teams = ["Все команды", ...(apiTeams.map(t => t.name))];
   const pointsOptions = [
     { label: "Фильтр по очкам", value: "Фильтр по очкам" },
     { label: "80+", value: "80+" },
@@ -217,8 +215,8 @@ const TeamBuilder = () => {
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
-  // Use API players if available, otherwise fallback to static
-  const players = apiPlayers.length > 0 ? apiPlayers : allPlayers;
+  // Use API players
+  const players = apiPlayers;
 
   const selectedPlayerIds = selectedPlayers.map((sp) => sp.id);
   const selectedPlayersData = players

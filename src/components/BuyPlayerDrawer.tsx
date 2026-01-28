@@ -4,13 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Plus, Minus, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, ChevronDown, X } from "lucide-react";
-import { PlayerData, allPlayers, allTeams } from "@/lib/teamData";
+import { PlayerData } from "@/lib/teamData";
 import { clubLogos } from "@/lib/clubLogos";
 
 const ITEMS_PER_PAGE = 6;
-
-// Use allPlayers from teamData
-const allChampionshipPlayers = allPlayers;
 
 interface BuyPlayerDrawerProps {
   isOpen: boolean;
@@ -22,6 +19,8 @@ interface BuyPlayerDrawerProps {
   getPlayersCountByClub: (clubName: string) => number;
   maxPlayersPerClub: number;
   initialPositionFilter?: string | null;
+  availablePlayers: PlayerData[];
+  teams: string[];
 }
 
 const positionToFilterMap: Record<string, string> = {
@@ -41,6 +40,8 @@ const BuyPlayerDrawer = ({
   getPlayersCountByClub,
   maxPlayersPerClub,
   initialPositionFilter,
+  availablePlayers: allChampionshipPlayers,
+  teams: allTeams,
 }: BuyPlayerDrawerProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
@@ -100,6 +101,9 @@ const BuyPlayerDrawer = ({
 
   const teams = ["Все команды", ...allTeams];
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
+  
+  // Note: This component is deprecated and not used in the app anymore
+  // All player management now uses API data through hooks
 
   const handleSort = (field: "name" | "points" | "price") => {
     // When user clicks sort, disable default sort
