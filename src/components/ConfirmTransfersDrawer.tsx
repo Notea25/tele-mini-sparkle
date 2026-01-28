@@ -133,7 +133,7 @@ const ConfirmTransfersDrawer = ({
               )}
               <div className="flex justify-between items-center py-1.5 border-b border-border">
                 <span className="text-muted-foreground text-sm">Остаток бюджета</span>
-                <span className="text-foreground text-sm font-medium">{remainingBudget}</span>
+                <span className="text-foreground text-sm font-medium">{typeof remainingBudget === 'number' ? remainingBudget.toFixed(1) : remainingBudget}</span>
               </div>
             </div>
           </div>

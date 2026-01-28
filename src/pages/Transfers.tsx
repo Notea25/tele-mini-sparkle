@@ -701,10 +701,10 @@ const Transfers = () => {
     squad?.replacements  // Backend data as source of truth
   );
 
-  // Calculate free transfers remaining from squad.replacements
+  // Calculate free transfers remaining dynamically - subtract pending transfers
   const freeTransfersRemaining = hasAnyTransferBoost
     ? "∞"
-    : Math.max(0, squad?.replacements ?? 0);
+    : Math.max(0, (squad?.replacements ?? 0) - pendingTransferCount);
 
   const getPlayersCountByClub = (clubName: string) => {
     return players.filter((p) => p.team === clubName).length;
@@ -1838,7 +1838,7 @@ const Transfers = () => {
         freeTransfersUsed={transferCosts.freeTransfersUsed}
         additionalTransfersUsed={transferCosts.paidTransfers}
         pointsPenalty={transferCosts.pointsPenalty}
-        remainingBudget={Math.round(budget)}
+        remainingBudget={budget}  // Already rounded to 1 decimal place
         hasTransferBoost={hasAnyTransferBoost}
       />
 
