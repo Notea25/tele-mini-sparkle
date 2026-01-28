@@ -98,6 +98,117 @@ const TRANSFERS_FORMATION_SLOTS: Record<string, number> = {
 
 const ITEMS_PER_PAGE = 8;
 
+// Deterministically distribute players to main squad and bench based on slotIndex and formation rules
+// This is the single source of truth - never rely on isOnBench flag for distribution
+function distributePlayersToMainAndBench(allPlayers: PlayerDataExt[]): {
+  mainSquad: PlayerDataExt[];
+  bench: PlayerDataExt[];
+} {
+  // Group players by position, sorted by slotIndex
+  const byPosition: Record<string, PlayerDataExt[]> = {
+    "ВР": [],
+    "ЗЩ": [],
+    "ПЗ": [],
+    "НП": [],
+  };
+
+  allPlayers.forEach(player => {
+    if (byPosition[player.position]) {
+      byPosition[player.position].push(player);
+    }
+  });
+
+  // Sort each position group by slotIndex
+  Object.keys(byPosition).forEach(pos => {
+    byPosition[pos].sort((a, b) => (a.slotIndex ?? 0) - (b.slotIndex ?? 0));
+  });
+
+  // Fixed distribution rules:
+  // GK (ВР): slotIndex 0 → main, slotIndex 1 → bench
+  // DEF (ЗЩ): slotIndex 0-4, need to determine how many in main based on formation
+  // MID (ПЗ): slotIndex 0-4, need to determine how many in main based on formation  
+  // FWD (НП): slotIndex 0-2, all go to main squad
+
+  const mainSquad: PlayerDataExt[] = [];
+  const bench: PlayerDataExt[] = [];
+
+  // GK: first one to main, second to bench (always)
+  if (byPosition["ВР"].length >= 1) {
+    mainSquad.push(byPosition["ВР"][0]);
+  }
+  if (byPosition["ВР"].length >= 2) {
+    bench.push(byPosition["ВР"][1]);
+  }
+
+  // FWD: all go to main (max 3)
+  byPosition["НП"].forEach(p => mainSquad.push(p));
+
+  // Now we need 10 more for main squad (1 GK + 10 outfield = 11 total)
+  // We have FWD already added (up to 3), so need (10 - FWD_count) more
+  const fwdInMain = byPosition["НП"].length;
+  const remainingSlotsForMain = 10 - fwdInMain;
+
+  // We have DEF + MID to fill remaining slots
+  const totalDefMid = byPosition["ЗЩ"].length + byPosition["ПЗ"].length;
+  
+  // Determine split: prioritize filling from what's available
+  // Try to use all DEF first up to formation limit, then fill with MID
+  const defCount = byPosition["ЗЩ"].length;
+  const midCount = byPosition["ПЗ"].length;
+
+  // We need to distribute remainingSlotsForMain between DEF and MID
+  // Valid formations have 3-5 DEF and 2-5 MID in main squad
+  let defInMain = Math.min(defCount, 5); // Max 5 DEF
+  let midInMain = Math.min(midCount, 5); // Max 5 MID
+
+  // Adjust if total exceeds remaining slots
+  if (defInMain + midInMain > remainingSlotsForMain) {
+    // Need to reduce - prefer keeping balance
+    const excess = (defInMain + midInMain) - remainingSlotsForMain;
+    
+    // Reduce from the position with more players, but respect minimums (3 DEF, 2 MID minimum)
+    if (defInMain > 3 && (midInMain <= 2 || defCount >= midCount)) {
+      defInMain = Math.max(3, defInMain - excess);
+    } else if (midInMain > 2) {
+      midInMain = Math.max(2, midInMain - excess);
+    }
+    
+    // Re-check and adjust if still over
+    if (defInMain + midInMain > remainingSlotsForMain) {
+      const remaining = remainingSlotsForMain;
+      // Distribute remaining slots proportionally but respect minimums
+      if (remaining >= 5) {
+        defInMain = Math.min(defCount, Math.max(3, remaining - 2));
+        midInMain = remaining - defInMain;
+      } else {
+        // Edge case - just fill what we can
+        defInMain = Math.min(defCount, remaining);
+        midInMain = remaining - defInMain;
+      }
+    }
+  }
+
+  // Add DEF to main squad (first defInMain by slotIndex)
+  for (let i = 0; i < defInMain && i < byPosition["ЗЩ"].length; i++) {
+    mainSquad.push(byPosition["ЗЩ"][i]);
+  }
+  // Remaining DEF to bench
+  for (let i = defInMain; i < byPosition["ЗЩ"].length; i++) {
+    bench.push(byPosition["ЗЩ"][i]);
+  }
+
+  // Add MID to main squad (first midInMain by slotIndex)
+  for (let i = 0; i < midInMain && i < byPosition["ПЗ"].length; i++) {
+    mainSquad.push(byPosition["ПЗ"][i]);
+  }
+  // Remaining MID to bench
+  for (let i = midInMain; i < byPosition["ПЗ"].length; i++) {
+    bench.push(byPosition["ПЗ"][i]);
+  }
+
+  return { mainSquad, bench };
+}
+
 const Transfers = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -546,8 +657,8 @@ const Transfers = () => {
       setShowExitDialog(false);
       return;
     }
-    const mainSquad = players.slice(0, 11);
-    const bench = players.slice(11, 15);
+    // Use deterministic distribution
+    const { mainSquad, bench } = distributePlayersToMainAndBench(players);
     saveTeamTransfers(mainSquad, bench, captain, viceCaptain);
     initialStateRef.current = JSON.stringify(players.map((p) => p.id).sort());
     setHasChanges(false);
@@ -634,55 +745,22 @@ const Transfers = () => {
     const maxSlots = TRANSFERS_FORMATION_SLOTS[player.position] || 0;
     const occupiedSlots = players.filter((p) => p.position === player.position).map((p) => p.slotIndex);
     
-    // Define main squad slot limits for each position (first 11 players total)
-    // ВР: 1 in main (slotIndex 0), 1 in bench (slotIndex 1)
-    // ЗЩ: 3-5 in main (slotIndex 0-4), 0-2 in bench
-    // ПЗ: 2-5 in main (slotIndex 0-4), 0-3 in bench  
-    // НП: 1-3 in main (slotIndex 0-2), 0-2 in bench
-    const mainSquadSlotLimit: Record<string, number> = {
-      "ВР": 1, // Only first GK goes to main squad
-      "ЗЩ": 5, // All 5 defenders can be in main squad
-      "ПЗ": 5, // All 5 midfielders can be in main squad
-      "НП": 3, // All 3 forwards go to main squad
-    };
-    
-    const currentMainCount = players.slice(0, 11).filter(p => p.position === player.position).length;
-    const mainLimit = mainSquadSlotLimit[player.position] || 0;
-    
-    // Try to fill main squad slots first (slotIndex 0 to mainLimit-1)
-    if (currentMainCount < mainLimit) {
-      for (let i = 0; i < mainLimit; i++) {
-        if (!occupiedSlots.includes(i)) {
-          const newPlayer: PlayerDataExt = {
-            ...player,
-            slotIndex: i,
-            isOnBench: false,
-          };
-          setPlayers((prev) => [...prev, newPlayer]);
-          setPendingPositionFilter(null);
-          setPendingSlotIndex(null);
-          toast.success(`${player.name} добавлен в основной состав`);
-          return;
-        }
-      }
-    }
-    
-    // If main squad is full for this position, add to bench
-    for (let i = mainLimit; i < maxSlots; i++) {
+    // Simply find the first empty slotIndex for this position
+    // Distribution to main/bench will be handled by distributePlayersToMainAndBench()
+    for (let i = 0; i < maxSlots; i++) {
       if (!occupiedSlots.includes(i)) {
         const newPlayer: PlayerDataExt = {
           ...player,
           slotIndex: i,
-          isOnBench: true,
         };
         setPlayers((prev) => [...prev, newPlayer]);
         setPendingPositionFilter(null);
         setPendingSlotIndex(null);
-        toast.success(`${player.name} добавлен в запасные`);
+        toast.success(`${player.name} добавлен в команду`);
         return;
       }
     }
-
+    
     toast.error(`Нет свободных позиций для ${player.position}`);
   };
 
@@ -1582,18 +1660,9 @@ const Transfers = () => {
         isOpen={showConfirmDrawer}
         onClose={() => setShowConfirmDrawer(false)}
         onConfirm={async () => {
-          // Sort by isOnBench first (false = main, true = bench), then by position and slotIndex
-          const sortedPlayers = [...players].sort((a, b) => {
-            // Main squad first (isOnBench = false)
-            if ((a.isOnBench ?? false) !== (b.isOnBench ?? false)) {
-              return (a.isOnBench ?? false) ? 1 : -1;
-            }
-            // Then by slotIndex
-            return (a.slotIndex ?? 0) - (b.slotIndex ?? 0);
-          });
-          
-          const mainSquad = sortedPlayers.slice(0, 11);
-          const bench = sortedPlayers.slice(11, 15);
+          // Use deterministic distribution based on slotIndex and position - single source of truth
+          // This ensures correct distribution even after multiple transfers with active boosts
+          const { mainSquad, bench } = distributePlayersToMainAndBench(players);
           
           // Validate main squad positions (frontend uses Russian position codes)
           const mainPositionCounts: Record<string, number> = {};
