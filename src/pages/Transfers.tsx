@@ -1177,9 +1177,10 @@ const Transfers = () => {
       {/* Main content */}
       {activeTab === "formation" ? (
         <>
-          {/* Football Field */}
-          <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20 -mb-[18%]">
-            <FormationField
+          {/* Football Field - use overflow-hidden container to clip bottom margin naturally */}
+          <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20 overflow-hidden">
+            <div className="mb-[-18%]">
+              <FormationField
               mode="transfers"
               players={players}
               onPlayerClick={(player) => setSelectedPlayerForCard(player.id)}
@@ -1190,6 +1191,7 @@ const Transfers = () => {
               removedPlayers={removedPlayersInfo}
               newPlayerIds={newPlayerIds}
             />
+            </div>
           </div>
 
           {/* Divider between selected players and available players */}
