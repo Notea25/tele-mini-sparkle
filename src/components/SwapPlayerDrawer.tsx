@@ -1,5 +1,6 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { ArrowLeftRight, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import swapArrowsPurple from "@/assets/swap-arrows-purple.png";
 import { getClubLogo } from "@/lib/clubLogos";
 
 // Import jerseys from proper folder
@@ -217,7 +218,7 @@ const SwapPlayerDrawer = ({
             <SwapPlayerCard player={selectedPlayer} />
             
             {/* Swap arrows */}
-            <ArrowLeftRight className="w-6 h-6 text-primary flex-shrink-0" />
+            <img src={swapArrowsPurple} alt="swap" className="w-8 h-8 flex-shrink-0" />
             
             {/* Empty slot for selection */}
             <EmptySlotCard />
