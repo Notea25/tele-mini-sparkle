@@ -282,8 +282,14 @@ const League = () => {
 
   // Save scroll position before navigating away
   const handleNavigate = (path: string) => {
-    sessionStorage.setItem("leagueScrollPosition", window.scrollY.toString());
-    navigate(path);
+    console.log('[League] handleNavigate called', { path, currentPath: window.location.pathname });
+    try {
+      sessionStorage.setItem("leagueScrollPosition", window.scrollY.toString());
+      navigate(path);
+      console.log('[League] Navigation triggered successfully');
+    } catch (error) {
+      console.error('[League] Navigation error:', error);
+    }
   };
 
   // Check if tournament has started

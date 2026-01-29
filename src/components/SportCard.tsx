@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Play, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -49,10 +49,32 @@ const SportCard = ({
 }: SportCardProps) => {
   const navigate = useNavigate();
   const [isNavigating, setIsNavigating] = useState(false);
+  const isNavigatingRef = useRef(false);
+  const navigationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup navigation timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (navigationTimeoutRef.current) {
+        clearTimeout(navigationTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleClick = async () => {
-    if (href && !comingSoon && !isNavigating) {
+    // Prevent multiple simultaneous clicks using ref (more reliable than state)
+    if (href && !comingSoon && !isNavigatingRef.current) {
+      console.log('[SportCard] handleClick started', { href, apiLeagueId });
+      
+      isNavigatingRef.current = true;
       setIsNavigating(true);
+      
+      // Safety timeout: auto-reset after 5 seconds in case something goes wrong
+      navigationTimeoutRef.current = setTimeout(() => {
+        console.warn('[SportCard] Navigation timeout - resetting state');
+        isNavigatingRef.current = false;
+        setIsNavigating(false);
+      }, 5000);
       
       if (apiLeagueId) {
         localStorage.setItem('fantasySelectedLeagueId', apiLeagueId.toString());
@@ -77,9 +99,11 @@ const SportCard = ({
           if (existingSquad) {
             localStorage.setItem('fantasyUserSquad', JSON.stringify(existingSquad));
             localStorage.setItem('fantasyHasTeam', 'true');
+            console.log('[SportCard] Navigating to /league');
             navigate('/league');
           } else {
             localStorage.removeItem('fantasyUserSquad');
+            console.log('[SportCard] Navigating to /create-team (no squad)');
             navigate('/create-team');
           }
         } else {
@@ -91,8 +115,17 @@ const SportCard = ({
         console.error('[SportCard] Error checking squads:', error);
         navigate('/create-team');
       } finally {
+        // Clear timeout and reset state
+        if (navigationTimeoutRef.current) {
+          clearTimeout(navigationTimeoutRef.current);
+          navigationTimeoutRef.current = null;
+        }
+        isNavigatingRef.current = false;
         setIsNavigating(false);
+        console.log('[SportCard] handleClick finished');
       }
+    } else if (isNavigatingRef.current) {
+      console.log('[SportCard] Click ignored - already navigating');
     }
   };
 
@@ -119,7 +152,9 @@ const SportCard = ({
       </div>
 
       <Card
-        className="relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 transition-all duration-300 cursor-pointer group"
+        className={`relative overflow-hidden bg-card/60 backdrop-blur-xl border-border/50 transition-all duration-300 group ${
+          isNavigating ? 'cursor-wait opacity-70' : 'cursor-pointer'
+        }`}
         onClick={handleClick}
       >
 
