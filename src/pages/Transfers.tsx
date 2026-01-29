@@ -610,8 +610,8 @@ const Transfers = () => {
 
     const transfers: Array<{
       type: "swap" | "buy" | "sell";
-      playerOut?: { id: number; name: string; points: number; team?: string; position?: string };
-      playerIn?: { id: number; name: string; points: number; team?: string; position?: string };
+      playerOut?: { id: number; name: string; points: number; team?: string; position?: string; price?: number };
+      playerIn?: { id: number; name: string; points: number; team?: string; position?: string; price?: number };
     }> = [];
 
     const maxPairs = Math.max(playersOut.length, playersIn.length);
@@ -622,10 +622,10 @@ const Transfers = () => {
       transfers.push({
         type: pOut && pIn ? "swap" : pOut ? "sell" : "buy",
         playerOut: pOut
-          ? { id: pOut.id, name: pOut.name, points: pOut.points, team: pOut.team, position: pOut.position }
+          ? { id: pOut.id, name: pOut.name, points: pOut.points, team: pOut.team, position: pOut.position, price: pOut.price }
           : undefined,
         playerIn: pIn
-          ? { id: pIn.id, name: pIn.name, points: pIn.points, team: pIn.team, position: pIn.position }
+          ? { id: pIn.id, name: pIn.name, points: pIn.points, team: pIn.team, position: pIn.position, price: pIn.price }
           : undefined,
       });
     }
