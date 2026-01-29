@@ -1379,7 +1379,7 @@ const Transfers = () => {
       </div>
 
       {/* Players List */}
-      <div className={`px-4 mt-3 space-y-2 ${totalPages <= 1 ? 'pb-60' : 'pb-6'}`}>
+      <div className={`px-4 mt-3 space-y-2 ${totalPages <= 1 ? 'pb-48' : 'pb-6'}`}>
         {paginatedPlayers.map((player) => {
           const canBuy = player.price <= budget + 0.001 && getPlayersCountByClub(player.team) < MAX_PLAYERS_PER_CLUB;
           return (
