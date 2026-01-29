@@ -222,6 +222,13 @@ const Transfers = () => {
   const [isBoostDrawerOpen, setIsBoostDrawerOpen] = useState(false);
   const [otherPageBoostActive, setOtherPageBoostActive] = useState(false);
   const [isRemovingBoost, setIsRemovingBoost] = useState(false);
+  
+  // Store transfers snapshot for confirm drawer to prevent flash when state updates
+  const [confirmedTransfers, setConfirmedTransfers] = useState<Array<{
+    type: "swap" | "buy" | "sell";
+    playerOut?: { id: number; name: string; points: number; team?: string; position?: string; price?: number };
+    playerIn?: { id: number; name: string; points: number; team?: string; position?: string; price?: number };
+  }>>([]);
 
   // Player list state (like TeamBuilder)
   const playerListRef = useRef<HTMLDivElement>(null);
@@ -1556,6 +1563,8 @@ const Transfers = () => {
                 toast.error(`Состав не сформирован. Выбрано ${players.length} из 15 игроков`);
                 return;
               }
+              // Capture current transfers before opening drawer to prevent flash
+              setConfirmedTransfers(getTransferRecords());
               setShowConfirmDrawer(true);
             }}
             className={`flex-1 rounded-lg h-12 font-semibold transition-all ${
@@ -1834,13 +1843,11 @@ const Transfers = () => {
             toast.success("Изменения сохранены");
           }
           
-          // Close drawer and navigate after a brief delay to prevent flash of empty state
+          // Close drawer and navigate
           setShowConfirmDrawer(false);
-          setTimeout(() => {
-            navigate("/league");
-          }, 100);
+          navigate("/league");
         }}
-        transfers={getTransferRecords()}
+        transfers={confirmedTransfers}
         freeTransfersUsed={transferCosts.freeTransfersUsed}
         additionalTransfersUsed={transferCosts.paidTransfers}
         pointsPenalty={transferCosts.pointsPenalty}
