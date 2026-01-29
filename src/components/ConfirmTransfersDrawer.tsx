@@ -69,7 +69,7 @@ const TransferPlayerRow = ({
   const surname = getSurname(player.name);
   const price = typeof player.price === 'number' ? `$${player.price.toFixed(1)}` : '—';
   
-  const borderColor = type === "out" ? "border-destructive" : "border-primary";
+  const borderColor = type === "out" ? "border-destructive" : "border-success";
 
   return (
     <div className={`flex-1 bg-secondary rounded-full h-10 px-2 flex items-center gap-2 min-w-0 border-2 ${borderColor}`}>
