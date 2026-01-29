@@ -30,7 +30,7 @@ import extraligaLogo from "@/assets/extraliga-logo.png";
 import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
-//
+
 interface LeagueData {
   id: number;
   name: string;
