@@ -88,7 +88,7 @@ const TransferPlayerRow = ({
       </span>
       
       {/* Price */}
-      <span className="text-primary text-sm font-medium flex-shrink-0">
+      <span className="text-foreground text-sm font-medium flex-shrink-0">
         {price}
       </span>
     </div>
