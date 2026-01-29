@@ -1833,8 +1833,9 @@ const FormationField = ({
     // Management/View mode - uses dynamic formation based on player positions
     return (
       <div>
-        <div className="relative w-full">
-          <img src={footballFieldNew} alt="Football field" className="w-full h-auto" loading="lazy" />
+        {/* Container with aspect-ratio to reserve space before image loads */}
+        <div className="relative w-full" style={{ aspectRatio: '750 / 1045' }}>
+          <img src={footballFieldNew} alt="Football field" className="absolute inset-0 w-full h-full object-cover" />
           
           {/* Football Goal - scales with the field */}
           <img 
@@ -1956,9 +1957,10 @@ const FormationField = ({
   }
 
   // Create/Transfers mode - uses fixed formation 2-5-5-3
+  // Container with aspect-ratio to reserve space before image loads
   return (
-    <div className="relative w-full">
-      <img src={footballFieldNew} alt="Футбольное поле" className="w-full h-auto" loading="lazy" />
+    <div className="relative w-full" style={{ aspectRatio: '750 / 1045' }}>
+      <img src={footballFieldNew} alt="Футбольное поле" className="absolute inset-0 w-full h-full object-cover" />
       
       {/* Football Goal - scales with the field */}
       <img 
