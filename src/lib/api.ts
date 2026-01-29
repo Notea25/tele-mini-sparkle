@@ -346,7 +346,7 @@ export interface Player {
   team_logo: string;
   position: string; // "Defender", "Attacker", "Midfielder", "Goalkeeper"
   market_value: number;
-  points: number;
+  points: number; // total_points - общие очки за все туры с бэкенда
   is_injured?: boolean;
   has_red_card?: boolean;
 }

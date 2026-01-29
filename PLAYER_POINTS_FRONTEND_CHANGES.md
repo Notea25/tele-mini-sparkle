@@ -173,3 +173,12 @@ export interface EnrichedPlayer {
 - API бэкенда уже обновлен и возвращает оба поля (`total_points` и `tour_points`)
 - Если бэкенд не возвращает эти поля, компонент использует fallback на `points`
 - Все изменения обратно совместимы
+
+## Важно: Об эндпоинте `/api/players/league/{league_id}/players_with_points`
+
+Этот эндпоинт возвращает интерфейс `Player`, где:
+- Поле `points` **уже содержит `total_points`** (общие очки за все туры)
+- Бэкенд рассчитывает `total_points` и возвращает его как `points`
+- На фронте при использовании `Player.points` вы получаете **общие очки**
+
+Поэтому на страницах создания команды, трансферов и т.д. которые используют `/api/players/league/{league_id}/players_with_points`, очки **уже отображаются правильно** (как total_points).
