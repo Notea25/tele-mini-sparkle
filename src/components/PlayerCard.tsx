@@ -109,8 +109,10 @@ interface PlayerData {
   name: string;
   team: string;
   position: string;
-  points: number;
+  points: number; // Оставлено для обратной совместимости
   price: number;
+  total_points?: number; // Общие очки за все туры
+  tour_points?: number; // Очки за последний/текущий тур
 }
 
 interface SwapablePlayer {
@@ -148,6 +150,8 @@ interface PlayerCardProps {
   validSwapIds?: Set<number>;
   swapInvalidMessages?: Record<number, string>;
   onSwapSelect?: (targetPlayerId: number) => void;
+  // Points display mode
+  showTourPoints?: boolean; // true = показывать tour_points, false/undefined = показывать total_points
 }
 
 const PlayerCard = ({
@@ -170,6 +174,7 @@ const PlayerCard = ({
   validSwapIds = new Set(),
   swapInvalidMessages = {},
   onSwapSelect,
+  showTourPoints = false,
 }: PlayerCardProps) => {
   const [selectedSwapTarget, setSelectedSwapTarget] = useState<number | null>(null);
   const [fullInfo, setFullInfo] = useState<PlayerFullInfoResponse | null>(null);
@@ -195,6 +200,11 @@ const PlayerCard = ({
   }, [isOpen, player?.id]);
 
   if (!player) return null;
+
+  // Выбираем какие очки показывать
+  const displayPoints = showTourPoints 
+    ? (player.tour_points ?? 0) 
+    : (player.total_points ?? player.points ?? 0);
 
   const positionNames: Record<string, string> = {
     ВР: "Вратарь",
@@ -245,7 +255,7 @@ const PlayerCard = ({
   // Generate point breakdown that sums up to the player's actual points
   const getPointBreakdown = () => {
     const actions: { action: string; points: number }[] = [];
-    let remaining = player.points;
+    let remaining = displayPoints;
     
     const goalPoints = player.position === "ВР" ? 6 : player.position === "ЗЩ" ? 6 : player.position === "ПЗ" ? 5 : 4;
     const assistPoints = 3;
@@ -350,7 +360,7 @@ const PlayerCard = ({
             <div className="text-center">
               <span className="text-muted-foreground text-xs block">Очки / матч</span>
               <span className="text-foreground text-xl font-bold">
-                {extInfo ? Math.round(extInfo.avg_points_all_matches) : Math.round(player.points / 10)}
+                {extInfo ? Math.round(extInfo.avg_points_all_matches) : Math.round(displayPoints / 10)}
               </span>
               <span className="text-muted-foreground text-xs block">
                 {extInfo ? `${extInfo.avg_points_all_matches_rank} из ${totalPlayers}` : "-"}

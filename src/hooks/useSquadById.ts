@@ -9,7 +9,9 @@ export interface EnrichedPlayer {
   team_logo: string;
   position: string; // "ВР", "ЗЩ", "ПЗ", "НП"
   price: number;
-  points: number;
+  points: number; // Оставлено для обратной совместимости
+  total_points?: number; // Общие очки за все туры
+  tour_points?: number; // Очки за последний/текущий тур
   slotIndex?: number;
   hasRedCard?: boolean;
   isInjured?: boolean;
@@ -142,6 +144,8 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         position: fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ",
         price: fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0,
         points: sp.points,
+        total_points: sp.total_points,
+        tour_points: sp.tour_points,
         slotIndex: 0,
         hasRedCard: fullPlayer?.has_red_card,
         isInjured: fullPlayer?.is_injured,
@@ -178,6 +182,8 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         position,
         price: fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0,
         points: sp.points,
+        total_points: sp.total_points,
+        tour_points: sp.tour_points,
         slotIndex,
         hasRedCard: fullPlayer?.has_red_card,
         isInjured: fullPlayer?.is_injured,

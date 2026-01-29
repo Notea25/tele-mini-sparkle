@@ -199,7 +199,14 @@ export interface SquadPlayer {
   id: number;
   name: string;
   team_id: number;
-  points: number;
+  team_name: string;
+  team_logo: string;
+  position: string;
+  market_value: number;
+  photo: string;
+  points: number; // Оставлено для обратной совместимости
+  total_points: number; // Общие очки за все туры
+  tour_points: number; // Очки за последний/текущий тур
 }
 
 // Типы для получения сквадов пользователя

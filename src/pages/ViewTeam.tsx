@@ -438,12 +438,15 @@ const ViewTeam = () => {
                 position: selectedPlayer.position,
                 price: selectedPlayer.price,
                 points: selectedPlayer.points,
+                total_points: selectedPlayer.total_points,
+                tour_points: selectedPlayer.tour_points,
               }
             : null
         }
         isOpen={isPlayerCardOpen}
         onClose={() => setIsPlayerCardOpen(false)}
         variant="view"
+        showTourPoints={true}
       />
 
       {/* Home Button */}
