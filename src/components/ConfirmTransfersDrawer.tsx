@@ -1,21 +1,7 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftRight } from "lucide-react";
-import jerseyDinamoMinsk from "@/assets/jerseys/dinamoJersey.png";
-import jerseyBate from "@/assets/jerseys/bateJersey.png";
-import jerseyBateGk from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
-import jerseyDinamoBrest from "@/assets/jerseys/brestJersey.png";
-import jerseyMlVitebsk from "@/assets/jerseys/mlJersey.png";
-import jerseyMlVitebskGk from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
-import jerseySlavia from "@/assets/jerseys/slaviaJersey.png";
-import jerseySlaviaGk from "@/assets/jerseys/goalkeeperJerseys/slaviaGoalkeeperJersey.png";
-import jerseyNeman from "@/assets/jerseys/nemanJersey.png";
-import jerseyMinsk from "@/assets/jerseys/minskJersey.png";
-import jerseyTorpedo from "@/assets/jerseys/torpedoJersey.png";
-import jerseyVitebsk from "@/assets/jerseys/vitebskJersey.png";
-import jerseyVitebskGk from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
-import jerseyArsenalGk from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
-import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
+import { getClubLogo } from "@/lib/clubLogos";
+import swapArrowsPurple from "@/assets/swap-arrows-purple.png";
 
 interface TransferRecord {
   type: "swap" | "buy" | "sell";
@@ -25,6 +11,7 @@ interface TransferRecord {
     points: number;
     team?: string;
     position?: string;
+    price?: number;
   };
   playerIn?: {
     id: number;
@@ -32,6 +19,7 @@ interface TransferRecord {
     points: number;
     team?: string;
     position?: string;
+    price?: number;
   };
 }
 
@@ -46,6 +34,68 @@ interface ConfirmTransfersDrawerProps {
   remainingBudget: number;
   hasTransferBoost?: boolean;
 }
+
+// Helper to format player name as "A. Surname"
+const formatPlayerName = (fullName: string): string => {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0];
+  const firstName = parts[0];
+  const surname = parts.slice(1).join(" ");
+  return `${firstName.charAt(0)}. ${surname}`;
+};
+
+// Player row component matching the list design
+const TransferPlayerRow = ({ 
+  player 
+}: { 
+  player: { 
+    id: number; 
+    name: string; 
+    team?: string; 
+    position?: string; 
+    price?: number;
+  } | undefined;
+}) => {
+  if (!player) {
+    return (
+      <div className="flex-1 bg-secondary rounded-xl h-12 flex items-center justify-center">
+        <span className="text-muted-foreground text-sm">—</span>
+      </div>
+    );
+  }
+
+  const clubLogo = player.team ? getClubLogo(player.team) : undefined;
+  const formattedName = formatPlayerName(player.name);
+  const price = typeof player.price === 'number' ? player.price.toFixed(1) : '—';
+
+  return (
+    <div className="flex-1 bg-secondary rounded-xl h-12 px-3 flex items-center gap-2 min-w-0">
+      {/* Club logo - fixed width */}
+      <div className="w-7 h-7 flex-shrink-0 flex items-center justify-center">
+        {clubLogo ? (
+          <img src={clubLogo} alt="" className="w-6 h-6 object-contain" />
+        ) : (
+          <div className="w-6 h-6 rounded-full bg-muted" />
+        )}
+      </div>
+      
+      {/* Name - flexible with truncation */}
+      <span className="text-foreground text-sm font-medium truncate flex-1 min-w-0">
+        {formattedName}
+      </span>
+      
+      {/* Position - fixed width */}
+      <span className="text-muted-foreground text-xs w-6 text-center flex-shrink-0">
+        {player.position || '—'}
+      </span>
+      
+      {/* Price - fixed width */}
+      <span className="text-foreground text-sm font-medium w-8 text-right flex-shrink-0">
+        {price}
+      </span>
+    </div>
+  );
+};
 
 const ConfirmTransfersDrawer = ({
   isOpen,
@@ -73,43 +123,25 @@ const ConfirmTransfersDrawer = ({
           {transfers.length > 0 ? (
             <div className="space-y-3 mb-6">
               {transfers.map((transfer, index) => (
-                <div key={index} className="flex items-center justify-center gap-3">
+                <div key={index} className="flex items-center justify-center gap-2">
                   {/* Player Out */}
-                  <div className="flex-1 bg-secondary rounded-xl p-3 flex items-center gap-3">
-                    <img
-                      src={getJerseyForTeam(transfer.playerOut?.team || "", transfer.playerOut?.position)}
-                      alt={transfer.playerOut?.name || "Player"}
-                      className="w-10 h-10 object-contain rounded-lg"
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-foreground text-sm font-medium">{transfer.playerOut?.name || "—"}</span>
-                      <span className="text-muted-foreground text-xs">{transfer.playerOut?.points || 0} очков</span>
-                    </div>
-                  </div>
+                  <TransferPlayerRow player={transfer.playerOut} />
 
                   {/* Swap Icon */}
-                  <ArrowLeftRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                  <img 
+                    src={swapArrowsPurple} 
+                    alt="swap" 
+                    className="w-5 h-5 flex-shrink-0"
+                  />
 
                   {/* Player In */}
-                  <div className="flex-1 bg-secondary rounded-xl p-3 flex items-center gap-3">
-                    <img
-                      src={getJerseyForTeam(transfer.playerIn?.team || "", transfer.playerIn?.position)}
-                      alt={transfer.playerIn?.name || "Player"}
-                      className="w-10 h-10 object-contain rounded-lg"
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-foreground text-sm font-medium">{transfer.playerIn?.name || "—"}</span>
-                      <span className="text-muted-foreground text-xs">{transfer.playerIn?.points || 0} очков</span>
-                    </div>
-                  </div>
+                  <TransferPlayerRow player={transfer.playerIn} />
                 </div>
               ))}
             </div>
           ) : (
             <p className="text-center text-muted-foreground py-6">Нет изменений для сохранения</p>
           )}
-
-          {/* Boosts Section удалена: бусты подтверждаются отдельно в своих окнах */}
 
           {/* Stats Section */}
           <div className="mb-6">
