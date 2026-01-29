@@ -1176,7 +1176,7 @@ const Transfers = () => {
 
       {/* Main content */}
       {activeTab === "formation" ? (
-        <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20 -mb-[18%]">
+        <div className="relative z-10 mt-10 sm:mt-14 md:mt-16 lg:mt-20 -mb-[18%]">
           <FormationField
             mode="transfers"
             players={players}
@@ -1203,8 +1203,8 @@ const Transfers = () => {
       )}
 
       {/* Divider between selected players and available players */}
-      <div className="mx-4 mt-6 mb-2 border-t border-border" />
-      <div className="px-4 mb-4">
+      <div className="relative z-0 mx-4 mt-6 mb-2 border-t border-border" />
+      <div className="relative z-0 px-4 mb-4">
         <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
       </div>
 
