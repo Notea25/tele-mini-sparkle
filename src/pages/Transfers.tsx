@@ -1827,14 +1827,18 @@ const Transfers = () => {
           initialStateRef.current = JSON.stringify(players.map((p) => p.id).sort());
           initialPlayersRef.current = [...players];
           setHasChanges(false);
-          setShowConfirmDrawer(false);
 
           if (result.pointsPenalty > 0) {
             toast.success(`Изменения сохранены. Штраф: -${result.pointsPenalty} очков`);
           } else {
             toast.success("Изменения сохранены");
           }
-          navigate("/league");
+          
+          // Close drawer and navigate after a brief delay to prevent flash of empty state
+          setShowConfirmDrawer(false);
+          setTimeout(() => {
+            navigate("/league");
+          }, 100);
         }}
         transfers={getTransferRecords()}
         freeTransfersUsed={transferCosts.freeTransfersUsed}
