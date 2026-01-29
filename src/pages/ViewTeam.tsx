@@ -111,7 +111,7 @@ const ViewTeam = () => {
         team: p.team_name,
         position: p.position,
         price: p.price,
-        points: p.points,
+        points: p.tour_points ?? p.points ?? 0,
         slotIndex: p.slotIndex,
         isCaptain: squad?.captain_id === p.id,
         isViceCaptain: squad?.vice_captain_id === p.id,
@@ -132,7 +132,7 @@ const ViewTeam = () => {
         team: p.team_name,
         position: p.position,
         price: p.price,
-        points: p.points,
+        points: p.tour_points ?? p.points ?? 0,
         slotIndex: p.slotIndex,
         nextOpponent: opponentData.nextOpponent,
         nextOpponentHome: opponentData.nextOpponentHome,
@@ -347,7 +347,7 @@ const ViewTeam = () => {
                           )}
                         </div>
                         <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
-                          {player.points}
+                          {player.tour_points ?? player.points ?? 0}
                         </div>
                         <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
                           {player.price}
@@ -415,7 +415,7 @@ const ViewTeam = () => {
                     )}
                   </div>
                   <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
-                    {player.points}
+                    {player.tour_points ?? player.points ?? 0}
                   </div>
                   <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
                     {player.price}
