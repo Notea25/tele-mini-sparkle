@@ -864,9 +864,10 @@ const TeamBuilder = () => {
 
       {activeTab === "formation" && (
         <>
-          {/* Football Field */}
-          <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20 -mb-[18%]">
-            <FormationField
+          {/* Football Field - use overflow-hidden container to clip bottom margin naturally */}
+          <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20 overflow-hidden">
+            <div className="mb-[-18%]">
+              <FormationField
               mode="create"
               players={selectedPlayersData}
               onRemovePlayer={(id) => togglePlayer(id)}
@@ -876,6 +877,7 @@ const TeamBuilder = () => {
               viceCaptain={viceCaptain}
               showCaptainBadges={false}
             />
+            </div>
           </div>
 
           {/* Divider between selected players and available players */}
