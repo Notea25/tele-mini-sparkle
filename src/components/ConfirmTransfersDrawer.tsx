@@ -2,6 +2,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { getClubLogo } from "@/lib/clubLogos";
 import swapArrowsPurple from "@/assets/swap-arrows-purple.png";
+import clubLogo from "@/assets/club-logo.png";
 
 interface TransferRecord {
   type: "swap" | "buy" | "sell";
@@ -12,6 +13,7 @@ interface TransferRecord {
     team?: string;
     position?: string;
     price?: number;
+    team_logo?: string;
   };
   playerIn?: {
     id: number;
@@ -20,6 +22,7 @@ interface TransferRecord {
     team?: string;
     position?: string;
     price?: number;
+    team_logo?: string;
   };
 }
 
@@ -54,6 +57,7 @@ const TransferPlayerRow = ({
     team?: string; 
     position?: string; 
     price?: number;
+    team_logo?: string;
   } | undefined;
   type: "out" | "in";
 }) => {
@@ -65,7 +69,8 @@ const TransferPlayerRow = ({
     );
   }
 
-  const clubLogo = player.team ? getClubLogo(player.team) : undefined;
+  // Prefer team_logo from backend, fallback to getClubLogo by team name
+  const teamLogo = player.team_logo || (player.team ? getClubLogo(player.team) : undefined) || clubLogo;
   const surname = getSurname(player.name);
   const price = typeof player.price === 'number' ? `$${player.price.toFixed(1)}` : '—';
   
@@ -75,11 +80,7 @@ const TransferPlayerRow = ({
     <div className={`flex-1 bg-secondary rounded-full h-10 px-2 flex items-center gap-2 min-w-0 border-2 ${borderColor}`}>
       {/* Club logo */}
       <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
-        {clubLogo ? (
-          <img src={clubLogo} alt="" className="w-5 h-5 object-contain" />
-        ) : (
-          <div className="w-5 h-5 rounded-full bg-muted" />
-        )}
+        <img src={teamLogo} alt="" className="w-5 h-5 object-contain" />
       </div>
       
       {/* Surname - flexible with truncation */}
