@@ -12,9 +12,9 @@ interface PlayerForCalculation {
 /**
  * Calculate displayed points for a player with boost multipliers applied
  * - Default: Captain gets x2
- * - 3x Captain boost: Captain gets x3
- * - Double Power boost: Captain and Vice-Captain get x2
- * - Bench+ boost: No multiplier change, but bench players count in total
+ * - 3x Captain boost (triple_captain): Captain gets x3
+ * - Double Power boost (double_bet): Captain and Vice-Captain get x2
+ * - Bench+ boost (bench_boost): No multiplier change, but bench players count in total
  */
 export function getDisplayedPoints(
   basePoints: number,
@@ -23,14 +23,14 @@ export function getDisplayedPoints(
   boostType: BoostType | null
 ): number {
   if (isCaptain) {
-    if (boostType === "captain3x") {
+    if (boostType === "triple_captain") {
       return basePoints * 3;
     }
     // Default or double power - captain gets x2
     return basePoints * 2;
   }
   
-  if (isViceCaptain && boostType === "double") {
+  if (isViceCaptain && boostType === "double_bet") {
     return basePoints * 2;
   }
   
@@ -40,9 +40,9 @@ export function getDisplayedPoints(
 /**
  * Calculate total tour points based on active boost
  * - Default: Sum of 11 main squad players, captain's points doubled
- * - 3x Captain: Sum of 11 main squad players, captain's points tripled
- * - Double Power: Sum of 11 main squad players, captain and vice-captain's points doubled
- * - Bench+: Sum of all 15 players, captain's points doubled
+ * - 3x Captain (triple_captain): Sum of 11 main squad players, captain's points tripled
+ * - Double Power (double_bet): Sum of 11 main squad players, captain and vice-captain's points doubled
+ * - Bench+ (bench_boost): Sum of all 15 players, captain's points doubled
  */
 export function calculateTotalTourPoints(
   mainSquadPlayers: PlayerForCalculation[],
@@ -63,7 +63,7 @@ export function calculateTotalTourPoints(
   }
   
   // Add bench points only if Bench+ boost is active
-  if (boostType === "bench") {
+  if (boostType === "bench_boost") {
     for (const player of benchPlayers) {
       total += player.points;
     }
@@ -81,9 +81,9 @@ export function getPointsMultiplier(
   boostType: BoostType | null
 ): number {
   if (isCaptain) {
-    return boostType === "captain3x" ? 3 : 2;
+    return boostType === "triple_captain" ? 3 : 2;
   }
-  if (isViceCaptain && boostType === "double") {
+  if (isViceCaptain && boostType === "double_bet") {
     return 2;
   }
   return 1;
