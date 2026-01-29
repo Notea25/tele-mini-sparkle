@@ -1237,7 +1237,7 @@ const TeamBuilder = () => {
       </div>
 
       {/* Players List */}
-      <div className="px-4 mt-3 space-y-2">
+      <div className={`px-4 mt-3 space-y-2 ${totalPages <= 1 ? 'pb-60' : 'pb-6'}`}>
         {paginatedPlayers.map((player) => {
           const isSelected = selectedPlayerIds.includes(player.id);
           return (
