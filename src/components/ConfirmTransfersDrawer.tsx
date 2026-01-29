@@ -35,16 +35,15 @@ interface ConfirmTransfersDrawerProps {
   hasTransferBoost?: boolean;
 }
 
-// Helper to format player name as "A. Surname"
-const formatPlayerName = (fullName: string): string => {
+
+// Helper to get surname only
+const getSurname = (fullName: string): string => {
   const parts = fullName.trim().split(/\s+/);
   if (parts.length === 1) return parts[0];
-  const firstName = parts[0];
-  const surname = parts.slice(1).join(" ");
-  return `${firstName.charAt(0)}. ${surname}`;
+  return parts.slice(1).join(" ");
 };
 
-// Player row component matching the list design
+// Player row component: Logo - Surname - $Price
 const TransferPlayerRow = ({ 
   player 
 }: { 
@@ -58,39 +57,34 @@ const TransferPlayerRow = ({
 }) => {
   if (!player) {
     return (
-      <div className="flex-1 bg-secondary rounded-xl h-12 flex items-center justify-center">
+      <div className="flex-1 bg-secondary rounded-full h-10 flex items-center justify-center">
         <span className="text-muted-foreground text-sm">—</span>
       </div>
     );
   }
 
   const clubLogo = player.team ? getClubLogo(player.team) : undefined;
-  const formattedName = formatPlayerName(player.name);
-  const price = typeof player.price === 'number' ? player.price.toFixed(1) : '—';
+  const surname = getSurname(player.name);
+  const price = typeof player.price === 'number' ? `$${player.price.toFixed(1)}` : '—';
 
   return (
-    <div className="flex-1 bg-secondary rounded-xl h-12 px-3 flex items-center gap-2 min-w-0">
-      {/* Club logo - fixed width */}
-      <div className="w-7 h-7 flex-shrink-0 flex items-center justify-center">
+    <div className="flex-1 bg-secondary rounded-full h-10 px-2 flex items-center gap-2 min-w-0">
+      {/* Club logo */}
+      <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
         {clubLogo ? (
-          <img src={clubLogo} alt="" className="w-6 h-6 object-contain" />
+          <img src={clubLogo} alt="" className="w-5 h-5 object-contain" />
         ) : (
-          <div className="w-6 h-6 rounded-full bg-muted" />
+          <div className="w-5 h-5 rounded-full bg-muted" />
         )}
       </div>
       
-      {/* Name - flexible with truncation */}
+      {/* Surname - flexible with truncation */}
       <span className="text-foreground text-sm font-medium truncate flex-1 min-w-0">
-        {formattedName}
+        {surname}
       </span>
       
-      {/* Position - fixed width */}
-      <span className="text-muted-foreground text-xs w-6 text-center flex-shrink-0">
-        {player.position || '—'}
-      </span>
-      
-      {/* Price - fixed width */}
-      <span className="text-foreground text-sm font-medium w-8 text-right flex-shrink-0">
+      {/* Price */}
+      <span className="text-primary text-sm font-medium flex-shrink-0">
         {price}
       </span>
     </div>
