@@ -864,8 +864,8 @@ const TeamBuilder = () => {
 
       {activeTab === "formation" && (
         <>
-          {/* Football Field - relative positioning to ensure proper stacking */}
-          <div className="relative z-10 mt-10 sm:mt-14 md:mt-16 lg:mt-20 -mb-[18%]">
+          {/* Football Field */}
+          <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20 -mb-[18%]">
             <FormationField
               mode="create"
               players={selectedPlayersData}
@@ -879,13 +879,13 @@ const TeamBuilder = () => {
           </div>
 
           {/* Divider between selected players and available players */}
-          <div className="relative z-0 mx-4 mt-6 mb-2 border-t border-border" />
-          <div className="relative z-0 px-4 mb-4">
+          <div className="mx-4 mt-6 mb-2 border-t border-border" />
+          <div className="px-4 mb-4">
             <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
           </div>
 
           {/* Search */}
-          <div className="px-4 relative z-10">
+          <div className="px-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
