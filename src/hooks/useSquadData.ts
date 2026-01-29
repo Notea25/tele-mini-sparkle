@@ -10,7 +10,9 @@ export interface EnrichedPlayer {
   team_logo: string;
   position: string; // "ВР", "ЗЩ", "ПЗ", "НП"
   price: number;
-  points: number;
+  points: number; // Legacy field for backward compatibility
+  total_points: number; // Total points across all tours
+  tour_points: number; // Points for current/last tour
   slotIndex?: number;
   hasRedCard?: boolean;
   isInjured?: boolean;
@@ -141,6 +143,8 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         position: fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ",
         price: fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0,
         points: sp.points,
+        total_points: sp.total_points ?? 0,
+        tour_points: sp.tour_points ?? 0,
         slotIndex: 0, // Will be assigned below
         hasRedCard: fullPlayer?.has_red_card,
         isInjured: fullPlayer?.is_injured,
@@ -179,6 +183,8 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         position,
         price: fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0,
         points: sp.points,
+        total_points: sp.total_points ?? 0,
+        tour_points: sp.tour_points ?? 0,
         slotIndex,
         hasRedCard: fullPlayer?.has_red_card,
         isInjured: fullPlayer?.is_injured,

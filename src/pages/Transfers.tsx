@@ -425,6 +425,7 @@ const Transfers = () => {
         position: p.position,
         price: p.price,
         points: p.points,
+        total_points: p.total_points,
         slotIndex: p.slotIndex,
         team_logo: p.team_logo,
         isCaptain: squad?.captain_id === p.id,
@@ -443,6 +444,7 @@ const Transfers = () => {
         position: p.position,
         price: p.price,
         points: p.points,
+        total_points: p.total_points,
         slotIndex: p.slotIndex,
         team_logo: p.team_logo,
         nextOpponent: opponentData.nextOpponent,
@@ -1020,9 +1022,9 @@ const Transfers = () => {
                 </div>
 
                 <span className={`w-12 flex-shrink-0 text-sm text-center font-medium ${
-                  player.points > 0 ? "text-success" : player.points < 0 ? "text-destructive" : "text-foreground"
+                  (player.total_points ?? player.points ?? 0) > 0 ? "text-success" : (player.total_points ?? player.points ?? 0) < 0 ? "text-destructive" : "text-foreground"
                 }`}>
-                  {player.points > 0 ? `+${player.points}` : player.points}
+                  {(player.total_points ?? player.points ?? 0) > 0 ? `+${player.total_points ?? player.points ?? 0}` : (player.total_points ?? player.points ?? 0)}
                 </span>
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
 

@@ -6,6 +6,7 @@ export interface PlayerData {
   team: string;
   position: string;
   points: number;
+  total_points?: number; // Total points across all tours
   price: number;
   slotIndex?: number;
   isCaptain?: boolean;
