@@ -1076,38 +1076,40 @@ const FormationField = ({
     [removedPlayers],
   );
 
-  // Card size state
-  const [cardSize, setCardSize] = useState({ width: 70, height: 84 });
-  const [isDesktop, setIsDesktop] = useState(false);
+  // Helper function to calculate card size based on window width
+  const getCardSizeForWidth = (width: number) => {
+    if (width <= 768) {
+      return { width: 70, height: 84, isDesktop: false };
+    } else if (width <= 1024) {
+      return { width: 96, height: 115, isDesktop: false };
+    } else {
+      return { width: 128, height: 154, isDesktop: true };
+    }
+  };
 
+  // Card size state - calculate initial value synchronously to avoid layout shift
+  const [cardSize, setCardSize] = useState(() => {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 768;
+    const { width: w, height: h } = getCardSizeForWidth(width);
+    return { width: w, height: h };
+  });
+  
+  const [isDesktop, setIsDesktop] = useState(() => {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 768;
+    return getCardSizeForWidth(width).isDesktop;
+  });
+
+  // Only handle resize events - initial size is already calculated
   useEffect(() => {
-    const updateCardSize = () => {
-      const width = window.innerWidth;
-      let cardWidth, cardHeight;
-
-      if (width <= 768) {
-        cardWidth = 70;
-        cardHeight = 84;
-        setIsDesktop(false);
-      } else if (width <= 1024) {
-        cardWidth = 96;
-        cardHeight = 115;
-        setIsDesktop(false);
-      } else {
-        cardWidth = 128;
-        cardHeight = 154;
-        setIsDesktop(true);
-      }
-
-      setCardSize({ width: cardWidth, height: cardHeight });
-    };
-
-    updateCardSize();
-
     let timeoutId: NodeJS.Timeout;
+    
     const handleResize = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(updateCardSize, 250);
+      timeoutId = setTimeout(() => {
+        const { width, height, isDesktop: desktop } = getCardSizeForWidth(window.innerWidth);
+        setCardSize({ width, height });
+        setIsDesktop(desktop);
+      }, 250);
     };
 
     window.addEventListener("resize", handleResize);
