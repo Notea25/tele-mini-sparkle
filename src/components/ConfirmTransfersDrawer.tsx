@@ -45,7 +45,8 @@ const getSurname = (fullName: string): string => {
 
 // Player row component: Logo - Surname - $Price
 const TransferPlayerRow = ({ 
-  player 
+  player,
+  type
 }: { 
   player: { 
     id: number; 
@@ -54,6 +55,7 @@ const TransferPlayerRow = ({
     position?: string; 
     price?: number;
   } | undefined;
+  type: "out" | "in";
 }) => {
   if (!player) {
     return (
@@ -66,9 +68,11 @@ const TransferPlayerRow = ({
   const clubLogo = player.team ? getClubLogo(player.team) : undefined;
   const surname = getSurname(player.name);
   const price = typeof player.price === 'number' ? `$${player.price.toFixed(1)}` : '—';
+  
+  const borderColor = type === "out" ? "border-destructive" : "border-primary";
 
   return (
-    <div className="flex-1 bg-secondary rounded-full h-10 px-2 flex items-center gap-2 min-w-0">
+    <div className={`flex-1 bg-secondary rounded-full h-10 px-2 flex items-center gap-2 min-w-0 border-2 ${borderColor}`}>
       {/* Club logo */}
       <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
         {clubLogo ? (
@@ -119,7 +123,7 @@ const ConfirmTransfersDrawer = ({
               {transfers.map((transfer, index) => (
                 <div key={index} className="flex items-center justify-center gap-2">
                   {/* Player Out */}
-                  <TransferPlayerRow player={transfer.playerOut} />
+                  <TransferPlayerRow player={transfer.playerOut} type="out" />
 
                   {/* Swap Icon */}
                   <img 
@@ -129,7 +133,7 @@ const ConfirmTransfersDrawer = ({
                   />
 
                   {/* Player In */}
-                  <TransferPlayerRow player={transfer.playerIn} />
+                  <TransferPlayerRow player={transfer.playerIn} type="in" />
                 </div>
               ))}
             </div>
