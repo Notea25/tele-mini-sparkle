@@ -27,7 +27,7 @@ import bgImage from "@/assets/bg_image.png";
 // Transfer section images
 import karpovichTransferCard from "@/assets/cards/karpovich-transfer.png";
 import vakulichTransferCard from "@/assets/cards/vakulich-transfer.png";
-import swapArrowsGreen from "@/assets/swap-arrows-green.png";
+import swapArrowsPurple from "@/assets/swap-arrows-purple.png";
 
 // Player card images for carousel
 import vakulichCard from "@/assets/cards/vakulich-card.png";
@@ -345,7 +345,7 @@ const CreateTeam = () => {
             className="w-32 h-auto rounded-xl flex-shrink-0"
           />
           <img 
-            src={swapArrowsGreen} 
+            src={swapArrowsPurple} 
             alt="Swap" 
             className="w-8 h-auto flex-shrink-0"
           />
