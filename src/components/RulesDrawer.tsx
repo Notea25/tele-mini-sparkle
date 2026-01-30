@@ -20,10 +20,18 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
         <DrawerHeader className="border-b border-border pb-4 flex-shrink-0 relative">
           <DrawerTitle className="text-foreground text-xl font-display text-center">Правила игры</DrawerTitle>
           <button
-            onClick={() => onClose()}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onClose();
+            }}
+            onPointerDown={(e) => {
+              e.stopPropagation();
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors touch-none"
           >
-            <X className="w-4 h-4 text-muted-foreground" />
+            <X className="w-4 h-4 text-muted-foreground pointer-events-none" />
           </button>
         </DrawerHeader>
 
