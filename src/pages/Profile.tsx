@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, UserPlus, X } from "lucide-react";
+import { Pencil, UserPlus, X, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Button } from "@/components/ui/button";
@@ -340,6 +340,22 @@ const Profile = () => {
           >
             <UserPlus className="w-5 h-5" />
             Пригласить друзей
+          </Button>
+
+          {/* Feedback Button */}
+          <Button
+            asChild
+            variant="outline"
+            className="w-full font-semibold rounded-lg h-12 flex items-center justify-center gap-2 border-border text-foreground hover:bg-secondary"
+          >
+            <a 
+              href="https://t.me/aplbyfeedback" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Обратная связь
+            </a>
           </Button>
         </div>
       </div>
