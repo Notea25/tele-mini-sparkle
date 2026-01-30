@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useTelegram } from "@/providers/TelegramProvider";
 import { usersApi, UserProfile } from "@/lib/api";
 import logo from "@/assets/logo-new.png";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +23,13 @@ interface SportHeaderProps {
   hasUnsavedChanges?: boolean;
   onSaveChanges?: () => void;
   onDiscardChanges?: () => void;
+
+  /**
+   * Optional guard for pages that can have unsaved changes but are not in a valid state to save.
+   * Example: Transfers with an incomplete squad.
+   */
+  saveDisabled?: boolean;
+  saveDisabledMessage?: string;
 }
 
 const SportHeader = ({
@@ -29,6 +38,8 @@ const SportHeader = ({
   hasUnsavedChanges = false,
   onSaveChanges,
   onDiscardChanges,
+  saveDisabled = false,
+  saveDisabledMessage,
 }: SportHeaderProps = {}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
@@ -127,6 +138,10 @@ const SportHeader = ({
   };
 
   const handleSave = () => {
+    if (saveDisabled) {
+      toast.error(saveDisabledMessage || "Состав не сформирован");
+      return;
+    }
     onSaveChanges?.();
     setShowUnsavedDialog(false);
     if (pendingNavigation) {
@@ -189,12 +204,16 @@ const SportHeader = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
-            <AlertDialogAction
+            <Button
               onClick={handleSave}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              className={`w-full rounded-lg h-12 font-semibold transition-all ${
+                saveDisabled
+                  ? "bg-primary/30 text-muted-foreground cursor-not-allowed"
+                  : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
+              }`}
             >
               Сохранить
-            </AlertDialogAction>
+            </Button>
             <AlertDialogAction
               onClick={handleDiscard}
               className="w-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
