@@ -1687,18 +1687,23 @@ const Transfers = () => {
             >
               Сохранить
             </Button>
-            <AlertDialogCancel
-              onClick={handleExitWithoutSaving}
-              className="bg-card border-border text-foreground hover:bg-card/80"
+            <Button
+              onClick={() => {
+                handleExitWithoutSaving();
+              }}
+              className="w-full rounded-lg h-12 font-semibold bg-destructive hover:bg-destructive/90 text-destructive-foreground"
             >
               Не сохранять
-            </AlertDialogCancel>
-            <AlertDialogCancel
-              onClick={handleContinueEditing}
-              className="bg-[#2A2A3E] border-0 text-foreground hover:bg-[#3A3A4E]"
+            </Button>
+            <Button
+              onClick={() => {
+                handleContinueEditing();
+              }}
+              variant="secondary"
+              className="w-full rounded-lg h-12 font-semibold"
             >
               Продолжить редактирование
-            </AlertDialogCancel>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
