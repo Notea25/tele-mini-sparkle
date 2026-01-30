@@ -89,6 +89,14 @@ const ensureGoalkeeperFirst = (bench: PlayerDataExt[]): PlayerDataExt[] => {
 const TeamManagement = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  // Track original state for detecting unsaved changes
+  const [originalState, setOriginalState] = useState<{
+    mainPlayerIds: number[];
+    benchPlayerIds: number[];
+    captain: number | null;
+    viceCaptain: number | null;
+  } | null>(null);
   const leagueId = getLeagueId();
   
   // Load squad data from API
@@ -272,8 +280,19 @@ const TeamManagement = () => {
         };
       });
       setMainSquadPlayers(converted);
+      
+      // Initialize original state for change tracking (only once when data first loads)
+      if (!originalState && apiBenchPlayers.length > 0) {
+        const benchConverted = apiBenchPlayers.map(p => p.id);
+        setOriginalState({
+          mainPlayerIds: apiMainPlayers.map(p => p.id),
+          benchPlayerIds: benchConverted,
+          captain: squad?.captain_id ?? null,
+          viceCaptain: squad?.vice_captain_id ?? null,
+        });
+      }
     }
-  }, [apiMainPlayers, squad?.captain_id, squad?.vice_captain_id]);
+  }, [apiMainPlayers, apiBenchPlayers, squad?.captain_id, squad?.vice_captain_id, originalState]);
 
   useEffect(() => {
     if (apiBenchPlayers.length > 0) {
@@ -380,6 +399,14 @@ const TeamManagement = () => {
         // Invalidate squad cache to ensure fresh data on other pages
         await queryClient.invalidateQueries({ queryKey: ['my-squads'] });
 
+        // Update original state to reflect saved changes
+        setOriginalState({
+          mainPlayerIds: mainSquadPlayers.map(p => p.id),
+          benchPlayerIds: benchPlayersExt.map(p => p.id),
+          captain,
+          viceCaptain,
+        });
+
         toast.success("Изменения сохранены");
         // Остаёмся на странице "Моя команда" после сохранения
       } else {
@@ -391,6 +418,38 @@ const TeamManagement = () => {
       setIsSaving(false);
     }
   };
+
+  // Detect if there are unsaved changes
+  const hasUnsavedChanges = useMemo(() => {
+    if (!originalState) return false;
+    
+    const currentMainIds = mainSquadPlayers.map(p => p.id);
+    const currentBenchIds = benchPlayersExt.map(p => p.id);
+    
+    // Check if arrays differ (including order for bench)
+    const mainChanged = currentMainIds.length !== originalState.mainPlayerIds.length ||
+      currentMainIds.some((id, i) => originalState.mainPlayerIds[i] !== id) ||
+      originalState.mainPlayerIds.some((id, i) => currentMainIds[i] !== id);
+    
+    const benchChanged = currentBenchIds.length !== originalState.benchPlayerIds.length ||
+      currentBenchIds.some((id, i) => originalState.benchPlayerIds[i] !== id);
+    
+    const captainChanged = captain !== originalState.captain;
+    const viceCaptainChanged = viceCaptain !== originalState.viceCaptain;
+    
+    return mainChanged || benchChanged || captainChanged || viceCaptainChanged;
+  }, [originalState, mainSquadPlayers, benchPlayersExt, captain, viceCaptain]);
+
+  // Handle discard changes - revert to original state
+  const handleDiscardChanges = useCallback(() => {
+    if (!originalState) return;
+    
+    // Re-fetch squad data will reset the UI to server state
+    queryClient.invalidateQueries({ queryKey: ['my-squads'] });
+    
+    // Reset original state to trigger re-initialization
+    setOriginalState(null);
+  }, [originalState, queryClient]);
 
   // Swap mode state (no drawer)
   const [swapModePlayer, setSwapModePlayer] = useState<PlayerDataExt | null>(null);
@@ -719,7 +778,10 @@ const TeamManagement = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SportHeader />
+      <SportHeader
+        hasUnsavedChanges={hasUnsavedChanges}
+        onDiscardChanges={handleDiscardChanges}
+      />
 
       {/* Team Header */}
       <div className="px-4 mt-6">
