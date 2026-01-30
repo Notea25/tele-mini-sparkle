@@ -1672,7 +1672,14 @@ const Transfers = () => {
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-col gap-2 sm:flex-col">
             <AlertDialogAction
-              onClick={handleSaveAndExit}
+              onClick={(e) => {
+                if (players.length < 15) {
+                  e.preventDefault();
+                  toast.error(`Состав не сформирован. Выбрано ${players.length} из 15 игроков`);
+                  return;
+                }
+                handleSaveAndExit();
+              }}
               disabled={players.length < 15}
               className={`${
                 players.length < 15
