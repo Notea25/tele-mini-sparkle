@@ -1178,8 +1178,8 @@ const Transfers = () => {
       {/* Main content */}
       {activeTab === "formation" ? (
         <>
-          {/* Football Field - use overflow-hidden container to clip bottom margin naturally */}
-          <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20 overflow-hidden">
+          {/* Football Field - clip bottom like before, but reserve top space for goal/sponsor logos */}
+          <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20 overflow-hidden pt-[6%]">
             <div className="mb-[-18%]">
               <FormationField
               mode="transfers"
