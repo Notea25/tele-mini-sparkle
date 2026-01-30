@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { PointsColumnHeader } from "@/components/PointsColumnHeader";
 import { useState, useMemo, useEffect } from "react";
 import SportHeader from "@/components/SportHeader";
 import FormationField from "@/components/FormationField";
@@ -302,7 +303,7 @@ const ViewTeam = () => {
                 </h3>
                 <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
                   <span className="flex-1">Игрок</span>
-                  <div className="w-12 flex justify-center">Очки</div>
+                  <div className="w-12 flex justify-center"><PointsColumnHeader type="tour" /></div>
                   <div className="w-10 flex justify-center">Цена</div>
                 </div>
                 <div className="space-y-2">
@@ -364,7 +365,7 @@ const ViewTeam = () => {
           <h2 className="text-foreground text-xl font-bold mb-4 mt-8">Замены</h2>
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
             <span className="flex-1">Игрок</span>
-            <div className="w-12 flex justify-center">Очки</div>
+            <div className="w-12 flex justify-center"><PointsColumnHeader type="tour" /></div>
             <div className="w-10 flex justify-center">Цена</div>
           </div>
           <div className="space-y-2">

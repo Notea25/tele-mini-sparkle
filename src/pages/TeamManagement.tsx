@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronDown, ArrowLeftRight, X, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { PointsColumnHeader } from "@/components/PointsColumnHeader";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -589,7 +590,7 @@ const TeamManagement = () => {
       {/* Column headers */}
       <div className="flex items-center px-4 py-1 text-xs text-muted-foreground text-regular">
         <span className="flex-1">Игрок</span>
-        <div className="w-12 flex justify-center">Очки</div>
+        <div className="w-12 flex justify-center"><PointsColumnHeader type="season" /></div>
         <div className="w-14 flex justify-center ml-2">Сл. матч</div>
         <span className="w-10"></span>
       </div>
@@ -945,7 +946,7 @@ const TeamManagement = () => {
           {/* Column headers */}
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
             <span className="flex-1">Игрок</span>
-            <div className="w-12 flex justify-center">Очки</div>
+            <div className="w-12 flex justify-center"><PointsColumnHeader type="season" /></div>
             <div className="w-14 flex justify-center ml-2">Сл. матч</div>
             <span className="w-10"></span>
           </div>
