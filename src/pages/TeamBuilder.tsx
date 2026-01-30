@@ -793,8 +793,8 @@ const TeamBuilder = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div ref={headerRef}>
+      {/* Header - sticky wrapper to match /league */}
+      <div ref={headerRef} className="sticky top-0 z-50">
         <SportHeader
           hasUnsavedChanges={hasUnsavedChanges}
           onSaveChanges={handleSaveChanges}
