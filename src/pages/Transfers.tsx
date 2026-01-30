@@ -1058,6 +1058,8 @@ const Transfers = () => {
           hasUnsavedChanges={hasChanges}
           onSaveChanges={handleSaveAndExit}
           onDiscardChanges={handleExitWithoutSaving}
+          saveDisabled={players.length < 15}
+          saveDisabledMessage={`Состав не сформирован. Выбрано ${players.length} из 15 игроков`}
         />
       </div>
 
