@@ -230,7 +230,6 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <SportHeader 
         hasUnsavedChanges={hasUnsavedChanges}
-        onSaveChanges={handleSaveChanges}
         onDiscardChanges={handleDiscardChanges}
       />
 

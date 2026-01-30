@@ -1056,10 +1056,7 @@ const Transfers = () => {
       <div ref={headerRef} className="sticky top-0 z-50">
         <SportHeader
           hasUnsavedChanges={hasChanges}
-          onSaveChanges={handleSaveAndExit}
           onDiscardChanges={handleExitWithoutSaving}
-          saveDisabled={players.length < 15}
-          saveDisabledMessage={`Состав не сформирован. Выбрано ${players.length} из 15 игроков`}
         />
       </div>
 

@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { useTelegram } from "@/providers/TelegramProvider";
 import { usersApi, UserProfile } from "@/lib/api";
 import logo from "@/assets/logo-new.png";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,25 +19,14 @@ interface SportHeaderProps {
   backTo?: string;
   onBackClick?: () => boolean | void; // Return true to prevent default navigation
   hasUnsavedChanges?: boolean;
-  onSaveChanges?: () => void;
   onDiscardChanges?: () => void;
-
-  /**
-   * Optional guard for pages that can have unsaved changes but are not in a valid state to save.
-   * Example: Transfers with an incomplete squad.
-   */
-  saveDisabled?: boolean;
-  saveDisabledMessage?: string;
 }
 
 const SportHeader = ({
   backTo,
   onBackClick,
   hasUnsavedChanges = false,
-  onSaveChanges,
   onDiscardChanges,
-  saveDisabled = false,
-  saveDisabledMessage,
 }: SportHeaderProps = {}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
@@ -137,19 +124,6 @@ const SportHeader = ({
     }
   };
 
-  const handleSave = () => {
-    if (saveDisabled) {
-      toast.error(saveDisabledMessage || "Состав не сформирован");
-      return;
-    }
-    onSaveChanges?.();
-    setShowUnsavedDialog(false);
-    if (pendingNavigation) {
-      executeNavigation(pendingNavigation);
-    }
-    setPendingNavigation(null);
-  };
-
   const handleDiscard = () => {
     onDiscardChanges?.();
     setShowUnsavedDialog(false);
@@ -198,31 +172,24 @@ const SportHeader = ({
       <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
         <AlertDialogContent className="bg-background border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground font-display">Несохраненные изменения</AlertDialogTitle>
+            <AlertDialogTitle className="text-foreground font-display">Несохранённые изменения</AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground text-medium">
-              У тебя есть несохраненные изменения. Что ты хочешь сделать?
+              Изменения не сохранены. При выходе они будут потеряны.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
-            <Button
-              onClick={handleSave}
-              className={`w-full rounded-lg h-12 font-semibold transition-all ${
-                saveDisabled
-                  ? "bg-primary/30 text-muted-foreground cursor-not-allowed"
-                  : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
-              }`}
+            <AlertDialogCancel 
+              onClick={handleContinueEditing} 
+              className="w-full border-border text-foreground bg-secondary hover:bg-secondary/80"
             >
-              Сохранить
-            </Button>
+              Остаться
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDiscard}
               className="w-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Не сохранять
+              Выйти без сохранения
             </AlertDialogAction>
-            <AlertDialogCancel onClick={handleContinueEditing} className="w-full border-border text-foreground">
-              Продолжить редактирование
-            </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
