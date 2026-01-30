@@ -1249,16 +1249,32 @@ const Transfers = () => {
               <SelectValue placeholder="Все команды" />
             </SelectTrigger>
             <SelectContent className="bg-card border-border z-50">
-              {teams.map((team) => (
-                <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    {team !== "Все команды" && clubLogos[team] && (
-                      <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
-                    )}
-                    <span>{team}</span>
-                  </div>
-                </SelectItem>
-              ))}
+              <SelectItem value="Все команды" className="text-foreground hover:bg-secondary cursor-pointer">
+                <span>Все команды</span>
+              </SelectItem>
+              {isLoadingTeams ? (
+                <div className="px-4 py-2 text-muted-foreground">Загрузка...</div>
+              ) : apiTeams.length > 0 ? (
+                apiTeams.map((team) => (
+                  <SelectItem key={team.id} value={team.name} className="text-foreground hover:bg-secondary cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <img src={team.logo} alt={team.name} className="w-5 h-5 object-contain" />
+                      <span>{team.name}</span>
+                    </div>
+                  </SelectItem>
+                ))
+              ) : (
+                teams.filter(t => t !== "Все команды").map((team) => (
+                  <SelectItem key={team} value={team} className="text-foreground hover:bg-secondary cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      {clubLogos[team] && (
+                        <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
+                      )}
+                      <span>{team}</span>
+                    </div>
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </div>
