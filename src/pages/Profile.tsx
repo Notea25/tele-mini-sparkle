@@ -270,7 +270,9 @@ const Profile = () => {
           {/* User Info */}
           <div className="flex flex-col pt-2">
             <h1 className="text-2xl font-display text-foreground">{profile.userName}</h1>
-            <span className="text-muted-foreground text-sm text-regular">@riches</span>
+            {backendUser?.tg_username && (
+              <span className="text-muted-foreground text-sm text-regular">@{backendUser.tg_username}</span>
+            )}
             <span className="text-muted-foreground text-sm mt-1 text-regular">Создан {profile.createdAt}</span>
           </div>
         </div>

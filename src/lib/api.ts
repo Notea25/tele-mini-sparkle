@@ -312,6 +312,7 @@ export const squadsApi = {
 export interface UserProfile {
   id: number;
   username: string;
+  tg_username?: string | null;
   photo_url?: string | null;
   birth_date?: string | null;
   registration_date?: string | null;
