@@ -1671,24 +1671,22 @@ const Transfers = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-col gap-2 sm:flex-col">
-            <AlertDialogAction
-              onClick={(e) => {
+            <Button
+              onClick={() => {
                 if (players.length < 15) {
-                  e.preventDefault();
                   toast.error(`Состав не сформирован. Выбрано ${players.length} из 15 игроков`);
                   return;
                 }
                 handleSaveAndExit();
               }}
-              disabled={players.length < 15}
-              className={`${
+              className={`w-full rounded-lg h-12 font-semibold transition-all ${
                 players.length < 15
-                  ? "bg-[#4A5D23] text-muted-foreground cursor-not-allowed"
-                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+                  ? "bg-primary/30 text-muted-foreground cursor-not-allowed"
+                  : "bg-primary hover:opacity-90 text-primary-foreground shadow-neon"
               }`}
             >
-              Сохранить {players.length < 15 && `(${players.length}/15)`}
-            </AlertDialogAction>
+              Сохранить
+            </Button>
             <AlertDialogCancel
               onClick={handleExitWithoutSaving}
               className="bg-card border-border text-foreground hover:bg-card/80"
