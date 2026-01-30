@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, UserPlus, X, MessageCircle } from "lucide-react";
+import { Pencil, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Button } from "@/components/ui/button";
 import InviteFriendsDrawer from "@/components/InviteFriendsDrawer";
 import ImageCropDrawer from "@/components/ImageCropDrawer";
+import EditUsernameModal from "@/components/EditUsernameModal";
 import { usersApi, UserProfile } from "@/lib/api";
 
 
@@ -33,6 +34,7 @@ const Profile = () => {
   const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
   const [backendUser, setBackendUser] = useState<UserProfile | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isEditUsernameModalOpen, setIsEditUsernameModalOpen] = useState(false);
   
   // Load saved profile
   const [savedProfile, setSavedProfile] = useState<ProfileData>(() => {
@@ -99,37 +101,53 @@ const Profile = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Check if there are unsaved changes
+  // Check if there are unsaved changes (only image now, username is edited via modal)
   const hasUnsavedChanges = 
-    profile.userName !== savedProfile.userName || 
     profile.profileImage !== savedProfile.profileImage;
 
-  // Save changes to backend (username, photo_url) and localStorage
+  // Save username changes to backend
+  const handleSaveUsername = async (newUsername: string) => {
+    if (!backendUser) {
+      toast.error("Пользователь не найден");
+      throw new Error("No user");
+    }
+
+    const response = await usersApi.update(backendUser.id, {
+      username: newUsername,
+    });
+
+    if (!response.success) {
+      toast.error("Не удалось сохранить имя");
+      throw new Error("Update failed");
+    }
+
+    const updatedUser = (response.data as any)?.user as UserProfile | undefined;
+    if (updatedUser) {
+      setBackendUser(updatedUser);
+    }
+
+    const updatedProfile = { ...profile, userName: newUsername };
+    setProfile(updatedProfile);
+    setSavedProfile(updatedProfile);
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedProfile));
+    
+    toast.success("Имя пользователя обновлено");
+    window.dispatchEvent(new Event('profileUpdated'));
+  };
+
+  // Save image changes to backend and localStorage
   const handleSaveChanges = async () => {
     if (isSaving) return;
 
-    // Validate minimum length
-    if (profile.userName.trim().length < 2) {
-      toast.error("Имя должно содержать минимум 2 символа");
-      return;
-    }
-
     setIsSaving(true);
     try {
-      if (backendUser) {
-        const updateData: Partial<Pick<UserProfile, 'username' | 'photo_url'>> = {
-          username: profile.userName.trim(),
-        };
-        
-        // Only send photo_url if it changed
-        if (profile.profileImage !== savedProfile.profileImage) {
-          updateData.photo_url = profile.profileImage;
-        }
-
-        const response = await usersApi.update(backendUser.id, updateData);
+      if (backendUser && profile.profileImage !== savedProfile.profileImage) {
+        const response = await usersApi.update(backendUser.id, {
+          photo_url: profile.profileImage,
+        });
 
         if (!response.success) {
-          toast.error("Не удалось сохранить данные на сервере");
+          toast.error("Не удалось сохранить фото");
           return;
         }
 
@@ -141,13 +159,12 @@ const Profile = () => {
 
       localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
       setSavedProfile(profile);
-      toast.success("Изменения сохранены");
+      toast.success("Фото обновлено");
       
-      // Notify other components that profile was updated
       window.dispatchEvent(new Event('profileUpdated'));
     } catch (error) {
       console.error("Profile save failed", error);
-      toast.error("Ошибка при сохранении изменений");
+      toast.error("Ошибка при сохранении фото");
     } finally {
       setIsSaving(false);
     }
@@ -209,10 +226,6 @@ const Profile = () => {
     setProfile(prev => ({ ...prev, profileImage: null }));
   };
 
-  const handleUserNameChange = (value: string) => {
-    setProfile(prev => ({ ...prev, userName: value.slice(0, 15) }));
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <SportHeader 
@@ -269,7 +282,13 @@ const Profile = () => {
 
           {/* User Info */}
           <div className="flex flex-col pt-2">
-            <h1 className="text-2xl font-display text-foreground">{profile.userName}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-display text-foreground">{profile.userName || "Не указано"}</h1>
+              <Pencil
+                className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground"
+                onClick={() => setIsEditUsernameModalOpen(true)}
+              />
+            </div>
             {backendUser?.tg_username && (
               <span className="text-muted-foreground text-sm text-regular">@{backendUser.tg_username}</span>
             )}
@@ -279,28 +298,6 @@ const Profile = () => {
 
         {/* Form Fields */}
         <div className="space-y-3">
-          <div className="space-y-2">
-            <label className="text-sm text-foreground text-medium">Имя пользователя</label>
-            <div className="relative">
-              <input
-                value={profile.userName}
-                onChange={(e) => handleUserNameChange(e.target.value)}
-                maxLength={15}
-                placeholder={savedProfile.userName}
-                className="w-full h-[40px] px-4 font-rubik font-normal text-sm leading-[130%] rounded-xl bg-[#1A1924] border transition-colors focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-[#4B485F]"
-                style={{
-                  borderColor: profile.userName ? "rgba(255, 255, 255, 0.2)" : "#363546",
-                  color: profile.userName ? "#FFFFFF" : "#4B485F",
-                  borderWidth: "1px",
-                  borderStyle: "solid",
-                }}
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 font-rubik font-normal text-sm text-[#4B485F] pointer-events-none">
-                {profile.userName.length}/15
-              </div>
-            </div>
-          </div>
-
           <div className="space-y-2">
             <label className="text-sm text-foreground text-medium">Дата рождения</label>
             <input
@@ -377,6 +374,14 @@ const Profile = () => {
           На главную
         </button>
       </div> */}
+
+      {/* Edit Username Modal */}
+      <EditUsernameModal
+        isOpen={isEditUsernameModalOpen}
+        onClose={() => setIsEditUsernameModalOpen(false)}
+        currentName={profile.userName}
+        onSave={handleSaveUsername}
+      />
 
       {/* Image Crop Drawer */}
       {tempImageSrc && (
