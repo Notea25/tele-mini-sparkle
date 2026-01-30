@@ -257,8 +257,21 @@ const TeamManagement = () => {
   const [mainSquadPlayers, setMainSquadPlayers] = useState<PlayerDataExt[]>([]);
   const [benchPlayersExt, setBenchPlayersExt] = useState<PlayerDataExt[]>([]);
 
+  // If user switches league/squad, drop local edits and re-hydrate from API
+  useEffect(() => {
+    setMainSquadPlayers([]);
+    setBenchPlayersExt([]);
+    setOriginalState(null);
+  }, [leagueId, squad?.id]);
+
   // Initialize players from API data
   useEffect(() => {
+    // IMPORTANT: Do not overwrite local ordering after user has started editing.
+    // Backend may return the same players in a different order (slotIndex recalculation),
+    // which would visually "shuffle" players right after saving.
+    const shouldHydrateFromApi = mainSquadPlayers.length === 0 && benchPlayersExt.length === 0;
+    if (!shouldHydrateFromApi) return;
+
     if (apiMainPlayers.length > 0 && apiBenchPlayers.length > 0) {
       // Convert main players
       const convertedMain = apiMainPlayers.map(p => {
@@ -316,7 +329,7 @@ const TeamManagement = () => {
         });
       }
     }
-  }, [apiMainPlayers, apiBenchPlayers, squad?.captain_id, squad?.vice_captain_id, originalState]);
+  }, [apiMainPlayers, apiBenchPlayers, squad?.captain_id, squad?.vice_captain_id, originalState, mainSquadPlayers.length, benchPlayersExt.length]);
 
   // Initialize captain/vice-captain from squad data
   useEffect(() => {
@@ -445,8 +458,10 @@ const TeamManagement = () => {
     
     // Re-fetch squad data will reset the UI to server state
     queryClient.invalidateQueries({ queryKey: ['my-squads'] });
-    
-    // Reset original state to trigger re-initialization
+
+    // Drop local edits so hydration effect can apply fresh API state
+    setMainSquadPlayers([]);
+    setBenchPlayersExt([]);
     setOriginalState(null);
   }, [originalState, queryClient]);
 
