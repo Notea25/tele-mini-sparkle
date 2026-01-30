@@ -259,8 +259,9 @@ const TeamManagement = () => {
 
   // Initialize players from API data
   useEffect(() => {
-    if (apiMainPlayers.length > 0) {
-      const converted = apiMainPlayers.map(p => {
+    if (apiMainPlayers.length > 0 && apiBenchPlayers.length > 0) {
+      // Convert main players
+      const convertedMain = apiMainPlayers.map(p => {
         const opponentData = getNextOpponentData(p.team_name);
         return {
           id: p.id,
@@ -279,24 +280,10 @@ const TeamManagement = () => {
           nextOpponentHome: opponentData.nextOpponentHome,
         };
       });
-      setMainSquadPlayers(converted);
+      setMainSquadPlayers(convertedMain);
       
-      // Initialize original state for change tracking (only once when data first loads)
-      if (!originalState && apiBenchPlayers.length > 0) {
-        const benchConverted = apiBenchPlayers.map(p => p.id);
-        setOriginalState({
-          mainPlayerIds: apiMainPlayers.map(p => p.id),
-          benchPlayerIds: benchConverted,
-          captain: squad?.captain_id ?? null,
-          viceCaptain: squad?.vice_captain_id ?? null,
-        });
-      }
-    }
-  }, [apiMainPlayers, apiBenchPlayers, squad?.captain_id, squad?.vice_captain_id, originalState]);
-
-  useEffect(() => {
-    if (apiBenchPlayers.length > 0) {
-      const converted = apiBenchPlayers.map(p => {
+      // Convert bench players
+      const convertedBench = apiBenchPlayers.map(p => {
         const opponentData = getNextOpponentData(p.team_name);
         return {
           id: p.id,
@@ -314,10 +301,22 @@ const TeamManagement = () => {
         };
       });
       // Ensure goalkeeper is always first on bench
-      const orderedBench = ensureGoalkeeperFirst(converted);
-      setBenchPlayersExt(orderedBench.map((p, i) => ({ ...p, slotIndex: i })));
+      const orderedBench = ensureGoalkeeperFirst(convertedBench);
+      const finalBench = orderedBench.map((p, i) => ({ ...p, slotIndex: i }));
+      setBenchPlayersExt(finalBench);
+      
+      // Initialize original state with the SORTED order (after ensureGoalkeeperFirst)
+      // This ensures originalState matches what we actually display
+      if (!originalState) {
+        setOriginalState({
+          mainPlayerIds: convertedMain.map(p => p.id),
+          benchPlayerIds: finalBench.map(p => p.id),
+          captain: squad?.captain_id ?? null,
+          viceCaptain: squad?.vice_captain_id ?? null,
+        });
+      }
     }
-  }, [apiBenchPlayers]);
+  }, [apiMainPlayers, apiBenchPlayers, squad?.captain_id, squad?.vice_captain_id, originalState]);
 
   // Initialize captain/vice-captain from squad data
   useEffect(() => {
