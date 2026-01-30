@@ -1,6 +1,5 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { X } from "lucide-react";
 import scoringExample from "@/assets/scoring-example-new.png";
 import boostCaptain3x from "@/assets/boost-captain3x.png";
 import boostDouble from "@/assets/boost-double.png";
@@ -17,22 +16,8 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-background border-t border-border max-h-[90vh] flex flex-col">
-        <DrawerHeader className="border-b border-border pb-4 flex-shrink-0 relative">
+        <DrawerHeader className="border-b border-border pb-4 flex-shrink-0">
           <DrawerTitle className="text-foreground text-xl font-display text-center">Правила игры</DrawerTitle>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              onClose();
-            }}
-            onPointerDown={(e) => {
-              e.stopPropagation();
-            }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors touch-none"
-          >
-            <X className="w-4 h-4 text-muted-foreground pointer-events-none" />
-          </button>
         </DrawerHeader>
 
         <div className="flex-1 overflow-y-auto px-4 py-4">
