@@ -197,13 +197,6 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
-            {/* Temporary reset button for testing */}
-            <button
-              onClick={handleResetApp}
-              className="fixed top-2 right-2 z-[9999] bg-destructive text-destructive-foreground px-3 py-1 rounded text-xs font-medium opacity-50 hover:opacity-100 transition-opacity"
-            >
-              Reset App
-            </button>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/create-team" element={<CreateTeam />} />
