@@ -26,6 +26,7 @@ import ViewUserLeague from "./pages/ViewUserLeague";
 import Profile from "./pages/Profile";
 import BackendTest from "./pages/BackendTest";
 import NotFound from "./pages/NotFound";
+import TourHistory from "./components/TourHistory";
 
 // Wrapper to force re-render when team ID changes
 const ViewTeamWrapper = () => {
@@ -211,6 +212,7 @@ const App = () => {
               <Route path="/view-com-league" element={<ViewComLeague />} />
               <Route path="/view-user-league" element={<ViewUserLeagueQueryWrapper />} />
               <Route path="/view-user-league/:id" element={<ViewUserLeague />} />
+              <Route path="/tour-history/:squadId" element={<TourHistory />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/backtest" element={<BackendTest />} />
               <Route path="*" element={<NotFound />} />

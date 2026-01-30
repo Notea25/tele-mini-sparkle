@@ -264,6 +264,31 @@ export interface ReplacePlayersResponse {
   bench_player_ids: number[];
 }
 
+// Типы для истории туров
+export interface TourHistoryPlayer {
+  id: number;
+  name: string;
+  position: string;
+  team_id: number;
+  team_name: string;
+  team_logo: string | null;
+  market_value: number;
+  photo: string | null;
+  total_points: number; // Общие очки игрока за все туры
+  tour_points: number; // Очки игрока за этот конкретный тур
+}
+
+export interface TourHistorySnapshot {
+  tour_id: number;
+  tour_number: number;
+  points: number; // Очки команды за этот тур
+  used_boost: string | null;
+  captain_id: number | null;
+  vice_captain_id: number | null;
+  main_players: TourHistoryPlayer[];
+  bench_players: TourHistoryPlayer[];
+}
+
 // Методы для работы со сквадами
 export const squadsApi = {
   create: (data: CreateSquadRequest) => apiRequest<CreateSquadResponse>('/api/squads/create', {
@@ -306,6 +331,8 @@ export const squadsApi = {
       body: data,
     });
   },
+  getHistory: (squadId: number) => 
+    apiRequest<TourHistorySnapshot[]>(`/api/squads/${squadId}/history`),
 };
 
 // Типы и методы для работы с пользователями
