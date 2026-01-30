@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, UserPlus, X } from "lucide-react";
+import { Pencil, UserPlus, X, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Button } from "@/components/ui/button";
