@@ -13,6 +13,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { PointsColumnHeader } from "@/components/PointsColumnHeader";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -970,7 +971,7 @@ const Transfers = () => {
 
         <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
           <span className="flex-1">Игрок</span>
-          <span className="w-12 text-center">Очки</span>
+          <span className="w-12 text-center"><PointsColumnHeader type="season" /></span>
           <span className="w-10 text-center">Цена</span>
           <span className="w-10"></span>
         </div>
@@ -1348,7 +1349,9 @@ const Transfers = () => {
             onClick={() => handleSort("points")}
             className={`flex items-center gap-1 transition-colors ${sortField === "points" ? "text-primary" : "hover:text-foreground"}`}
           >
-            <span>Очки</span>
+            <PointsColumnHeader type="season" className={sortField === "points" ? "text-primary" : ""}>
+              <span>Очки</span>
+            </PointsColumnHeader>
             {sortField === "points" ? (
               sortDirection === "desc" ? (
                 <ChevronDown className="w-3 h-3 text-primary" />
