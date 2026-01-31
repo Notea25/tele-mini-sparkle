@@ -42,8 +42,8 @@ export function adaptSquadData(squadWithTour: SquadWithTourData): UserSquad {
     penalty_points: current_tour.penalty_points,
     captain_id: current_tour.captain_id,
     vice_captain_id: current_tour.vice_captain_id,
-    main_players: current_tour.main_players,
-    bench_players: current_tour.bench_players,
+    main_players: current_tour.main_players ?? [],
+    bench_players: current_tour.bench_players ?? [],
     
     // Deprecated field (no longer used in backend)
     next_tour_penalty_points: 0,
@@ -176,15 +176,15 @@ export function getSquadNetPoints(data: SquadWithTourData | UserSquad): number {
 export function getSquadPlayers(data: SquadWithTourData | UserSquad) {
   if (isSquadWithTourData(data)) {
     return {
-      main: data.current_tour.main_players,
-      bench: data.current_tour.bench_players,
+      main: data.current_tour.main_players ?? [],
+      bench: data.current_tour.bench_players ?? [],
       captain_id: data.current_tour.captain_id,
       vice_captain_id: data.current_tour.vice_captain_id,
     };
   }
   return {
-    main: data.main_players,
-    bench: data.bench_players,
+    main: data.main_players ?? [],
+    bench: data.bench_players ?? [],
     captain_id: data.captain_id,
     vice_captain_id: data.vice_captain_id,
   };

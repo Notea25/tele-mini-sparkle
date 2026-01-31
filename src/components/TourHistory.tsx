@@ -213,13 +213,13 @@ export default function TourHistory({ squadId: propSquadId }: TourHistoryProps) 
                   <div>
                     <div className="text-gray-400">Main Squad</div>
                     <div className="text-white font-semibold">
-                      {selectedTour.main_players.length} players
+                      {selectedTour.main_players?.length ?? 0} players
                     </div>
                   </div>
                   <div>
                     <div className="text-gray-400">Bench</div>
                     <div className="text-white font-semibold">
-                      {selectedTour.bench_players.length} players
+                      {selectedTour.bench_players?.length ?? 0} players
                     </div>
                   </div>
                   <div>
@@ -240,9 +240,11 @@ export default function TourHistory({ squadId: propSquadId }: TourHistoryProps) 
                     <div className="text-gray-400">Top Scorer</div>
                     <div className="text-white font-semibold">
                       {
-                        [...selectedTour.main_players].sort(
-                          (a, b) => b.tour_points - a.tour_points
-                        )[0]?.name
+                        selectedTour.main_players && selectedTour.main_players.length > 0
+                          ? [...selectedTour.main_players].sort(
+                              (a, b) => b.tour_points - a.tour_points
+                            )[0]?.name
+                          : "N/A"
                       }
                     </div>
                   </div>
@@ -260,7 +262,7 @@ export default function TourHistory({ squadId: propSquadId }: TourHistoryProps) 
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {selectedTour.main_players.map((player) => {
+                  {selectedTour.main_players?.map((player) => {
                     const Icon = getPositionIcon(player.position);
                     const isCaptain = player.id === selectedTour.captain_id;
                     const isViceCaptain = player.id === selectedTour.vice_captain_id;
@@ -336,7 +338,7 @@ export default function TourHistory({ squadId: propSquadId }: TourHistoryProps) 
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {selectedTour.bench_players.map((player) => {
+                  {selectedTour.bench_players?.map((player) => {
                     const Icon = getPositionIcon(player.position);
 
                     return (

@@ -191,14 +191,14 @@ const ViewTeam = () => {
 
   // Get display players - either from history snapshot or current squad
   const displayMainPlayers = useMemo((): EnrichedPlayer[] => {
-    if (selectedSnapshot) {
+    if (selectedSnapshot && selectedSnapshot.main_players) {
       return selectedSnapshot.main_players.map((p, i) => convertHistoryPlayer(p, i));
     }
     return mainPlayers;
   }, [selectedSnapshot, mainPlayers]);
 
   const displayBenchPlayers = useMemo((): EnrichedPlayer[] => {
-    if (selectedSnapshot) {
+    if (selectedSnapshot && selectedSnapshot.bench_players) {
       return selectedSnapshot.bench_players.map((p, i) => convertHistoryPlayer(p, i));
     }
     return benchPlayers;
