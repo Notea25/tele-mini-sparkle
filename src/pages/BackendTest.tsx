@@ -11,6 +11,7 @@ const BackendTest = () => {
   const [squadsCreateResponse, setSquadsCreateResponse] = useState<ApiResponse<unknown> | null>(null);
   const [mySquadsResponse, setMySquadsResponse] = useState<ApiResponse<unknown> | null>(null);
   const [getSquadByIdResponse, setGetSquadByIdResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [squadHistoryResponse, setSquadHistoryResponse] = useState<ApiResponse<unknown> | null>(null);
   const [getSquadByIdPublicResponse, setGetSquadByIdPublicResponse] = useState<ApiResponse<unknown> | null>(null);
   const [deadlineResponse, setDeadlineResponse] = useState<ApiResponse<unknown> | null>(null);
   const [toursResponse, setToursResponse] = useState<ApiResponse<unknown> | null>(null);
@@ -31,6 +32,7 @@ const BackendTest = () => {
   const [loadingMySquads, setLoadingMySquads] = useState(false);
   const [loadingGetSquadById, setLoadingGetSquadById] = useState(false);
   const [loadingGetSquadByIdPublic, setLoadingGetSquadByIdPublic] = useState(false);
+  const [loadingSquadHistory, setLoadingSquadHistory] = useState(false);
   const [loadingDeadline, setLoadingDeadline] = useState(false);
   const [loadingTours, setLoadingTours] = useState(false);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
@@ -50,6 +52,7 @@ const BackendTest = () => {
   const [tourIdInput, setTourIdInput] = useState('2');
   const [squadIdInput, setSquadIdInput] = useState('1');
   const [getSquadIdInput, setGetSquadIdInput] = useState('7');
+  const [historySquadIdInput, setHistorySquadIdInput] = useState('7');
   const [captainIdInput, setCaptainIdInput] = useState('');
   const [viceCaptainIdInput, setViceCaptainIdInput] = useState('');
   const [mainPlayerIdsInput, setMainPlayerIdsInput] = useState('');
@@ -175,6 +178,21 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingGetSquadByIdPublic(false);
+    }
+  };
+
+  const testSquadHistoryApi = async () => {
+    setLoadingSquadHistory(true);
+    try {
+      const result = await squadsApi.getHistory(parseInt(historySquadIdInput) || 7);
+      setSquadHistoryResponse(result);
+    } catch (err) {
+      setSquadHistoryResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingSquadHistory(false);
     }
   };
 
@@ -494,6 +512,19 @@ const BackendTest = () => {
           </Button>
           <Button onClick={testGetSquadByIdPublicApi} disabled={loadingGetSquadByIdPublic} variant="secondary">
             {loadingGetSquadByIdPublic ? 'Загрузка...' : `Тест: GET /api/squads/get_squad_by_id/${getSquadIdInput}`}
+          </Button>
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <input
+            type="number"
+            value={historySquadIdInput}
+            onChange={(e) => setHistorySquadIdInput(e.target.value)}
+            className="w-20 px-2 py-2 bg-muted text-foreground rounded border border-border"
+            placeholder="Squad ID"
+          />
+          <Button onClick={testSquadHistoryApi} disabled={loadingSquadHistory} variant="default">
+            {loadingSquadHistory ? 'Загрузка...' : `Тест: GET /api/squads/${historySquadIdInput}/history`}
           </Button>
         </div>
 
@@ -841,6 +872,7 @@ const BackendTest = () => {
       {renderResponse(mySquadsResponse, 'Ответ: My Squads')}
       {renderResponse(getSquadByIdResponse, 'Ответ: Get Squad By ID')}
       {renderResponse(getSquadByIdPublicResponse, 'Ответ: Get Squad By ID (public)')}
+      {renderResponse(squadHistoryResponse, 'Ответ: Squad History')}
       {renderResponse(deadlineResponse, 'Ответ: Deadline')}
       {renderResponse(toursResponse, 'Ответ: Tours (prev/current/next)')}
       {renderResponse(playersResponse, 'Ответ: Players')}
