@@ -313,9 +313,42 @@ const TeamManagement = () => {
           nextOpponentHome: opponentData.nextOpponentHome,
         };
       });
+      
+      // Try to restore bench order from localStorage (workaround for backend not preserving order)
+      let orderedBench = convertedBench;
+      if (squad?.id) {
+        const benchOrderKey = `benchOrder_${squad.id}`;
+        const savedOrder = localStorage.getItem(benchOrderKey);
+        if (savedOrder) {
+          try {
+            const savedIds: number[] = JSON.parse(savedOrder);
+            // Reorder bench players according to saved order
+            const benchMap = new Map(convertedBench.map(p => [p.id, p]));
+            const reorderedBench: typeof convertedBench = [];
+            
+            // First, add players in saved order (if they still exist)
+            for (const id of savedIds) {
+              const player = benchMap.get(id);
+              if (player) {
+                reorderedBench.push(player);
+                benchMap.delete(id);
+              }
+            }
+            // Then add any remaining players (new players not in saved order)
+            benchMap.forEach(player => reorderedBench.push(player));
+            
+            if (reorderedBench.length === convertedBench.length) {
+              orderedBench = reorderedBench;
+            }
+          } catch {
+            // Invalid saved order, use default
+          }
+        }
+      }
+      
       // Ensure goalkeeper is always first on bench
-      const orderedBench = ensureGoalkeeperFirst(convertedBench);
-      const finalBench = orderedBench.map((p, i) => ({ ...p, slotIndex: i }));
+      const sortedBench = ensureGoalkeeperFirst(orderedBench as PlayerDataExt[]);
+      const finalBench = sortedBench.map((p, i) => ({ ...p, slotIndex: i }));
       setBenchPlayersExt(finalBench);
       
       // Initialize original state with the SORTED order (after ensureGoalkeeperFirst)
@@ -408,6 +441,11 @@ const TeamManagement = () => {
       const result = await squadsApi.updatePlayers(squad.id, requestBody);
       
       if (result.success) {
+        // Save bench order to localStorage so it persists across page visits
+        // This is a workaround for backend not preserving bench order
+        const benchOrderKey = `benchOrder_${squad.id}`;
+        localStorage.setItem(benchOrderKey, JSON.stringify(benchPlayersExt.map(p => p.id)));
+        
         // Invalidate squad cache to ensure fresh data on other pages
         await queryClient.invalidateQueries({ queryKey: ['my-squads'] });
 
