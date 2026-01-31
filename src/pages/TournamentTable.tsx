@@ -24,15 +24,14 @@ const TournamentTable = () => {
   const leagueId = parseInt(localStorage.getItem("selectedLeagueId") || "116", 10);
 
   // Fetch tours to get current tour id
-  const { data: toursData } = useQuery({
+  // ВАЖНО: используем тот же формат что и в League.tsx для совместимости кеша
+  const { data: toursResponse } = useQuery({
     queryKey: ['tours', leagueId],
-    queryFn: async () => {
-      const result = await toursApi.getPreviousCurrentNextTour(leagueId);
-      return result.success ? result.data : null;
-    },
+    queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
     staleTime: 10 * 60 * 1000, // 10 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes
   });
+  const toursData = toursResponse?.data;
 
   // Fetch my squads to determine which team is the user's
   const { data: mySquadsData } = useQuery({
