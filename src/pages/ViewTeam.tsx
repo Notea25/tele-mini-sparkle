@@ -57,16 +57,28 @@ const ViewTeam = () => {
       // Load tours
       const toursResponse = await toursApi.getPreviousCurrentNextTour(squad.league_id);
       if (toursResponse.success && toursResponse.data) {
+        const now = new Date();
         const tours: TourInfo[] = [];
+        
+        // Add previous tour (always visible - deadline has passed)
         if (toursResponse.data.previous_tour) tours.push(toursResponse.data.previous_tour);
-        if (toursResponse.data.current_tour) tours.push(toursResponse.data.current_tour);
-        if (toursResponse.data.next_tour) tours.push(toursResponse.data.next_tour);
+        
+        // Add current tour only if its deadline has passed
+        if (toursResponse.data.current_tour) {
+          const currentDeadline = new Date(toursResponse.data.current_tour.deadline);
+          if (currentDeadline <= now) {
+            tours.push(toursResponse.data.current_tour);
+          }
+        }
+        
+        // Never show next tour in history (deadline definitely hasn't passed)
         setAllTours(tours);
 
-        // Set initial selected tour to current
-        if (toursResponse.data.current_tour && !selectedTourId) {
-          setSelectedTourId(toursResponse.data.current_tour.id);
-          setSelectedTourNumber(toursResponse.data.current_tour.number);
+        // Set initial selected tour to the most recent available
+        if (!selectedTourId && tours.length > 0) {
+          const latestTour = tours[tours.length - 1];
+          setSelectedTourId(latestTour.id);
+          setSelectedTourNumber(latestTour.number);
         }
       }
 
