@@ -38,6 +38,7 @@ const ViewTeam = () => {
   const [selectedTourNumber, setSelectedTourNumber] = useState<number | null>(null);
   const [viewTourPoints, setViewTourPoints] = useState<number>(0);
   const [allTours, setAllTours] = useState<TourInfo[]>([]);
+  const [isLoadingTourPoints, setIsLoadingTourPoints] = useState(false);
   
   // Historical squad data
   const [historySnapshots, setHistorySnapshots] = useState<TourHistorySnapshot[]>([]);
@@ -118,15 +119,21 @@ const ViewTeam = () => {
     // If we have a snapshot for this tour, use its points directly
     if (selectedSnapshot) {
       setViewTourPoints(selectedSnapshot.points);
+      setIsLoadingTourPoints(false);
       return;
     }
 
     // Otherwise load from leaderboard
     const loadTourPoints = async () => {
-      const leaderboardResponse = await squadsApi.getLeaderboard(selectedTourId);
-      if (leaderboardResponse.success && leaderboardResponse.data) {
-        const entry = leaderboardResponse.data.find(e => e.squad_id === squadId);
-        setViewTourPoints(entry?.tour_points || 0);
+      setIsLoadingTourPoints(true);
+      try {
+        const leaderboardResponse = await squadsApi.getLeaderboard(selectedTourId);
+        if (leaderboardResponse.success && leaderboardResponse.data) {
+          const entry = leaderboardResponse.data.find(e => e.squad_id === squadId);
+          setViewTourPoints(entry?.tour_points || 0);
+        }
+      } finally {
+        setIsLoadingTourPoints(false);
       }
     };
 
@@ -273,9 +280,19 @@ const ViewTeam = () => {
     return squad?.penalty_points ?? 0;
   }, [selectedSnapshot, isViewingHistoricalTour, squad?.penalty_points]);
 
-  const displayPoints = selectedSnapshot 
-    ? selectedSnapshot.points - displayPenaltyPoints 
-    : (selectedTourId ? viewTourPoints : tourPoints) - displayPenaltyPoints;
+  // Calculate display points - use snapshot if available, otherwise use current points
+  // Don't show intermediate values while loading
+  const displayPoints = useMemo(() => {
+    if (isLoadingTourPoints && !selectedSnapshot) {
+      return 0; // Show 0 while loading to prevent flashing
+    }
+    
+    if (selectedSnapshot) {
+      return selectedSnapshot.points - displayPenaltyPoints;
+    }
+    
+    return (selectedTourId ? viewTourPoints : tourPoints) - displayPenaltyPoints;
+  }, [isLoadingTourPoints, selectedSnapshot, displayPenaltyPoints, selectedTourId, viewTourPoints, tourPoints]);
   
   const displayTourNumber = selectedTourNumber || currentTour;
 
@@ -352,8 +369,14 @@ const ViewTeam = () => {
       {/* Points Block */}
       <div className="px-4 mt-3 flex flex-col items-center gap-1">
         <div className="bg-primary rounded-xl px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
-          <span className="text-2xl font-bold text-primary-foreground">{displayPoints}</span>
-          <span className="text-primary-foreground/80 text-sm">очков</span>
+          {isLoadingTourPoints && !selectedSnapshot ? (
+            <Loader2 className="w-6 h-6 animate-spin text-primary-foreground" />
+          ) : (
+            <>
+              <span className="text-2xl font-bold text-primary-foreground">{displayPoints}</span>
+              <span className="text-primary-foreground/80 text-sm">очков</span>
+            </>
+          )}
         </div>
         {displayPenaltyPoints > 0 && (
           <span className="text-xs text-red-500">
