@@ -221,6 +221,7 @@ export interface UserSquad {
   replacements: number;
   points: number;
   penalty_points: number;
+  next_tour_penalty_points: number;
   captain_id: number | null;
   vice_captain_id: number | null;
   main_players: SquadPlayer[];

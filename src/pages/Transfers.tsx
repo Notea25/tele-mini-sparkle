@@ -1551,11 +1551,11 @@ const Transfers = () => {
             onClick={() => {
               if (transferCosts.pointsPenalty > 0) {
                 toast.info(
-                  `У тебя ${TRANSFERS_CONFIG.FREE_PER_TOUR} бесплатных трансфера за тур. Каждый дополнительный стоит -${TRANSFERS_CONFIG.PENALTY_PER_EXTRA} очка. Платных трансферов: ${transferCosts.paidTransfers}`,
+                  `У тебя ${TRANSFERS_CONFIG.FREE_PER_TOUR} бесплатных трансфера за тур. Каждый дополнительный стоит -${TRANSFERS_CONFIG.PENALTY_PER_EXTRA} очка. Платных трансферов: ${transferCosts.paidTransfers}. Штрафы применяются в следующем туре.`,
                 );
               } else {
                 toast.info(
-                  `У тебя ${TRANSFERS_CONFIG.FREE_PER_TOUR} бесплатных трансфера за тур. Каждый дополнительный стоит -${TRANSFERS_CONFIG.PENALTY_PER_EXTRA} очка.`,
+                  `У тебя ${TRANSFERS_CONFIG.FREE_PER_TOUR} бесплатных трансфера за тур. Каждый дополнительный стоит -${TRANSFERS_CONFIG.PENALTY_PER_EXTRA} очка. Штрафы применяются в следующем туре.`,
                 );
               }
             }}
