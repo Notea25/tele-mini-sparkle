@@ -68,10 +68,18 @@ const League = () => {
   const mySquadId = currentSquad?.id;
   
   // Get tour info from API response
+  // Use current tour only if its deadline has passed, otherwise use previous tour
   const toursData = toursResponse?.data;
-  const currentTourId = (toursData?.current_tour?.id ?? toursData?.previous_tour?.id) || null;
-  const currentTourNumber = toursData?.current_tour?.number ?? toursData?.previous_tour?.number ?? 1;
-  const nextTourNumber = toursData?.next_tour?.number ?? 2;
+  const currentTourDeadline = toursData?.current_tour?.deadline ? new Date(toursData.current_tour.deadline) : null;
+  const useCurrentTour = currentTourDeadline && currentTourDeadline <= new Date();
+  
+  const currentTourId = useCurrentTour 
+    ? toursData?.current_tour?.id 
+    : (toursData?.previous_tour?.id ?? null);
+  const currentTourNumber = useCurrentTour 
+    ? toursData?.current_tour?.number 
+    : (toursData?.previous_tour?.number ?? 1);
+  const nextTourNumber = toursData?.next_tour?.number ?? (useCurrentTour ? (toursData?.current_tour?.number ?? 1) + 1 : 2);
   
   // Fetch leaderboard data for tournament table preview
   const { data: leaderboardResponse, isLoading: leaderboardLoading } = useQuery({
