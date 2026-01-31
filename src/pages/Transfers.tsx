@@ -253,7 +253,7 @@ const Transfers = () => {
   const leagueIdNum = parseInt(leagueId, 10) || 116;
   const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
   const { players: apiPlayers, isLoading: isLoadingPlayers } = usePlayers(leagueId);
-  const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, nextTour, boostTourId, isLoading: isLoadingSquad, refetch: refetchSquad } = useSquadData(leagueIdNum);
+  const { squad, squadTourData, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, nextTour, boostTourId, isLoading: isLoadingSquad, refetch: refetchSquad } = useSquadData(leagueIdNum);
   
   const teamName = squad?.name || getSavedTeam().teamName || "Lucky Team";
   
@@ -701,20 +701,19 @@ const Transfers = () => {
   const hasAnyTransferBoost = hasTransfersBoost || hasGoldenTourBoost;
 
   // Calculate pending transfer costs
-  // Use squad.replacements from backend as source of truth for available free transfers
+  // NEW ARCHITECTURE: Use squadTourData.replacements from backend as source of truth
   const pendingTransferCount = getTransferRecords().length;
   const transferCosts = calculateTransferCosts(
     pendingTransferCount, 
     hasTransfersBoost, 
     hasGoldenTourBoost, 
-    nextTour,
-    squad?.replacements  // Backend data as source of truth
+    squadTourData?.replacements ?? 2  // Backend data as source of truth
   );
 
   // Calculate free transfers remaining dynamically - subtract pending transfers
   const freeTransfersRemaining = hasAnyTransferBoost
     ? "∞"
-    : Math.max(0, (squad?.replacements ?? 0) - pendingTransferCount);
+    : Math.max(0, (squadTourData?.replacements ?? 2) - pendingTransferCount);
 
   const getPlayersCountByClub = (clubName: string) => {
     return players.filter((p) => p.team === clubName).length;
