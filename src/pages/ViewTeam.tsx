@@ -48,7 +48,7 @@ const ViewTeam = () => {
   const squadIdParam = searchParams.get("id");
   const squadId = squadIdParam ? parseInt(squadIdParam, 10) : null;
 
-  const { squad, mainPlayers, benchPlayers, currentTour, tourPoints, isLoading, error } = useSquadById(squadId);
+  const { squad, squadTourData, mainPlayers, benchPlayers, currentTour, tourPoints, isLoading, error } = useSquadById(squadId);
 
   // Load squad history first, then filter tours based on history
   useEffect(() => {
@@ -205,8 +205,8 @@ const ViewTeam = () => {
   }, [selectedSnapshot, benchPlayers]);
 
   // Get captain/vice-captain IDs
-  const displayCaptainId = selectedSnapshot?.captain_id ?? squad?.captain_id ?? null;
-  const displayViceCaptainId = selectedSnapshot?.vice_captain_id ?? squad?.vice_captain_id ?? null;
+  const displayCaptainId = selectedSnapshot?.captain_id ?? squadTourData?.captain_id ?? null;
+  const displayViceCaptainId = selectedSnapshot?.vice_captain_id ?? squadTourData?.vice_captain_id ?? null;
 
   // Convert EnrichedPlayer to PlayerData for FormationField
   const mainSquadForField = useMemo((): PlayerData[] => {
@@ -281,8 +281,8 @@ const ViewTeam = () => {
       return 0;
     }
     // Current tour - use squad's current penalty
-    return squad?.penalty_points ?? 0;
-  }, [selectedSnapshot, isViewingHistoricalTour, squad?.penalty_points]);
+    return squadTourData?.penalty_points ?? 0;
+  }, [selectedSnapshot, isViewingHistoricalTour, squadTourData?.penalty_points]);
 
   // Calculate display points - use snapshot if available, otherwise use current points
   // Don't show intermediate values while loading

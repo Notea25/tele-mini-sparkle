@@ -129,6 +129,7 @@ const ViewUserLeague = () => {
         // Backend already returns net tour points (tour_earned - tour_penalty)
         tourPoints: entry.tour_points ?? 0,
         totalPoints: entry.total_points ?? 0,
+        totalPenaltyPoints: (entry as any).total_penalty_points || entry.penalty_points || 0,
         penaltyPoints: entry.penalty_points || 0,
         isUser: entry.squad_id === userSquadId,
       }));
