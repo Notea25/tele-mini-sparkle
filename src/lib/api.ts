@@ -319,6 +319,8 @@ export interface TourHistoryPlayer {
 export interface TourHistorySnapshot {
   tour_id: number;
   tour_number: number;
+  budget: number;
+  replacements: number;
   points: number; // Очки команды за этот тур
   penalty_points: number; // Штрафные очки за этот тур
   used_boost: string | null;
@@ -326,6 +328,7 @@ export interface TourHistorySnapshot {
   vice_captain_id: number | null;
   main_players: TourHistoryPlayer[];
   bench_players: TourHistoryPlayer[];
+  is_finalized: boolean;
 }
 
 // Методы для работы со сквадами
@@ -334,10 +337,19 @@ export const squadsApi = {
     method: 'POST',
     body: data,
   }),
-  getMySquads: () => apiRequest<UserSquad[]>('/api/squads/my_squads'),
-  getSquadById: (squadId: number) => apiRequest<UserSquad>(`/api/squads/get_squad_${squadId}`),
+  // NEW API: Returns Squad metadata only
+  getMySquads: () => apiRequest<Squad[]>('/api/squads/my_squads'),
+  // NEW API: Returns Squad metadata only
+  getSquadById: (squadId: number) => apiRequest<Squad>(`/api/squads/get_squad_${squadId}`),
   // Публичная версия, без привязки к текущему пользователю (используется в BackendTest)
-  getSquadByIdPublic: (squadId: number) => apiRequest<UserSquad>(`/api/squads/get_squad_by_id/${squadId}`),
+  getSquadByIdPublic: (squadId: number) => apiRequest<Squad>(`/api/squads/get_squad_by_id/${squadId}`),
+  // NEW API: Get Squad with current tour data
+  getSquadWithTourData: (squadId: number, tourId?: number) => {
+    const path = tourId 
+      ? `/api/squads/${squadId}/tours?tour_id=${tourId}`
+      : `/api/squads/${squadId}/tours?current=true`;
+    return apiRequest<SquadWithTourData>(path);
+  },
   rename: (squadId: number, name: string) => {
     const query = new URLSearchParams({ new_name: name }).toString();
     return apiRequest<{ id: number; name: string }>(`/api/squads/${squadId}/rename?${query}`, {
@@ -370,8 +382,9 @@ export const squadsApi = {
       body: data,
     });
   },
+  // NEW API: Returns full tour history with budget/replacements
   getHistory: (squadId: number) => 
-    apiRequest<TourHistorySnapshot[]>(`/api/squads/${squadId}/history`),
+    apiRequest<TourHistorySnapshot[]>(`/api/squads/${squadId}/tours`),
 };
 
 // Типы и методы для работы с пользователями

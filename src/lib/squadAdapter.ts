@@ -69,6 +69,34 @@ export function adaptSquadMetadata(squad: Squad): Partial<UserSquad> {
 }
 
 /**
+ * Преобразует массив Squad метаданных в массив пустых UserSquad.
+ * Используется для обратной совместимости когда компоненту нужен UserSquad[],
+ * но есть только метаданные без данных о туре.
+ * 
+ * @param squads - Массив метаданных команд
+ * @returns Массив UserSquad с заполненными метаданными и пустым состоянием
+ */
+export function adaptSquadListMetadata(squads: Squad[]): UserSquad[] {
+  return squads.map(squad => ({
+    id: squad.id,
+    name: squad.name,
+    user_id: squad.user_id,
+    username: squad.username,
+    league_id: squad.league_id,
+    fav_team_id: squad.fav_team_id,
+    budget: 0,
+    replacements: 0,
+    points: 0,
+    penalty_points: 0,
+    next_tour_penalty_points: 0,
+    captain_id: null,
+    vice_captain_id: null,
+    main_players: [],
+    bench_players: [],
+  }));
+}
+
+/**
  * Проверяет, является ли объект новым форматом (SquadWithTourData)
  * или старым форматом (UserSquad).
  * 
