@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { squadsApi, playersApi, toursApi, Squad, SquadTourData, Player, ToursResponse } from "@/lib/api";
+import { squadsApi, playersApi, toursApi, squadToursApi, Squad, SquadTourResponse, Player, ToursResponse } from "@/lib/api";
 
 export interface EnrichedPlayer {
   id: number;
@@ -20,7 +20,7 @@ export interface EnrichedPlayer {
 
 interface UseSquadDataResult {
   squad: Squad | null;
-  squadTourData: SquadTourData | null; // NEW: tour-specific state
+  squadTourData: SquadTourResponse | null; // NEW: tour-specific state from squad_tours API
   mainPlayers: EnrichedPlayer[];
   benchPlayers: EnrichedPlayer[];
   currentTour: number | null;
@@ -96,8 +96,8 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     return null;
   }, [squadsResponse, leagueId]);
 
-  // NEW ARCHITECTURE: Fetch SquadTour data for next/current tour
-  // This contains budget, replacements, players, captain, points, etc.
+  // Determine target tour ID for squad_tours API
+  // Priority: next_tour.id, then current_tour.id if deadline passed
   const targetTourId = useMemo(() => {
     if (toursData?.next_tour?.id) return toursData.next_tour.id;
     if (toursData?.current_tour?.id) {
@@ -109,11 +109,12 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     return null;
   }, [toursData]);
 
+  // NEW: Fetch SquadTour data using the new squad_tours API endpoint
   const { data: squadTourResponse, isLoading: squadTourLoading } = useQuery({
-    queryKey: ['squad-tour', squad?.id, targetTourId],
+    queryKey: ['squad-tour-new', squad?.id, targetTourId],
     queryFn: () => 
       squad && targetTourId 
-        ? squadsApi.getSquadWithTourData(squad.id, targetTourId)
+        ? squadToursApi.getBySquadAndTour(squad.id, targetTourId)
         : Promise.resolve(null),
     enabled: !!squad && !!targetTourId,
     staleTime: 0,
@@ -122,9 +123,10 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     refetchOnWindowFocus: true,
   });
 
-  const squadTourData = useMemo(() => {
+  // Extract squad tour data from new API response
+  const squadTourData = useMemo((): SquadTourResponse | null => {
     if (squadTourResponse?.success && squadTourResponse.data) {
-      return squadTourResponse.data.current_tour;
+      return squadTourResponse.data;
     }
     return null;
   }, [squadTourResponse]);
@@ -163,6 +165,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
   }, [allPlayers]);
 
   // Enrich main players with full data and assign slotIndex per position
+  // Now using squadTourData from squad_tours API which already contains player details
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
     if (!squadTourData || !squadTourData.main_players) return [];
 
@@ -173,10 +176,10 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         id: sp.id,
         name: sp.name,
         team_id: sp.team_id,
-        team_name: fullPlayer?.team_name || "",
-        team_logo: fullPlayer?.team_logo || "",
-        position: fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ",
-        price: fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0,
+        team_name: sp.team_name || fullPlayer?.team_name || "",
+        team_logo: sp.team_logo || fullPlayer?.team_logo || "",
+        position: mapPosition(sp.position || fullPlayer?.position || "Midfielder"),
+        price: sp.market_value ? Math.round((sp.market_value / 1000) * 10) / 10 : (fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0),
         points: sp.points,
         total_points: sp.total_points ?? 0,
         tour_points: sp.tour_points ?? 0,
@@ -197,6 +200,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
   }, [squadTourData, playerMap]);
 
   // Enrich bench players with full data
+  // Now using squadTourData from squad_tours API which already contains player details
   const benchPlayers = useMemo((): EnrichedPlayer[] => {
     if (!squadTourData || !squadTourData.bench_players) return [];
 
@@ -205,7 +209,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
 
     return squadTourData.bench_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
-      const position = fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ";
+      const position = mapPosition(sp.position || fullPlayer?.position || "Midfielder");
       const slotIndex = positionCounters[position] || 0;
       positionCounters[position] = slotIndex + 1;
 
@@ -213,10 +217,10 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         id: sp.id,
         name: sp.name,
         team_id: sp.team_id,
-        team_name: fullPlayer?.team_name || "",
-        team_logo: fullPlayer?.team_logo || "",
+        team_name: sp.team_name || fullPlayer?.team_name || "",
+        team_logo: sp.team_logo || fullPlayer?.team_logo || "",
         position,
-        price: fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0,
+        price: sp.market_value ? Math.round((sp.market_value / 1000) * 10) / 10 : (fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0),
         points: sp.points,
         total_points: sp.total_points ?? 0,
         tour_points: sp.tour_points ?? 0,

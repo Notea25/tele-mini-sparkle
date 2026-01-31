@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { squadsApi, playersApi, toursApi, Squad, SquadTourData, Player, ToursResponse } from "@/lib/api";
+import { squadsApi, playersApi, toursApi, squadToursApi, Squad, SquadTourResponse, Player, ToursResponse } from "@/lib/api";
 
 export interface EnrichedPlayer {
   id: number;
@@ -19,7 +19,7 @@ export interface EnrichedPlayer {
 
 interface UseSquadByIdResult {
   squad: Squad | null;
-  squadTourData: SquadTourData | null;
+  squadTourData: SquadTourResponse | null;
   mainPlayers: EnrichedPlayer[];
   benchPlayers: EnrichedPlayer[];
   currentTour: number | null;
@@ -42,7 +42,7 @@ const mapPosition = (position: string): string => {
 
 export function useSquadById(squadId: number | null): UseSquadByIdResult {
   const [squad, setSquad] = useState<Squad | null>(null);
-  const [squadTourData, setSquadTourData] = useState<SquadTourData | null>(null);
+  const [squadTourData, setSquadTourData] = useState<SquadTourResponse | null>(null);
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [toursData, setToursData] = useState<ToursResponse | null>(null);
   const [tourPoints, setTourPoints] = useState<number>(0);
@@ -100,8 +100,8 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         if (toursResponse.success && toursResponse.data) {
           setToursData(toursResponse.data);
 
-          // NEW ARCHITECTURE: Fetch SquadTour data for current tour
-          // This gives us the complete state including players, captain, points, etc.
+          // NEW ARCHITECTURE: Fetch SquadTour data using the new squad_tours API
+          // Determine target tour: current if deadline passed, otherwise previous
           const currentTourDeadline = toursResponse.data.current_tour?.deadline 
             ? new Date(toursResponse.data.current_tour.deadline) 
             : null;
@@ -113,11 +113,11 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
           if (targetTourId) {
             try {
-              const squadWithTourResponse = await squadsApi.getSquadWithTourData(squadId, targetTourId);
-              if (squadWithTourResponse.success && squadWithTourResponse.data) {
-                const tourData = squadWithTourResponse.data.current_tour;
-                setSquadTourData(tourData);
-                setTourPoints(tourData.points);
+              // Use the new squad_tours API endpoint
+              const squadTourResponse = await squadToursApi.getBySquadAndTour(squadId, targetTourId);
+              if (squadTourResponse.success && squadTourResponse.data) {
+                setSquadTourData(squadTourResponse.data);
+                setTourPoints(squadTourResponse.data.points);
               }
             } catch (err) {
               console.error('Failed to fetch squad tour data:', err);
@@ -150,6 +150,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
   }, [allPlayers]);
 
   // Enrich main players with full data and assign slotIndex per position
+  // Now using squadTourData from squad_tours API which already contains player details
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
     if (!squadTourData || !squadTourData.main_players) return [];
 
@@ -159,10 +160,10 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         id: sp.id,
         name: sp.name,
         team_id: sp.team_id,
-        team_name: fullPlayer?.team_name || "",
-        team_logo: fullPlayer?.team_logo || "",
-        position: fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ",
-        price: fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0,
+        team_name: sp.team_name || fullPlayer?.team_name || "",
+        team_logo: sp.team_logo || fullPlayer?.team_logo || "",
+        position: mapPosition(sp.position || fullPlayer?.position || "Midfielder"),
+        price: sp.market_value ? Math.round((sp.market_value / 1000) * 10) / 10 : (fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0),
         points: sp.points,
         total_points: sp.total_points,
         tour_points: sp.tour_points,
@@ -182,6 +183,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
   }, [squadTourData, playerMap]);
 
   // Enrich bench players with full data
+  // Now using squadTourData from squad_tours API which already contains player details
   const benchPlayers = useMemo((): EnrichedPlayer[] => {
     if (!squadTourData || !squadTourData.bench_players) return [];
 
@@ -189,7 +191,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
     return squadTourData.bench_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
-      const position = fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ";
+      const position = mapPosition(sp.position || fullPlayer?.position || "Midfielder");
       const slotIndex = positionCounters[position] || 0;
       positionCounters[position] = slotIndex + 1;
 
@@ -197,10 +199,10 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         id: sp.id,
         name: sp.name,
         team_id: sp.team_id,
-        team_name: fullPlayer?.team_name || "",
-        team_logo: fullPlayer?.team_logo || "",
+        team_name: sp.team_name || fullPlayer?.team_name || "",
+        team_logo: sp.team_logo || fullPlayer?.team_logo || "",
         position,
-        price: fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0,
+        price: sp.market_value ? Math.round((sp.market_value / 1000) * 10) / 10 : (fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0),
         points: sp.points,
         total_points: sp.total_points,
         tour_points: sp.tour_points,
