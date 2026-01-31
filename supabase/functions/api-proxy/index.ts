@@ -15,6 +15,7 @@ const ALLOWED_PATH_PREFIXES = [
   "/api/tours/",
   "/api/teams/",
   "/api/squads/",
+  "/api/squad_tours/",
   "/api/users/",
   "/api/players/",
   "/api/boosts/",
@@ -51,6 +52,7 @@ const PUBLIC_PATHS = [
   "/api/players/",
   "/api/squads/leaderboard/",
   "/api/squads/get_squad_",
+  "/api/squad_tours/",
   "/api/commercial_leagues/",
 ];
 

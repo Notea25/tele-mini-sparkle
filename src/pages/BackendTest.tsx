@@ -511,12 +511,18 @@ const BackendTest = () => {
     <div className="mb-4 border border-border rounded-lg overflow-hidden">
       <button
         onClick={onToggle}
+        onKeyDown={(e) => {
+          // Prevent Section button from being triggered by keyboard when focus is on inputs
+          if (e.target !== e.currentTarget) {
+            e.stopPropagation();
+          }
+        }}
         className="w-full flex items-center justify-between p-4 bg-muted hover:bg-muted/80 transition-colors"
       >
         <h2 className="text-xl font-bold text-foreground">{title}</h2>
         {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
       </button>
-      {isOpen && <div className="p-4 space-y-4">{children}</div>}
+      {isOpen && <div className="p-4 space-y-4" onClick={(e) => e.stopPropagation()}>{children}</div>}
     </div>
   );
 
