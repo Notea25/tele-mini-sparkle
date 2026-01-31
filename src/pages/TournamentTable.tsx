@@ -71,7 +71,7 @@ const TournamentTable = () => {
       // Display tour points with penalty subtracted
       tourPoints: entry.tour_points - (entry.penalty_points || 0),
       totalPoints: entry.total_points,
-      penaltyPoints: entry.penalty_points || 0,
+      totalPenaltyPoints: entry.total_penalty_points || 0,
       isUser: entry.squad_id === mySquadId,
       change: "same" as "up" | "down" | "same", // API doesn't provide change info yet
     }));
@@ -196,7 +196,7 @@ const TournamentTable = () => {
               <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
               <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
               <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                {(row.totalPoints - (row.penaltyPoints || 0)).toLocaleString()}
+                {(row.totalPoints - (row.totalPenaltyPoints || 0)).toLocaleString()}
               </span>
             </div>
           ))}

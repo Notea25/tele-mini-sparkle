@@ -237,7 +237,8 @@ export interface LeaderboardEntry {
   username: string;
   tour_points: number;
   total_points: number;
-  penalty_points: number;
+  penalty_points: number; // Штраф за текущий тур
+  total_penalty_points: number; // Сумма штрафов за все туры
 }
 
 // Типы для обновления игроков в скваде
@@ -548,7 +549,8 @@ export interface CustomLeagueLeaderboardEntry {
   username: string;
   tour_points: number;
   total_points: number;
-  penalty_points?: number;
+  penalty_points?: number; // Штраф за текущий тур
+  total_penalty_points?: number; // Сумма штрафов за все туры
   fav_team_id?: number;
   fav_team_name?: string;
 }
@@ -603,7 +605,8 @@ export interface UserLeagueLeaderboardEntry {
   username: string;
   tour_points: number;
   total_points: number;
-  penalty_points?: number;
+  penalty_points?: number; // Штраф за текущий тур
+  total_penalty_points?: number; // Сумма штрафов за все туры
 }
 
 // Методы для работы с кастомными лигами
@@ -661,7 +664,8 @@ export interface CommercialLeagueLeaderboardEntry {
   username: string;
   tour_points: number;
   total_points: number;
-  penalty_points?: number;
+  penalty_points?: number; // Штраф за текущий тур
+  total_penalty_points?: number; // Сумма штрафов за все туры
 }
 
 // Методы для работы с коммерческими лигами
