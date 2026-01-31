@@ -209,7 +209,40 @@ export interface SquadPlayer {
   tour_points: number; // Очки за последний/текущий тур
 }
 
-// Типы для получения сквадов пользователя
+// NEW ARCHITECTURE: Squad metadata only
+export interface Squad {
+  id: number;
+  name: string;
+  user_id: number;
+  username: string;
+  league_id: number;
+  fav_team_id: number;
+}
+
+// NEW ARCHITECTURE: Squad state for a specific tour (snapshot)
+export interface SquadTourData {
+  tour_id: number;
+  tour_number: number;
+  budget: number;
+  replacements: number;
+  captain_id: number | null;
+  vice_captain_id: number | null;
+  main_players: SquadPlayer[];
+  bench_players: SquadPlayer[];
+  points: number;
+  penalty_points: number;
+  used_boost: string | null;
+  is_finalized: boolean;
+}
+
+// NEW ARCHITECTURE: Combined response from API
+export interface SquadWithTourData {
+  squad: Squad;
+  current_tour: SquadTourData;
+}
+
+// DEPRECATED: Legacy type for backward compatibility
+// Use SquadWithTourData for new code
 export interface UserSquad {
   id: number;
   name: string;
@@ -221,7 +254,7 @@ export interface UserSquad {
   replacements: number;
   points: number;
   penalty_points: number;
-  next_tour_penalty_points: number;
+  next_tour_penalty_points: number;  // DEPRECATED - no longer used in backend
   captain_id: number | null;
   vice_captain_id: number | null;
   main_players: SquadPlayer[];
