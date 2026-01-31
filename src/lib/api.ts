@@ -219,6 +219,8 @@ export interface UserSquad {
   fav_team_id: number;
   budget: number;
   replacements: number;
+  points: number;
+  penalty_points: number;
   captain_id: number | null;
   vice_captain_id: number | null;
   main_players: SquadPlayer[];
@@ -234,6 +236,7 @@ export interface LeaderboardEntry {
   username: string;
   tour_points: number;
   total_points: number;
+  penalty_points: number;
 }
 
 // Типы для обновления игроков в скваде
@@ -282,6 +285,7 @@ export interface TourHistorySnapshot {
   tour_id: number;
   tour_number: number;
   points: number; // Очки команды за этот тур
+  penalty_points: number; // Штрафные очки за этот тур
   used_boost: string | null;
   captain_id: number | null;
   vice_captain_id: number | null;
