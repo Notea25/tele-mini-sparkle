@@ -151,7 +151,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
   // Enrich main players with full data and assign slotIndex per position
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
-    if (!squadTourData) return [];
+    if (!squadTourData || !squadTourData.main_players) return [];
 
     const playersWithPositions = squadTourData.main_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
@@ -183,7 +183,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
   // Enrich bench players with full data
   const benchPlayers = useMemo((): EnrichedPlayer[] => {
-    if (!squadTourData) return [];
+    if (!squadTourData || !squadTourData.bench_players) return [];
 
     const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
 
