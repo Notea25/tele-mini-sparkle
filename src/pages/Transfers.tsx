@@ -36,7 +36,7 @@ import {
   getGoldenTourBackup,
   clearGoldenTourBackup,
 } from "@/lib/boostState";
-import { getTransferState, calculateTransferCosts, recordTransfers, TRANSFERS_CONFIG } from "@/lib/transferState";
+import { calculateTransferCosts, TRANSFERS_CONFIG } from "@/lib/transferState";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -1800,7 +1800,13 @@ const Transfers = () => {
             });
           }
           
-          const result = recordTransfers(transferCount, hasTransfersBoost, hasGoldenTourBoost, nextTour, squad?.replacements);
+          // Calculate transfer costs for display
+          const finalTransferCosts = calculateTransferCosts(
+            transferCount,
+            hasTransfersBoost,
+            hasGoldenTourBoost,
+            squad?.replacements ?? 2
+          );
 
           // Debug: log distribution results
           console.log('[Transfers] Distribution result:', {
@@ -1813,6 +1819,7 @@ const Transfers = () => {
               freeTransfers,
               hasBoost: hasAnyTransferBoost,
               willHavePenalty,
+              costs: finalTransferCosts,
             },
           });
 
@@ -1870,8 +1877,8 @@ const Transfers = () => {
           initialPlayersRef.current = [...players];
           setHasChanges(false);
 
-          if (result.pointsPenalty > 0) {
-            toast.success(`Изменения сохранены. Штраф: -${result.pointsPenalty} очков`);
+          if (finalTransferCosts.pointsPenalty > 0) {
+            toast.success(`Изменения сохранены. Штраф: -${finalTransferCosts.pointsPenalty} очков`);
           } else {
             toast.success("Изменения сохранены");
           }
