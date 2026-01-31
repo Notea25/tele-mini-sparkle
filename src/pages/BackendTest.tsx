@@ -632,250 +632,39 @@ const BackendTest = () => {
       <Section title="⚡ Boosts" isOpen={isBoostsOpen} onToggle={() => setIsBoostsOpen(!isBoostsOpen)}>
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-muted-foreground">GET /api/boosts/available</h3>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="text-sm text-muted-foreground">Squad ID</label>
-            <input
-              type="number"
-              value={availableBoostSquadIdInput}
-              onChange={(e) => setAvailableBoostSquadIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="text-sm text-muted-foreground">Squad ID</label>
+              <input
+                type="number"
+                value={availableBoostSquadIdInput}
+                onChange={(e) => setAvailableBoostSquadIdInput(e.target.value)}
+                className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground">Tour ID</label>
+              <input
+                type="number"
+                value={availableBoostTourIdInput}
+                onChange={(e) => setAvailableBoostTourIdInput(e.target.value)}
+                className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              />
+            </div>
           </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Tour ID</label>
-            <input
-              type="number"
-              value={availableBoostTourIdInput}
-              onChange={(e) => setAvailableBoostTourIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
+          <Button onClick={testBoostAvailableApi} disabled={loadingBoostAvailable} variant="default">
+            {loadingBoostAvailable
+              ? 'Загрузка...'
+              : `Тест: GET /api/boosts/available/${availableBoostSquadIdInput}/${availableBoostTourIdInput}`}
+          </Button>
         </div>
-        <Button onClick={testBoostAvailableApi} disabled={loadingBoostAvailable} variant="default">
-          {loadingBoostAvailable
-            ? 'Загрузка...'
-            : `Тест: GET /api/boosts/available/${availableBoostSquadIdInput}/${availableBoostTourIdInput}`}
-        </Button>
-      </div>
+        {renderResponse(boostAvailableResponse, 'Ответ: Boost Available')}
+      </Section>
 
-      {/* Update Players Test Section */}
-      <div className="mt-6 p-4 bg-muted rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">PUT /api/squads/update_players/{'{squad_id}'}</h2>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="text-sm text-muted-foreground">Squad ID</label>
-            <input
-              type="number"
-              value={squadIdInput}
-              onChange={(e) => setSquadIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Captain ID (опционально)</label>
-            <input
-              type="number"
-              value={captainIdInput}
-              onChange={(e) => setCaptainIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Vice Captain ID (опционально)</label>
-            <input
-              type="number"
-              value={viceCaptainIdInput}
-              onChange={(e) => setViceCaptainIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Main Player IDs (через запятую)</label>
-            <input
-              type="text"
-              value={mainPlayerIdsInput}
-              onChange={(e) => setMainPlayerIdsInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-              placeholder="1,2,3,4,5,6,7,8,9,10,11"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="text-sm text-muted-foreground">Bench Player IDs (через запятую)</label>
-            <input
-              type="text"
-              value={benchPlayerIdsInput}
-              onChange={(e) => setBenchPlayerIdsInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-              placeholder="12,13,14,15"
-            />
-          </div>
-        </div>
-        <Button onClick={testUpdatePlayersApi} disabled={loadingUpdatePlayers} variant="default">
-          {loadingUpdatePlayers ? 'Загрузка...' : `Тест: PUT /api/squads/update_players/${squadIdInput}`}
-        </Button>
-      </div>
-
-      {/* Replace Players Test Section */}
-      <div className="mt-6 p-4 bg-muted rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">POST /api/squads/{'{squad_id}'}/replace_players</h2>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="text-sm text-muted-foreground">Squad ID</label>
-            <input
-              type="number"
-              value={replaceSquadIdInput}
-              onChange={(e) => setReplaceSquadIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Captain ID (query, опционально)</label>
-            <input
-              type="number"
-              value={replaceCaptainIdInput}
-              onChange={(e) => setReplaceCaptainIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Vice Captain ID (query, опционально)</label>
-            <input
-              type="number"
-              value={replaceViceCaptainIdInput}
-              onChange={(e) => setReplaceViceCaptainIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Main Player IDs (через запятую)</label>
-            <input
-              type="text"
-              value={replaceMainPlayerIdsInput}
-              onChange={(e) => setReplaceMainPlayerIdsInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-              placeholder="1,2,3,4,5,6,7,8,9,10,11"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="text-sm text-muted-foreground">Bench Player IDs (через запятую)</label>
-            <input
-              type="text"
-              value={replaceBenchPlayerIdsInput}
-              onChange={(e) => setReplaceBenchPlayerIdsInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-              placeholder="12,13,14,15"
-            />
-          </div>
-        </div>
-        <Button onClick={testReplacePlayersApi} disabled={loadingReplacePlayers} variant="default">
-          {loadingReplacePlayers ? 'Загрузка...' : `Тест: POST /api/squads/${replaceSquadIdInput}/replace_players`}
-        </Button>
-      </div>
-
-      {/* Boost Apply Test Section */}
-      <div className="mt-6 p-4 bg-muted rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">POST /api/boosts/apply</h2>
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <div>
-            <label className="text-sm text-muted-foreground">Squad ID</label>
-            <input
-              type="number"
-              value={boostSquadIdInput}
-              onChange={(e) => setBoostSquadIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Tour ID</label>
-            <input
-              type="number"
-              value={boostTourIdInput}
-              onChange={(e) => setBoostTourIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Boost Type</label>
-            <select
-              value={boostTypeInput}
-              onChange={(e) => setBoostTypeInput(e.target.value as BoostType)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            >
-              <option value="bench_boost">bench_boost</option>
-              <option value="triple_captain">triple_captain</option>
-              <option value="double_bet">double_bet</option>
-              <option value="transfers_plus">transfers_plus</option>
-              <option value="gold_tour">gold_tour</option>
-            </select>
-          </div>
-        </div>
-        <Button onClick={testBoostApplyApi} disabled={loadingBoostApply} variant="default">
-          {loadingBoostApply ? 'Загрузка...' : 'Тест: POST /api/boosts/apply'}
-        </Button>
-      </div>
-
-      {/* Boost Available Test Section */}
-      <div className="mt-6 p-4 bg-muted rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">GET /api/boosts/available/{'{squad_id}'}/{'{tour_id}'}</h2>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="text-sm text-muted-foreground">Squad ID</label>
-            <input
-              type="number"
-              value={availableBoostSquadIdInput}
-              onChange={(e) => setAvailableBoostSquadIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Tour ID</label>
-            <input
-              type="number"
-              value={availableBoostTourIdInput}
-              onChange={(e) => setAvailableBoostTourIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-        </div>
-        <Button onClick={testBoostAvailableApi} disabled={loadingBoostAvailable} variant="default">
-          {loadingBoostAvailable ? 'Загрузка...' : `Тест: GET /api/boosts/available/${availableBoostSquadIdInput}/${availableBoostTourIdInput}`}
-        </Button>
-      </div>
-
-      {/* Boost Remove Test Section */}
-      <div className="mt-6 p-4 bg-muted rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">DELETE /api/boosts/remove/{'{squad_id}'}/{'{tour_id}'}</h2>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="text-sm text-muted-foreground">Squad ID</label>
-            <input
-              type="number"
-              value={removeBoostSquadIdInput}
-              onChange={(e) => setRemoveBoostSquadIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Tour ID</label>
-            <input
-              type="number"
-              value={removeBoostTourIdInput}
-              onChange={(e) => setRemoveBoostTourIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
-        </div>
-        <Button onClick={testBoostRemoveApi} disabled={loadingBoostRemove} variant="destructive">
-          {loadingBoostRemove ? 'Загрузка...' : `Тест: DELETE /api/boosts/remove/${removeBoostSquadIdInput}/${removeBoostTourIdInput}`}
-        </Button>
-      </div>
-
-
-      {/* Commercial Leagues Test Section */}
-      <div className="mt-6 p-4 bg-muted rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">GET /api/commercial_leagues/?league_id={'{league_id}'}</h2>
-        <div className="grid grid-cols-2 gap-4 mb-4">
+      {/* COMMERCIAL LEAGUES SECTION */}
+      <Section title="🏆 Commercial Leagues" isOpen={isCommercialLeaguesOpen} onToggle={() => setIsCommercialLeaguesOpen(!isCommercialLeaguesOpen)}>
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold text-muted-foreground">GET /api/commercial_leagues/</h3>
           <div>
             <label className="text-sm text-muted-foreground">League ID</label>
             <input
@@ -885,60 +674,38 @@ const BackendTest = () => {
               className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
             />
           </div>
-        </div>
-        <Button onClick={testCommercialLeagues} disabled={loadingCommercialLeagues} variant="default">
-          {loadingCommercialLeagues ? 'Загрузка...' : `Тест: GET /api/commercial_leagues/?league_id=${commercialLeagueIdInput}`}
-        </Button>
-      </div>
+          <Button onClick={testCommercialLeagues} disabled={loadingCommercialLeagues} className="w-full">
+            {loadingCommercialLeagues ? 'Загрузка...' : `GET /api/commercial_leagues/?league_id=${commercialLeagueIdInput}`}
+          </Button>
 
-      {/* Commercial League Join Test */}
-      <div className="mt-6 p-4 bg-muted rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">POST /api/commercial_leagues/join/{'{commercial_league_id}'}/{'{squad_id}'}</h2>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="text-sm text-muted-foreground">Commercial League ID</label>
-            <input
-              type="number"
-              value={joinCommercialLeagueIdInput}
-              onChange={(e) => setJoinCommercialLeagueIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
+          <h3 className="text-sm font-semibold text-muted-foreground mt-4">POST /api/commercial_leagues/join</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm text-muted-foreground">Commercial League ID</label>
+              <input
+                type="number"
+                value={joinCommercialLeagueIdInput}
+                onChange={(e) => setJoinCommercialLeagueIdInput(e.target.value)}
+                className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground">Squad ID</label>
+              <input
+                type="number"
+                value={joinSquadIdInput}
+                onChange={(e) => setJoinSquadIdInput(e.target.value)}
+                className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              />
+            </div>
           </div>
-          <div>
-            <label className="text-sm text-muted-foreground">Squad ID</label>
-            <input
-              type="number"
-              value={joinSquadIdInput}
-              onChange={(e) => setJoinSquadIdInput(e.target.value)}
-              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
-            />
-          </div>
+          <Button onClick={testCommercialLeagueJoin} disabled={loadingCommercialLeagueJoin} className="w-full">
+            {loadingCommercialLeagueJoin ? 'Загрузка...' : `POST /api/commercial_leagues/join/${joinCommercialLeagueIdInput}/${joinSquadIdInput}`}
+          </Button>
         </div>
-        <Button onClick={testCommercialLeagueJoin} disabled={loadingCommercialLeagueJoin} variant="default">
-          {loadingCommercialLeagueJoin ? 'Загрузка...' : `Тест: POST join/${joinCommercialLeagueIdInput}/${joinSquadIdInput}`}
-        </Button>
-      </div>
-
-      {renderResponse(commercialLeagueJoinResponse, 'Ответ: Commercial League Join')}
-      {renderResponse(commercialLeaguesResponse, 'Ответ: Commercial Leagues')}
-      {renderResponse(boostRemoveResponse, 'Ответ: Boost Remove')}
-      {renderResponse(boostApplyResponse, 'Ответ: Boost Apply')}
-      {renderResponse(replacePlayersResponse, 'Ответ: Replace Players')}
-      {renderResponse(updatePlayersResponse, 'Ответ: Update Players')}
-      {renderResponse(leaderboardResponse, 'Ответ: Leaderboard')}
-      {renderResponse(playerFullInfoResponse, 'Ответ: Player Full Info')}
-      {renderResponse(leagueResponse, 'Ответ: Лиги')}
-      {renderResponse(teamsResponse, 'Ответ: Команды')}
-      {renderResponse(usersResponse, 'Ответ: Users Protected')}
-      {renderResponse(squadsCreateResponse, 'Ответ: Squads Create')}
-      {renderResponse(mySquadsResponse, 'Ответ: My Squads')}
-      {renderResponse(getSquadByIdResponse, 'Ответ: Get Squad By ID')}
-      {renderResponse(getSquadByIdPublicResponse, 'Ответ: Get Squad By ID (public)')}
-      {renderResponse(squadHistoryResponse, 'Ответ: Squad History')}
-      {renderResponse(deadlineResponse, 'Ответ: Deadline')}
-      {renderResponse(toursResponse, 'Ответ: Tours (prev/current/next)')}
-      {renderResponse(playersResponse, 'Ответ: Players')}
-      {renderResponse(boostAvailableResponse, 'Ответ: Boost Available')}
+        {renderResponse(commercialLeaguesResponse, 'Ответ: Commercial Leagues')}
+        {renderResponse(commercialLeagueJoinResponse, 'Ответ: Commercial League Join')}
+      </Section>
 
       {/* Home Button */}
       <div className="mt-8">
