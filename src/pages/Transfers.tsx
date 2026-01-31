@@ -434,8 +434,8 @@ const Transfers = () => {
         total_points: p.total_points,
         slotIndex: p.slotIndex,
         team_logo: p.team_logo,
-        isCaptain: squad?.captain_id === p.id,
-        isViceCaptain: squad?.vice_captain_id === p.id,
+        isCaptain: squadTourData?.captain_id === p.id,
+        isViceCaptain: squadTourData?.vice_captain_id === p.id,
         nextOpponent: opponentData.nextOpponent,
         nextOpponentHome: opponentData.nextOpponentHome,
       };
@@ -476,7 +476,7 @@ const Transfers = () => {
       initialStateRef.current = JSON.stringify(reassignedPlayers.map((p) => p.id).sort());
       initialPlayersRef.current = reassignedPlayers;
     }
-  }, [isLoadingSquad, apiMainPlayers, apiBenchPlayers, squad?.captain_id, squad?.vice_captain_id]);
+  }, [isLoadingSquad, apiMainPlayers, apiBenchPlayers, squadTourData?.captain_id, squadTourData?.vice_captain_id]);
 
   // Check for changes whenever players change
   useEffect(() => {
@@ -1784,7 +1784,7 @@ const Transfers = () => {
           const transferCount = getTransferRecords().length;
           
           // Check if we have free transfers or boosts
-          const freeTransfers = squad?.replacements ?? 0;
+          const freeTransfers = squadTourData?.replacements ?? 0;
           const willHavePenalty = !hasAnyTransferBoost && transferCount > freeTransfers;
           
           if (willHavePenalty) {
@@ -1803,7 +1803,7 @@ const Transfers = () => {
             transferCount,
             hasTransfersBoost,
             hasGoldenTourBoost,
-            squad?.replacements ?? 2
+            squadTourData?.replacements ?? 2
           );
 
           // Debug: log distribution results

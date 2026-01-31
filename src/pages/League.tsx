@@ -533,7 +533,9 @@ const League = () => {
                 className="bg-secondary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all"
                 onClick={() => handleNavigate("/tournament-table")}
               >
-                <span className="text-xl font-medium text-foreground">{isTournamentStarted ? tourStats.averagePoints : 0}</span>
+                <span className="text-xl font-medium text-foreground">
+                  {leaderboardLoading ? "—" : (isTournamentStarted ? tourStats.averagePoints : 0)}
+                </span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Средний результат</span>
                 <span className="text-muted-foreground text-xs text-regular">→</span>
               </div>
@@ -545,7 +547,9 @@ const League = () => {
                   }
                 }}
               >
-                <span className="text-2xl font-medium text-primary-foreground">{isTournamentStarted ? tourStats.myPoints : 0}</span>
+                <span className="text-2xl font-medium text-primary-foreground">
+                  {leaderboardLoading ? "—" : (isTournamentStarted ? tourStats.myPoints : 0)}
+                </span>
                 <span className="text-[10px] text-primary-foreground/70 whitespace-nowrap text-regular">Мои очки</span>
                 <span className="text-primary-foreground text-xs text-regular">→</span>
               </div>
@@ -557,7 +561,9 @@ const League = () => {
                   }
                 }}
               >
-                <span className="text-xl font-medium text-foreground">{isTournamentStarted ? tourStats.bestPoints : 0}</span>
+                <span className="text-xl font-medium text-foreground">
+                  {leaderboardLoading ? "—" : (isTournamentStarted ? tourStats.bestPoints : 0)}
+                </span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Лучший результат</span>
                 <span className="text-muted-foreground text-xs text-regular">→</span>
               </div>
@@ -641,34 +647,57 @@ const League = () => {
 
             {/* Table rows */}
             <div className="space-y-2">
-              {tableData.map((row, idx) => (
-                <div
-                  key={idx}
-                  className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
-                    row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
-                  }`}
-                  onClick={() => {
-                    handleNavigate(`/view-team?id=${row.id}`);
-                  }}
-                >
-                  <div className="col-span-3 flex items-center gap-1">
-                    {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
-                    {row.change === "down" && !row.isUser && (
-                      <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
-                    )}
-                    {row.change === "down" && row.isUser && (
-                      <img src={arrowDownBlack} alt="down" className="w-3 h-3" />
-                    )}
-                    {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                    <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+              {leaderboardLoading ? (
+                // Skeleton loading state
+                <>
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full bg-secondary/50 animate-pulse">
+                      <div className="col-span-3 flex items-center gap-1">
+                        <div className="w-3 h-3 bg-muted rounded-full" />
+                        <div className="w-4 h-4 bg-muted rounded" />
+                      </div>
+                      <div className="col-span-4">
+                        <div className="h-4 bg-muted rounded w-20" />
+                      </div>
+                      <div className="col-span-3 flex justify-center">
+                        <div className="h-4 bg-muted rounded w-8" />
+                      </div>
+                      <div className="col-span-2 flex justify-end">
+                        <div className="h-4 bg-muted rounded w-10" />
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                tableData.map((row, idx) => (
+                  <div
+                    key={idx}
+                    className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-full cursor-pointer transition-colors hover:bg-secondary/70 ${
+                      row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
+                    }`}
+                    onClick={() => {
+                      handleNavigate(`/view-team?id=${row.id}`);
+                    }}
+                  >
+                    <div className="col-span-3 flex items-center gap-1">
+                      {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
+                      {row.change === "down" && !row.isUser && (
+                        <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />
+                      )}
+                      {row.change === "down" && row.isUser && (
+                        <img src={arrowDownBlack} alt="down" className="w-3 h-3" />
+                      )}
+                      {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
+                      <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+                    </div>
+                    <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
+                    <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
+                    <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
+                      {(row.totalPoints - (row.totalPenaltyPoints || 0)).toLocaleString()}
+                    </span>
                   </div>
-                  <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-                  <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-                  <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                    {(row.totalPoints - (row.totalPenaltyPoints || 0)).toLocaleString()}
-                  </span>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             {/* View all button */}

@@ -100,7 +100,7 @@ const TeamManagement = () => {
   const leagueId = getLeagueId();
   
   // Load squad data from API
-  const { squad, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, nextTour, boostTourId, isLoading, error } = useSquadData(leagueId);
+  const { squad, squadTourData, mainPlayers: apiMainPlayers, benchPlayers: apiBenchPlayers, currentTour, nextTour, boostTourId, isLoading, error } = useSquadData(leagueId);
   
   // Fetch available boosts from API - всегда тянем свежие данные с бэка при заходе на страницу
   const { data: boostsResponse, isLoading: boostsLoading, refetch: refetchBoosts } = useQuery({
@@ -286,8 +286,8 @@ const TeamManagement = () => {
           points: p.points,
           total_points: p.total_points,
           slotIndex: p.slotIndex,
-          isCaptain: squad?.captain_id === p.id,
-          isViceCaptain: squad?.vice_captain_id === p.id,
+          isCaptain: squadTourData?.captain_id === p.id,
+          isViceCaptain: squadTourData?.vice_captain_id === p.id,
           isOnBench: false,
           nextOpponent: opponentData.nextOpponent,
           nextOpponentHome: opponentData.nextOpponentHome,
@@ -357,26 +357,26 @@ const TeamManagement = () => {
         setOriginalState({
           mainPlayerIds: convertedMain.map(p => p.id),
           benchPlayerIds: finalBench.map(p => p.id),
-          captain: squad?.captain_id ?? null,
-          viceCaptain: squad?.vice_captain_id ?? null,
+          captain: squadTourData?.captain_id ?? null,
+          viceCaptain: squadTourData?.vice_captain_id ?? null,
         });
       }
     }
-  }, [apiMainPlayers, apiBenchPlayers, squad?.captain_id, squad?.vice_captain_id, originalState, mainSquadPlayers.length, benchPlayersExt.length]);
+  }, [apiMainPlayers, apiBenchPlayers, squadTourData?.captain_id, squadTourData?.vice_captain_id, originalState, mainSquadPlayers.length, benchPlayersExt.length, squad?.id]);
 
   // Initialize captain/vice-captain from squad data
   useEffect(() => {
-    if (squad && mainSquadPlayers.length > 0) {
+    if (squadTourData && mainSquadPlayers.length > 0) {
       const sortedByPrice = [...mainSquadPlayers].sort((a, b) => (b.price || 0) - (a.price || 0));
       
       // Determine captain - from API or auto-assign most expensive
-      let captainId = squad.captain_id;
+      let captainId = squadTourData.captain_id;
       if (!captainId || !mainSquadPlayers.some(p => p.id === captainId)) {
         captainId = sortedByPrice[0]?.id || null;
       }
       
       // Determine vice-captain - from API or auto-assign second most expensive (must be different from captain)
-      let viceCaptainId = squad.vice_captain_id;
+      let viceCaptainId = squadTourData.vice_captain_id;
       if (!viceCaptainId || !mainSquadPlayers.some(p => p.id === viceCaptainId) || viceCaptainId === captainId) {
         const viceCaptainCandidate = sortedByPrice.find(p => p.id !== captainId);
         viceCaptainId = viceCaptainCandidate?.id || null;
@@ -385,7 +385,7 @@ const TeamManagement = () => {
       setCaptain(captainId);
       setViceCaptain(viceCaptainId);
     }
-  }, [squad, mainSquadPlayers]);
+  }, [squadTourData, mainSquadPlayers]);
 
   // Build request body for API
   const buildRequestBody = (): UpdateSquadPlayersRequest => {

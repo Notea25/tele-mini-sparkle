@@ -24,21 +24,29 @@ const TournamentTable = () => {
   const leagueId = parseInt(localStorage.getItem("selectedLeagueId") || "116", 10);
 
   // Fetch tours to get current tour id
-  const { data: toursData } = useQuery({
+  const { data: toursData, isLoading: toursLoading } = useQuery({
     queryKey: ['tours', leagueId],
     queryFn: async () => {
       const result = await toursApi.getPreviousCurrentNextTour(leagueId);
       return result.success ? result.data : null;
     },
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: 'always',
+    placeholderData: (prev) => prev,
   });
 
   // Fetch my squads to determine which team is the user's
-  const { data: mySquadsData } = useQuery({
+  const { data: mySquadsData, isLoading: squadsLoading } = useQuery({
     queryKey: ['mySquads'],
     queryFn: async () => {
       const result = await squadsApi.getMySquads();
       return result.success ? result.data : null;
     },
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: 'always',
+    placeholderData: (prev) => prev,
   });
 
   // Если есть текущий тур — показываем его.
@@ -60,6 +68,10 @@ const TournamentTable = () => {
       return result.success && Array.isArray(result.data) ? result.data : [];
     },
     enabled: !!targetTourId,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: 'always',
+    placeholderData: (prev) => prev, // Keep previous data while loading new
   });
 
   const allTeams = useMemo(() => {
@@ -163,9 +175,27 @@ const TournamentTable = () => {
           </span>
         </div>
 
-        {/* Loading state */}
-        {isLoading && (
-          <div className="text-center text-muted-foreground py-8">Загрузка...</div>
+        {/* Loading state - show skeleton only when no data yet */}
+        {isLoading && allTeams.length === 0 && (
+          <div className="space-y-2">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+              <div key={i} className="grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl bg-secondary/50 animate-pulse">
+                <div className="col-span-3 flex items-center gap-1">
+                  <div className="w-3 h-3 bg-muted rounded-full" />
+                  <div className="w-4 h-4 bg-muted rounded" />
+                </div>
+                <div className="col-span-4">
+                  <div className="h-4 bg-muted rounded w-20" />
+                </div>
+                <div className="col-span-3 flex justify-center">
+                  <div className="h-4 bg-muted rounded w-8" />
+                </div>
+                <div className="col-span-2 flex justify-end">
+                  <div className="h-4 bg-muted rounded w-10" />
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         {/* Empty state */}
