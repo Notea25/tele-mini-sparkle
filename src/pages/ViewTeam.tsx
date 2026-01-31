@@ -10,9 +10,21 @@ import PlayerCard from "@/components/PlayerCard";
 import { clubLogos } from "@/lib/clubLogos";
 import { useSquadById, EnrichedPlayer } from "@/hooks/useSquadById";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
-import { toursApi, squadsApi, TourInfo } from "@/lib/api";
+import { toursApi, squadsApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
+
+// Map API positions to local format
+const mapPosition = (position: string): string => {
+  const positionMap: Record<string, string> = {
+    "Goalkeeper": "ВР",
+    "Defender": "ЗЩ",
+    "Midfielder": "ПЗ",
+    "Attacker": "НП",
+    "Forward": "НП",
+  };
+  return positionMap[position] || position;
+};
 
 const ViewTeam = () => {
   const [searchParams] = useSearchParams();
@@ -26,6 +38,10 @@ const ViewTeam = () => {
   const [selectedTourNumber, setSelectedTourNumber] = useState<number | null>(null);
   const [viewTourPoints, setViewTourPoints] = useState<number>(0);
   const [allTours, setAllTours] = useState<TourInfo[]>([]);
+  
+  // Historical squad data
+  const [historySnapshots, setHistorySnapshots] = useState<TourHistorySnapshot[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   // Get squad ID from URL params
   const squadIdParam = searchParams.get("id");
@@ -33,11 +49,12 @@ const ViewTeam = () => {
 
   const { squad, mainPlayers, benchPlayers, currentTour, tourPoints, isLoading, error } = useSquadById(squadId);
 
-  // Load tours data when squad is available
+  // Load tours data and history when squad is available
   useEffect(() => {
-    if (!squad) return;
+    if (!squad || !squadId) return;
 
-    const loadTours = async () => {
+    const loadData = async () => {
+      // Load tours
       const toursResponse = await toursApi.getPreviousCurrentNextTour(squad.league_id);
       if (toursResponse.success && toursResponse.data) {
         const tours: TourInfo[] = [];
@@ -52,15 +69,44 @@ const ViewTeam = () => {
           setSelectedTourNumber(toursResponse.data.current_tour.number);
         }
       }
+
+      // Load squad history
+      setIsLoadingHistory(true);
+      const historyResponse = await squadsApi.getHistory(squadId);
+      if (historyResponse.success && historyResponse.data) {
+        setHistorySnapshots(historyResponse.data);
+      }
+      setIsLoadingHistory(false);
     };
 
-    loadTours();
-  }, [squad, selectedTourId]);
+    loadData();
+  }, [squad, squadId, selectedTourId]);
+
+  // Get current tour ID for comparison
+  const currentTourId = useMemo(() => {
+    return allTours.find(t => t.type === 'current')?.id ?? null;
+  }, [allTours]);
+
+  // Check if we're viewing a historical tour (not current)
+  const isViewingHistoricalTour = selectedTourId !== null && selectedTourId !== currentTourId;
+
+  // Get historical snapshot for selected tour
+  const selectedSnapshot = useMemo((): TourHistorySnapshot | null => {
+    if (!isViewingHistoricalTour || !selectedTourId) return null;
+    return historySnapshots.find(s => s.tour_id === selectedTourId) ?? null;
+  }, [isViewingHistoricalTour, selectedTourId, historySnapshots]);
 
   // Update points when selected tour changes
   useEffect(() => {
     if (!selectedTourId || !squadId) return;
 
+    // If we have a snapshot for this tour, use its points directly
+    if (selectedSnapshot) {
+      setViewTourPoints(selectedSnapshot.points);
+      return;
+    }
+
+    // Otherwise load from leaderboard
     const loadTourPoints = async () => {
       const leaderboardResponse = await squadsApi.getLeaderboard(selectedTourId);
       if (leaderboardResponse.success && leaderboardResponse.data) {
@@ -70,7 +116,7 @@ const ViewTeam = () => {
     };
 
     loadTourPoints();
-  }, [selectedTourId, squadId]);
+  }, [selectedTourId, squadId, selectedSnapshot]);
 
   // Navigate to previous tour
   const goToPreviousTour = () => {
@@ -102,9 +148,43 @@ const ViewTeam = () => {
     return currentIndex < allTours.length - 1 && currentIndex !== -1;
   };
 
-  // Convert EnrichedPlayer to PlayerData for FormationFieldManagement
+  // Convert TourHistoryPlayer to EnrichedPlayer format
+  const convertHistoryPlayer = (p: TourHistoryPlayer, slotIndex: number): EnrichedPlayer => ({
+    id: p.id,
+    name: p.name,
+    team_id: p.team_id,
+    team_name: p.team_name,
+    team_logo: p.team_logo || "",
+    position: mapPosition(p.position),
+    price: Math.round((p.market_value / 1000) * 10) / 10,
+    points: p.tour_points,
+    total_points: p.total_points,
+    tour_points: p.tour_points,
+    slotIndex,
+  });
+
+  // Get display players - either from history snapshot or current squad
+  const displayMainPlayers = useMemo((): EnrichedPlayer[] => {
+    if (selectedSnapshot) {
+      return selectedSnapshot.main_players.map((p, i) => convertHistoryPlayer(p, i));
+    }
+    return mainPlayers;
+  }, [selectedSnapshot, mainPlayers]);
+
+  const displayBenchPlayers = useMemo((): EnrichedPlayer[] => {
+    if (selectedSnapshot) {
+      return selectedSnapshot.bench_players.map((p, i) => convertHistoryPlayer(p, i));
+    }
+    return benchPlayers;
+  }, [selectedSnapshot, benchPlayers]);
+
+  // Get captain/vice-captain IDs
+  const displayCaptainId = selectedSnapshot?.captain_id ?? squad?.captain_id ?? null;
+  const displayViceCaptainId = selectedSnapshot?.vice_captain_id ?? squad?.vice_captain_id ?? null;
+
+  // Convert EnrichedPlayer to PlayerData for FormationField
   const mainSquadForField = useMemo((): PlayerData[] => {
-    return mainPlayers.map(p => {
+    return displayMainPlayers.map(p => {
       const opponentData = getNextOpponentData(p.team_name);
       return {
         id: p.id,
@@ -114,18 +194,18 @@ const ViewTeam = () => {
         price: p.price,
         points: p.tour_points ?? p.points ?? 0,
         slotIndex: p.slotIndex,
-        isCaptain: squad?.captain_id === p.id,
-        isViceCaptain: squad?.vice_captain_id === p.id,
+        isCaptain: displayCaptainId === p.id,
+        isViceCaptain: displayViceCaptainId === p.id,
         nextOpponent: opponentData.nextOpponent,
         nextOpponentHome: opponentData.nextOpponentHome,
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
       };
     });
-  }, [mainPlayers, squad]);
+  }, [displayMainPlayers, displayCaptainId, displayViceCaptainId]);
 
   const benchForField = useMemo((): PlayerData[] => {
-    return benchPlayers.map(p => {
+    return displayBenchPlayers.map(p => {
       const opponentData = getNextOpponentData(p.team_name);
       return {
         id: p.id,
@@ -141,11 +221,11 @@ const ViewTeam = () => {
         isInjured: p.isInjured,
       };
     });
-  }, [benchPlayers]);
+  }, [displayBenchPlayers]);
 
   const handlePlayerClick = (player: PlayerData) => {
-    const enrichedPlayer = mainPlayers.find(p => p.id === player.id) || 
-                           benchPlayers.find(p => p.id === player.id);
+    const enrichedPlayer = displayMainPlayers.find(p => p.id === player.id) || 
+                           displayBenchPlayers.find(p => p.id === player.id);
     if (enrichedPlayer) {
       setSelectedPlayer(enrichedPlayer);
       setIsPlayerCardOpen(true);
@@ -277,8 +357,8 @@ const ViewTeam = () => {
             benchPlayers={benchForField}
             showBench={true}
             onPlayerClick={handlePlayerClick}
-            captain={squad.captain_id}
-            viceCaptain={squad.vice_captain_id}
+            captain={displayCaptainId}
+            viceCaptain={displayViceCaptainId}
             showPrice={false}
             showPointsInsteadOfTeam={true}
           />
@@ -293,7 +373,7 @@ const ViewTeam = () => {
 
           {/* Grouped by position */}
           {(["ВР", "ЗЩ", "ПЗ", "НП"] as const).map((position) => {
-            const playersInPosition = mainPlayers.filter(p => p.position === position);
+            const playersInPosition = displayMainPlayers.filter(p => p.position === position);
             if (playersInPosition.length === 0) return null;
 
             return (
@@ -308,8 +388,8 @@ const ViewTeam = () => {
                 </div>
                 <div className="space-y-2">
                   {playersInPosition.map((player) => {
-                    const isCaptain = squad.captain_id === player.id;
-                    const isViceCaptain = squad.vice_captain_id === player.id;
+                    const isCaptain = displayCaptainId === player.id;
+                    const isViceCaptain = displayViceCaptainId === player.id;
 
                     return (
                       <div
@@ -370,14 +450,14 @@ const ViewTeam = () => {
           </div>
           <div className="space-y-2">
             {/* Sort bench: ВР first, then ЗЩ, ПЗ, НП */}
-            {[...benchPlayers]
+            {[...displayBenchPlayers]
               .sort((a, b) => {
                 const order = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
                 return (order[a.position as keyof typeof order] ?? 4) - (order[b.position as keyof typeof order] ?? 4);
               })
               .map((player) => {
-              const isCaptain = squad.captain_id === player.id;
-              const isViceCaptain = squad.vice_captain_id === player.id;
+              const isCaptain = displayCaptainId === player.id;
+              const isViceCaptain = displayViceCaptainId === player.id;
               
               return (
                 <div
