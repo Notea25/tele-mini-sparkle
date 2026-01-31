@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, customLeaguesApi, commercialLeaguesApi, ApiResponse, BoostType } from '@/lib/api';
 
 const BackendTest = () => {
@@ -69,6 +70,16 @@ const BackendTest = () => {
   const [availableBoostTourIdInput, setAvailableBoostTourIdInput] = useState('1');
   const [removeBoostSquadIdInput, setRemoveBoostSquadIdInput] = useState('1');
   const [removeBoostTourIdInput, setRemoveBoostTourIdInput] = useState('1');
+
+  // Collapsible section states
+  const [isLeaguesOpen, setIsLeaguesOpen] = useState(true);
+  const [isTeamsOpen, setIsTeamsOpen] = useState(false);
+  const [isUsersOpen, setIsUsersOpen] = useState(false);
+  const [isSquadsOpen, setIsSquadsOpen] = useState(false);
+  const [isToursOpen, setIsToursOpen] = useState(false);
+  const [isPlayersOpen, setIsPlayersOpen] = useState(false);
+  const [isBoostsOpen, setIsBoostsOpen] = useState(false);
+  const [isCommercialLeaguesOpen, setIsCommercialLeaguesOpen] = useState(false);
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -415,6 +426,25 @@ const BackendTest = () => {
     }
   };
 
+  // Section component for collapsible groups
+  const Section = ({ title, isOpen, onToggle, children }: { 
+    title: string; 
+    isOpen: boolean; 
+    onToggle: () => void; 
+    children: React.ReactNode; 
+  }) => (
+    <div className="mb-4 border border-border rounded-lg overflow-hidden">
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center justify-between p-4 bg-muted hover:bg-muted/80 transition-colors"
+      >
+        <h2 className="text-xl font-bold text-foreground">{title}</h2>
+        {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+      </button>
+      {isOpen && <div className="p-4 space-y-4">{children}</div>}
+    </div>
+  );
+
   const renderResponse = (response: ApiResponse<unknown> | null, title: string) => {
     if (!response) return null;
     
@@ -476,100 +506,132 @@ const BackendTest = () => {
 
   return (
     <div className="min-h-screen bg-background p-4">
-      <h1 className="text-2xl font-bold text-foreground mb-4">Backend API Test</h1>
+      <h1 className="text-3xl font-bold text-foreground mb-6">Backend API Tester</h1>
+      <p className="text-muted-foreground mb-6">Организовано по категориям API</p>
       
-      <div className="flex gap-4 flex-wrap">
-        <Button onClick={testLeagueApi} disabled={loadingLeague}>
-          {loadingLeague ? 'Загрузка...' : 'Тест: /api/leagues/main_page_id_116'}
+      {/* LEAGUES SECTION */}
+      <Section title="🏆 Leagues" isOpen={isLeaguesOpen} onToggle={() => setIsLeaguesOpen(!isLeaguesOpen)}>
+        <Button onClick={testLeagueApi} disabled={loadingLeague} className="w-full">
+          {loadingLeague ? 'Загрузка...' : 'GET /api/leagues/main_page_id_116'}
         </Button>
+        {renderResponse(leagueResponse, 'Ответ: Leagues')}
+      </Section>
 
-        <Button onClick={testTeamsApi} disabled={loadingTeams} variant="secondary">
-          {loadingTeams ? 'Загрузка...' : 'Тест: /api/teams/league_116'}
+      {/* TEAMS SECTION */}
+      <Section title="⚽ Teams" isOpen={isTeamsOpen} onToggle={() => setIsTeamsOpen(!isTeamsOpen)}>
+        <Button onClick={testTeamsApi} disabled={loadingTeams} className="w-full">
+          {loadingTeams ? 'Загрузка...' : 'GET /api/teams/league_116'}
         </Button>
+        {renderResponse(teamsResponse, 'Ответ: Teams')}
+      </Section>
 
-        <Button onClick={testUsersApi} disabled={loadingUsers} variant="outline">
-          {loadingUsers ? 'Загрузка...' : 'Тест: GET /api/users/protected'}
+      {/* USERS SECTION */}
+      <Section title="👤 Users" isOpen={isUsersOpen} onToggle={() => setIsUsersOpen(!isUsersOpen)}>
+        <Button onClick={testUsersApi} disabled={loadingUsers} className="w-full">
+          {loadingUsers ? 'Загрузка...' : 'GET /api/users/protected'}
         </Button>
+        {renderResponse(usersResponse, 'Ответ: Users Protected')}
+      </Section>
 
-        <Button onClick={testSquadsCreateApi} disabled={loadingSquadsCreate} variant="destructive">
-          {loadingSquadsCreate ? 'Загрузка...' : 'Тест: POST /api/squads/create'}
-        </Button>
-
-        <Button onClick={testMySquadsApi} disabled={loadingMySquads} variant="outline">
-          {loadingMySquads ? 'Загрузка...' : 'Тест: GET /api/squads/my_squads'}
-        </Button>
-
-        <div className="flex gap-2 items-center">
-          <input
-            type="number"
-            value={getSquadIdInput}
-            onChange={(e) => setGetSquadIdInput(e.target.value)}
-            className="w-20 px-2 py-2 bg-muted text-foreground rounded border border-border"
-            placeholder="Squad ID"
-          />
-          <Button onClick={testGetSquadByIdApi} disabled={loadingGetSquadById} variant="default">
-            {loadingGetSquadById ? 'Загрузка...' : `Тест: GET /api/squads/get_squad_${getSquadIdInput}`}
+      {/* SQUADS SECTION */}
+      <Section title="🎯 Squads" isOpen={isSquadsOpen} onToggle={() => setIsSquadsOpen(!isSquadsOpen)}>
+        <div className="space-y-4">
+          <Button onClick={testSquadsCreateApi} disabled={loadingSquadsCreate} variant="destructive" className="w-full">
+            {loadingSquadsCreate ? 'Загрузка...' : 'POST /api/squads/create'}
           </Button>
-          <Button onClick={testGetSquadByIdPublicApi} disabled={loadingGetSquadByIdPublic} variant="secondary">
-            {loadingGetSquadByIdPublic ? 'Загрузка...' : `Тест: GET /api/squads/get_squad_by_id/${getSquadIdInput}`}
+          
+          <Button onClick={testMySquadsApi} disabled={loadingMySquads} className="w-full">
+            {loadingMySquads ? 'Загрузка...' : 'GET /api/squads/my_squads'}
           </Button>
+
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={getSquadIdInput}
+              onChange={(e) => setGetSquadIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Squad ID"
+            />
+            <Button onClick={testGetSquadByIdApi} disabled={loadingGetSquadById} className="flex-1">
+              {loadingGetSquadById ? 'Загрузка...' : `GET /api/squads/get_squad_${getSquadIdInput}`}
+            </Button>
+          </div>
+
+          <Button onClick={testGetSquadByIdPublicApi} disabled={loadingGetSquadByIdPublic} className="w-full">
+            {loadingGetSquadByIdPublic ? 'Загрузка...' : `GET /api/squads/get_squad_by_id/${getSquadIdInput}`}
+          </Button>
+
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={historySquadIdInput}
+              onChange={(e) => setHistorySquadIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Squad ID"
+            />
+            <Button onClick={testSquadHistoryApi} disabled={loadingSquadHistory} className="flex-1">
+              {loadingSquadHistory ? 'Загрузка...' : `GET /api/squads/${historySquadIdInput}/tours`}
+            </Button>
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={tourIdInput}
+              onChange={(e) => setTourIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Tour ID"
+            />
+            <Button onClick={testLeaderboardApi} disabled={loadingLeaderboard} className="flex-1">
+              {loadingLeaderboard ? 'Загрузка...' : `GET /api/squads/leaderboard/${tourIdInput}`}
+            </Button>
+          </div>
         </div>
+        {renderResponse(squadsCreateResponse, 'Ответ: Create Squad')}
+        {renderResponse(mySquadsResponse, 'Ответ: My Squads')}
+        {renderResponse(getSquadByIdResponse, 'Ответ: Get Squad By ID')}
+        {renderResponse(getSquadByIdPublicResponse, 'Ответ: Get Squad By ID (public)')}
+        {renderResponse(squadHistoryResponse, 'Ответ: Squad History')}
+        {renderResponse(leaderboardResponse, 'Ответ: Leaderboard')}
+      </Section>
 
-        <div className="flex gap-2 items-center">
-          <input
-            type="number"
-            value={historySquadIdInput}
-            onChange={(e) => setHistorySquadIdInput(e.target.value)}
-            className="w-20 px-2 py-2 bg-muted text-foreground rounded border border-border"
-            placeholder="Squad ID"
-          />
-          <Button onClick={testSquadHistoryApi} disabled={loadingSquadHistory} variant="default">
-            {loadingSquadHistory ? 'Загрузка...' : `Тест: GET /api/squads/${historySquadIdInput}/history`}
-          </Button>
-        </div>
-
-        <Button onClick={testDeadlineApi} disabled={loadingDeadline} variant="secondary">
-          {loadingDeadline ? 'Загрузка...' : 'Тест: GET /api/tours/get_deadline_for_next_tour/116'}
+      {/* TOURS SECTION */}
+      <Section title="📅 Tours" isOpen={isToursOpen} onToggle={() => setIsToursOpen(!isToursOpen)}>
+        <Button onClick={testDeadlineApi} disabled={loadingDeadline} className="w-full">
+          {loadingDeadline ? 'Загрузка...' : 'GET /api/tours/get_deadline_for_next_tour/116'}
         </Button>
-
-        <Button onClick={testToursApi} disabled={loadingTours} variant="secondary">
-          {loadingTours ? 'Загрузка...' : 'Тест: GET /api/tours/get_previous_current_next_tour/116'}
+        <Button onClick={testToursApi} disabled={loadingTours} className="w-full">
+          {loadingTours ? 'Загрузка...' : 'GET /api/tours/get_previous_current_next_tour/116'}
         </Button>
+        {renderResponse(deadlineResponse, 'Ответ: Deadline')}
+        {renderResponse(toursResponse, 'Ответ: Tours (prev/current/next)')}
+      </Section>
 
-        <Button onClick={testPlayersApi} disabled={loadingPlayers} variant="outline">
-          {loadingPlayers ? 'Загрузка...' : 'Тест: GET /api/players/league/116/players_with_points'}
+      {/* PLAYERS SECTION */}
+      <Section title="👥 Players" isOpen={isPlayersOpen} onToggle={() => setIsPlayersOpen(!isPlayersOpen)}>
+        <Button onClick={testPlayersApi} disabled={loadingPlayers} className="w-full">
+          {loadingPlayers ? 'Загрузка...' : 'GET /api/players/league/116/players_with_points'}
         </Button>
-
         <div className="flex gap-2 items-center">
           <input
             type="number"
             value={playerIdInput}
             onChange={(e) => setPlayerIdInput(e.target.value)}
-            className="w-20 px-2 py-2 bg-muted text-foreground rounded border border-border"
-            placeholder="ID"
+            className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+            placeholder="Player ID"
           />
-          <Button onClick={testPlayerFullInfoApi} disabled={loadingPlayerFullInfo} variant="default">
-            {loadingPlayerFullInfo ? 'Загрузка...' : `Тест: GET /api/players/${playerIdInput}/full-info`}
+          <Button onClick={testPlayerFullInfoApi} disabled={loadingPlayerFullInfo} className="flex-1">
+            {loadingPlayerFullInfo ? 'Загрузка...' : `GET /api/players/${playerIdInput}/full-info`}
           </Button>
         </div>
+        {renderResponse(playersResponse, 'Ответ: Players')}
+        {renderResponse(playerFullInfoResponse, 'Ответ: Player Full Info')}
+      </Section>
 
-        <div className="flex gap-2 items-center">
-          <input
-            type="number"
-            value={tourIdInput}
-            onChange={(e) => setTourIdInput(e.target.value)}
-            className="w-20 px-2 py-2 bg-muted text-foreground rounded border border-border"
-            placeholder="Tour ID"
-          />
-          <Button onClick={testLeaderboardApi} disabled={loadingLeaderboard} variant="default">
-            {loadingLeaderboard ? 'Загрузка...' : `Тест: GET /api/squads/leaderboard/${tourIdInput}`}
-          </Button>
-        </div>
-      </div>
-
-      {/* Boosts Available Test Section */}
-      <div className="mt-6 p-4 bg-muted rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">GET /api/boosts/available/{'{squad_id}/{tour_id}'}</h2>
+      {/* BOOSTS SECTION */}
+      <Section title="⚡ Boosts" isOpen={isBoostsOpen} onToggle={() => setIsBoostsOpen(!isBoostsOpen)}>
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold text-muted-foreground">GET /api/boosts/available</h3>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label className="text-sm text-muted-foreground">Squad ID</label>
