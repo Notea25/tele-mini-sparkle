@@ -44,20 +44,16 @@ const League = () => {
   const { data: mySquadsResponse } = useQuery({
     queryKey: ['mySquads'],
     queryFn: () => squadsApi.getMySquads(),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
   
   // Fetch tours info from API (or cache)
   const { data: toursResponse } = useQuery({
     queryKey: ['tours', leagueId],
     queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
  
   // Find the squad for current league (with safety check for API errors)
@@ -86,11 +82,8 @@ const League = () => {
     queryKey: ['leaderboard', currentTourId],
     queryFn: () => currentTourId ? squadsApi.getLeaderboard(currentTourId) : Promise.resolve({ success: false, data: [] }),
     enabled: !!currentTourId,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
-    placeholderData: (prev) => prev,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   // Get fav_team_id from current squad
@@ -101,10 +94,8 @@ const League = () => {
     queryKey: ['clubLeague', favTeamId],
     queryFn: () => favTeamId ? customLeaguesApi.getClubByTeam(favTeamId) : Promise.resolve({ success: false, data: undefined }),
     enabled: !!favTeamId,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
   
   // Fetch club league leaderboard by fav_team_id
@@ -114,30 +105,24 @@ const League = () => {
       ? customLeaguesApi.getClubLeaderboard(currentTourId, favTeamId) 
       : Promise.resolve({ success: false, data: undefined }),
     enabled: !!favTeamId && !!currentTourId,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   // Fetch commercial leagues from API
   const { data: commercialLeaguesResponse, isLoading: commercialLeaguesLoading } = useQuery({
     queryKey: ['commercialLeagues', leagueId],
     queryFn: () => commercialLeaguesApi.getByLeague(leagueId),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   // Fetch user's leagues from API
   const { data: mySquadLeaguesResponse, isLoading: myLeaguesLoading } = useQuery({
     queryKey: ['mySquadLeagues'],
     queryFn: () => customLeaguesApi.getMySquadLeagues(),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   const clubLeaderboardData = useMemo(() => {

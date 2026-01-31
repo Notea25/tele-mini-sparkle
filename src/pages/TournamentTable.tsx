@@ -24,29 +24,25 @@ const TournamentTable = () => {
   const leagueId = parseInt(localStorage.getItem("selectedLeagueId") || "116", 10);
 
   // Fetch tours to get current tour id
-  const { data: toursData, isLoading: toursLoading } = useQuery({
+  const { data: toursData } = useQuery({
     queryKey: ['tours', leagueId],
     queryFn: async () => {
       const result = await toursApi.getPreviousCurrentNextTour(leagueId);
       return result.success ? result.data : null;
     },
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: 'always',
-    placeholderData: (prev) => prev,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 
   // Fetch my squads to determine which team is the user's
-  const { data: mySquadsData, isLoading: squadsLoading } = useQuery({
+  const { data: mySquadsData } = useQuery({
     queryKey: ['mySquads'],
     queryFn: async () => {
       const result = await squadsApi.getMySquads();
       return result.success ? result.data : null;
     },
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: 'always',
-    placeholderData: (prev) => prev,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   // Если есть текущий тур — показываем его.
@@ -68,10 +64,8 @@ const TournamentTable = () => {
       return result.success && Array.isArray(result.data) ? result.data : [];
     },
     enabled: !!targetTourId,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: 'always',
-    placeholderData: (prev) => prev, // Keep previous data while loading new
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   const allTeams = useMemo(() => {
