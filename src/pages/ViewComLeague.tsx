@@ -273,7 +273,7 @@ const ViewComLeague = () => {
                 <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
                 <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
                 <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                  {row.totalPoints.toLocaleString()}
+                  {(row.totalPoints - (row.penaltyPoints || 0)).toLocaleString()}
                 </span>
               </div>
             ))
