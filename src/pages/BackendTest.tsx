@@ -707,6 +707,73 @@ const BackendTest = () => {
         {renderResponse(commercialLeagueJoinResponse, 'Ответ: Commercial League Join')}
       </Section>
 
+      {/* MATCHES SECTION */}
+      <Section title="⚽ Matches" isOpen={false} onToggle={() => {}}>
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">GET /api/matches/all</p>
+          <p className="text-sm text-muted-foreground">GET /api/matches/id_{{id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/matches/league_{{league_id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/matches/team/{{team_id}}</p>
+        </div>
+      </Section>
+
+      {/* SQUAD TOURS SECTION */}
+      <Section title="🎖️ Squad Tours" isOpen={false} onToggle={() => {}}>
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">GET /api/squad_tours/squad/{{squad_id}}/tour/{{tour_id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/squad_tours/squad/{{squad_id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/squad_tours/tour/{{tour_id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/squad_tours/all</p>
+        </div>
+      </Section>
+
+      {/* USER LEAGUES SECTION */}
+      <Section title="👥 User Leagues" isOpen={false} onToggle={() => {}}>
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">POST /api/user_leagues/create</p>
+          <p className="text-sm text-muted-foreground">GET /api/user_leagues/list</p>
+          <p className="text-sm text-muted-foreground">GET /api/user_leagues/{{user_league_id}}</p>
+          <p className="text-sm text-muted-foreground">POST /api/user_leagues/{{user_league_id}}/squads/{{squad_id}}/join</p>
+          <p className="text-sm text-muted-foreground">DELETE /api/user_leagues/{{user_league_id}}/squads/{{squad_id}}/leave</p>
+          <p className="text-sm text-muted-foreground">DELETE /api/user_leagues/{{user_league_id}}/delete</p>
+          <p className="text-sm text-muted-foreground">GET /api/user_leagues/list/my_squad_leagues</p>
+          <p className="text-sm text-muted-foreground">GET /api/user_leagues/{{user_league_id}}/leaderboard/{{tour_id}}</p>
+        </div>
+      </Section>
+
+      {/* CLUB LEAGUES SECTION */}
+      <Section title="⚽ Club Leagues" isOpen={false} onToggle={() => {}}>
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">GET /api/club_leagues/?league_id={{league_id}}&team_id={{team_id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/club_leagues/{{club_league_id}}</p>
+          <p className="text-sm text-muted-foreground">POST /api/club_leagues/{{club_league_id}}/squads/{{squad_id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/club_leagues/{{club_league_id}}/leaderboard/{{tour_id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/club_leagues/by-league/{{league_id}}</p>
+          <p className="text-sm text-muted-foreground">GET /api/club_leagues/by-team/{{team_id}}/leaderboard/{{tour_id}}</p>
+          <p className="text-sm text-muted-foreground">POST /api/club_leagues/add-squad-by-team/{{team_id}}/{{squad_id}}</p>
+        </div>
+      </Section>
+
+      {/* PLAYER MATCH STATS SECTION */}
+      <Section title="📊 Player Match Stats" isOpen={false} onToggle={() => {}}>
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">GET /api/player_match_stats/player_id_{{player_id}}</p>
+        </div>
+      </Section>
+
+      {/* UTILS SECTION */}
+      <Section title="🛠️ Utils" isOpen={false} onToggle={() => {}}>
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">POST /api/utils/parse_tours</p>
+          <p className="text-sm text-muted-foreground">POST /api/utils/parse_teams</p>
+          <p className="text-sm text-muted-foreground">POST /api/utils/parse_players</p>
+          <p className="text-sm text-muted-foreground">POST /api/utils/parse_matches</p>
+          <p className="text-sm text-muted-foreground">POST /api/utils/parse_player_match_stats</p>
+          <p className="text-sm text-muted-foreground">POST /api/utils/finalize_tour</p>
+          <p className="text-sm text-muted-foreground">GET /api/utils/health</p>
+        </div>
+      </Section>
+
       {/* Home Button */}
       <div className="mt-8">
         <button
