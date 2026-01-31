@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { hasCreatedTeam } from "@/lib/onboardingUtils";
 import { leaguesApi, customLeaguesApi, squadsApi } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePrefetchLeagueData } from "@/hooks/usePrefetchLeagueData";
 import leagueLogo from "@/assets/belarus-league-logo.png";
 import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
@@ -49,6 +50,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
+  const { prefetchLeagueData } = usePrefetchLeagueData();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState("Сначала ТОП-лиги");
   const [showLeagueInvite, setShowLeagueInvite] = useState(false);
@@ -121,7 +123,7 @@ const Index = () => {
     setHasTeam(hasCreatedTeam());
   }, []);
 
-  // Fetch Belarus league data from API
+  // Fetch Belarus league data from API and prefetch league page data
   useEffect(() => {
     const fetchLeagueData = async () => {
       setIsLoadingLeague(true);
@@ -137,7 +139,10 @@ const Index = () => {
       }
     };
     fetchLeagueData();
-  }, []);
+    
+    // Prefetch league data in background for instant navigation
+    prefetchLeagueData();
+  }, [prefetchLeagueData]);
 
   // Check for league invite
   useEffect(() => {

@@ -11,6 +11,7 @@ import InfiniteClubCarousel from "@/components/InfiniteClubCarousel";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { squadsApi, Team } from "@/lib/api";
 import { useTeams } from "@/hooks/useTeams";
+import { usePrefetchLeagueData } from "@/hooks/usePrefetchLeagueData";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg-2.webp";
@@ -124,6 +125,12 @@ const CreateTeam = () => {
   const leagueId = localStorage.getItem('fantasySelectedLeagueId');
   const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
   const [isCreating, setIsCreating] = useState(false);
+  const { prefetchLeagueData } = usePrefetchLeagueData();
+
+  // Prefetch league data in background for instant navigation after team creation
+  useEffect(() => {
+    prefetchLeagueData();
+  }, [prefetchLeagueData]);
 
   const scrollToButton = () => {
     setTimeout(() => {
