@@ -104,7 +104,8 @@ const ViewComLeague = () => {
       position: entry.place,
       change: "same" as const,
       name: entry.squad_name,
-      tourPoints: entry.tour_points,
+      // Display tour points with penalty subtracted
+      tourPoints: entry.tour_points - (entry.penalty_points || 0),
       totalPoints: entry.total_points,
       penaltyPoints: entry.penalty_points || 0,
       isUser: entry.squad_id === userSquadId,

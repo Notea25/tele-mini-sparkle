@@ -322,7 +322,8 @@ const League = () => {
       id: entry.squad_id,
       position: entry.place,
       name: entry.squad_name,
-      tourPoints: entry.tour_points,
+      // Display tour points with penalty subtracted
+      tourPoints: entry.tour_points - (entry.penalty_points || 0),
       totalPoints: entry.total_points,
       penaltyPoints: entry.penalty_points || 0,
       isUser: entry.squad_id === mySquadId,
@@ -336,7 +337,8 @@ const League = () => {
         id: userEntry.squad_id,
         position: userEntry.place,
         name: userEntry.squad_name,
-        tourPoints: userEntry.tour_points,
+        // Display tour points with penalty subtracted
+        tourPoints: userEntry.tour_points - (userEntry.penalty_points || 0),
         totalPoints: userEntry.total_points,
         penaltyPoints: userEntry.penalty_points || 0,
         isUser: true,
@@ -355,18 +357,22 @@ const League = () => {
       return { averagePoints: 0, myPoints: 0, bestPoints: 0, bestSquadId: undefined };
     }
     
-    // Calculate average points
-    const totalPoints = leaderboard.reduce((sum: number, entry: LeaderboardEntry) => sum + entry.tour_points, 0);
+    // Calculate average points (with penalty subtracted)
+    const totalPoints = leaderboard.reduce((sum: number, entry: LeaderboardEntry) => 
+      sum + (entry.tour_points - (entry.penalty_points || 0)), 0);
     const averagePoints = Math.round(totalPoints / leaderboard.length);
     
-    // Find user's points
+    // Find user's points (with penalty subtracted)
     const userEntry = leaderboard.find((entry: LeaderboardEntry) => entry.squad_id === mySquadId);
-    const myPoints = userEntry?.tour_points ?? 0;
+    const myPoints = userEntry ? (userEntry.tour_points - (userEntry.penalty_points || 0)) : 0;
     
-    // Find best result (max tour_points) and its squad_id
-    const bestEntry = leaderboard.reduce((best: LeaderboardEntry | null, entry: LeaderboardEntry) => 
-      !best || entry.tour_points > best.tour_points ? entry : best, null);
-    const bestPoints = bestEntry?.tour_points ?? 0;
+    // Find best result (max tour_points with penalty subtracted) and its squad_id
+    const bestEntry = leaderboard.reduce((best: LeaderboardEntry | null, entry: LeaderboardEntry) => {
+      const entryPoints = entry.tour_points - (entry.penalty_points || 0);
+      const bestPoints = best ? (best.tour_points - (best.penalty_points || 0)) : 0;
+      return !best || entryPoints > bestPoints ? entry : best;
+    }, null);
+    const bestPoints = bestEntry ? (bestEntry.tour_points - (bestEntry.penalty_points || 0)) : 0;
     const bestSquadId = bestEntry?.squad_id;
     
     return { averagePoints, myPoints, bestPoints, bestSquadId };
