@@ -727,3 +727,58 @@ export const commercialLeaguesApi = {
   getLeaderboard: (commercialLeagueId: number, tourId: number) =>
     apiRequest<CommercialLeagueLeaderboardEntry[]>(`/api/commercial_leagues/${commercialLeagueId}/leaderboard/${tourId}`),
 };
+
+// =============================================================================
+// Squad Tours API — новая архитектура для получения данных сквада по туру
+// =============================================================================
+
+// Типы для Squad Tours API
+export interface SquadTourPlayer {
+  id: number;
+  name: string;
+  team_id: number;
+  team_name: string;
+  team_logo: string;
+  position: string;
+  market_value: number;
+  photo: string;
+  points: number;
+  total_points: number;
+  tour_points: number;
+}
+
+export interface SquadTourResponse {
+  id: number;
+  squad_id: number;
+  tour_id: number;
+  tour_number: number;
+  budget: number;
+  replacements: number;
+  captain_id: number | null;
+  vice_captain_id: number | null;
+  main_players: SquadTourPlayer[];
+  bench_players: SquadTourPlayer[];
+  points: number;
+  penalty_points: number;
+  used_boost: string | null;
+  is_finalized: boolean;
+}
+
+// Методы для работы со Squad Tours
+export const squadToursApi = {
+  // GET /api/squad_tours/squad/{squad_id}/tour/{tour_id} - получить данные сквада за конкретный тур
+  getBySquadAndTour: (squadId: number, tourId: number) =>
+    apiRequest<SquadTourResponse>(`/api/squad_tours/squad/${squadId}/tour/${tourId}`),
+  
+  // GET /api/squad_tours/squad/{squad_id} - получить все туры сквада
+  getAllBySquad: (squadId: number) =>
+    apiRequest<SquadTourResponse[]>(`/api/squad_tours/squad/${squadId}`),
+  
+  // GET /api/squad_tours/tour/{tour_id} - получить все сквады для тура
+  getAllByTour: (tourId: number) =>
+    apiRequest<SquadTourResponse[]>(`/api/squad_tours/tour/${tourId}`),
+  
+  // GET /api/squad_tours/all - получить все записи
+  getAll: () =>
+    apiRequest<SquadTourResponse[]>(`/api/squad_tours/all`),
+};
