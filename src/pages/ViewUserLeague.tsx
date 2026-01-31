@@ -105,7 +105,7 @@ const ViewUserLeague = () => {
         // Backend already returns net tour points (tour_earned - tour_penalty)
         tourPoints: entry.tour_points,
         totalPoints: entry.total_points,
-        totalPenaltyPoints: entry.total_penalty_points || 0,
+        penaltyPoints: entry.total_penalty_points || 0,
         isUser: entry.squad_id === userSquadId,
       }));
     }
@@ -127,7 +127,6 @@ const ViewUserLeague = () => {
         // Backend already returns net tour points (tour_earned - tour_penalty)
         tourPoints: entry.tour_points ?? 0,
         totalPoints: entry.total_points ?? 0,
-        totalPenaltyPoints: entry.total_penalty_points || 0,
         penaltyPoints: entry.penalty_points || 0,
         isUser: entry.squad_id === userSquadId,
       }));
@@ -239,7 +238,7 @@ const ViewUserLeague = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SportHeader />
+      <SportHeader backTo="/league" />
       
       <main className="flex-1 px-4 pb-6">
         {/* League Title with Owner Badge */}
@@ -294,7 +293,7 @@ const ViewUserLeague = () => {
                 <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
                 <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
                 <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                  {(row.totalPoints - (row.totalPenaltyPoints || 0)).toLocaleString()}
+                  {(row.totalPoints - (row.penaltyPoints || 0)).toLocaleString()}
                 </span>
               </div>
             ))
