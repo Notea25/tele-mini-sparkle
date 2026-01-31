@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 
 import { useNavigate, useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { PointsColumnHeader } from "@/components/PointsColumnHeader";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { toast } from "sonner";
@@ -53,6 +54,7 @@ const ITEMS_PER_PAGE = 8;
 const TeamBuilder = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
   const playerListRef = useRef<HTMLDivElement>(null);
   const listViewPlayerListRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -1523,6 +1525,11 @@ const TeamBuilder = () => {
                     localStorage.setItem("fantasyTeamViceCaptain", JSON.stringify(viceCaptain));
                     initialPlayersRef.current = JSON.stringify(selectedPlayers);
                     setShowSaveConfirmation(false);
+                    
+                    // Invalidate cache to ensure fresh data on next pages
+                    await queryClient.invalidateQueries({ queryKey: ['my-squads'] });
+                    await queryClient.invalidateQueries({ queryKey: ['players', leagueIdNum] });
+                    await queryClient.invalidateQueries({ queryKey: ['tours', leagueIdNum] });
                     
                     // Mark that team was just created to handle back button properly
                     sessionStorage.setItem("fantasyTeamJustCreated", "true");
