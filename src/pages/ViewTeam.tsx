@@ -76,10 +76,14 @@ const ViewTeam = () => {
           tours.push(toursResponse.data.previous_tour);
         }
         
-        // Add current tour only if deadline passed AND user has history
+        // Add current tour if deadline passed AND (tour ended OR has history)
         if (toursResponse.data.current_tour) {
           const currentDeadline = new Date(toursResponse.data.current_tour.deadline);
-          if (currentDeadline <= now && historyTourIds.has(toursResponse.data.current_tour.id)) {
+          const currentEndDate = new Date(toursResponse.data.current_tour.end_date);
+          const hasHistory = historyTourIds.has(toursResponse.data.current_tour.id);
+          
+          // Show tour if deadline passed and either: tour ended OR we have snapshot data
+          if (currentDeadline <= now && (currentEndDate <= now || hasHistory)) {
             tours.push(toursResponse.data.current_tour);
           }
         }

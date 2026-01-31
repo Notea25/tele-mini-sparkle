@@ -68,8 +68,8 @@ const TournamentTable = () => {
       id: entry.squad_id,
       position: entry.place,
       name: entry.squad_name,
-      // Display tour points with penalty subtracted
-      tourPoints: entry.tour_points - (entry.penalty_points || 0),
+      // Backend already returns net tour points (tour_earned - tour_penalty)
+      tourPoints: entry.tour_points,
       totalPoints: entry.total_points,
       totalPenaltyPoints: entry.total_penalty_points || 0,
       isUser: entry.squad_id === mySquadId,
