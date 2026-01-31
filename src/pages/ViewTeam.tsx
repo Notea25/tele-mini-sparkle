@@ -49,29 +49,40 @@ const ViewTeam = () => {
 
   const { squad, mainPlayers, benchPlayers, currentTour, tourPoints, isLoading, error } = useSquadById(squadId);
 
-  // Load tours data and history when squad is available
+  // Load squad history first, then filter tours based on history
   useEffect(() => {
     if (!squad || !squadId) return;
 
     const loadData = async () => {
+      // Load squad history first
+      setIsLoadingHistory(true);
+      const historyResponse = await squadsApi.getHistory(squadId);
+      const snapshots = historyResponse.success && historyResponse.data ? historyResponse.data : [];
+      setHistorySnapshots(snapshots);
+      setIsLoadingHistory(false);
+
+      // Get tour IDs where user has history
+      const historyTourIds = new Set(snapshots.map(s => s.tour_id));
+
       // Load tours
       const toursResponse = await toursApi.getPreviousCurrentNextTour(squad.league_id);
       if (toursResponse.success && toursResponse.data) {
         const now = new Date();
         const tours: TourInfo[] = [];
         
-        // Add previous tour (always visible - deadline has passed)
-        if (toursResponse.data.previous_tour) tours.push(toursResponse.data.previous_tour);
+        // Add previous tour only if user has history for it
+        if (toursResponse.data.previous_tour && historyTourIds.has(toursResponse.data.previous_tour.id)) {
+          tours.push(toursResponse.data.previous_tour);
+        }
         
-        // Add current tour only if its deadline has passed
+        // Add current tour only if deadline passed AND user has history
         if (toursResponse.data.current_tour) {
           const currentDeadline = new Date(toursResponse.data.current_tour.deadline);
-          if (currentDeadline <= now) {
+          if (currentDeadline <= now && historyTourIds.has(toursResponse.data.current_tour.id)) {
             tours.push(toursResponse.data.current_tour);
           }
         }
         
-        // Never show next tour in history (deadline definitely hasn't passed)
         setAllTours(tours);
 
         // Set initial selected tour to the most recent available
@@ -81,14 +92,6 @@ const ViewTeam = () => {
           setSelectedTourNumber(latestTour.number);
         }
       }
-
-      // Load squad history
-      setIsLoadingHistory(true);
-      const historyResponse = await squadsApi.getHistory(squadId);
-      if (historyResponse.success && historyResponse.data) {
-        setHistorySnapshots(historyResponse.data);
-      }
-      setIsLoadingHistory(false);
     };
 
     loadData();
