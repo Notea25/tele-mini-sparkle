@@ -240,8 +240,11 @@ const ViewTeam = () => {
     return pos;
   };
 
-  // Display points - use viewTourPoints if we have selected tour, otherwise tourPoints from hook
-  const displayPoints = selectedTourId ? viewTourPoints : tourPoints;
+  // Display points - use snapshot data for historical tours, otherwise current data
+  const displayPoints = selectedSnapshot 
+    ? selectedSnapshot.points - selectedSnapshot.penalty_points 
+    : (selectedTourId ? viewTourPoints : tourPoints) - (squad?.penalty_points ?? 0);
+  const displayPenaltyPoints = selectedSnapshot?.penalty_points ?? squad?.penalty_points ?? 0;
   const displayTourNumber = selectedTourNumber || currentTour;
 
   if (!squadId) {
@@ -315,11 +318,16 @@ const ViewTeam = () => {
       </div>
 
       {/* Points Block */}
-      <div className="px-4 mt-3 flex items-center justify-center gap-3">
+      <div className="px-4 mt-3 flex flex-col items-center gap-1">
         <div className="bg-primary rounded-xl px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
           <span className="text-2xl font-bold text-primary-foreground">{displayPoints}</span>
           <span className="text-primary-foreground/80 text-sm">очков</span>
         </div>
+        {displayPenaltyPoints > 0 && (
+          <span className="text-xs text-red-500">
+            (-{displayPenaltyPoints} штраф за трансферы)
+          </span>
+        )}
       </div>
 
       {/* Tabs */}
