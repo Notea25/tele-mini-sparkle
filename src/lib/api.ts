@@ -227,8 +227,8 @@ export interface SquadTourData {
   replacements: number;
   captain_id: number | null;
   vice_captain_id: number | null;
-  main_players: SquadPlayer[];
-  bench_players: SquadPlayer[];
+  main_players?: SquadPlayer[];
+  bench_players?: SquadPlayer[];
   points: number;
   penalty_points: number;
   used_boost: string | null;
@@ -326,8 +326,8 @@ export interface TourHistorySnapshot {
   used_boost: string | null;
   captain_id: number | null;
   vice_captain_id: number | null;
-  main_players: TourHistoryPlayer[];
-  bench_players: TourHistoryPlayer[];
+  main_players?: TourHistoryPlayer[];
+  bench_players?: TourHistoryPlayer[];
   is_finalized: boolean;
 }
 
