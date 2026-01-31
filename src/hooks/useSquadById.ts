@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { squadsApi, playersApi, toursApi, UserSquad, Player, ToursResponse } from "@/lib/api";
+import { squadsApi, playersApi, toursApi, Squad, SquadTourData, Player, ToursResponse } from "@/lib/api";
 
 export interface EnrichedPlayer {
   id: number;
@@ -18,7 +18,8 @@ export interface EnrichedPlayer {
 }
 
 interface UseSquadByIdResult {
-  squad: UserSquad | null;
+  squad: Squad | null;
+  squadTourData: SquadTourData | null;
   mainPlayers: EnrichedPlayer[];
   benchPlayers: EnrichedPlayer[];
   currentTour: number | null;
@@ -40,7 +41,8 @@ const mapPosition = (position: string): string => {
 };
 
 export function useSquadById(squadId: number | null): UseSquadByIdResult {
-  const [squad, setSquad] = useState<UserSquad | null>(null);
+  const [squad, setSquad] = useState<Squad | null>(null);
+  const [squadTourData, setSquadTourData] = useState<SquadTourData | null>(null);
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [toursData, setToursData] = useState<ToursResponse | null>(null);
   const [tourPoints, setTourPoints] = useState<number>(0);
@@ -58,25 +60,25 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
       setError(null);
 
       try {
-        // First try to fetch squad by ID with user validation
-        let squadResponse = await squadsApi.getSquadById(squadId);
+        // NEW ARCHITECTURE: First fetch squad metadata
+        let squadMetadataResponse = await squadsApi.getSquadById(squadId);
 
         // If squad not found or does not belong to current user, try public endpoint
-        if (!squadResponse.success && squadResponse.status === 404) {
+        if (!squadMetadataResponse.success && squadMetadataResponse.status === 404) {
           const publicResponse = await squadsApi.getSquadByIdPublic(squadId);
           if (!publicResponse.success || !publicResponse.data) {
-            setError(publicResponse.error || squadResponse.error || "Squad not found");
+            setError(publicResponse.error || squadMetadataResponse.error || "Squad not found");
             setIsLoading(false);
             return;
           }
-          squadResponse = publicResponse;
-        } else if (!squadResponse.success || !squadResponse.data) {
-          setError(squadResponse.error || "Squad not found");
+          squadMetadataResponse = publicResponse;
+        } else if (!squadMetadataResponse.success || !squadMetadataResponse.data) {
+          setError(squadMetadataResponse.error || "Squad not found");
           setIsLoading(false);
           return;
         }
 
-        const squadData = squadResponse.data;
+        const squadData = squadMetadataResponse.data;
         setSquad(squadData);
 
         // Now fetch players and tours for this squad's league
@@ -94,20 +96,38 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
           console.error("Failed to fetch players:", playersResponse.error);
         }
 
-        // Handle tours and get tour points from leaderboard
+        // Handle tours and get current tour data from SquadTour
         if (toursResponse.success && toursResponse.data) {
           setToursData(toursResponse.data);
 
-          // Если есть текущий тур — берём его. Иначе используем предыдущий тур.
-          const targetTourId = toursResponse.data.current_tour?.id ?? toursResponse.data.previous_tour?.id;
+          // NEW ARCHITECTURE: Fetch SquadTour data for current tour
+          // This gives us the complete state including players, captain, points, etc.
+          const currentTourDeadline = toursResponse.data.current_tour?.deadline 
+            ? new Date(toursResponse.data.current_tour.deadline) 
+            : null;
+          const useCurrentTour = currentTourDeadline && currentTourDeadline <= new Date();
+          
+          const targetTourId = useCurrentTour
+            ? toursResponse.data.current_tour?.id
+            : toursResponse.data.previous_tour?.id;
+
           if (targetTourId) {
-            const leaderboardResponse = await squadsApi.getLeaderboard(targetTourId);
-            if (leaderboardResponse.success && leaderboardResponse.data) {
-              const entry = leaderboardResponse.data.find(
-                (e) => e.squad_id === squadId
-              );
-              if (entry) {
-                setTourPoints(entry.tour_points);
+            try {
+              const squadWithTourResponse = await squadsApi.getSquadWithTourData(squadId, targetTourId);
+              if (squadWithTourResponse.success && squadWithTourResponse.data) {
+                const tourData = squadWithTourResponse.data.current_tour;
+                setSquadTourData(tourData);
+                setTourPoints(tourData.points);
+              }
+            } catch (err) {
+              console.error('Failed to fetch squad tour data:', err);
+              // Fallback: get points from leaderboard
+              const leaderboardResponse = await squadsApi.getLeaderboard(targetTourId);
+              if (leaderboardResponse.success && leaderboardResponse.data) {
+                const entry = leaderboardResponse.data.find((e) => e.squad_id === squadId);
+                if (entry) {
+                  setTourPoints(entry.tour_points);
+                }
               }
             }
           }
@@ -131,9 +151,9 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
   // Enrich main players with full data and assign slotIndex per position
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
-    if (!squad) return [];
+    if (!squadTourData) return [];
 
-    const playersWithPositions = squad.main_players.map((sp) => {
+    const playersWithPositions = squadTourData.main_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
       return {
         id: sp.id,
@@ -159,15 +179,15 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
       positionCounters[player.position] = slotIndex + 1;
       return { ...player, slotIndex };
     });
-  }, [squad, playerMap]);
+  }, [squadTourData, playerMap]);
 
   // Enrich bench players with full data
   const benchPlayers = useMemo((): EnrichedPlayer[] => {
-    if (!squad) return [];
+    if (!squadTourData) return [];
 
     const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
 
-    return squad.bench_players.map((sp) => {
+    return squadTourData.bench_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
       const position = fullPlayer ? mapPosition(fullPlayer.position) : "ПЗ";
       const slotIndex = positionCounters[position] || 0;
@@ -189,12 +209,13 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         isInjured: fullPlayer?.is_injured,
       };
     });
-  }, [squad, playerMap]);
+  }, [squadTourData, playerMap]);
 
   const currentTour = toursData?.current_tour?.number || null;
 
   return {
     squad,
+    squadTourData,
     mainPlayers,
     benchPlayers,
     currentTour,

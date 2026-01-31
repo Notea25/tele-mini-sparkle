@@ -8,7 +8,7 @@ import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { squadsApi, toursApi, customLeaguesApi, commercialLeaguesApi, UserSquad, LeaderboardEntry, CustomLeagueLeaderboardEntry, CommercialLeague, MySquadLeague } from "@/lib/api";
+import { squadsApi, toursApi, customLeaguesApi, commercialLeaguesApi, Squad, LeaderboardEntry, CustomLeagueLeaderboardEntry, CommercialLeague, MySquadLeague } from "@/lib/api";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -62,7 +62,7 @@ const League = () => {
  
   // Find the squad for current league (with safety check for API errors)
   const squadsData = Array.isArray(mySquadsResponse?.data) ? mySquadsResponse.data : [];
-  const currentSquad: UserSquad | undefined = squadsData.find(
+  const currentSquad: Squad | undefined = squadsData.find(
     (squad) => squad.league_id === leagueId
   );
   const mySquadId = currentSquad?.id;
