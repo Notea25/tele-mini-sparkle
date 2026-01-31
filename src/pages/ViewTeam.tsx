@@ -241,10 +241,27 @@ const ViewTeam = () => {
   };
 
   // Display points - use snapshot data for historical tours, otherwise current data
+  // IMPORTANT: For historical tours, use penalty_points from snapshot only (not from current squad)
+  // If no snapshot exists for a historical tour, penalty is 0 (no data)
+  const isCurrentTour = selectedTourId === currentTourId || !selectedTourId;
+  
+  const displayPenaltyPoints = useMemo(() => {
+    if (selectedSnapshot) {
+      // Historical tour with snapshot - use snapshot's penalty
+      return selectedSnapshot.penalty_points ?? 0;
+    }
+    if (isViewingHistoricalTour) {
+      // Historical tour without snapshot - no penalty data available
+      return 0;
+    }
+    // Current tour - use squad's current penalty
+    return squad?.penalty_points ?? 0;
+  }, [selectedSnapshot, isViewingHistoricalTour, squad?.penalty_points]);
+
   const displayPoints = selectedSnapshot 
-    ? selectedSnapshot.points - selectedSnapshot.penalty_points 
-    : (selectedTourId ? viewTourPoints : tourPoints) - (squad?.penalty_points ?? 0);
-  const displayPenaltyPoints = selectedSnapshot?.penalty_points ?? squad?.penalty_points ?? 0;
+    ? selectedSnapshot.points - displayPenaltyPoints 
+    : (selectedTourId ? viewTourPoints : tourPoints) - displayPenaltyPoints;
+  
   const displayTourNumber = selectedTourNumber || currentTour;
 
   if (!squadId) {
