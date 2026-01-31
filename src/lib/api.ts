@@ -547,6 +547,7 @@ export interface CustomLeagueLeaderboardEntry {
   username: string;
   tour_points: number;
   total_points: number;
+  penalty_points?: number;
   fav_team_id?: number;
   fav_team_name?: string;
 }
@@ -587,6 +588,7 @@ export interface UserLeagueDetails {
     squad_name: string;
     total_points: number;
     tour_points: number;
+    penalty_points?: number;
     place: number;
   }>;
 }
@@ -600,6 +602,7 @@ export interface UserLeagueLeaderboardEntry {
   username: string;
   tour_points: number;
   total_points: number;
+  penalty_points?: number;
 }
 
 // Методы для работы с кастомными лигами
@@ -657,6 +660,7 @@ export interface CommercialLeagueLeaderboardEntry {
   username: string;
   tour_points: number;
   total_points: number;
+  penalty_points?: number;
 }
 
 // Методы для работы с коммерческими лигами

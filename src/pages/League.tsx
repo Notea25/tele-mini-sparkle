@@ -142,6 +142,7 @@ const League = () => {
       name: entry.squad_name,
       tourPoints: entry.tour_points,
       totalPoints: entry.total_points,
+      penaltyPoints: entry.penalty_points || 0,
       isUser: entry.squad_id === mySquadId,
       change: "same" as "up" | "down" | "same",
     }));
@@ -315,6 +316,7 @@ const League = () => {
       name: entry.squad_name,
       tourPoints: entry.tour_points,
       totalPoints: entry.total_points,
+      penaltyPoints: entry.penalty_points || 0,
       isUser: entry.squad_id === mySquadId,
       change: "same" as "up" | "down" | "same",
     }));
@@ -328,6 +330,7 @@ const League = () => {
         name: userEntry.squad_name,
         tourPoints: userEntry.tour_points,
         totalPoints: userEntry.total_points,
+        penaltyPoints: userEntry.penalty_points || 0,
         isUser: true,
         change: "same" as "up" | "down" | "same",
       });

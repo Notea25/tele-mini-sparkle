@@ -75,6 +75,7 @@ const ViewLeague = () => {
     name: string;
     tourPoints: number;
     totalPoints: number;
+    penaltyPoints: number;
     isUser: boolean;
   }> => {
     if (!leaderboardResponse?.success || !leaderboardResponse.data) {
@@ -90,6 +91,7 @@ const ViewLeague = () => {
       name: entry.squad_name,
       tourPoints: entry.tour_points,
       totalPoints: entry.total_points,
+      penaltyPoints: entry.penalty_points || 0,
       isUser: entry.squad_id === userSquadId,
     }));
   }, [leaderboardResponse, squad?.id]);

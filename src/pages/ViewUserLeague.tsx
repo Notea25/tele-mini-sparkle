@@ -90,6 +90,7 @@ const ViewUserLeague = () => {
     name: string;
     tourPoints: number;
     totalPoints: number;
+    penaltyPoints: number;
     isUser: boolean;
   }> => {
     // Priority: use leaderboard API if available
@@ -103,6 +104,7 @@ const ViewUserLeague = () => {
         name: entry.squad_name,
         tourPoints: entry.tour_points,
         totalPoints: entry.total_points,
+        penaltyPoints: entry.penalty_points || 0,
         isUser: entry.squad_id === userSquadId,
       }));
     }
@@ -123,6 +125,7 @@ const ViewUserLeague = () => {
         name: entry.squad_name || "Команда",
         tourPoints: entry.tour_points ?? 0,
         totalPoints: entry.total_points ?? 0,
+        penaltyPoints: entry.penalty_points || 0,
         isUser: entry.squad_id === userSquadId,
       }));
   }, [leaderboardResponse, leagueData, squad?.id]);

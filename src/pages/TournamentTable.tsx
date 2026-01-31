@@ -70,6 +70,7 @@ const TournamentTable = () => {
       name: entry.squad_name,
       tourPoints: entry.tour_points,
       totalPoints: entry.total_points,
+      penaltyPoints: entry.penalty_points || 0,
       isUser: entry.squad_id === mySquadId,
       change: "same" as "up" | "down" | "same", // API doesn't provide change info yet
     }));

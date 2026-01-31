@@ -189,9 +189,14 @@ export default function TourHistory({ squadId: propSquadId }: TourHistoryProps) 
                   </div>
                   <div className="text-right">
                     <div className="text-3xl font-bold text-[#00ff87]">
-                      {selectedTour.points}
+                      {selectedTour.points - (selectedTour.penalty_points || 0)}
                     </div>
-                    <div className="text-sm text-gray-400">Points</div>
+                    <div className="text-sm text-gray-400">Net Points</div>
+                    {(selectedTour.penalty_points || 0) > 0 && (
+                      <div className="text-xs text-red-400 mt-1">
+                        (-{selectedTour.penalty_points} penalty)
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardHeader>
@@ -218,14 +223,19 @@ export default function TourHistory({ squadId: propSquadId }: TourHistoryProps) 
                     </div>
                   </div>
                   <div>
-                    <div className="text-gray-400">Main Squad Points</div>
+                    <div className="text-gray-400">Points Earned</div>
                     <div className="text-white font-semibold">
-                      {selectedTour.main_players.reduce(
-                        (sum, p) => sum + p.tour_points,
-                        0
-                      )}
+                      {selectedTour.points}
                     </div>
                   </div>
+                  {(selectedTour.penalty_points || 0) > 0 && (
+                    <div>
+                      <div className="text-gray-400">Penalty Points</div>
+                      <div className="text-red-400 font-semibold">
+                        -{selectedTour.penalty_points}
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <div className="text-gray-400">Top Scorer</div>
                     <div className="text-white font-semibold">
