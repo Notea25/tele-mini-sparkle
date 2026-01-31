@@ -80,6 +80,19 @@ const BackendTest = () => {
   const [isPlayersOpen, setIsPlayersOpen] = useState(false);
   const [isBoostsOpen, setIsBoostsOpen] = useState(false);
   const [isCommercialLeaguesOpen, setIsCommercialLeaguesOpen] = useState(false);
+  const [isSquadToursOpen, setIsSquadToursOpen] = useState(false);
+
+  // Squad Tours state
+  const [squadTourSquadIdInput, setSquadTourSquadIdInput] = useState('7');
+  const [squadTourTourIdInput, setSquadTourTourIdInput] = useState('2');
+  const [loadingSquadTourSingle, setLoadingSquadTourSingle] = useState(false);
+  const [loadingSquadToursAll, setLoadingSquadToursAll] = useState(false);
+  const [loadingSquadToursByTour, setLoadingSquadToursByTour] = useState(false);
+  const [loadingAllSquadTours, setLoadingAllSquadTours] = useState(false);
+  const [squadTourSingleResponse, setSquadTourSingleResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [squadToursAllResponse, setSquadToursAllResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [squadToursByTourResponse, setSquadToursByTourResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [allSquadToursResponse, setAllSquadToursResponse] = useState<ApiResponse<unknown> | null>(null);
 
   const testLeagueApi = async () => {
     setLoadingLeague(true);
@@ -426,6 +439,65 @@ const BackendTest = () => {
     }
   };
 
+  const testSquadTourSingle = async () => {
+    setLoadingSquadTourSingle(true);
+    try {
+      const result = await apiRequest(`/api/squad_tours/squad/${squadTourSquadIdInput}/tour/${squadTourTourIdInput}`);
+      setSquadTourSingleResponse(result);
+    } catch (err) {
+      setSquadTourSingleResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingSquadTourSingle(false);
+    }
+  };
+
+  const testSquadToursAll = async () => {
+    setLoadingSquadToursAll(true);
+    try {
+      const result = await apiRequest(`/api/squad_tours/squad/${squadTourSquadIdInput}`);
+      setSquadToursAllResponse(result);
+    } catch (err) {
+      setSquadToursAllResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingSquadToursAll(false);
+    }
+  };
+
+  const testSquadToursByTour = async () => {
+    setLoadingSquadToursByTour(true);
+    try {
+      const result = await apiRequest(`/api/squad_tours/tour/${squadTourTourIdInput}`);
+      setSquadToursByTourResponse(result);
+    } catch (err) {
+      setSquadToursByTourResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingSquadToursByTour(false);
+    }
+  };
+
+  const testAllSquadTours = async () => {
+    setLoadingAllSquadTours(true);
+    try {
+      const result = await apiRequest('/api/squad_tours/all');
+      setAllSquadToursResponse(result);
+    } catch (err) {
+      setAllSquadToursResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingAllSquadTours(false);
+    }
+  };
 
   // Section component for collapsible groups
   const Section = ({ title, isOpen, onToggle, children }: {
@@ -712,6 +784,47 @@ const BackendTest = () => {
         </div>
         {renderResponse(commercialLeaguesResponse, 'Ответ: Commercial Leagues')}
         {renderResponse(commercialLeagueJoinResponse, 'Ответ: Commercial League Join')}
+      </Section>
+
+      {/* SQUAD TOURS SECTION */}
+      <Section title="🎖️ Squad Tours" isOpen={isSquadToursOpen} onToggle={() => setIsSquadToursOpen(!isSquadToursOpen)}>
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={squadTourSquadIdInput}
+              onChange={(e) => setSquadTourSquadIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Squad ID"
+            />
+            <input
+              type="number"
+              value={squadTourTourIdInput}
+              onChange={(e) => setSquadTourTourIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Tour ID"
+            />
+            <Button onClick={testSquadTourSingle} disabled={loadingSquadTourSingle} className="flex-1">
+              {loadingSquadTourSingle ? 'Загрузка...' : `GET /api/squad_tours/squad/${squadTourSquadIdInput}/tour/${squadTourTourIdInput}`}
+            </Button>
+          </div>
+
+          <Button onClick={testSquadToursAll} disabled={loadingSquadToursAll} className="w-full">
+            {loadingSquadToursAll ? 'Загрузка...' : `GET /api/squad_tours/squad/${squadTourSquadIdInput}`}
+          </Button>
+
+          <Button onClick={testSquadToursByTour} disabled={loadingSquadToursByTour} className="w-full">
+            {loadingSquadToursByTour ? 'Загрузка...' : `GET /api/squad_tours/tour/${squadTourTourIdInput}`}
+          </Button>
+
+          <Button onClick={testAllSquadTours} disabled={loadingAllSquadTours} className="w-full">
+            {loadingAllSquadTours ? 'Загрузка...' : 'GET /api/squad_tours/all'}
+          </Button>
+        </div>
+        {renderResponse(squadTourSingleResponse, 'Ответ: Squad Tour Single')}
+        {renderResponse(squadToursAllResponse, 'Ответ: Squad Tours All')}
+        {renderResponse(squadToursByTourResponse, 'Ответ: Squad Tours By Tour')}
+        {renderResponse(allSquadToursResponse, 'Ответ: All Squad Tours')}
       </Section>
 
       {/* MATCHES SECTION */}
