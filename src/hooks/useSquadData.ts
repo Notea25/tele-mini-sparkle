@@ -80,6 +80,14 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     refetchOnWindowFocus: true,
   });
 
+  // Extract tours data FIRST (before using it)
+  const toursData = useMemo(() => {
+    if (toursResponse?.success && toursResponse.data) {
+      return toursResponse.data;
+    }
+    return null;
+  }, [toursResponse]);
+
   // Extract squad metadata
   const squad = useMemo(() => {
     if (squadsResponse?.success && squadsResponse.data) {
@@ -127,13 +135,6 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     }
     return [];
   }, [playersResponse]);
-
-  const toursData = useMemo(() => {
-    if (toursResponse?.success && toursResponse.data) {
-      return toursResponse.data;
-    }
-    return null;
-  }, [toursResponse]);
 
   // Ищем актуальный тур для отображения очков:
   // если есть current_tour — используем его, иначе previous_tour.
