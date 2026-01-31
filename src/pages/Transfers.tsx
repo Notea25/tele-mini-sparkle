@@ -47,8 +47,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
+import { BoostSection, TEAM_MANAGEMENT_BOOSTS, BoostId, BOOST_ID_TO_TYPE } from "@/constants/boosts";
+import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipStateForPage } from "@/lib/boostViewModel";
+import { PositionCode } from "@/constants/positions";
 import clubLogo from "@/assets/club-logo.png";
-
 import boostTransfers from "@/assets/boost-transfers.png";
 import boostGolden from "@/assets/boost-golden.png";
 import boostBench from "@/assets/boost-bench.png";
@@ -60,11 +63,6 @@ const clubIcons: Record<string, string> = {
   ...clubLogos,
   Шахтер: clubLogo,
 };
-
-import { BoostChip, BoostStatus } from "@/components/BoostDrawer";
-import { BoostSection, TEAM_MANAGEMENT_BOOSTS, BoostId, BOOST_ID_TO_TYPE } from "@/constants/boosts";
-import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipStateForPage } from "@/lib/boostViewModel";
-import { PositionCode } from "@/constants/positions";
 
 // Special chips for transfers page UI - only 2 chips
 const initialChips: BoostChip[] = [
