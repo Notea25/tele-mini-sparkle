@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { PointsColumnHeader } from "@/components/PointsColumnHeader";
 import { useState, useMemo, useEffect } from "react";
@@ -13,6 +13,11 @@ import { getNextOpponentData } from "@/lib/scheduleUtils";
 import { toursApi, squadsApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // Map API positions to local format
 const mapPosition = (position: string): string => {
@@ -386,9 +391,19 @@ const ViewTeam = () => {
           )}
         </div>
         {displayPenaltyPoints > 0 && (
-          <span className="text-xs text-red-500">
-            (-{displayPenaltyPoints} штраф за трансферы)
-          </span>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="text-xs text-red-500 flex items-center gap-1 hover:underline">
+                (-{displayPenaltyPoints} штраф за трансферы)
+                <Info className="w-3 h-3" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 text-sm" side="bottom">
+              <p className="text-foreground">
+                Итоговые очки за тур уже учитывают штраф за дополнительные трансферы. Каждый трансфер сверх бесплатного лимита снимает 4 очка.
+              </p>
+            </PopoverContent>
+          </Popover>
         )}
       </div>
 
