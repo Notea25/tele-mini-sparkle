@@ -284,23 +284,27 @@ const ViewTeam = () => {
     return squadTourData?.penalty_points ?? 0;
   }, [selectedSnapshot, isViewingHistoricalTour, squadTourData?.penalty_points]);
 
-  // Calculate display points (NET points).
-  // IMPORTANT: backend already returns net points with penalties applied for:
-  // - history snapshots: snapshot.points
-  // - squad tours: squadTourData.points (exposed as `tourPoints`)
-  // - leaderboard: entry.tour_points (exposed as `viewTourPoints`)
-  // We show penalty_points separately for transparency, but MUST NOT subtract it again here.
+  // Calculate display points (NET = GROSS - penalty)
+  // Backend returns GROSS points (earned points before penalty deduction).
+  // We must subtract penalty_points to get the final net points.
   const displayPoints = useMemo(() => {
     if (isLoadingTourPoints && !selectedSnapshot) {
       return 0; // Show 0 while loading to prevent flashing
     }
 
+    // Get GROSS points from the appropriate source
+    let grossPoints = 0;
     if (selectedSnapshot) {
-      return selectedSnapshot.points;
+      grossPoints = selectedSnapshot.points;
+    } else if (selectedTourId) {
+      grossPoints = viewTourPoints;
+    } else {
+      grossPoints = tourPoints;
     }
 
-    return selectedTourId ? viewTourPoints : tourPoints;
-  }, [isLoadingTourPoints, selectedSnapshot, selectedTourId, viewTourPoints, tourPoints]);
+    // NET = GROSS - penalty
+    return grossPoints - displayPenaltyPoints;
+  }, [isLoadingTourPoints, selectedSnapshot, selectedTourId, viewTourPoints, tourPoints, displayPenaltyPoints]);
   
   const displayTourNumber = selectedTourNumber || currentTour;
 
