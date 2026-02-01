@@ -809,13 +809,31 @@ const BackendTest = () => {
             </Button>
           </div>
 
-          <Button onClick={testSquadToursAll} disabled={loadingSquadToursAll} className="w-full">
-            {loadingSquadToursAll ? 'Загрузка...' : `GET /api/squad_tours/squad/${squadTourSquadIdInput}`}
-          </Button>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={squadTourSquadIdInput}
+              onChange={(e) => setSquadTourSquadIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Squad ID"
+            />
+            <Button onClick={testSquadToursAll} disabled={loadingSquadToursAll} className="flex-1">
+              {loadingSquadToursAll ? 'Загрузка...' : `GET /api/squad_tours/squad/${squadTourSquadIdInput}`}
+            </Button>
+          </div>
 
-          <Button onClick={testSquadToursByTour} disabled={loadingSquadToursByTour} className="w-full">
-            {loadingSquadToursByTour ? 'Загрузка...' : `GET /api/squad_tours/tour/${squadTourTourIdInput}`}
-          </Button>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={squadTourTourIdInput}
+              onChange={(e) => setSquadTourTourIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Tour ID"
+            />
+            <Button onClick={testSquadToursByTour} disabled={loadingSquadToursByTour} className="flex-1">
+              {loadingSquadToursByTour ? 'Загрузка...' : `GET /api/squad_tours/tour/${squadTourTourIdInput}`}
+            </Button>
+          </div>
 
           <Button onClick={testAllSquadTours} disabled={loadingAllSquadTours} className="w-full">
             {loadingAllSquadTours ? 'Загрузка...' : 'GET /api/squad_tours/all'}
