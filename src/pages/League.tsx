@@ -678,7 +678,7 @@ const League = () => {
                     <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
                     <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
                     <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                      {(row.totalPoints - (row.totalPenaltyPoints || 0)).toLocaleString()}
+                      {row.totalPoints.toLocaleString()}
                     </span>
                   </div>
                 ))
