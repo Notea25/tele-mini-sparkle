@@ -193,8 +193,9 @@ const Index = () => {
       // Get user's squad
       const squadsResponse = await squadsApi.getMySquads();
       if (!squadsResponse.success || !squadsResponse.data || squadsResponse.data.length === 0) {
-        toast.error("У вас нет команды. Сначала создайте команду.");
-        navigate("/create-team");
+        // User doesn't have a team yet - don't show error, just close modal
+        // The modal itself already handles navigation to team creation
+        setShowLeagueInvite(false);
         return;
       }
 
@@ -214,7 +215,9 @@ const Index = () => {
         // Invalidate cache so league list refreshes
         queryClient.invalidateQueries({ queryKey: ["mySquadLeagues"] });
         toast.success(`Вы вступили в лигу "${leagueInviteData.leagueName}"`);
-        navigate("/league");
+        setShowLeagueInvite(false);
+        // Navigate to the league page to show the user they joined
+        navigate(`/view-user-league/${userLeagueId}`);
       } else {
         toast.error(response.error || "Ошибка при вступлении в лигу");
       }
@@ -222,7 +225,6 @@ const Index = () => {
       toast.error("Ошибка при вступлении в лигу");
     } finally {
       setIsJoiningLeague(false);
-      setShowLeagueInvite(false);
     }
   };
 

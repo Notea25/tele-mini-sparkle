@@ -46,7 +46,7 @@ import { clubLogos } from "@/lib/clubLogos";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
-import { squadsApi } from "@/lib/api";
+import { squadsApi, customLeaguesApi } from "@/lib/api";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
 
 const ITEMS_PER_PAGE = 8;
@@ -1537,11 +1537,41 @@ const TeamBuilder = () => {
                     // Check if there's a pending league invite
                     const pendingInvite = localStorage.getItem("fantasyLeagueInvite");
                     if (pendingInvite) {
-                      // Redirect to home to show the invite modal again
-                      navigate("/");
-                    } else {
-                      navigate("/league");
+                      try {
+                        const inviteData = JSON.parse(pendingInvite);
+                        const userLeagueId = parseInt(inviteData.leagueId, 10);
+                        const newSquadId = response.data.id;
+                        
+                        if (Number.isFinite(userLeagueId) && newSquadId) {
+                          // Automatically join the league without additional confirmation
+                          const joinResponse = await customLeaguesApi.joinUserLeague(userLeagueId, newSquadId);
+                          
+                          if (joinResponse.success) {
+                            // Remove invite from localStorage after successful join
+                            localStorage.removeItem("fantasyLeagueInvite");
+                            // Invalidate cache so league list refreshes
+                            await queryClient.invalidateQueries({ queryKey: ["mySquadLeagues"] });
+                            toast.success(`Вы автоматически добавлены в лигу "${inviteData.leagueName}"`);
+                            // Navigate directly to the league
+                            navigate(`/view-user-league/${userLeagueId}`);
+                            return;
+                          } else {
+                            // If auto-join fails, redirect to home to show the modal
+                            toast.error("Не удалось автоматически вступить в лигу");
+                            navigate("/");
+                            return;
+                          }
+                        }
+                      } catch (error) {
+                        console.error("Error auto-joining league:", error);
+                        // If parsing or joining fails, redirect to home to show the modal
+                        navigate("/");
+                        return;
+                      }
                     }
+                    
+                    // No pending invite, go to league page
+                    navigate("/league");
                   } else {
                     toast.error(`Ошибка: ${response.error || "Не удалось создать команду"}`);
                   }

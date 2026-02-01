@@ -180,8 +180,8 @@ const ViewUserLeague = () => {
 
 
   const getInviteLink = () => {
-    const baseUrl = window.location.origin;
-    return `${baseUrl}/?leagueInvite=${leagueId}&leagueName=${encodeURIComponent(leagueName)}&inviter=${encodeURIComponent(userName)}`;
+    // Telegram mini app link to bot with startapp parameter
+    return `https://t.me/fantasyby_bot?startapp=leagueInvite_${leagueId}_${encodeURIComponent(leagueName)}_${encodeURIComponent(userName)}`;
   };
 
   const handleCopyLink = () => {
