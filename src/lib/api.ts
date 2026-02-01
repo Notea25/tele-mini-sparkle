@@ -376,7 +376,8 @@ export const squadsApi = {
       queryParams.append('vice_captain_id', viceCaptainId.toString());
     }
     const queryString = queryParams.toString();
-    const path = `/api/squads/${squadId}/replace_players${queryString ? `?${queryString}` : ''}`;
+    // NEW: Use squad_tours endpoint
+    const path = `/api/squad_tours/squad/${squadId}/replace_players${queryString ? `?${queryString}` : ''}`;
     return apiRequest<ReplacePlayersResponse>(path, {
       method: 'POST',
       body: data,
@@ -384,7 +385,7 @@ export const squadsApi = {
   },
   // NEW API: Returns full tour history with budget/replacements
   getHistory: (squadId: number) => 
-    apiRequest<TourHistorySnapshot[]>(`/api/squads/${squadId}/tours`),
+    apiRequest<TourHistorySnapshot[]>(`/api/squad_tours/squad/${squadId}`),
 };
 
 // Типы и методы для работы с пользователями
