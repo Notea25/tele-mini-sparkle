@@ -362,6 +362,7 @@ const Profile = () => {
       <InviteFriendsDrawer 
         open={inviteDrawerOpen} 
         onOpenChange={setInviteDrawerOpen}
+        userId={backendUser?.id.toString() || profile.userName}
       />
 
       {/* Home Button */}

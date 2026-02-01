@@ -107,6 +107,14 @@ const App = () => {
           }));
         }
       }
+      // Check for referral link in new format: ref_{userId}
+      else if (startappParam.startsWith('ref_')) {
+        const refUserId = startappParam.replace('ref_', '');
+        if (refUserId) {
+          setIsReferral(true);
+          localStorage.setItem('fantasyReferrer', refUserId);
+        }
+      }
     }
     
     // Check if this is a league invite link (old format for backward compatibility)

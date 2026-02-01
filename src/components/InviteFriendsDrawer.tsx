@@ -11,8 +11,8 @@ interface InviteFriendsDrawerProps {
 }
 
 const InviteFriendsDrawer = ({ open, onOpenChange, userId = "user231" }: InviteFriendsDrawerProps) => {
-  const baseUrl = window.location.origin;
-  const inviteLink = `${baseUrl}/?ref=${userId}`;
+  // Telegram mini app referral link
+  const inviteLink = `https://t.me/fantasyby_bot?startapp=ref_${userId}`;
 
   const handleCopyLink = async () => {
     try {
