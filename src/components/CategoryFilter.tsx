@@ -3,6 +3,7 @@ import iconCup from "@/assets/icon-cup.png";
 import iconFootball from "@/assets/icon-football.png";
 import iconHockey from "@/assets/icon-hockey.png";
 import iconBasketball from "@/assets/icon-basketball.png";
+import iconBasketball from "@/assets/icon-basketball.svg";
 import iconCs2 from "@/assets/icon-cs2.png";
 
 export const categories = [
@@ -23,7 +24,7 @@ const CategoryFilter = ({ activeCategory = "all", onCategoryClick }: CategoryFil
     if (onCategoryClick) {
       onCategoryClick(categoryId);
     }
-    
+
     if (scrollTo) {
       const element = document.getElementById(scrollTo);
       if (element) {
