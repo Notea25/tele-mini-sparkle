@@ -284,18 +284,26 @@ const ViewTeam = () => {
     return squadTourData?.penalty_points ?? 0;
   }, [selectedSnapshot, isViewingHistoricalTour, squadTourData?.penalty_points]);
 
-  // Calculate display points - use snapshot if available, otherwise use current points
-  // Don't show intermediate values while loading
+  // Calculate display points: points - penalty_points
+  // points = базовые очки, penalty_points = штраф за трансферы
+  // Итоговые очки = points - penalty_points
   const displayPoints = useMemo(() => {
     if (isLoadingTourPoints && !selectedSnapshot) {
       return 0; // Show 0 while loading to prevent flashing
     }
     
+    // Get base points (before penalty)
+    let basePoints = 0;
     if (selectedSnapshot) {
-      return selectedSnapshot.points - displayPenaltyPoints;
+      basePoints = selectedSnapshot.points;
+    } else if (selectedTourId) {
+      basePoints = viewTourPoints;
+    } else {
+      basePoints = tourPoints;
     }
     
-    return (selectedTourId ? viewTourPoints : tourPoints) - displayPenaltyPoints;
+    // Final points = base points - penalty points
+    return basePoints - displayPenaltyPoints;
   }, [isLoadingTourPoints, selectedSnapshot, displayPenaltyPoints, selectedTourId, viewTourPoints, tourPoints]);
   
   const displayTourNumber = selectedTourNumber || currentTour;
