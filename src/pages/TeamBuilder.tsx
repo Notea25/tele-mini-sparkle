@@ -1455,6 +1455,9 @@ const TeamBuilder = () => {
                 e.preventDefault();
                 setIsSaving(true);
                 try {
+                  // Small delay to ensure auth tokens are synced
+                  await new Promise(resolve => setTimeout(resolve, 300));
+                  
                   const benchSlotIndices: Record<string, number> = {
                     ВР: 1,
                     ЗЩ: 4,
@@ -1517,7 +1520,9 @@ const TeamBuilder = () => {
                     requestBody.vice_captain_id = finalViceCaptain;
                   }
 
+                  console.log("Creating squad with data:", requestBody);
                   const response = await squadsApi.create(requestBody);
+                  console.log("Squad creation response:", response);
                   if (response.success && response.data) {
                     toast.success("Команда успешно создана!");
                     localStorage.setItem("fantasyTeamPlayers", JSON.stringify(selectedPlayers));
@@ -1556,15 +1561,16 @@ const TeamBuilder = () => {
                             navigate(`/view-user-league/${userLeagueId}`);
                             return;
                           } else {
-                            // If auto-join fails, redirect to home to show the modal
-                            toast.error("Не удалось автоматически вступить в лигу");
+                            // If auto-join fails, don't show error - just keep invite for manual join
+                            console.warn("Auto-join failed:", joinResponse.error);
+                            // Navigate to home to show the modal for manual join
                             navigate("/");
                             return;
                           }
                         }
                       } catch (error) {
                         console.error("Error auto-joining league:", error);
-                        // If parsing or joining fails, redirect to home to show the modal
+                        // If parsing or joining fails, keep invite for manual join
                         navigate("/");
                         return;
                       }
@@ -1573,10 +1579,14 @@ const TeamBuilder = () => {
                     // No pending invite, go to league page
                     navigate("/league");
                   } else {
-                    toast.error(`Ошибка: ${response.error || "Не удалось создать команду"}`);
+                    console.error("Squad creation failed:", response.error);
+                    const errorMsg = response.error || "Не удалось создать команду";
+                    toast.error(`Ошибка: ${errorMsg}`);
                   }
                 } catch (err) {
-                  toast.error("Ошибка при отправке запроса");
+                  console.error("Exception during squad creation:", err);
+                  const errorMessage = err instanceof Error ? err.message : "Неизвестная ошибка";
+                  toast.error(`Ошибка при отправке запроса: ${errorMessage}`);
                 } finally {
                   setIsSaving(false);
                 }
