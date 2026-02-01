@@ -304,6 +304,8 @@ const League = () => {
     const leaderboard = Array.isArray(rawData) ? rawData : [];
     if (leaderboard.length === 0) return [];
     
+    const userEntry = leaderboard.find((entry: LeaderboardEntry) => entry.squad_id === mySquadId);
+    
     const top3 = leaderboard.slice(0, 3).map((entry: LeaderboardEntry) => ({
       id: entry.squad_id,
       position: entry.place,
@@ -316,8 +318,7 @@ const League = () => {
       change: "same" as "up" | "down" | "same",
     }));
     
-    // Find user's entry if not in top 3
-    const userEntry = leaderboard.find((entry: LeaderboardEntry) => entry.squad_id === mySquadId);
+    // Find user's entry if not in top 3 (reuse userEntry from above)
     if (userEntry && userEntry.place > 3) {
       top3.push({
         id: userEntry.squad_id,
@@ -1121,7 +1122,7 @@ const League = () => {
                             <span
                               className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}
                             >
-                              {(row.totalPoints - (row.totalPenaltyPoints || 0)).toLocaleString()}
+                              {row.totalPoints.toLocaleString()}
                             </span>
                           </div>
                         ))}
