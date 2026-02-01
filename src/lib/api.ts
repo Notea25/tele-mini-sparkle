@@ -357,6 +357,7 @@ export const squadsApi = {
     });
   },
   getLeaderboard: (tourId: number) => apiRequest<LeaderboardEntry[]>(`/api/squads/leaderboard/${tourId}`),
+  /** @deprecated Use replacePlayers instead - this endpoint returns HTTP 410 Gone */
   updatePlayers: (squadId: number, data: UpdateSquadPlayersRequest) => 
     apiRequest<UpdateSquadPlayersResponse>(`/api/squads/update_players/${squadId}`, {
       method: 'PUT',
