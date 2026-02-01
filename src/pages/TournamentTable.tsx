@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import SportHeader from "@/components/SportHeader";
-import { squadsApi, toursApi, customLeaguesApi, LeaderboardEntry, CustomLeagueLeaderboardEntry } from "@/lib/api";
+import { squadsApi, toursApi } from "@/lib/api";
 
 import arrowUpRed from "@/assets/arrow-up-red.png";
 import arrowDownGreen from "@/assets/arrow-down-green.png";
@@ -49,11 +49,10 @@ const TournamentTable = () => {
   const targetTourId = toursData?.current_tour?.id ?? toursData?.previous_tour?.id;
   const currentTourNumber = toursData?.current_tour?.number ?? toursData?.previous_tour?.number;
   
-  // Find squad for current league to get fav_team_id
+  // Find squad for current league
   const squadsData = Array.isArray(mySquadsData) ? mySquadsData : [];
   const currentSquad = squadsData.find(squad => squad.league_id === leagueId);
   const mySquadId = currentSquad?.id;
-  const favTeamId = currentSquad?.fav_team_id;
 
   // Fetch leaderboard data
   // ВНИМАНИЕ: используем отдельный queryKey, чтобы не конфликтовать с кэшем
@@ -72,38 +71,10 @@ const TournamentTable = () => {
     gcTime: 30 * 60 * 1000,
   });
 
-  // Fetch club league leaderboard by fav_team_id
-  const { data: clubLeaderboardData, isLoading: clubLeaderboardLoading } = useQuery({
-    queryKey: ['clubLeaderboard', targetTourId, favTeamId],
-    queryFn: async () => {
-      if (!favTeamId || !targetTourId) return [];
-      const result = await customLeaguesApi.getClubLeaderboard(targetTourId, favTeamId);
-      return result.success && Array.isArray(result.data) ? result.data : [];
-    },
-    enabled: !!favTeamId && !!targetTourId,
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-  });
 
   const allTeams = useMemo(() => {
     if (!leaderboardData || !Array.isArray(leaderboardData)) return [];
-    return leaderboardData.map((entry: LeaderboardEntry) => ({
-      id: entry.squad_id,
-      position: entry.place,
-      name: entry.squad_name,
-      // Backend already returns net tour points (tour_earned - tour_penalty)
-      tourPoints: entry.tour_points,
-      totalPoints: entry.total_points,
-      totalPenaltyPoints: entry.total_penalty_points || 0,
-      isUser: entry.squad_id === mySquadId,
-      change: "same" as "up" | "down" | "same", // API doesn't provide change info yet
-    }));
-  }, [leaderboardData, mySquadId]);
-
-  // Process club leaderboard data
-  const clubTeams = useMemo(() => {
-    if (!clubLeaderboardData || !Array.isArray(clubLeaderboardData)) return [];
-    return clubLeaderboardData.map((entry: CustomLeagueLeaderboardEntry) => ({
+    return leaderboardData.map((entry) => ({
       id: entry.squad_id,
       position: entry.place,
       name: entry.squad_name,
@@ -113,7 +84,7 @@ const TournamentTable = () => {
       isUser: entry.squad_id === mySquadId,
       change: "same" as "up" | "down" | "same",
     }));
-  }, [clubLeaderboardData, mySquadId]);
+  }, [leaderboardData, mySquadId]);
 
   const totalPages = Math.max(1, Math.ceil(allTeams.length / itemsPerPage));
   
@@ -264,83 +235,6 @@ const TournamentTable = () => {
             {renderPagination()}
           </div>
         )}
-
-        {/* Club League Section */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Лига клуба</h2>
-          <p className="text-muted-foreground text-sm mb-4">Соревнуйся с другими болельщиками твоего любимого клуба</p>
-
-          {/* Club League Table header */}
-          <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">
-            <span className="col-span-3 text-xs">Место</span>
-            <span className="col-span-4 text-xs">Название</span>
-            <span className="col-span-3 text-center">
-              <span className="text-xs block whitespace-nowrap">{currentTourNumber ? `${currentTourNumber}-й тур` : 'Тур'}</span>
-              <span className="text-[10px] italic block">(очки)</span>
-            </span>
-            <span className="col-span-2 text-right">
-              <span className="text-xs block">Всего</span>
-              <span className="text-[10px] italic block">(очков)</span>
-            </span>
-          </div>
-
-          {/* Club League Loading state */}
-          {clubLeaderboardLoading && clubTeams.length === 0 && (
-            <div className="space-y-2">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl bg-secondary/50 animate-pulse">
-                  <div className="col-span-3 flex items-center gap-1">
-                    <div className="w-3 h-3 bg-muted rounded-full" />
-                    <div className="w-4 h-4 bg-muted rounded" />
-                  </div>
-                  <div className="col-span-4">
-                    <div className="h-4 bg-muted rounded w-20" />
-                  </div>
-                  <div className="col-span-3 flex justify-center">
-                    <div className="h-4 bg-muted rounded w-8" />
-                  </div>
-                  <div className="col-span-2 flex justify-end">
-                    <div className="h-4 bg-muted rounded w-10" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Club League Empty state */}
-          {!clubLeaderboardLoading && clubTeams.length === 0 && (
-            <div className="text-center text-muted-foreground py-8">Нет данных</div>
-          )}
-
-          {/* Club League Table rows */}
-          <div className="space-y-2">
-            {clubTeams.map((row) => (
-              <div
-                key={row.id}
-                className={`grid grid-cols-12 gap-1 items-center px-3 py-3 rounded-xl cursor-pointer transition-colors hover:bg-secondary/70 ${
-                  row.isUser ? "bg-primary text-primary-foreground" : "bg-secondary/50"
-                }`}
-                onClick={() => handleTeamClick(row)}
-              >
-                <div className="col-span-3 flex items-center gap-1">
-                  {row.change === "up" && <img src={arrowDownGreen} alt="up" className="w-3 h-3 rotate-180" />}
-                  {row.change === "down" && !row.isUser && <img src={arrowUpRed} alt="down" className="w-3 h-3 rotate-180" />}
-                  {row.change === "down" && row.isUser && <img src={arrowDownBlack} alt="down" className="w-3 h-3" />}
-                  {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
-                  <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
-                  {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
-                  {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
-                  {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
-                </div>
-                <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
-                <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
-                <span className={`col-span-2 text-right font-bold text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>
-                  {(row.totalPoints - (row.totalPenaltyPoints || 0)).toLocaleString()}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Home Button */}
         {/* <div className="mt-8">
