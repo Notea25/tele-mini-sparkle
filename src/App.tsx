@@ -73,21 +73,39 @@ const App = () => {
     
     // Check for Telegram mini app startapp parameter
     const startappParam = urlParams.get('tgWebAppStartParam');
-    if (startappParam && startappParam.startsWith('leagueInvite_')) {
-      // Parse format: leagueInvite_{leagueId}_{leagueName}_{inviter}
-      const parts = startappParam.replace('leagueInvite_', '').split('_');
-      if (parts.length >= 3) {
-        const leagueId = parts[0];
-        const leagueName = decodeURIComponent(parts[1]);
-        const inviter = decodeURIComponent(parts[2]);
-        
-        setIsLeagueInvite(true);
-        // Store league invite info for later
-        localStorage.setItem('fantasyLeagueInvite', JSON.stringify({
-          leagueId,
-          leagueName,
-          inviter
-        }));
+    if (startappParam) {
+      // New format: invite_{base64EncodedData}
+      if (startappParam.startsWith('invite_')) {
+        try {
+          const encodedData = startappParam.replace('invite_', '');
+          const jsonString = decodeURIComponent(atob(encodedData));
+          const inviteData = JSON.parse(jsonString);
+          
+          setIsLeagueInvite(true);
+          localStorage.setItem('fantasyLeagueInvite', JSON.stringify({
+            leagueId: inviteData.leagueId,
+            leagueName: inviteData.leagueName,
+            inviter: inviteData.inviter
+          }));
+        } catch (error) {
+          console.error('Failed to parse invite data:', error);
+        }
+      }
+      // Old format for backward compatibility: leagueInvite_{leagueId}_{leagueName}_{inviter}
+      else if (startappParam.startsWith('leagueInvite_')) {
+        const parts = startappParam.replace('leagueInvite_', '').split('_');
+        if (parts.length >= 3) {
+          const leagueId = parts[0];
+          const leagueName = decodeURIComponent(parts[1]);
+          const inviter = decodeURIComponent(parts[2]);
+          
+          setIsLeagueInvite(true);
+          localStorage.setItem('fantasyLeagueInvite', JSON.stringify({
+            leagueId,
+            leagueName,
+            inviter
+          }));
+        }
       }
     }
     

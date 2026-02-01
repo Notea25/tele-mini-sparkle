@@ -181,7 +181,14 @@ const ViewUserLeague = () => {
 
   const getInviteLink = () => {
     // Telegram mini app link to bot with startapp parameter
-    return `https://t.me/fantasyby_bot?startapp=leagueInvite_${leagueId}_${encodeURIComponent(leagueName)}_${encodeURIComponent(userName)}`;
+    // Use base64 encoding to safely pass Cyrillic and special characters
+    const inviteData = {
+      leagueId: leagueId?.toString() || '',
+      leagueName,
+      inviter: userName
+    };
+    const encodedData = btoa(encodeURIComponent(JSON.stringify(inviteData)));
+    return `https://t.me/fantasyby_bot?startapp=invite_${encodedData}`;
   };
 
   const handleCopyLink = () => {
