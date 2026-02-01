@@ -85,18 +85,30 @@ const ViewLeague = () => {
     
     const userSquadId = squad?.id;
     
-    return leaderboardResponse.data.map((entry: CustomLeagueLeaderboardEntry) => ({
-      id: entry.squad_id.toString(),
-      position: entry.place,
-      change: "same" as const,
-      name: entry.squad_name,
-      // Backend already returns net tour points (tour_earned - tour_penalty)
-      tourPoints: entry.tour_points,
-      totalPoints: entry.total_points,
-      totalPenaltyPoints: entry.total_penalty_points || 0,
-      penaltyPoints: entry.penalty_points || 0,
-      isUser: entry.squad_id === userSquadId,
-    }));
+    return leaderboardResponse.data.map((entry: CustomLeagueLeaderboardEntry) => {
+      // TEMPORARY FIX: Calculate net points if backend returns gross
+      let totalPoints = entry.total_points;
+      const totalPenalty = entry.total_penalty_points || 0;
+      
+      if (totalPoints > 0 && totalPenalty > 0) {
+        const netPoints = totalPoints - totalPenalty;
+        if (netPoints < 0) {
+          totalPoints = netPoints;
+        }
+      }
+      
+      return {
+        id: entry.squad_id.toString(),
+        position: entry.place,
+        change: "same" as const,
+        name: entry.squad_name,
+        tourPoints: entry.tour_points,
+        totalPoints,
+        totalPenaltyPoints: totalPenalty,
+        penaltyPoints: entry.penalty_points || 0,
+        isUser: entry.squad_id === userSquadId,
+      };
+    });
   }, [leaderboardResponse, squad?.id]);
 
   // Current tour number for display

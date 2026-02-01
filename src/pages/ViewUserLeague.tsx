@@ -98,18 +98,30 @@ const ViewUserLeague = () => {
     if (leaderboardResponse?.success && leaderboardResponse.data && leaderboardResponse.data.length > 0) {
       const userSquadId = squad?.id;
       
-      return leaderboardResponse.data.map((entry: UserLeagueLeaderboardEntry) => ({
-        id: entry.squad_id.toString(),
-        position: entry.place,
-        change: "same" as const,
-        name: entry.squad_name,
-        // Backend already returns net tour points (tour_earned - tour_penalty)
-        tourPoints: entry.tour_points,
-        totalPoints: entry.total_points,
-        totalPenaltyPoints: entry.total_penalty_points || 0,
-        penaltyPoints: entry.penalty_points || 0,
-        isUser: entry.squad_id === userSquadId,
-      }));
+      return leaderboardResponse.data.map((entry: UserLeagueLeaderboardEntry) => {
+        // TEMPORARY FIX: Calculate net points if backend returns gross
+        let totalPoints = entry.total_points;
+        const totalPenalty = entry.total_penalty_points || 0;
+        
+        if (totalPoints > 0 && totalPenalty > 0) {
+          const netPoints = totalPoints - totalPenalty;
+          if (netPoints < 0) {
+            totalPoints = netPoints;
+          }
+        }
+        
+        return {
+          id: entry.squad_id.toString(),
+          position: entry.place,
+          change: "same" as const,
+          name: entry.squad_name,
+          tourPoints: entry.tour_points,
+          totalPoints,
+          totalPenaltyPoints: totalPenalty,
+          penaltyPoints: entry.penalty_points || 0,
+          isUser: entry.squad_id === userSquadId,
+        };
+      });
     }
     
     // Fallback to squads from league details
@@ -121,18 +133,30 @@ const ViewUserLeague = () => {
     
     return leagueData.squads
       .filter((entry) => entry && entry.squad_id !== undefined)
-      .map((entry, index) => ({
-        id: String(entry.squad_id || index),
-        position: entry.place ?? index + 1,
-        change: "same" as const,
-        name: entry.squad_name || "Команда",
-        // Backend already returns net tour points (tour_earned - tour_penalty)
-        tourPoints: entry.tour_points ?? 0,
-        totalPoints: entry.total_points ?? 0,
-        totalPenaltyPoints: (entry as any).total_penalty_points || entry.penalty_points || 0,
-        penaltyPoints: entry.penalty_points || 0,
-        isUser: entry.squad_id === userSquadId,
-      }));
+      .map((entry, index) => {
+        // TEMPORARY FIX: Calculate net points if backend returns gross
+        let totalPoints = entry.total_points ?? 0;
+        const totalPenalty = (entry as any).total_penalty_points || entry.penalty_points || 0;
+        
+        if (totalPoints > 0 && totalPenalty > 0) {
+          const netPoints = totalPoints - totalPenalty;
+          if (netPoints < 0) {
+            totalPoints = netPoints;
+          }
+        }
+        
+        return {
+          id: String(entry.squad_id || index),
+          position: entry.place ?? index + 1,
+          change: "same" as const,
+          name: entry.squad_name || "Команда",
+          tourPoints: entry.tour_points ?? 0,
+          totalPoints,
+          totalPenaltyPoints: totalPenalty,
+          penaltyPoints: entry.penalty_points || 0,
+          isUser: entry.squad_id === userSquadId,
+        };
+      });
   }, [leaderboardResponse, leagueData, squad?.id]);
 
   // Current tour number for display

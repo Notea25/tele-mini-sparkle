@@ -129,17 +129,45 @@ const League = () => {
     const rawData = clubLeaderboardResponse?.data;
     if (!Array.isArray(rawData) || rawData.length === 0) return [];
     
-    return rawData.map((entry: CustomLeagueLeaderboardEntry) => ({
-      id: entry.squad_id,
-      position: entry.place,
-      name: entry.squad_name,
-      tourPoints: entry.tour_points, // Backend already returns net tour points
-      totalPoints: entry.total_points,
-      totalPenaltyPoints: entry.total_penalty_points || 0,
-      penaltyPoints: entry.penalty_points || 0,
-      isUser: entry.squad_id === mySquadId,
-      change: "same" as "up" | "down" | "same",
-    }));
+    // DEBUG: Log first entry to see backend data
+    if (rawData.length > 0) {
+      const firstEntry = rawData[0];
+      console.log('🔍 Клубный лидерборд - первая запись:', {
+        squad_name: firstEntry.squad_name,
+        tour_points: firstEntry.tour_points,
+        total_points: firstEntry.total_points,
+        penalty_points: firstEntry.penalty_points,
+        total_penalty_points: firstEntry.total_penalty_points
+      });
+    }
+    
+    return rawData.map((entry: CustomLeagueLeaderboardEntry) => {
+      // TEMPORARY FIX: If total_points is positive but should be negative
+      // (when total_penalty_points > total_points), negate it
+      let totalPoints = entry.total_points;
+      const totalPenalty = entry.total_penalty_points || 0;
+      
+      // Check if backend returned absolute value instead of net points
+      if (totalPoints > 0 && totalPenalty > 0) {
+        // If penalties are greater than points, it should be negative
+        const netPoints = totalPoints - totalPenalty;
+        if (netPoints < 0) {
+          totalPoints = netPoints;
+        }
+      }
+      
+      return {
+        id: entry.squad_id,
+        position: entry.place,
+        name: entry.squad_name,
+        tourPoints: entry.tour_points,
+        totalPoints,
+        totalPenaltyPoints: totalPenalty,
+        penaltyPoints: entry.penalty_points || 0,
+        isUser: entry.squad_id === mySquadId,
+        change: "same" as "up" | "down" | "same",
+      };
+    });
   }, [clubLeaderboardResponse?.data, mySquadId]);
   const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(() => {
     const savedTab = localStorage.getItem(LEAGUE_TAB_KEY);
@@ -304,30 +332,65 @@ const League = () => {
     const leaderboard = Array.isArray(rawData) ? rawData : [];
     if (leaderboard.length === 0) return [];
     
+    // DEBUG: Log first entry to see backend data
+    if (leaderboard.length > 0) {
+      const firstEntry = leaderboard[0];
+      console.log('🔍 Главный лидерборд - первая запись:', {
+        squad_name: firstEntry.squad_name,
+        tour_points: firstEntry.tour_points,
+        total_points: firstEntry.total_points,
+        penalty_points: firstEntry.penalty_points,
+        total_penalty_points: firstEntry.total_penalty_points
+      });
+    }
+    
     const userEntry = leaderboard.find((entry: LeaderboardEntry) => entry.squad_id === mySquadId);
     
-    const top3 = leaderboard.slice(0, 3).map((entry: LeaderboardEntry) => ({
-      id: entry.squad_id,
-      position: entry.place,
-      name: entry.squad_name,
-      // Backend already returns net tour points (tour_earned - tour_penalty)
-      tourPoints: entry.tour_points,
-      totalPoints: entry.total_points,
-      totalPenaltyPoints: entry.total_penalty_points || 0,
-      isUser: entry.squad_id === mySquadId,
-      change: "same" as "up" | "down" | "same",
-    }));
+    const top3 = leaderboard.slice(0, 3).map((entry: LeaderboardEntry) => {
+      // TEMPORARY FIX: If total_points is positive but should be negative
+      let totalPoints = entry.total_points;
+      const totalPenalty = entry.total_penalty_points || 0;
+      
+      // Check if backend returned absolute value or gross points
+      if (totalPoints > 0 && totalPenalty > 0) {
+        const netPoints = totalPoints - totalPenalty;
+        if (netPoints < 0) {
+          totalPoints = netPoints;
+        }
+      }
+      
+      return {
+        id: entry.squad_id,
+        position: entry.place,
+        name: entry.squad_name,
+        tourPoints: entry.tour_points,
+        totalPoints,
+        totalPenaltyPoints: totalPenalty,
+        isUser: entry.squad_id === mySquadId,
+        change: "same" as "up" | "down" | "same",
+      };
+    });
     
     // Find user's entry if not in top 3 (reuse userEntry from above)
     if (userEntry && userEntry.place > 3) {
+      // Apply same fix for user entry
+      let totalPoints = userEntry.total_points;
+      const totalPenalty = userEntry.total_penalty_points || 0;
+      
+      if (totalPoints > 0 && totalPenalty > 0) {
+        const netPoints = totalPoints - totalPenalty;
+        if (netPoints < 0) {
+          totalPoints = netPoints;
+        }
+      }
+      
       top3.push({
         id: userEntry.squad_id,
         position: userEntry.place,
         name: userEntry.squad_name,
-        // Backend already returns net tour points (tour_earned - tour_penalty)
         tourPoints: userEntry.tour_points,
-        totalPoints: userEntry.total_points,
-        totalPenaltyPoints: userEntry.total_penalty_points || 0,
+        totalPoints,
+        totalPenaltyPoints: totalPenalty,
         isUser: true,
         change: "same" as "up" | "down" | "same",
       });

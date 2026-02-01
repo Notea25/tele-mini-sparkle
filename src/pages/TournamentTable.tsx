@@ -74,16 +74,29 @@ const TournamentTable = () => {
 
   const allTeams = useMemo(() => {
     if (!leaderboardData || !Array.isArray(leaderboardData)) return [];
-    return leaderboardData.map((entry) => ({
-      id: entry.squad_id,
-      position: entry.place,
-      name: entry.squad_name,
-      tourPoints: entry.tour_points,
-      totalPoints: entry.total_points,
-      totalPenaltyPoints: entry.total_penalty_points || 0,
-      isUser: entry.squad_id === mySquadId,
-      change: "same" as "up" | "down" | "same",
-    }));
+    return leaderboardData.map((entry) => {
+      // TEMPORARY FIX: Calculate net points if backend returns gross
+      let totalPoints = entry.total_points;
+      const totalPenalty = entry.total_penalty_points || 0;
+      
+      if (totalPoints > 0 && totalPenalty > 0) {
+        const netPoints = totalPoints - totalPenalty;
+        if (netPoints < 0) {
+          totalPoints = netPoints;
+        }
+      }
+      
+      return {
+        id: entry.squad_id,
+        position: entry.place,
+        name: entry.squad_name,
+        tourPoints: entry.tour_points,
+        totalPoints,
+        totalPenaltyPoints: totalPenalty,
+        isUser: entry.squad_id === mySquadId,
+        change: "same" as "up" | "down" | "same",
+      };
+    });
   }, [leaderboardData, mySquadId]);
 
   const totalPages = Math.max(1, Math.ceil(allTeams.length / itemsPerPage));
