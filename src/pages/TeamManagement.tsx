@@ -438,7 +438,16 @@ const TeamManagement = () => {
     setIsSaving(true);
     try {
       const requestBody = buildRequestBody();
-      const result = await squadsApi.updatePlayers(squad.id, requestBody);
+      // Use new squad_tours API endpoint
+      const result = await squadsApi.replacePlayers(
+        squad.id,
+        {
+          main_player_ids: requestBody.main_player_ids || [],
+          bench_player_ids: requestBody.bench_player_ids || [],
+        },
+        requestBody.captain_id,
+        requestBody.vice_captain_id
+      );
       
       if (result.success) {
         // Save bench order to localStorage so it persists across page visits
