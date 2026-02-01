@@ -1561,7 +1561,16 @@ const TeamBuilder = () => {
                             navigate(`/view-user-league/${userLeagueId}`);
                             return;
                           } else {
-                            // If auto-join fails, don't show error - just keep invite for manual join
+                            // Check if user is already in the league
+                            if (joinResponse.error && (joinResponse.error.includes('уже') || joinResponse.error.includes('already'))) {
+                              // User is already in this league (shouldn't normally happen but handle it)
+                              localStorage.removeItem("fantasyLeagueInvite");
+                              await queryClient.invalidateQueries({ queryKey: ["mySquadLeagues"] });
+                              toast.success(`Вы уже вступили в лигу по данной ссылке-приглашению`);
+                              navigate(`/view-user-league/${userLeagueId}`);
+                              return;
+                            }
+                            // If auto-join fails for other reason, don't show error - just keep invite for manual join
                             console.warn("Auto-join failed:", joinResponse.error);
                             // Navigate to home to show the modal for manual join
                             navigate("/");

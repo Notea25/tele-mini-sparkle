@@ -219,7 +219,17 @@ const Index = () => {
         // Navigate to the league page to show the user they joined
         navigate(`/view-user-league/${userLeagueId}`);
       } else {
-        toast.error(response.error || "Ошибка при вступлении в лигу");
+        // Check if user is already in the league
+        if (response.error && (response.error.includes('уже') || response.error.includes('already'))) {
+          // User is already in this league
+          localStorage.removeItem("fantasyLeagueInvite");
+          toast.success(`Вы уже вступили в лигу по данной ссылке-приглашению`);
+          setShowLeagueInvite(false);
+          // Navigate to the league page
+          navigate(`/view-user-league/${userLeagueId}`);
+        } else {
+          toast.error(response.error || "Ошибка при вступлении в лигу");
+        }
       }
     } catch (error) {
       toast.error("Ошибка при вступлении в лигу");
