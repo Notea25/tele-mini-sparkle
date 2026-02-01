@@ -120,9 +120,11 @@ const ViewTeam = () => {
   useEffect(() => {
     if (!selectedTourId || !squadId) return;
 
-    // If we have a snapshot for this tour, use its points directly
+    // If we have a snapshot for this tour, we use snapshot values directly in UI.
+    // IMPORTANT: snapshot.points is GROSS (earned points), penalty is stored separately.
     if (selectedSnapshot) {
-      setViewTourPoints(selectedSnapshot.points);
+      // Avoid keeping stale leaderboard points when switching tours
+      setViewTourPoints(0);
       setIsLoadingTourPoints(false);
       return;
     }
@@ -284,26 +286,19 @@ const ViewTeam = () => {
     return squadTourData?.penalty_points ?? 0;
   }, [selectedSnapshot, isViewingHistoricalTour, squadTourData?.penalty_points]);
 
-  // Calculate display points (NET = GROSS - penalty)
-  // Backend returns GROSS points (earned points before penalty deduction).
-  // We must subtract penalty_points to get the final net points.
+  // Calculate points displayed in the header.
+  // - For history snapshots: points are GROSS, so NET = points - penalty_points.
+  // - For leaderboard/squad tour points: backend already returns NET (penalty already applied).
   const displayPoints = useMemo(() => {
     if (isLoadingTourPoints && !selectedSnapshot) {
       return 0; // Show 0 while loading to prevent flashing
     }
 
-    // Get GROSS points from the appropriate source
-    let grossPoints = 0;
     if (selectedSnapshot) {
-      grossPoints = selectedSnapshot.points;
-    } else if (selectedTourId) {
-      grossPoints = viewTourPoints;
-    } else {
-      grossPoints = tourPoints;
+      return (selectedSnapshot.points ?? 0) - displayPenaltyPoints;
     }
 
-    // NET = GROSS - penalty
-    return grossPoints - displayPenaltyPoints;
+    return selectedTourId ? viewTourPoints : tourPoints;
   }, [isLoadingTourPoints, selectedSnapshot, selectedTourId, viewTourPoints, tourPoints, displayPenaltyPoints]);
   
   const displayTourNumber = selectedTourNumber || currentTour;
