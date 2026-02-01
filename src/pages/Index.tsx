@@ -65,6 +65,7 @@ const Index = () => {
   const [belarusLeague, setBelarusLeague] = useState<LeagueData | null>(null);
   const [isLoadingLeague, setIsLoadingLeague] = useState(true);
   const [isJoiningLeague, setIsJoiningLeague] = useState(false);
+  const [alreadyInLeague, setAlreadyInLeague] = useState(false);
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -144,20 +145,37 @@ const Index = () => {
     prefetchLeagueData();
   }, [prefetchLeagueData]);
 
-  // Check for league invite
+  // Check for league invite and if user is already in the league
   useEffect(() => {
-    const storedInvite = localStorage.getItem("fantasyLeagueInvite");
-    if (storedInvite) {
+    const checkLeagueInvite = async () => {
+      const storedInvite = localStorage.getItem("fantasyLeagueInvite");
+      if (!storedInvite) return;
+      
       try {
         const invite = JSON.parse(storedInvite);
         setLeagueInviteData(invite);
+        
+        // Check if user already in this league
+        const userLeagueId = parseInt(invite.leagueId, 10);
+        if (Number.isFinite(userLeagueId)) {
+          const myLeaguesResponse = await customLeaguesApi.getMySquadLeagues();
+          if (myLeaguesResponse.success && myLeaguesResponse.data) {
+            const isInLeague = myLeaguesResponse.data.some(
+              (league: any) => league.user_league_id === userLeagueId
+            );
+            setAlreadyInLeague(isInLeague);
+          }
+        }
+        
         setShowLeagueInvite(true);
         // Don't remove invite here - only remove after successful join or explicit close
       } catch {
         // Invalid data, remove it
         localStorage.removeItem("fantasyLeagueInvite");
       }
-    }
+    };
+    
+    void checkLeagueInvite();
   }, []);
 
   // Check if this is a referral link and user is already registered
@@ -700,6 +718,7 @@ const Index = () => {
           inviterName={leagueInviteData.inviter}
           hasTeam={hasTeam}
           isJoining={isJoiningLeague}
+          alreadyInLeague={alreadyInLeague}
           onJoin={handleJoinLeague}
         />
       )}
