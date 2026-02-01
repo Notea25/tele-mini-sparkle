@@ -148,12 +148,14 @@ const App = () => {
       if (showSplash) return;
 
       let isRegisteredBackend: boolean | null = null;
+      let currentUser: any = null;
 
       try {
         const response = await usersApi.getProtected();
         if (response.success && response.data) {
           const anyData = response.data as any;
           const user = anyData.user;
+          currentUser = user;
           const hasName = !!user?.username;
           const hasBirthDate = !!user?.birth_date;
           if (hasName && hasBirthDate) {
@@ -170,6 +172,25 @@ const App = () => {
         isRegisteredBackend !== null
           ? isRegisteredBackend
           : !shouldShowRegistration();
+
+      // Если пользователь зарегистрирован и пришел по реферальной ссылке,
+      // попробуем обновить referrer_id если его еще нет
+      if (isRegistered && currentUser) {
+        const referrerId = localStorage.getItem('fantasyReferrer');
+        if (referrerId && !currentUser.referrer_id) {
+          try {
+            await usersApi.update(currentUser.id, {
+              referrer_id: parseInt(referrerId, 10)
+            });
+            localStorage.removeItem('fantasyReferrer');
+          } catch (error) {
+            console.error('Failed to update referrer_id:', error);
+          }
+        } else if (referrerId) {
+          // Пользователь уже имеет referrer_id, удаляем из localStorage
+          localStorage.removeItem('fantasyReferrer');
+        }
+      }
 
       // Если это инвайт в лигу и пользователь уже зарегистрирован — ничего не показываем
       if (isLeagueInvite && isRegistered) {
