@@ -31,7 +31,7 @@ import extraligaLogo from "@/assets/extraliga-logo.png";
 import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
-//
+
 interface LeagueData {
   id: number;
   name: string;
@@ -140,7 +140,7 @@ const Index = () => {
       }
     };
     fetchLeagueData();
-    
+
     // Prefetch league data in background for instant navigation
     prefetchLeagueData();
   }, [prefetchLeagueData]);
@@ -150,23 +150,21 @@ const Index = () => {
     const checkLeagueInvite = async () => {
       const storedInvite = localStorage.getItem("fantasyLeagueInvite");
       if (!storedInvite) return;
-      
+
       try {
         const invite = JSON.parse(storedInvite);
         setLeagueInviteData(invite);
-        
+
         // Check if user already in this league
         const userLeagueId = parseInt(invite.leagueId, 10);
         if (Number.isFinite(userLeagueId)) {
           const myLeaguesResponse = await customLeaguesApi.getMySquadLeagues();
           if (myLeaguesResponse.success && myLeaguesResponse.data) {
-            const isInLeague = myLeaguesResponse.data.some(
-              (league: any) => league.user_league_id === userLeagueId
-            );
+            const isInLeague = myLeaguesResponse.data.some((league: any) => league.user_league_id === userLeagueId);
             setAlreadyInLeague(isInLeague);
           }
         }
-        
+
         setShowLeagueInvite(true);
         // Don't remove invite here - only remove after successful join or explicit close
       } catch {
@@ -174,7 +172,7 @@ const Index = () => {
         localStorage.removeItem("fantasyLeagueInvite");
       }
     };
-    
+
     void checkLeagueInvite();
   }, []);
 
@@ -238,7 +236,7 @@ const Index = () => {
         navigate(`/view-user-league/${userLeagueId}`);
       } else {
         // Check if user is already in the league
-        if (response.error && (response.error.includes('уже') || response.error.includes('already'))) {
+        if (response.error && (response.error.includes("уже") || response.error.includes("already"))) {
           // User is already in this league
           localStorage.removeItem("fantasyLeagueInvite");
           toast.success(`Вы уже вступили в лигу по данной ссылке-приглашению`);
