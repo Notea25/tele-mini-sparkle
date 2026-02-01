@@ -176,15 +176,22 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
 
     setIsSubmitting(true);
     try {
+      // Get referrer from localStorage
+      const referrerId = localStorage.getItem('fantasyReferrer');
+      
       const response = await usersApi.update(userId, {
         username: trimmedNickname,
         birth_date: isoBirthDate,
+        referrer_id: referrerId ? parseInt(referrerId, 10) : undefined,
       });
 
       if (!response.success) {
         toast.error("Не удалось сохранить данные, попробуй еще раз");
         return;
       }
+      
+      // Clear referrer from localStorage after successful registration
+      localStorage.removeItem('fantasyReferrer');
 
       // Сохраняем данные локально (для профиля/аватарки и оффлайна)
       const profileData = {

@@ -87,6 +87,11 @@ const App = () => {
             leagueName: inviteData.leagueName,
             inviter: inviteData.inviter
           }));
+          
+          // Store referrer userId for registration
+          if (inviteData.userId) {
+            localStorage.setItem('fantasyReferrer', inviteData.userId);
+          }
         } catch (error) {
           console.error('Failed to parse invite data:', error);
         }

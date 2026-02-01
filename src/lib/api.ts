@@ -397,6 +397,7 @@ export interface UserProfile {
   photo_url?: string | null;
   birth_date?: string | null;
   registration_date?: string | null;
+  referrer_id?: number | null;
 }
 
 export interface ProtectedUserResponse {
@@ -404,6 +405,24 @@ export interface ProtectedUserResponse {
   user_id: number;
   authenticated: boolean;
   user?: UserProfile;
+}
+
+export interface UserReferrer {
+  id: number;
+  username: string;
+}
+
+export interface UserReferral {
+  id: number;
+  username: string;
+  registration_date?: string | null;
+}
+
+export interface UserReferralsResponse {
+  total: number;
+  page: number;
+  page_size: number;
+  referrals: UserReferral[];
 }
 
 export const usersApi = {
@@ -417,6 +436,10 @@ export const usersApi = {
       method: 'PUT',
       body: data,
     }),
+  getReferrer: (userId: number) => 
+    apiRequest<UserReferrer | null>(`/api/users/${userId}/referrer`),
+  getReferrals: (userId: number, page: number = 1, pageSize: number = 10) =>
+    apiRequest<UserReferralsResponse>(`/api/users/${userId}/referrals?page=${page}&page_size=${pageSize}`),
 };
 
 // Типы для игроков

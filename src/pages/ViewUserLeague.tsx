@@ -185,7 +185,8 @@ const ViewUserLeague = () => {
     const inviteData = {
       leagueId: leagueId?.toString() || '',
       leagueName,
-      inviter: userName
+      inviter: userName,
+      userId: profileData.oddsGeneralId?.toString() || ''
     };
     const encodedData = btoa(encodeURIComponent(JSON.stringify(inviteData)));
     return `https://t.me/fantasyby_bot?startapp=invite_${encodedData}`;

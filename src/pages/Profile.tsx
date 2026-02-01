@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, UserPlus, X, MessageCircle } from "lucide-react";
+import { Pencil, UserPlus, X, MessageCircle, Users } from "lucide-react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import { Button } from "@/components/ui/button";
 import InviteFriendsDrawer from "@/components/InviteFriendsDrawer";
 import ImageCropDrawer from "@/components/ImageCropDrawer";
 import EditUsernameModal from "@/components/EditUsernameModal";
+import ReferralStatsDrawer from "@/components/ReferralStatsDrawer";
 import { usersApi, UserProfile } from "@/lib/api";
 
 
@@ -35,6 +36,7 @@ const Profile = () => {
   const [backendUser, setBackendUser] = useState<UserProfile | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isEditUsernameModalOpen, setIsEditUsernameModalOpen] = useState(false);
+  const [referralStatsDrawerOpen, setReferralStatsDrawerOpen] = useState(false);
   
   // Load saved profile
   const [savedProfile, setSavedProfile] = useState<ProfileData>(() => {
@@ -340,6 +342,16 @@ const Profile = () => {
             Пригласить друзей
           </Button>
 
+          {/* Referral Stats Button */}
+          <Button
+            onClick={() => setReferralStatsDrawerOpen(true)}
+            variant="outline"
+            className="w-full font-semibold rounded-lg h-12 flex items-center justify-center gap-2 border-border text-foreground hover:bg-secondary"
+          >
+            <Users className="w-5 h-5" />
+            Статистика приглашений
+          </Button>
+
           {/* Feedback Button */}
           <Button
             asChild
@@ -364,6 +376,15 @@ const Profile = () => {
         onOpenChange={setInviteDrawerOpen}
         userId={backendUser?.id.toString() || profile.userName}
       />
+
+      {/* Referral Stats Drawer */}
+      {backendUser && (
+        <ReferralStatsDrawer
+          open={referralStatsDrawerOpen}
+          onOpenChange={setReferralStatsDrawerOpen}
+          userId={backendUser.id}
+        />
+      )}
 
       {/* Home Button */}
       {/* <div className="px-4 pb-6">
