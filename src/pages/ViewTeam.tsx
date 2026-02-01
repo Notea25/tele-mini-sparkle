@@ -284,27 +284,23 @@ const ViewTeam = () => {
     return squadTourData?.penalty_points ?? 0;
   }, [selectedSnapshot, isViewingHistoricalTour, squadTourData?.penalty_points]);
 
-  // Calculate display points: points - penalty_points
-  // points = базовые очки, penalty_points = штраф за трансферы
-  // Итоговые очки = points - penalty_points
+  // Calculate display points (NET points).
+  // IMPORTANT: backend already returns net points with penalties applied for:
+  // - history snapshots: snapshot.points
+  // - squad tours: squadTourData.points (exposed as `tourPoints`)
+  // - leaderboard: entry.tour_points (exposed as `viewTourPoints`)
+  // We show penalty_points separately for transparency, but MUST NOT subtract it again here.
   const displayPoints = useMemo(() => {
     if (isLoadingTourPoints && !selectedSnapshot) {
       return 0; // Show 0 while loading to prevent flashing
     }
-    
-    // Get base points (before penalty)
-    let basePoints = 0;
+
     if (selectedSnapshot) {
-      basePoints = selectedSnapshot.points;
-    } else if (selectedTourId) {
-      basePoints = viewTourPoints;
-    } else {
-      basePoints = tourPoints;
+      return selectedSnapshot.points;
     }
-    
-    // Final points = base points - penalty points
-    return basePoints - displayPenaltyPoints;
-  }, [isLoadingTourPoints, selectedSnapshot, displayPenaltyPoints, selectedTourId, viewTourPoints, tourPoints]);
+
+    return selectedTourId ? viewTourPoints : tourPoints;
+  }, [isLoadingTourPoints, selectedSnapshot, selectedTourId, viewTourPoints, tourPoints]);
   
   const displayTourNumber = selectedTourNumber || currentTour;
 
