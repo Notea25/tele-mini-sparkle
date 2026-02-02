@@ -649,20 +649,20 @@ const League = () => {
             {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mb-4">
               <button
-                className="relative w-full h-[50px] bg-primary rounded-2xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all overflow-hidden"
+                className="relative w-full h-[50px] bg-primary rounded-full flex items-center justify-center cursor-pointer hover:opacity-90 transition-all overflow-hidden"
                 onClick={() => handleNavigate("/team-management")}
               >
                 <span className="text-primary-foreground font-semibold text-base">Команда</span>
-                <div className="absolute bottom-0 right-0 w-[36px] h-[36px] bg-secondary rounded-tl-2xl flex items-center justify-center">
+                <div className="absolute bottom-0 right-0 w-[40px] h-[40px] bg-secondary rounded-tl-3xl flex items-center justify-center">
                   <img src={btnTeamIcon} alt="" className="w-4 h-4 brightness-0 invert" />
                 </div>
               </button>
               <button
-                className="relative w-full h-[50px] bg-primary rounded-2xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-all overflow-hidden"
+                className="relative w-full h-[50px] bg-primary rounded-full flex items-center justify-center cursor-pointer hover:opacity-90 transition-all overflow-hidden"
                 onClick={() => handleNavigate("/transfers")}
               >
                 <span className="text-primary-foreground font-semibold text-base">Трансферы</span>
-                <div className="absolute bottom-0 right-0 w-[36px] h-[36px] bg-secondary rounded-tl-2xl flex items-center justify-center">
+                <div className="absolute bottom-0 right-0 w-[40px] h-[40px] bg-secondary rounded-tl-3xl flex items-center justify-center">
                   <img src={btnTransfersIcon} alt="" className="w-4 h-4 brightness-0 invert" />
                 </div>
               </button>
