@@ -27,7 +27,7 @@ const InviteFriendsDrawer = ({ open, onOpenChange, userId = "user231" }: InviteF
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="bg-secondary border-t border-border rounded-t-3xl">
         <DrawerHeader className="text-center pb-2">
-          <DrawerTitle className="text-2xl font-bold text-foreground">
+          <DrawerTitle className="text-2xl font-display text-foreground">
             Пригласить друзей
           </DrawerTitle>
         </DrawerHeader>
