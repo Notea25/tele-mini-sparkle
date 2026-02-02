@@ -1195,7 +1195,7 @@ const Transfers = () => {
           {/* Divider between selected players and available players */}
           <div className="mx-4 mt-6 mb-2 border-t border-border" />
           <div className="px-4 mb-4">
-            <h3 className="text-foreground text-xl font-semibold">Доступные игроки</h3>
+            <h3 className="text-foreground text-xl font-display">Доступные игроки</h3>
           </div>
 
       {/* Search */}
@@ -1512,7 +1512,7 @@ const Transfers = () => {
       ) : (
         <>
           <div className="px-4 mt-6">
-            <h2 className="text-foreground text-xl font-bold mb-4">Состав команды</h2>
+            <h2 className="text-foreground text-xl font-display mb-4">Состав команды</h2>
           </div>
           <div className="px-4">
             {Object.entries(playersByPosition).map(([position, positionPlayers]) =>

@@ -234,7 +234,7 @@ const ViewComLeague = () => {
       <main className="flex-1 px-4 pb-6">
         {/* League Title */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-foreground">{leagueName}</h1>
+          <h1 className="text-3xl font-display text-foreground">{leagueName}</h1>
           {isFinished && (
             <span className="px-3 py-1 bg-muted text-muted-foreground text-xs rounded-full">
               Завершена
@@ -298,7 +298,7 @@ const ViewComLeague = () => {
         {/* Prize Section */}
         {currentPrize && (
           <div className="mb-6 bg-secondary/30 rounded-xl p-4 border border-border">
-            <h3 className="text-lg font-bold text-foreground mb-3">Главный приз</h3>
+            <h3 className="text-lg font-display text-foreground mb-3">Главный приз</h3>
             <div className="flex items-center gap-4">
               <img 
                 src={currentPrize.image} 

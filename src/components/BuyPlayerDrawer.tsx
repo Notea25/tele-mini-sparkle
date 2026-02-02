@@ -224,7 +224,7 @@ const BuyPlayerDrawer = ({
         <div ref={drawerContentRef} className="p-4 overflow-y-auto max-h-[85vh]">
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-foreground text-xl font-bold">Доступные игроки</h2>
+            <h2 className="text-foreground text-xl font-display">Доступные игроки</h2>
             <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
               <X className="w-6 h-6" />
             </button>

@@ -346,7 +346,7 @@ const ViewTeam = () => {
 
       {/* Team Name */}
       <div className="px-4 mt-4 flex items-center justify-center gap-2">
-        <h1 className="text-foreground text-3xl font-bold">{squad.name}</h1>
+        <h1 className="text-foreground text-3xl font-display">{squad.name}</h1>
       </div>
 
       {/* Tour Navigation */}
@@ -454,7 +454,7 @@ const ViewTeam = () => {
       {activeTab === "list" && (
         <div className="px-4 mt-6 pb-6">
           {/* Main Squad */}
-          <h2 className="text-foreground text-xl font-bold mb-4">Основной состав</h2>
+          <h2 className="text-foreground text-xl font-display mb-4">Основной состав</h2>
 
           {/* Grouped by position */}
           {(["ВР", "ЗЩ", "ПЗ", "НП"] as const).map((position) => {
@@ -527,7 +527,7 @@ const ViewTeam = () => {
           })}
 
           {/* Bench */}
-          <h2 className="text-foreground text-xl font-bold mb-4 mt-8">Замены</h2>
+          <h2 className="text-foreground text-xl font-display mb-4 mt-8">Замены</h2>
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
             <span className="flex-1">Игрок</span>
             <div className="w-12 flex justify-center"><PointsColumnHeader type="tour" /></div>

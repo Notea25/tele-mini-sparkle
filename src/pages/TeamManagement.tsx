@@ -1059,12 +1059,12 @@ const TeamManagement = () => {
       ) : (
         <div className="px-4 mt-6 pb-6">
           {/* Main Squad */}
-          <h2 className="text-foreground text-xl font-bold mb-4">Основной состав</h2>
+          <h2 className="text-foreground text-xl font-display mb-4">Основной состав</h2>
 
           {Object.entries(playersByPosition).map(([position, players]) => renderListSection(position as PositionCode, players))}
 
           {/* Bench */}
-          <h2 className="text-foreground text-xl font-bold mb-4 mt-8">Замены</h2>
+          <h2 className="text-foreground text-xl font-display mb-4 mt-8">Замены</h2>
 
           {/* Column headers */}
           <div className="flex items-center px-4 py-1 text-xs text-muted-foreground">
