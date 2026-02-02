@@ -326,7 +326,7 @@ const PlayerCard = ({
 
             <div className="flex-1 flex flex-col justify-center h-28">
               {/* Player surname */}
-              <h2 className="text-foreground text-2xl font-bold font-display">{player.name}</h2>
+              <h2 className="text-foreground text-2xl font-normal font-display">{player.name}</h2>
 
               {/* Team with logo - Rubik font */}
               <div className="flex items-center gap-2 mt-1">
@@ -390,8 +390,8 @@ const PlayerCard = ({
           <div className="mt-6">
             {/* Headers */}
             <div className="grid grid-cols-2 gap-4 mb-3">
-              <h3 className="text-foreground text-sm font-bold text-left">Форма</h3>
-              <h3 className="text-foreground text-sm font-bold text-left">Календарь</h3>
+              <h3 className="text-foreground text-sm font-normal font-display text-left">Форма</h3>
+              <h3 className="text-foreground text-sm font-normal font-display text-left">Календарь</h3>
             </div>
             
             {/* Rows - each row has one form match and one calendar match */}
