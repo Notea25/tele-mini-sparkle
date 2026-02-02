@@ -9,6 +9,7 @@ import EditTeamNameModal from "@/components/EditTeamNameModal";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { squadsApi, toursApi, customLeaguesApi, commercialLeaguesApi, Squad, LeaderboardEntry, CustomLeagueLeaderboardEntry, CommercialLeague, MySquadLeague } from "@/lib/api";
+import { useImagePreloader } from "@/hooks/useImagePreloader";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -30,12 +31,23 @@ import { restoreTeamFromBackup } from "@/lib/teamData";
 import { safeGetItem } from "@/lib/safeStorage";
 import cupComingSoon from "@/assets/cup-coming-soon.png";
 
+// Preload all page images at module level to start loading immediately
+const ALL_PAGE_IMAGES = [
+  arrowUpRed, arrowDownGreen, arrowSame, arrowDownBlack,
+  trophyGold, trophySilver, trophyBronze,
+  beteraLogo, eslLogo, leagueLogo, aplLogo,
+  btnTeamIcon, btnTransfersIcon, cupComingSoon
+];
+
 const LEAGUE_TAB_KEY = "fantasyLeagueActiveTab";
 const SELECTED_LEAGUE_ID_KEY = "fantasySelectedLeagueId";
 
 const League = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  
+  // Preload all images to prevent flickering when switching tabs
+  const imagesLoaded = useImagePreloader(ALL_PAGE_IMAGES);
   
   // Get league ID from localStorage (default 116)
   const leagueId = parseInt(localStorage.getItem(SELECTED_LEAGUE_ID_KEY) || '116', 10);
@@ -529,6 +541,15 @@ const League = () => {
     }
     return false; // Allow default navigation
   };
+
+  // Show loading state until images are ready
+  if (!imagesLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
