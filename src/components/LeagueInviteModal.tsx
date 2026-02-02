@@ -57,10 +57,7 @@ const LeagueInviteModal = ({
           {alreadyInLeague ? (
             // Already in league state
             <>
-              <h2 
-                className="text-2xl font-bold text-foreground italic"
-                style={{ fontFamily: "Unbounded, sans-serif" }}
-              >
+              <h2 className="text-2xl font-display text-foreground">
                 {leagueName}
               </h2>
 
@@ -78,10 +75,7 @@ const LeagueInviteModal = ({
           ) : (
             // Normal invite state
             <>
-              <h2 
-                className="text-2xl font-bold text-foreground italic"
-                style={{ fontFamily: "Unbounded, sans-serif" }}
-              >
+              <h2 className="text-2xl font-display text-foreground">
                 Добро пожаловать в {leagueName}
               </h2>
 

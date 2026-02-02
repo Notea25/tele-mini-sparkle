@@ -85,7 +85,7 @@ const ConfirmBoostDrawer = ({
         <DrawerContent className="bg-card border-t border-border">
           <div className="px-6 py-6">
             {/* Title */}
-            <h2 className="text-foreground text-xl font-display text-center mb-6">Подтверждение буста</h2>
+            <h2 className="text-xl font-display text-foreground text-center mb-6">Подтверждение буста</h2>
 
             {/* Boost card */}
             <div className="flex flex-col items-center justify-center p-6 bg-secondary/50 rounded-xl mb-6">
