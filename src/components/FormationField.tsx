@@ -915,7 +915,8 @@ import injuryBadge from "@/assets/injury-badge.svg";
 import boostBadge3x from "@/assets/boost-badge-3x.png";
 import boostBadge2x from "@/assets/boost-badge-2x.png";
 import boostBadgeBench from "@/assets/boost-badge-bench.png";
-import { X, Plus, ArrowUp } from "lucide-react";
+import { Plus, ArrowUp } from "lucide-react";
+import iconClose from "@/assets/icon-close.png";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
@@ -1440,20 +1441,21 @@ const FormationField = ({
                   e.stopPropagation();
                   onRemovePlayer(player.id);
                 }}
-                className="absolute z-50 flex items-center justify-center bg-[#5a7a4a] hover:bg-[#6a8a5a] rounded-full transition-colors"
+                className="absolute z-50 flex items-center justify-center rounded-full transition-opacity hover:opacity-80"
                 style={{
-                  width: `${cardSize.width * 0.18}px`,
-                  height: `${cardSize.width * 0.18}px`,
-                  top: "4px",
-                  right: "4px",
+                  width: `${cardSize.width * 0.22}px`,
+                  height: `${cardSize.width * 0.22}px`,
+                  top: "2px",
+                  right: "2px",
                 }}
                 aria-label={`Удалить ${player.name}`}
               >
-                <X
-                  className="text-[#1a2e1a]"
+                <img
+                  src={iconClose}
+                  alt="Удалить"
                   style={{
-                    width: `${cardSize.width * 0.12}px`,
-                    height: `${cardSize.width * 0.12}px`,
+                    width: `${cardSize.width * 0.18}px`,
+                    height: `${cardSize.width * 0.18}px`,
                   }}
                 />
               </button>
