@@ -1516,41 +1516,39 @@ const FormationField = ({
                 }}
               />
 
-              {/* Left league badge - highest priority */}
+              {/* Status badges - all same size and position, priority: leftLeague > redCard > injury */}
               {hasLeftLeague && (
                 <img
                   src={leftLeagueBadge}
                   alt="Покинул чемпионат"
                   className="absolute bottom-1 right-1 z-50"
                   style={{
-                    width: `${cardSize.width * 0.15}px`,
-                    height: `${cardSize.width * 0.15}px`,
+                    width: `${cardSize.width * 0.18}px`,
+                    height: `${cardSize.width * 0.18}px`,
                   }}
                 />
               )}
 
-              {/* Red card badge */}
               {hasRedCard && !hasLeftLeague && (
                 <img
                   src={redCardBadge}
                   alt="Red card"
                   className="absolute bottom-1 right-1 z-50"
                   style={{
-                    width: `${cardSize.width * 0.12}px`,
-                    height: `${cardSize.width * 0.12}px`,
+                    width: `${cardSize.width * 0.18}px`,
+                    height: `${cardSize.width * 0.18}px`,
                   }}
                 />
               )}
 
-              {/* Injury badge */}
               {isInjured && !hasRedCard && !hasLeftLeague && (
                 <img
                   src={injuryBadge}
                   alt="Injury"
                   className="absolute bottom-1 right-1 z-50"
                   style={{
-                    width: `${cardSize.width * 0.12}px`,
-                    height: `${cardSize.width * 0.12}px`,
+                    width: `${cardSize.width * 0.18}px`,
+                    height: `${cardSize.width * 0.18}px`,
                   }}
                 />
               )}
