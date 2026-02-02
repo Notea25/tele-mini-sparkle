@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { User, Copy } from "lucide-react";
@@ -9,6 +9,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/u
 import { safeGetItem } from "@/lib/safeStorage";
 import { customLeaguesApi } from "@/lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useImagePreloader } from "@/hooks/useImagePreloader";
 
 import arrowDownGreen from "@/assets/arrow-down-green.png";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -36,6 +37,13 @@ const CreateLeague = () => {
   const [viewingLeague, setViewingLeague] = useState<CreatedLeague | null>(null);
   const [showInviteDrawer, setShowInviteDrawer] = useState(false);
   const [userLeaguesCount, setUserLeaguesCount] = useState(0);
+
+  // Preload images before showing content
+  const imagesToPreload = useMemo(
+    () => [leagueCreationPlayers, arrowDownGreen, arrowUpRed, arrowSame],
+    []
+  );
+  const imagesLoaded = useImagePreloader(imagesToPreload);
 
   const createLeagueMutation = useMutation({
     mutationFn: (name: string) => customLeaguesApi.createUserLeague({ name, league_id: 116 }),
@@ -227,6 +235,15 @@ const CreateLeague = () => {
             </div>
           </DrawerContent>
         </Drawer>
+      </div>
+    );
+  }
+
+  // Show loading state until images are ready
+  if (!imagesLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
