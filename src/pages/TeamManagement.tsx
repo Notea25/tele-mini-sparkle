@@ -72,6 +72,7 @@ interface PlayerDataExt extends PlayerData {
   isOnBench?: boolean;
   hasRedCard?: boolean;
   isInjured?: boolean;
+  hasLeftLeague?: boolean;
   team_logo?: string;
 }
 
@@ -289,6 +290,9 @@ const TeamManagement = () => {
           isCaptain: squadTourData?.captain_id === p.id,
           isViceCaptain: squadTourData?.vice_captain_id === p.id,
           isOnBench: false,
+          hasRedCard: p.hasRedCard,
+          isInjured: p.isInjured,
+          hasLeftLeague: p.hasLeftLeague,
           nextOpponent: opponentData.nextOpponent,
           nextOpponentHome: opponentData.nextOpponentHome,
         };
@@ -309,6 +313,9 @@ const TeamManagement = () => {
           total_points: p.total_points,
           slotIndex: p.slotIndex,
           isOnBench: true,
+          hasRedCard: p.hasRedCard,
+          isInjured: p.isInjured,
+          hasLeftLeague: p.hasLeftLeague,
           nextOpponent: opponentData.nextOpponent,
           nextOpponentHome: opponentData.nextOpponentHome,
         };
