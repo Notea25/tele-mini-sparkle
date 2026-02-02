@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, customLeaguesApi, commercialLeaguesApi, ApiResponse, BoostType, apiRequest } from '@/lib/api';
+import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, customLeaguesApi, commercialLeaguesApi, playerStatusesApi, ApiResponse, BoostType, apiRequest, PlayerStatusCreate, PlayerStatusType } from '@/lib/api';
 
 const BackendTest = () => {
   const navigate = useNavigate();
@@ -81,6 +81,28 @@ const BackendTest = () => {
   const [isBoostsOpen, setIsBoostsOpen] = useState(false);
   const [isCommercialLeaguesOpen, setIsCommercialLeaguesOpen] = useState(false);
   const [isSquadToursOpen, setIsSquadToursOpen] = useState(false);
+  const [isPlayerStatusesOpen, setIsPlayerStatusesOpen] = useState(false);
+
+  // Player Statuses state
+  const [statusIdInput, setStatusIdInput] = useState('1');
+  const [statusPlayerIdInput, setStatusPlayerIdInput] = useState('1');
+  const [statusTourNumberInput, setStatusTourNumberInput] = useState('1');
+  const [statusTypeInput, setStatusTypeInput] = useState<PlayerStatusType>('injured');
+  const [statusTourStartInput, setStatusTourStartInput] = useState('1');
+  const [statusTourEndInput, setStatusTourEndInput] = useState('');
+  const [statusDescriptionInput, setStatusDescriptionInput] = useState('');
+  const [loadingStatusById, setLoadingStatusById] = useState(false);
+  const [loadingPlayerStatuses, setLoadingPlayerStatuses] = useState(false);
+  const [loadingStatusForTour, setLoadingStatusForTour] = useState(false);
+  const [loadingCreateStatus, setLoadingCreateStatus] = useState(false);
+  const [loadingUpdateStatus, setLoadingUpdateStatus] = useState(false);
+  const [loadingDeleteStatus, setLoadingDeleteStatus] = useState(false);
+  const [statusByIdResponse, setStatusByIdResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [playerStatusesResponse, setPlayerStatusesResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [statusForTourResponse, setStatusForTourResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [createStatusResponse, setCreateStatusResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [updateStatusResponse, setUpdateStatusResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [deleteStatusResponse, setDeleteStatusResponse] = useState<ApiResponse<unknown> | null>(null);
 
   // Squad Tours state
   const [squadTourSquadIdInput, setSquadTourSquadIdInput] = useState('7');
@@ -499,6 +521,112 @@ const BackendTest = () => {
     }
   };
 
+  // Player Statuses test functions
+  const testStatusById = async () => {
+    setLoadingStatusById(true);
+    try {
+      const result = await playerStatusesApi.getById(parseInt(statusIdInput) || 1);
+      setStatusByIdResponse(result);
+    } catch (err) {
+      setStatusByIdResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingStatusById(false);
+    }
+  };
+
+  const testPlayerStatuses = async () => {
+    setLoadingPlayerStatuses(true);
+    try {
+      const result = await playerStatusesApi.getPlayerStatuses(parseInt(statusPlayerIdInput) || 1);
+      setPlayerStatusesResponse(result);
+    } catch (err) {
+      setPlayerStatusesResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingPlayerStatuses(false);
+    }
+  };
+
+  const testStatusForTour = async () => {
+    setLoadingStatusForTour(true);
+    try {
+      const result = await playerStatusesApi.getStatusForTour(
+        parseInt(statusPlayerIdInput) || 1,
+        parseInt(statusTourNumberInput) || 1
+      );
+      setStatusForTourResponse(result);
+    } catch (err) {
+      setStatusForTourResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingStatusForTour(false);
+    }
+  };
+
+  const testCreateStatus = async () => {
+    setLoadingCreateStatus(true);
+    try {
+      const data: PlayerStatusCreate = {
+        status_type: statusTypeInput,
+        tour_start: parseInt(statusTourStartInput) || 1,
+        tour_end: statusTourEndInput ? parseInt(statusTourEndInput) : null,
+        description: statusDescriptionInput || null,
+      };
+      const result = await playerStatusesApi.createStatus(parseInt(statusPlayerIdInput) || 1, data);
+      setCreateStatusResponse(result);
+    } catch (err) {
+      setCreateStatusResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingCreateStatus(false);
+    }
+  };
+
+  const testUpdateStatus = async () => {
+    setLoadingUpdateStatus(true);
+    try {
+      const data = {
+        status_type: statusTypeInput,
+        tour_start: parseInt(statusTourStartInput) || 1,
+        tour_end: statusTourEndInput ? parseInt(statusTourEndInput) : null,
+        description: statusDescriptionInput || null,
+      };
+      const result = await playerStatusesApi.updateStatus(parseInt(statusIdInput) || 1, data);
+      setUpdateStatusResponse(result);
+    } catch (err) {
+      setUpdateStatusResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingUpdateStatus(false);
+    }
+  };
+
+  const testDeleteStatus = async () => {
+    setLoadingDeleteStatus(true);
+    try {
+      const result = await playerStatusesApi.deleteStatus(parseInt(statusIdInput) || 1);
+      setDeleteStatusResponse(result);
+    } catch (err) {
+      setDeleteStatusResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingDeleteStatus(false);
+    }
+  };
+
   // Section component for collapsible groups
   const Section = ({ title, isOpen, onToggle, children }: {
     title: string; 
@@ -843,6 +971,157 @@ const BackendTest = () => {
         {renderResponse(squadToursAllResponse, 'Ответ: Squad Tours All')}
         {renderResponse(squadToursByTourResponse, 'Ответ: Squad Tours By Tour')}
         {renderResponse(allSquadToursResponse, 'Ответ: All Squad Tours')}
+      </Section>
+
+      {/* PLAYER STATUSES SECTION */}
+      <Section title="🏥 Player Statuses" isOpen={isPlayerStatusesOpen} onToggle={() => setIsPlayerStatusesOpen(!isPlayerStatusesOpen)}>
+        <div className="space-y-4">
+          {/* GET by Status ID */}
+          <h3 className="text-sm font-semibold text-muted-foreground">GET /api/player-statuses/{'{status_id}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={statusIdInput}
+              onChange={(e) => setStatusIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Status ID"
+            />
+            <Button onClick={testStatusById} disabled={loadingStatusById} className="flex-1">
+              {loadingStatusById ? 'Загрузка...' : `GET /api/player-statuses/${statusIdInput}`}
+            </Button>
+          </div>
+
+          {/* GET Player Statuses */}
+          <h3 className="text-sm font-semibold text-muted-foreground">GET /api/player-statuses/players/{'{player_id}'}/statuses</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={statusPlayerIdInput}
+              onChange={(e) => setStatusPlayerIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Player ID"
+            />
+            <Button onClick={testPlayerStatuses} disabled={loadingPlayerStatuses} className="flex-1">
+              {loadingPlayerStatuses ? 'Загрузка...' : `GET /api/player-statuses/players/${statusPlayerIdInput}/statuses`}
+            </Button>
+          </div>
+
+          {/* GET Status for Tour */}
+          <h3 className="text-sm font-semibold text-muted-foreground">GET /api/player-statuses/players/{'{player_id}'}/statuses/tour/{'{tour_number}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={statusPlayerIdInput}
+              onChange={(e) => setStatusPlayerIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Player ID"
+            />
+            <input
+              type="number"
+              value={statusTourNumberInput}
+              onChange={(e) => setStatusTourNumberInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Tour"
+            />
+            <Button onClick={testStatusForTour} disabled={loadingStatusForTour} className="flex-1">
+              {loadingStatusForTour ? 'Загрузка...' : `GET .../statuses/tour/${statusTourNumberInput}`}
+            </Button>
+          </div>
+
+          {/* CREATE Status */}
+          <h3 className="text-sm font-semibold text-muted-foreground mt-4">POST /api/player-statuses/players/{'{player_id}'}/statuses</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm text-muted-foreground">Player ID</label>
+              <input
+                type="number"
+                value={statusPlayerIdInput}
+                onChange={(e) => setStatusPlayerIdInput(e.target.value)}
+                className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground">Status Type</label>
+              <select
+                value={statusTypeInput}
+                onChange={(e) => setStatusTypeInput(e.target.value as PlayerStatusType)}
+                className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              >
+                <option value="injured">injured</option>
+                <option value="red_card">red_card</option>
+                <option value="left_league">left_league</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground">Tour Start</label>
+              <input
+                type="number"
+                value={statusTourStartInput}
+                onChange={(e) => setStatusTourStartInput(e.target.value)}
+                className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground">Tour End (optional)</label>
+              <input
+                type="number"
+                value={statusTourEndInput}
+                onChange={(e) => setStatusTourEndInput(e.target.value)}
+                className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+                placeholder="null = indefinite"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Description (optional)</label>
+            <input
+              type="text"
+              value={statusDescriptionInput}
+              onChange={(e) => setStatusDescriptionInput(e.target.value)}
+              className="w-full px-2 py-2 bg-background text-foreground rounded border border-border"
+              placeholder="Описание статуса"
+            />
+          </div>
+          <Button onClick={testCreateStatus} disabled={loadingCreateStatus} variant="destructive" className="w-full">
+            {loadingCreateStatus ? 'Загрузка...' : `POST /api/player-statuses/players/${statusPlayerIdInput}/statuses`}
+          </Button>
+
+          {/* UPDATE Status */}
+          <h3 className="text-sm font-semibold text-muted-foreground mt-4">PUT /api/player-statuses/{'{status_id}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={statusIdInput}
+              onChange={(e) => setStatusIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Status ID"
+            />
+            <Button onClick={testUpdateStatus} disabled={loadingUpdateStatus} variant="outline" className="flex-1">
+              {loadingUpdateStatus ? 'Загрузка...' : `PUT /api/player-statuses/${statusIdInput}`}
+            </Button>
+          </div>
+
+          {/* DELETE Status */}
+          <h3 className="text-sm font-semibold text-muted-foreground mt-4">DELETE /api/player-statuses/{'{status_id}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={statusIdInput}
+              onChange={(e) => setStatusIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Status ID"
+            />
+            <Button onClick={testDeleteStatus} disabled={loadingDeleteStatus} variant="destructive" className="flex-1">
+              {loadingDeleteStatus ? 'Загрузка...' : `DELETE /api/player-statuses/${statusIdInput}`}
+            </Button>
+          </div>
+        </div>
+        {renderResponse(statusByIdResponse, 'Ответ: Status By ID')}
+        {renderResponse(playerStatusesResponse, 'Ответ: Player Statuses')}
+        {renderResponse(statusForTourResponse, 'Ответ: Status For Tour')}
+        {renderResponse(createStatusResponse, 'Ответ: Create Status')}
+        {renderResponse(updateStatusResponse, 'Ответ: Update Status')}
+        {renderResponse(deleteStatusResponse, 'Ответ: Delete Status')}
       </Section>
 
       {/* MATCHES SECTION */}
