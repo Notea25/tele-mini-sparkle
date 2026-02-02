@@ -25,21 +25,21 @@ const InviteFriendsDrawer = ({ open, onOpenChange, userId = "user231" }: InviteF
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="bg-secondary border-t border-border rounded-t-3xl">
-        <DrawerHeader className="text-center pb-2">
-          <DrawerTitle className="text-2xl font-display text-foreground">
+      <DrawerContent className="bg-background border-t border-border">
+        <DrawerHeader className="text-center">
+          <DrawerTitle className="text-xl font-display text-foreground">
             Пригласить друзей
           </DrawerTitle>
         </DrawerHeader>
 
-        <div className="px-6 pb-8 space-y-6">
+        <div className="px-6 pb-6 space-y-6">
           {/* QR Code Section */}
           <div className="flex flex-col items-center gap-3">
-            <span className="text-muted-foreground text-sm">QR</span>
-            <div className="bg-white p-4 rounded-xl">
+            <span className="text-sm text-muted-foreground">QR</span>
+            <div className="bg-white p-4 rounded-lg">
               <QRCodeSVG 
                 value={inviteLink} 
-                size={200}
+                size={180}
                 level="M"
                 includeMargin={false}
               />
@@ -48,23 +48,24 @@ const InviteFriendsDrawer = ({ open, onOpenChange, userId = "user231" }: InviteF
 
           {/* Invite Link Section */}
           <div className="space-y-2">
-            <span className="text-foreground text-sm">Ссылка приглашения</span>
-            <div 
-              onClick={handleCopyLink}
-              className="flex items-center justify-between bg-background rounded-xl px-4 py-3 cursor-pointer hover:bg-background/80 transition-colors"
-            >
-              <span className="text-muted-foreground text-sm truncate pr-2">
+            <span className="text-sm text-muted-foreground">Ссылка приглашения</span>
+            <div className="flex items-center gap-2 bg-secondary/50 rounded-xl px-4 py-3">
+              <span className="flex-1 text-foreground text-sm truncate">
                 {inviteLink}
               </span>
-              <Copy className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+              <button
+                onClick={handleCopyLink}
+                className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              >
+                <Copy className="w-5 h-5 text-muted-foreground" />
+              </button>
             </div>
           </div>
 
           {/* Close Button */}
           <Button
             onClick={() => onOpenChange(false)}
-            variant="outline"
-            className="w-full rounded-lg h-12 border-border text-foreground hover:bg-background"
+            className="w-full rounded-lg py-6 font-semibold bg-primary text-primary-foreground"
           >
             Закрыть
           </Button>
