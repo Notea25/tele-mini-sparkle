@@ -280,7 +280,7 @@ const BoostDrawer = ({ chip, isOpen, onClose, onApply, onCancel, onRemove, curre
               <div className="mb-4">
                 <img src={chip.icon} alt={chip.label} className="w-16 h-16 object-contain" />
               </div>
-              <DrawerTitle className="text-2xl font-display text-foreground mb-4 text-center">
+              <DrawerTitle className="text-xl font-display text-foreground mb-4 text-center">
                 {boostInfo?.title || chip.label}
               </DrawerTitle>
               <div className="text-muted-foreground text-sm leading-relaxed text-left w-full">
