@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SportHeader from "@/components/SportHeader";
 import PromoBanner from "@/components/PromoBanner";
@@ -13,6 +13,7 @@ import { hasCreatedTeam } from "@/lib/onboardingUtils";
 import { leaguesApi, customLeaguesApi, squadsApi } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePrefetchLeagueData } from "@/hooks/usePrefetchLeagueData";
+import { useImagePreloader } from "@/hooks/useImagePreloader";
 import leagueLogo from "@/assets/belarus-league-logo.png";
 import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
@@ -31,6 +32,17 @@ import extraligaLogo from "@/assets/extraliga-logo.png";
 import aplLogo from "@/assets/apl-logo.png";
 import beteraBasketballLogo from "@/assets/betera-basketball-logo.png";
 import { Card } from "@/components/ui/card";
+
+// Critical images to preload (above-the-fold content)
+const CRITICAL_IMAGES = [
+  leagueLogo,
+  iconFootball,
+  iconBasketball,
+  iconHockey,
+  iconCs2,
+  championsLeagueLogo,
+  europaLeagueLogo,
+];
 
 interface LeagueData {
   id: number;
@@ -66,6 +78,9 @@ const Index = () => {
   const [isLoadingLeague, setIsLoadingLeague] = useState(true);
   const [isJoiningLeague, setIsJoiningLeague] = useState(false);
   const [alreadyInLeague, setAlreadyInLeague] = useState(false);
+
+  // Preload critical images
+  const imagesLoaded = useImagePreloader(CRITICAL_IMAGES);
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -350,6 +365,15 @@ const Index = () => {
   };
 
   const sortedLeagues = getSortedLeagues();
+
+  // Show loading state until critical images are ready
+  if (!imagesLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
