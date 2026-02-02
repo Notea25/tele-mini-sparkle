@@ -12,6 +12,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { squadsApi, Team } from "@/lib/api";
 import { useTeams } from "@/hooks/useTeams";
 import { usePrefetchLeagueData } from "@/hooks/usePrefetchLeagueData";
+import { useImagePreloader } from "@/hooks/useImagePreloader";
 import { Filter } from "bad-words";
 import { toast } from "sonner";
 import bannerBg from "@/assets/beterra-banner-bg-2.webp";
@@ -55,6 +56,24 @@ import naftanLogo from "@/assets/clubs/naftanLogo.png";
 import nemanLogo from "@/assets/clubs/nemanLogo.png";
 import slaviaLogo from "@/assets/clubs/slaviaLogo.png";
 import torpedoLogo from "@/assets/clubs/torpedoLogo.png";
+
+// Critical images to preload (above-the-fold content)
+const CRITICAL_IMAGES = [
+  bgImage,
+  createTeamBannerLogo,
+  scoringExample,
+  leaderboardExample,
+  prizesBanner,
+  karpovichTransferCard,
+  vakulichTransferCard,
+  swapArrowsPurple,
+  vakulichCard,
+  kozlovCard,
+  bykovCard,
+  karpovichCard,
+  khvashchinskyCard,
+  gutorCard,
+];
 
 const MAX_NAME_LENGTH = 15;
 
@@ -126,6 +145,9 @@ const CreateTeam = () => {
   const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
   const [isCreating, setIsCreating] = useState(false);
   const { prefetchLeagueData } = usePrefetchLeagueData();
+  
+  // Preload critical images before showing content
+  const imagesLoaded = useImagePreloader(CRITICAL_IMAGES);
 
   // Prefetch league data in background for instant navigation after team creation
   useEffect(() => {
@@ -174,6 +196,15 @@ const CreateTeam = () => {
     toast.success("Перейдите к выбору игроков!");
     navigate("/team-builder", { state: { teamName: name } });
   };
+
+  // Show loading state until critical images are ready
+  if (!imagesLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
