@@ -60,7 +60,7 @@ const CategoryFilter = ({ activeCategory = "all", onCategoryClick }: CategoryFil
               }`}
               onClick={() => handleClick(category.id, category.scrollTo)}
             >
-              <img src={category.icon} alt={category.label} className="w-5 h-5 object-contain" />
+              <img src={category.icon} alt={category.label} className={`w-5 h-5 object-contain ${isActive ? "brightness-0 invert" : ""}`} />
               <span className={`text-[12px] font-medium ${isActive ? "text-primary-foreground" : "text-[#6D6A88]"}`}>
                 {category.label}
               </span>

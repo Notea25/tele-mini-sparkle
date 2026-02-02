@@ -430,7 +430,7 @@ export const usersApi = {
   getById: (id: number) => apiRequest<UserProfile>(`/api/users/${id}`),
   update: (
     userId: number,
-    data: Partial<Pick<UserProfile, 'username' | 'birth_date' | 'photo_url'>>,
+    data: Partial<Pick<UserProfile, 'username' | 'birth_date' | 'photo_url' | 'referrer_id'>>,
   ) =>
     apiRequest<{ status: string; user: UserProfile }>(`/api/users/update?user_id=${userId}`, {
       method: 'PUT',
