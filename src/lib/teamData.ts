@@ -14,6 +14,7 @@ export interface PlayerData {
   isOnBench?: boolean;
   hasRedCard?: boolean;
   isInjured?: boolean;
+  hasLeftLeague?: boolean; // Игрок покинул чемпионат
 }
 
 export interface SavedTeam {

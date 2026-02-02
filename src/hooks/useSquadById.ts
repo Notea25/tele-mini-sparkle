@@ -15,6 +15,7 @@ export interface EnrichedPlayer {
   slotIndex?: number;
   hasRedCard?: boolean;
   isInjured?: boolean;
+  hasLeftLeague?: boolean; // Игрок покинул чемпионат
 }
 
 interface UseSquadByIdResult {
@@ -170,6 +171,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         slotIndex: 0,
         hasRedCard: fullPlayer?.has_red_card,
         isInjured: fullPlayer?.is_injured,
+        hasLeftLeague: fullPlayer?.has_left_league,
       };
     });
 
@@ -209,6 +211,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         slotIndex,
         hasRedCard: fullPlayer?.has_red_card,
         isInjured: fullPlayer?.is_injured,
+        hasLeftLeague: fullPlayer?.has_left_league,
       };
     });
   }, [squadTourData, playerMap]);

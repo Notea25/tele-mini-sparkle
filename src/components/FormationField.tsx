@@ -912,6 +912,7 @@ import viceCaptainBadge from "@/assets/vice-captain-badge.png";
 import swapArrows from "@/assets/swap-arrows.png";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.svg";
+import leftLeagueBadge from "@/assets/left-league-badge.png";
 import boostBadge3x from "@/assets/boost-badge-3x.png";
 import boostBadge2x from "@/assets/boost-badge-2x.png";
 import boostBadgeBench from "@/assets/boost-badge-bench.png";
@@ -934,6 +935,7 @@ export interface FormationPlayerData {
   isViceCaptain?: boolean;
   hasRedCard?: boolean;
   isInjured?: boolean;
+  hasLeftLeague?: boolean; // Игрок покинул чемпионат
   nextOpponent?: string; // Next match opponent team name
   nextOpponentHome?: boolean; // Is next match at home?
 }
@@ -1204,6 +1206,7 @@ const FormationField = ({
       const isNewPlayer = newPlayerIds.has(player.id);
       const hasRedCard = player.hasRedCard;
       const isInjured = player.isInjured;
+      const hasLeftLeague = player.hasLeftLeague;
 
       // Boost visibility
       const showDoublePowerBorder = isDoublePowerBoostActive && isCaptainOrVice;
@@ -1222,7 +1225,7 @@ const FormationField = ({
         borderClass = "border-primary border-2";
       } else if (isValidSwapTarget) {
         borderClass = "border-primary/80 border-2";
-      } else if (hasRedCard || isInjured) {
+      } else if (hasLeftLeague || hasRedCard || isInjured) {
         borderClass = "border-red-500";
       } else if (showDoublePowerBorder || showCaptain3xBorder || (isOnBench && isBenchBoostActive)) {
         borderClass = "border-primary";
@@ -1239,7 +1242,7 @@ const FormationField = ({
         bgClass = "bg-primary/30";
       } else if (isValidSwapTarget) {
         bgClass = "bg-primary/20";
-      } else if (hasRedCard || isInjured) {
+      } else if (hasLeftLeague || hasRedCard || isInjured) {
         bgClass = "bg-red-500/25";
       } else if (hasBoostEffect) {
         bgClass = "bg-primary/25";
@@ -1513,8 +1516,21 @@ const FormationField = ({
                 }}
               />
 
+              {/* Left league badge - highest priority */}
+              {hasLeftLeague && (
+                <img
+                  src={leftLeagueBadge}
+                  alt="Покинул чемпионат"
+                  className="absolute bottom-1 right-1 z-50"
+                  style={{
+                    width: `${cardSize.width * 0.15}px`,
+                    height: `${cardSize.width * 0.15}px`,
+                  }}
+                />
+              )}
+
               {/* Red card badge */}
-              {hasRedCard && (
+              {hasRedCard && !hasLeftLeague && (
                 <img
                   src={redCardBadge}
                   alt="Red card"
@@ -1527,7 +1543,7 @@ const FormationField = ({
               )}
 
               {/* Injury badge */}
-              {isInjured && !hasRedCard && (
+              {isInjured && !hasRedCard && !hasLeftLeague && (
                 <img
                   src={injuryBadge}
                   alt="Injury"

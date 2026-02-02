@@ -454,6 +454,7 @@ export interface Player {
   points: number; // total_points - общие очки за все туры с бэкенда
   is_injured?: boolean;
   has_red_card?: boolean;
+  has_left_league?: boolean; // Игрок покинул чемпионат (не участвует в фэнтези)
 }
 
 // Типы для полной информации об игроке
