@@ -811,7 +811,7 @@ const TeamBuilder = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-primary"
+            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-transparent"
             onClick={() => setIsEditTeamNameModalOpen(true)}
           >
             <Pencil className="w-4 h-4" />
