@@ -653,7 +653,7 @@ const League = () => {
                 onClick={() => handleNavigate("/team-management")}
               >
                 <span className="text-primary-foreground font-semibold text-base">Команда</span>
-                <div className="absolute bottom-0 right-0 w-[36px] h-[36px] bg-secondary rounded-tl-2xl flex items-center justify-center">
+                <div className="absolute bottom-0 right-0 w-[36px] h-[36px] bg-secondary rounded-tl-xl flex items-center justify-center">
                   <img src={btnTeamIcon} alt="" className="w-4 h-4 brightness-0 invert" />
                 </div>
               </button>
@@ -662,7 +662,7 @@ const League = () => {
                 onClick={() => handleNavigate("/transfers")}
               >
                 <span className="text-primary-foreground font-semibold text-base">Трансферы</span>
-                <div className="absolute bottom-0 right-0 w-[36px] h-[36px] bg-secondary rounded-tl-2xl flex items-center justify-center">
+                <div className="absolute bottom-0 right-0 w-[36px] h-[36px] bg-secondary rounded-tl-xl flex items-center justify-center">
                   <img src={btnTransfersIcon} alt="" className="w-4 h-4 brightness-0 invert" />
                 </div>
               </button>
