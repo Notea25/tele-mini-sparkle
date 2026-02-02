@@ -577,7 +577,6 @@ const BackendTest = () => {
         status_type: statusTypeInput,
         tour_start: parseInt(statusTourStartInput) || 1,
         tour_end: statusTourEndInput ? parseInt(statusTourEndInput) : null,
-        description: statusDescriptionInput || null,
       };
       const result = await playerStatusesApi.createStatus(parseInt(statusPlayerIdInput) || 1, data);
       setCreateStatusResponse(result);
@@ -598,7 +597,6 @@ const BackendTest = () => {
         status_type: statusTypeInput,
         tour_start: parseInt(statusTourStartInput) || 1,
         tour_end: statusTourEndInput ? parseInt(statusTourEndInput) : null,
-        description: statusDescriptionInput || null,
       };
       const result = await playerStatusesApi.updateStatus(parseInt(statusIdInput) || 1, data);
       setUpdateStatusResponse(result);

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { squadsApi, playersApi, toursApi, squadToursApi, Squad, SquadTourResponse, Player, ToursResponse } from "@/lib/api";
+import { squadsApi, playersApi, toursApi, squadToursApi, playerStatusesApi, Squad, SquadTourResponse, Player, ToursResponse, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 
 export interface EnrichedPlayer {
   id: number;
@@ -110,6 +110,18 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     return null;
   }, [toursData]);
 
+  // Determine target tour NUMBER for fetching player statuses
+  const targetTourNumber = useMemo(() => {
+    if (toursData?.next_tour?.number) return toursData.next_tour.number;
+    if (toursData?.current_tour?.number) {
+      const deadline = toursData.current_tour.deadline ? new Date(toursData.current_tour.deadline) : null;
+      if (deadline && deadline <= new Date()) {
+        return toursData.current_tour.number;
+      }
+    }
+    return null;
+  }, [toursData]);
+
   // NEW: Fetch SquadTour data using the new squad_tours API endpoint
   const { data: squadTourResponse, isLoading: squadTourLoading } = useQuery({
     queryKey: ['squad-tour-new', squad?.id, targetTourId],
@@ -124,7 +136,30 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     refetchOnWindowFocus: true,
   });
 
-  // Extract squad tour data from new API response
+  // Fetch player statuses for the target tour
+  const { data: playerStatusesResponse, isLoading: statusesLoading } = useQuery({
+    queryKey: ['player-statuses-tour', targetTourNumber],
+    queryFn: () => 
+      targetTourNumber 
+        ? playerStatusesApi.getByTourNumber(targetTourNumber)
+        : Promise.resolve(null),
+    enabled: !!targetTourNumber,
+    staleTime: 60000, // Cache for 1 minute
+    gcTime: 300000, // Keep in cache for 5 minutes
+  });
+
+  // Create a map for quick status lookup by player_id
+  const playerStatusMap = useMemo(() => {
+    const map = new Map<number, PlayerStatus[]>();
+    if (playerStatusesResponse?.success && playerStatusesResponse.data) {
+      for (const status of playerStatusesResponse.data) {
+        const existing = map.get(status.player_id) || [];
+        existing.push(status);
+        map.set(status.player_id, existing);
+      }
+    }
+    return map;
+  }, [playerStatusesResponse]);
   const squadTourData = useMemo((): SquadTourResponse | null => {
     if (squadTourResponse?.success && squadTourResponse.data) {
       return squadTourResponse.data;
@@ -165,6 +200,16 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     return map;
   }, [allPlayers]);
 
+  // Helper function to get player status flags from status map
+  const getPlayerStatusFlags = (playerId: number) => {
+    const statuses = playerStatusMap.get(playerId) || [];
+    return {
+      hasRedCard: statuses.some(s => s.status_type === STATUS_RED_CARD),
+      isInjured: statuses.some(s => s.status_type === STATUS_INJURED),
+      hasLeftLeague: statuses.some(s => s.status_type === STATUS_LEFT_LEAGUE),
+    };
+  };
+
   // Enrich main players with full data and assign slotIndex per position
   // Now using squadTourData from squad_tours API which already contains player details
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
@@ -173,6 +218,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     // First, map all players with their positions
     const playersWithPositions = squadTourData.main_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
+      const statusFlags = getPlayerStatusFlags(sp.id);
       return {
         id: sp.id,
         name: sp.name,
@@ -185,9 +231,9 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         total_points: sp.total_points ?? 0,
         tour_points: sp.tour_points ?? 0,
         slotIndex: 0, // Will be assigned below
-        hasRedCard: fullPlayer?.has_red_card,
-        isInjured: fullPlayer?.is_injured,
-        hasLeftLeague: fullPlayer?.has_left_league,
+        hasRedCard: statusFlags.hasRedCard,
+        isInjured: statusFlags.isInjured,
+        hasLeftLeague: statusFlags.hasLeftLeague,
       };
     });
 
@@ -199,7 +245,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
       positionCounters[player.position] = slotIndex + 1;
       return { ...player, slotIndex };
     });
-  }, [squadTourData, playerMap]);
+  }, [squadTourData, playerMap, playerStatusMap]);
 
   // Enrich bench players with full data
   // Now using squadTourData from squad_tours API which already contains player details
@@ -211,6 +257,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
 
     return squadTourData.bench_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
+      const statusFlags = getPlayerStatusFlags(sp.id);
       const position = mapPosition(sp.position || fullPlayer?.position || "Midfielder");
       const slotIndex = positionCounters[position] || 0;
       positionCounters[position] = slotIndex + 1;
@@ -227,12 +274,12 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         total_points: sp.total_points ?? 0,
         tour_points: sp.tour_points ?? 0,
         slotIndex,
-        hasRedCard: fullPlayer?.has_red_card,
-        isInjured: fullPlayer?.is_injured,
-        hasLeftLeague: fullPlayer?.has_left_league,
+        hasRedCard: statusFlags.hasRedCard,
+        isInjured: statusFlags.isInjured,
+        hasLeftLeague: statusFlags.hasLeftLeague,
       };
     });
-  }, [squadTourData, playerMap]);
+  }, [squadTourData, playerMap, playerStatusMap]);
 
   const currentTour = toursData?.current_tour?.number || null;
   const nextTour = toursData?.next_tour?.number || null;
@@ -241,7 +288,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
   // For boosts: бусты можно использовать ТОЛЬКО для следующего тура
   const boostTourId = nextTourId;
 
-  const isLoading = squadsLoading || playersLoading || toursLoading || squadTourLoading;
+  const isLoading = squadsLoading || playersLoading || toursLoading || squadTourLoading || statusesLoading;
   const error = squadsError ? (squadsError instanceof Error ? squadsError.message : 'Unknown error') : null;
 
   const refetch = async () => {
