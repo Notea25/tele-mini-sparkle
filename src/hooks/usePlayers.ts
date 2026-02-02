@@ -19,16 +19,21 @@ export interface TransformedPlayer {
   position: string;    // Преобразовано в ВР/ЗЩ/ПЗ/НП
   points: number;
   price: number;       // market_value / 1000
+  hasRedCard?: boolean;
+  isInjured?: boolean;
+  hasLeftLeague?: boolean;
 }
 
 interface PlayersCache {
   leagueId: string;
   players: TransformedPlayer[];
   cachedAt: number;
+  version?: number; // Cache version for invalidation
 }
 
 const CACHE_KEY = 'fantasyPlayersCache';
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+const CACHE_VERSION = 2; // Increment to invalidate old cache
 
 export function usePlayers(leagueId: string | null) {
   const [players, setPlayers] = useState<TransformedPlayer[]>([]);
@@ -47,10 +52,12 @@ export function usePlayers(leagueId: string | null) {
         if (cached) {
           const parsedCache: PlayersCache = JSON.parse(cached);
           const now = Date.now();
+          // Check cache validity: same league, not expired, has data, and correct version
           if (
             parsedCache.leagueId === leagueId &&
             now - parsedCache.cachedAt < CACHE_DURATION &&
-            parsedCache.players.length > 0
+            parsedCache.players.length > 0 &&
+            parsedCache.version === CACHE_VERSION
           ) {
             setPlayers(parsedCache.players);
             setIsLoading(false);
@@ -75,6 +82,10 @@ export function usePlayers(leagueId: string | null) {
             position: POSITION_MAP[player.position] || player.position,
             points: player.points,
             price: Math.round((player.market_value / 1000) * 10) / 10, // 8224 → 8.2
+            // Test mode overrides for visual states
+            hasRedCard: player.name.includes('Lukashov') ? true : player.has_red_card,
+            isInjured: player.name.includes('Anufriev') ? true : player.is_injured,
+            hasLeftLeague: player.name.includes('Gweth') ? true : player.has_left_league,
           }));
 
           setPlayers(transformedPlayers);
@@ -84,6 +95,7 @@ export function usePlayers(leagueId: string | null) {
             leagueId,
             players: transformedPlayers,
             cachedAt: Date.now(),
+            version: CACHE_VERSION,
           };
           localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
         }
