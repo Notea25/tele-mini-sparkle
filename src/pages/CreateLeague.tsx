@@ -239,7 +239,7 @@ const CreateLeague = () => {
       <main className="flex-1 px-4 pb-6">
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-6 px-4 font-display">
+        <h1 className="text-2xl md:text-3xl text-center text-foreground mb-6 px-4 font-display">
           Создай свою лигу
         </h1>
 
