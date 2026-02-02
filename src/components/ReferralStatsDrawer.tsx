@@ -76,7 +76,7 @@ const ReferralStatsDrawer = ({ open, onOpenChange, userId }: ReferralStatsDrawer
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="bg-background border-border max-h-[85vh]">
         <DrawerHeader className="border-b border-border pb-4 relative">
-          <DrawerTitle className="text-xl font-display text-center">
+          <DrawerTitle className="text-xl font-display text-foreground text-center">
             Статистика приглашений
           </DrawerTitle>
           <DrawerClose asChild>
