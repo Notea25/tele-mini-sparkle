@@ -169,9 +169,10 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         total_points: sp.total_points,
         tour_points: sp.tour_points,
         slotIndex: 0,
-        hasRedCard: fullPlayer?.has_red_card,
-        isInjured: fullPlayer?.is_injured,
-        hasLeftLeague: fullPlayer?.has_left_league,
+        // Test mode overrides for visual states
+        hasRedCard: sp.name.includes('Lukashov') ? true : fullPlayer?.has_red_card,
+        isInjured: sp.name.includes('Anufriev') ? true : fullPlayer?.is_injured,
+        hasLeftLeague: sp.name.includes('Gweth') ? true : fullPlayer?.has_left_league,
       };
     });
 
@@ -209,9 +210,10 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         total_points: sp.total_points,
         tour_points: sp.tour_points,
         slotIndex,
-        hasRedCard: fullPlayer?.has_red_card,
-        isInjured: fullPlayer?.is_injured,
-        hasLeftLeague: fullPlayer?.has_left_league,
+        // Test mode overrides for visual states
+        hasRedCard: sp.name.includes('Lukashov') ? true : fullPlayer?.has_red_card,
+        isInjured: sp.name.includes('Anufriev') ? true : fullPlayer?.is_injured,
+        hasLeftLeague: sp.name.includes('Gweth') ? true : fullPlayer?.has_left_league,
       };
     });
   }, [squadTourData, playerMap]);
