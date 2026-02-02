@@ -455,22 +455,18 @@ export interface PlayerStatus {
   status_type: PlayerStatusType;
   tour_start: number;
   tour_end: number | null; // null = indefinite
-  description?: string | null;
-  created_at: string;
 }
 
 export interface PlayerStatusCreate {
   status_type: PlayerStatusType;
   tour_start: number;
   tour_end?: number | null;
-  description?: string | null;
 }
 
 export interface PlayerStatusUpdate {
   status_type?: PlayerStatusType;
   tour_start?: number;
   tour_end?: number | null;
-  description?: string | null;
 }
 
 // Типы для игроков
