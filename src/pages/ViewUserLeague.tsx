@@ -403,7 +403,7 @@ const ViewUserLeague = () => {
       <Drawer open={showInviteDrawer} onOpenChange={setShowInviteDrawer}>
         <DrawerContent className="bg-background border-t border-border">
           <DrawerHeader className="text-center">
-            <DrawerTitle className="text-xl font-bold text-foreground">
+            <DrawerTitle className="text-xl font-display text-foreground">
               Пригласить друзей
             </DrawerTitle>
           </DrawerHeader>
@@ -452,7 +452,7 @@ const ViewUserLeague = () => {
       <Drawer open={showLeaveConfirmDrawer} onOpenChange={setShowLeaveConfirmDrawer}>
         <DrawerContent className="bg-background border-t border-border">
           <DrawerHeader className="text-center">
-            <DrawerTitle className="text-xl font-bold text-foreground">
+            <DrawerTitle className="text-xl font-display text-foreground">
               Покинуть лигу?
             </DrawerTitle>
           </DrawerHeader>
@@ -487,7 +487,7 @@ const ViewUserLeague = () => {
       <Drawer open={showDeleteConfirmDrawer} onOpenChange={setShowDeleteConfirmDrawer}>
         <DrawerContent className="bg-background border-t border-border">
           <DrawerHeader className="text-center">
-            <DrawerTitle className="text-xl font-bold text-foreground">
+            <DrawerTitle className="text-xl font-display text-foreground">
               Удалить лигу?
             </DrawerTitle>
           </DrawerHeader>
