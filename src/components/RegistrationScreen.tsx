@@ -252,10 +252,10 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
       <div className="flex flex-col items-center px-6 py-6">
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-2 px-4 font-display">
+        <h1 className="text-2xl md:text-3xl text-center text-foreground mb-2 px-4 font-display">
           Добро пожаловать
         </h1>
-        <h2 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-4 px-4 font-display">
+        <h2 className="text-2xl md:text-3xl text-center text-foreground mb-4 px-4 font-display">
           в Fantasy Sports
         </h2>
 

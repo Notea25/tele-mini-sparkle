@@ -278,7 +278,7 @@ const ViewUserLeague = () => {
       <main className="flex-1 px-4 pb-6">
         {/* League Title with Owner Badge */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-foreground">{leagueName}</h1>
+          <h1 className="text-2xl font-display text-foreground">{leagueName}</h1>
           {isOwner && (
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
               <User className="w-5 h-5 text-primary" />
