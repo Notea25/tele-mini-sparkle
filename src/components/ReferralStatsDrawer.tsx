@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { usersApi } from "@/lib/api";
 import type { UserReferrer, UserReferral, UserReferralsResponse } from "@/lib/api";
 import { toast } from "sonner";
@@ -75,19 +74,10 @@ const ReferralStatsDrawer = ({ open, onOpenChange, userId }: ReferralStatsDrawer
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="bg-background border-border max-h-[85vh]">
-        <DrawerHeader className="border-b border-border pb-4 relative">
+        <DrawerHeader className="border-b border-border pb-4">
           <DrawerTitle className="text-xl font-display text-foreground text-center">
             Статистика приглашений
           </DrawerTitle>
-          <DrawerClose asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-4 h-8 w-8 rounded-full"
-            >
-              <X className="h-5 w-5" />
-            </Button>
-          </DrawerClose>
         </DrawerHeader>
 
         <div className="p-6 space-y-6 overflow-y-auto">
