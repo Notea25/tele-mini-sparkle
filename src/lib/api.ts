@@ -442,6 +442,37 @@ export const usersApi = {
     apiRequest<UserReferralsResponse>(`/api/users/${userId}/referrals?page=${page}&page_size=${pageSize}`),
 };
 
+// Типы для статусов игроков
+export type PlayerStatusType = 'red_card' | 'injured' | 'left_league';
+
+export const STATUS_RED_CARD = 'red_card';
+export const STATUS_INJURED = 'injured';
+export const STATUS_LEFT_LEAGUE = 'left_league';
+
+export interface PlayerStatus {
+  id: number;
+  player_id: number;
+  status_type: PlayerStatusType;
+  tour_start: number;
+  tour_end: number | null; // null = indefinite
+  description?: string | null;
+  created_at: string;
+}
+
+export interface PlayerStatusCreate {
+  status_type: PlayerStatusType;
+  tour_start: number;
+  tour_end?: number | null;
+  description?: string | null;
+}
+
+export interface PlayerStatusUpdate {
+  status_type?: PlayerStatusType;
+  tour_start?: number;
+  tour_end?: number | null;
+  description?: string | null;
+}
+
 // Типы для игроков
 export interface Player {
   id: number;
@@ -452,9 +483,12 @@ export interface Player {
   position: string; // "Defender", "Attacker", "Midfielder", "Goalkeeper"
   market_value: number;
   points: number; // total_points - общие очки за все туры с бэкенда
+  current_status?: PlayerStatusType | null; // Active status for current tour
+  statuses?: PlayerStatus[]; // Full status history
+  // Deprecated fields (for backward compatibility)
   is_injured?: boolean;
   has_red_card?: boolean;
-  has_left_league?: boolean; // Игрок покинул чемпионат (не участвует в фэнтези)
+  has_left_league?: boolean;
 }
 
 // Типы для полной информации об игроке
@@ -503,6 +537,35 @@ export const playersApi = {
     apiRequest<Player[]>(`/api/players/league/${leagueId}/players_with_points`),
   getFullInfo: (playerId: number) =>
     apiRequest<PlayerFullInfoResponse>(`/api/players/${playerId}/full-info`),
+};
+
+// Методы для работы со статусами игроков
+export const playerStatusesApi = {
+  getById: (statusId: number) =>
+    apiRequest<PlayerStatus>(`/api/player-statuses/${statusId}`),
+  
+  getPlayerStatuses: (playerId: number) =>
+    apiRequest<PlayerStatus[]>(`/api/player-statuses/players/${playerId}/statuses`),
+  
+  getStatusForTour: (playerId: number, tourNumber: number) =>
+    apiRequest<PlayerStatus[]>(`/api/player-statuses/players/${playerId}/statuses/tour/${tourNumber}`),
+  
+  createStatus: (playerId: number, data: PlayerStatusCreate) =>
+    apiRequest<PlayerStatus>(`/api/player-statuses/players/${playerId}/statuses`, {
+      method: 'POST',
+      body: data,
+    }),
+  
+  updateStatus: (statusId: number, data: PlayerStatusUpdate) =>
+    apiRequest<PlayerStatus>(`/api/player-statuses/${statusId}`, {
+      method: 'PUT',
+      body: data,
+    }),
+  
+  deleteStatus: (statusId: number) =>
+    apiRequest<void>(`/api/player-statuses/${statusId}`, {
+      method: 'DELETE',
+    }),
 };
 
 // Типы для бустов
