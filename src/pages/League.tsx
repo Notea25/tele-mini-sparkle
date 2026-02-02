@@ -181,13 +181,8 @@ const League = () => {
       };
     });
   }, [clubLeaderboardResponse?.data, mySquadId]);
-  const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(() => {
-    const savedTab = localStorage.getItem(LEAGUE_TAB_KEY);
-    if (savedTab === "main" || savedTab === "leagues" || savedTab === "cup") {
-      return savedTab;
-    }
-    return "main";
-  });
+  // Always start on "main" tab when entering the page
+  const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">("main");
   const [teamName, setTeamName] = useState(() => {
     return localStorage.getItem("fantasyTeamName") || "Lucky Team";
   });
@@ -565,7 +560,6 @@ const League = () => {
               onClick={() => {
                 const newTab = tab.id as "main" | "leagues" | "cup";
                 setActiveTab(newTab);
-                localStorage.setItem(LEAGUE_TAB_KEY, newTab);
               }}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                 activeTab === tab.id
