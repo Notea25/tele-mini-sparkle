@@ -169,7 +169,7 @@ const TournamentTable = () => {
       <main className="flex-1 px-4 pb-6">
 
         {/* Title */}
-        <h1 className="text-3xl font-bold text-foreground mb-6">Турнирная таблица</h1>
+        <h1 className="text-2xl font-display text-foreground mb-6">Турнирная таблица</h1>
 
         {/* Table header */}
         <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">

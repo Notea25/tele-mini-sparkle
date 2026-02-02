@@ -678,7 +678,7 @@ const League = () => {
             </div>
 
             {/* Tournament Table */}
-            <h2 className="text-2xl font-bold text-foreground mb-4">Турнирная таблица</h2>
+            <h2 className="text-2xl font-display text-foreground mb-4">Турнирная таблица</h2>
 
             {/* Table header */}
             <div className="grid grid-cols-12 gap-1 items-center px-3 py-2 text-muted-foreground">
@@ -765,7 +765,7 @@ const League = () => {
             {/* Commercial Leagues Section */}
             <div className="mb-8">
               {/* Section Title */}
-              <h2 className="text-2xl font-bold text-foreground mb-2">Коммерческие лиги</h2>
+              <h2 className="text-2xl font-display text-foreground mb-2">Коммерческие лиги</h2>
               {/* Section Description */}
               <p className="text-muted-foreground text-sm mb-6">Соревнуйся за призы в коммерческих лигах</p>
 
@@ -980,7 +980,7 @@ const League = () => {
             </div>
 
             {/* My Leagues */}
-            <h2 className="text-2xl font-bold text-foreground mb-2">Мои лиги</h2>
+            <h2 className="text-2xl font-display text-foreground mb-2">Мои лиги</h2>
             <p className="text-muted-foreground text-sm mb-4">
               Соревнуйся с друзьями в собственных мини-лигах внутри Высшей лиги Беларуси по футболу
             </p>
@@ -1068,7 +1068,7 @@ const League = () => {
             </Button>
 
             {/* Club League */}
-            <h2 className="text-2xl font-bold text-foreground mb-2">{clubLeagueName}</h2>
+            <h2 className="text-2xl font-display text-foreground mb-2">{clubLeagueName}</h2>
             <p className="text-muted-foreground text-sm mb-4">
               Соревнуйся с другими болельщиками твоего любимого клуба
             </p>
@@ -1247,7 +1247,7 @@ const League = () => {
         {activeTab === "cup" && (
           <div className="w-full">
             {/* Main Cup */}
-            <h2 className="text-2xl font-bold text-foreground mb-4">Кубок</h2>
+            <h2 className="text-2xl font-display text-foreground mb-4">Кубок</h2>
 
             {/* Coming soon image */}
             <img 
