@@ -82,10 +82,9 @@ export function usePlayers(leagueId: string | null) {
             position: POSITION_MAP[player.position] || player.position,
             points: player.points,
             price: Math.round((player.market_value / 1000) * 10) / 10, // 8224 → 8.2
-            // Test mode overrides for visual states
-            hasRedCard: player.name.includes('Lukashov') ? true : player.has_red_card,
-            isInjured: player.name.includes('Anufriev') ? true : player.is_injured,
-            hasLeftLeague: player.name.includes('Gweth') ? true : player.has_left_league,
+            hasRedCard: player.has_red_card,
+            isInjured: player.is_injured,
+            hasLeftLeague: player.has_left_league,
           }));
 
           setPlayers(transformedPlayers);
