@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { squadsApi, playersApi, toursApi, squadToursApi, Squad, SquadTourResponse, Player, ToursResponse } from "@/lib/api";
+import { squadsApi, playersApi, toursApi, squadToursApi, playerStatusesApi, Squad, SquadTourResponse, Player, ToursResponse, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 
 export interface EnrichedPlayer {
   id: number;
@@ -46,6 +46,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
   const [squadTourData, setSquadTourData] = useState<SquadTourResponse | null>(null);
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [toursData, setToursData] = useState<ToursResponse | null>(null);
+  const [playerStatuses, setPlayerStatuses] = useState<PlayerStatus[]>([]);
   const [tourPoints, setTourPoints] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -112,6 +113,23 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
             ? toursResponse.data.current_tour?.id
             : toursResponse.data.previous_tour?.id;
 
+          // Get tour number for fetching player statuses
+          const targetTourNumber = useCurrentTour
+            ? toursResponse.data.current_tour?.number
+            : toursResponse.data.previous_tour?.number;
+
+          // Fetch player statuses for this tour
+          if (targetTourNumber) {
+            try {
+              const statusesResponse = await playerStatusesApi.getByTourNumber(targetTourNumber);
+              if (statusesResponse.success && statusesResponse.data) {
+                setPlayerStatuses(statusesResponse.data);
+              }
+            } catch (err) {
+              console.error('Failed to fetch player statuses:', err);
+            }
+          }
+
           if (targetTourId) {
             try {
               // Use the new squad_tours API endpoint
@@ -150,6 +168,27 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
     return map;
   }, [allPlayers]);
 
+  // Create a map for quick status lookup by player_id
+  const playerStatusMap = useMemo(() => {
+    const map = new Map<number, PlayerStatus[]>();
+    for (const status of playerStatuses) {
+      const existing = map.get(status.player_id) || [];
+      existing.push(status);
+      map.set(status.player_id, existing);
+    }
+    return map;
+  }, [playerStatuses]);
+
+  // Helper function to get player status flags from status map
+  const getPlayerStatusFlags = (playerId: number) => {
+    const statuses = playerStatusMap.get(playerId) || [];
+    return {
+      hasRedCard: statuses.some(s => s.status_type === STATUS_RED_CARD),
+      isInjured: statuses.some(s => s.status_type === STATUS_INJURED),
+      hasLeftLeague: statuses.some(s => s.status_type === STATUS_LEFT_LEAGUE),
+    };
+  };
+
   // Enrich main players with full data and assign slotIndex per position
   // Now using squadTourData from squad_tours API which already contains player details
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
@@ -157,6 +196,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
     const playersWithPositions = squadTourData.main_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
+      const statusFlags = getPlayerStatusFlags(sp.id);
       return {
         id: sp.id,
         name: sp.name,
@@ -169,9 +209,9 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         total_points: sp.total_points,
         tour_points: sp.tour_points,
         slotIndex: 0,
-        hasRedCard: fullPlayer?.has_red_card,
-        isInjured: fullPlayer?.is_injured,
-        hasLeftLeague: fullPlayer?.has_left_league,
+        hasRedCard: statusFlags.hasRedCard,
+        isInjured: statusFlags.isInjured,
+        hasLeftLeague: statusFlags.hasLeftLeague,
       };
     });
 
@@ -182,7 +222,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
       positionCounters[player.position] = slotIndex + 1;
       return { ...player, slotIndex };
     });
-  }, [squadTourData, playerMap]);
+  }, [squadTourData, playerMap, playerStatusMap]);
 
   // Enrich bench players with full data
   // Now using squadTourData from squad_tours API which already contains player details
@@ -193,6 +233,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
     return squadTourData.bench_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
+      const statusFlags = getPlayerStatusFlags(sp.id);
       const position = mapPosition(sp.position || fullPlayer?.position || "Midfielder");
       const slotIndex = positionCounters[position] || 0;
       positionCounters[position] = slotIndex + 1;
@@ -209,12 +250,12 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         total_points: sp.total_points,
         tour_points: sp.tour_points,
         slotIndex,
-        hasRedCard: fullPlayer?.has_red_card,
-        isInjured: fullPlayer?.is_injured,
-        hasLeftLeague: fullPlayer?.has_left_league,
+        hasRedCard: statusFlags.hasRedCard,
+        isInjured: statusFlags.isInjured,
+        hasLeftLeague: statusFlags.hasLeftLeague,
       };
     });
-  }, [squadTourData, playerMap]);
+  }, [squadTourData, playerMap, playerStatusMap]);
 
   const currentTour = toursData?.current_tour?.number || null;
 

@@ -546,6 +546,10 @@ export const playerStatusesApi = {
   getStatusForTour: (playerId: number, tourNumber: number) =>
     apiRequest<PlayerStatus[]>(`/api/player-statuses/players/${playerId}/statuses/tour/${tourNumber}`),
   
+  // Get ALL active player statuses for a specific tour number
+  getByTourNumber: (tourNumber: number) =>
+    apiRequest<PlayerStatus[]>(`/api/player-statuses/tour/${tourNumber}`),
+  
   createStatus: (playerId: number, data: PlayerStatusCreate) =>
     apiRequest<PlayerStatus>(`/api/player-statuses/players/${playerId}/statuses`, {
       method: 'POST',
