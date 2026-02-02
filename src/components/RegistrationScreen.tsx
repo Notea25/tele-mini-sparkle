@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { useImagePreloader } from "@/hooks/useImagePreloader";
 import playersWelcome from "@/assets/players-welcome.png";
 import logo from "@/assets/logo-new.png";
 import { Filter } from "bad-words";
@@ -50,6 +51,10 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
   const [isBirthDateFocused, setIsBirthDateFocused] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Preload all images before showing content
+  const imagesToPreload = useMemo(() => [logo, playersWelcome], []);
+  const imagesLoaded = useImagePreloader(imagesToPreload);
 
   const scrollToButton = () => {
     setTimeout(() => {
@@ -235,6 +240,15 @@ const RegistrationScreen = ({ onComplete }: RegistrationScreenProps) => {
     setNickname(e.target.value.slice(0, 15));
     if (nicknameError) setNicknameError(null);
   };
+
+  // Show loading state until all images are ready
+  if (!imagesLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background overflow-auto">

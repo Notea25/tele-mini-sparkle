@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { useImagePreloader } from "@/hooks/useImagePreloader";
 import onboardingField from "@/assets/onboarding-field.png";
 import onboardingTransfers from "@/assets/onboarding-transfers.png";
 import onboardingPrizes from "@/assets/onboarding-prizes-new.png";
@@ -46,6 +47,13 @@ interface OnboardingScreenProps {
 const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Preload all images before showing content
+  const imagesToPreload = useMemo(
+    () => [logo, onboardingField, onboardingTransfers, onboardingPrizes],
+    []
+  );
+  const imagesLoaded = useImagePreloader(imagesToPreload);
+
   const handleNext = () => {
     if (currentSlide < slides.length - 1) {
       setCurrentSlide(currentSlide + 1);
@@ -59,6 +67,15 @@ const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
   };
 
   const slide = slides[currentSlide];
+
+  // Show loading state until all images are ready
+  if (!imagesLoaded) {
+    return (
+      <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[9998] flex flex-col bg-background">
