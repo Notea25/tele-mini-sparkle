@@ -102,11 +102,25 @@ export const TelegramProvider = ({ children }: TelegramProviderProps) => {
         try {
           // @ts-ignore
           const rawInitData: string | undefined = window.Telegram?.WebApp?.initData;
+          console.log("Telegram initData available:", !!rawInitData);
           if (rawInitData) {
-            await loginWithTelegram(rawInitData);
+            console.log("Attempting Telegram login...");
+            const loginResponse = await loginWithTelegram(rawInitData);
+            console.log("Login response:", loginResponse);
+            if (!loginResponse.success) {
+              console.error("Telegram login failed:", loginResponse.error);
+              // Show error to user if in Telegram but login failed
+              alert(`Ошибка авторизации: ${loginResponse.error || 'Неизвестная ошибка'}. Попробуйте перезапустить приложение.`);
+            } else {
+              console.log("Telegram login successful");
+            }
+          } else {
+            console.warn("No initData available from Telegram WebApp");
           }
         } catch (authError) {
-          console.error("Telegram login failed:", authError);
+          console.error("Telegram login exception:", authError);
+          // Show error to user
+          alert(`Критическая ошибка авторизации. Попробуйте перезапустить приложение.`);
         }
 
         setIsTelegram(true);
