@@ -10,6 +10,9 @@ interface PlayerData {
   points: number;
   price?: number;
   slotIndex?: number;
+  hasRedCard?: boolean;
+  isInjured?: boolean;
+  hasLeftLeague?: boolean;
 }
 
 interface TeamListViewProps {
@@ -94,6 +97,11 @@ const TeamListView = ({
                           </div>
                           <span className="text-foreground font-medium truncate">{slot.player.name}</span>
                           <span className="text-muted-foreground text-xs ml-2">{section.position}</span>
+                          {slot.player.hasLeftLeague && !slot.player.hasRedCard && !slot.player.isInjured && (
+                            <span className="bg-gray-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0 ml-2">
+                              У
+                            </span>
+                          )}
                         </div>
 
                         {/* Points */}
