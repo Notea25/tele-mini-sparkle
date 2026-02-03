@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, ReactNode } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { cn } from "@/lib/utils";
 
 interface Tab {
   id: string;
@@ -23,6 +24,8 @@ const SwipeableTabs = ({
 }: SwipeableTabsProps) => {
   const isNavigatingRef = useRef(false);
   const activeIndex = tabs.findIndex((t) => t.id === activeTab);
+  const [scrollProgress, setScrollProgress] = useState(activeIndex >= 0 ? activeIndex : 0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
@@ -74,6 +77,27 @@ const SwipeableTabs = ({
     },
   });
   
+  // Track scroll progress for indicator animation
+  useEffect(() => {
+    if (!emblaApi) return;
+    
+    const onScroll = () => {
+      const progress = emblaApi.scrollProgress();
+      const maxIndex = tabs.length - 1;
+      // Convert 0-1 progress to tab index range
+      const currentProgress = progress * maxIndex;
+      setScrollProgress(currentProgress);
+    };
+    
+    emblaApi.on("scroll", onScroll);
+    emblaApi.on("reInit", onScroll);
+    
+    return () => {
+      emblaApi.off("scroll", onScroll);
+      emblaApi.off("reInit", onScroll);
+    };
+  }, [emblaApi, tabs.length]);
+  
   // Handle tab button click
   const handleTabClick = useCallback((tabId: string) => {
     const index = tabs.findIndex((t) => t.id === tabId);
@@ -121,20 +145,66 @@ const SwipeableTabs = ({
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, tabs, activeTab, onTabChange]);
+
+  // Calculate indicator position and width based on scroll progress
+  const getIndicatorStyle = () => {
+    if (tabRefs.current.length === 0) return {};
+    
+    const floorIndex = Math.floor(scrollProgress);
+    const ceilIndex = Math.min(Math.ceil(scrollProgress), tabs.length - 1);
+    const fraction = scrollProgress - floorIndex;
+    
+    const currentTab = tabRefs.current[floorIndex];
+    const nextTab = tabRefs.current[ceilIndex];
+    
+    if (!currentTab) return {};
+    
+    const currentLeft = currentTab.offsetLeft;
+    const currentWidth = currentTab.offsetWidth;
+    
+    if (floorIndex === ceilIndex || !nextTab) {
+      return {
+        left: currentLeft,
+        width: currentWidth,
+      };
+    }
+    
+    const nextLeft = nextTab.offsetLeft;
+    const nextWidth = nextTab.offsetWidth;
+    
+    // Interpolate position and width
+    const left = currentLeft + (nextLeft - currentLeft) * fraction;
+    const width = currentWidth + (nextWidth - currentWidth) * fraction;
+    
+    return { left, width };
+  };
+
+  const indicatorStyle = getIndicatorStyle();
   
   return (
-    <div className={`swipeable-tabs ${className}`}>
+    <div className={cn("swipeable-tabs", className)}>
       {/* Tab Headers */}
-      <div className="bg-secondary/50 rounded-lg p-1 flex mb-6">
-        {tabs.map((tab) => (
+      <div className="relative bg-secondary/50 rounded-lg p-1 flex mb-6">
+        {/* Animated indicator */}
+        <div 
+          className="absolute top-1 bottom-1 bg-primary rounded-md transition-[left,width] duration-75 ease-out shadow-neon"
+          style={{
+            left: indicatorStyle.left ?? 0,
+            width: indicatorStyle.width ?? 0,
+          }}
+        />
+        
+        {tabs.map((tab, index) => (
           <button
             key={tab.id}
+            ref={(el) => { tabRefs.current[index] = el; }}
             onClick={() => handleTabClick(tab.id)}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+            className={cn(
+              "relative z-10 flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200",
               activeTab === tab.id
-                ? "bg-primary text-primary-foreground"
+                ? "text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
-            }`}
+            )}
           >
             {tab.label}
           </button>
@@ -143,9 +213,12 @@ const SwipeableTabs = ({
       
       {/* Swipeable Content */}
       <div ref={emblaRef} className="overflow-hidden">
-        <div className="flex touch-pan-y">
+        <div className="flex touch-pan-y" style={{ gap: '16px' }}>
           {children.map((child, index) => (
-            <div key={tabs[index]?.id || index} className="flex-[0_0_100%] min-w-0">
+            <div 
+              key={tabs[index]?.id || index} 
+              className="flex-[0_0_100%] min-w-0"
+            >
               {child}
             </div>
           ))}
