@@ -460,8 +460,9 @@ const Transfers = () => {
         team_logo: p.team_logo,
         isCaptain: squadTourData?.captain_id === p.id,
         isViceCaptain: squadTourData?.vice_captain_id === p.id,
-        nextOpponent: p.next_opponent_team_name || "",
-        nextOpponentHome: p.next_opponent_is_home ?? false,
+        // Используем уже обогащённые поля из useSquadData
+        nextOpponent: p.nextOpponent || "",
+        nextOpponentHome: p.nextOpponentHome ?? false,
         // Добавляем статусы из API
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
@@ -480,8 +481,9 @@ const Transfers = () => {
         total_points: p.total_points,
         slotIndex: p.slotIndex,
         team_logo: p.team_logo,
-        nextOpponent: p.next_opponent_team_name || "",
-        nextOpponentHome: p.next_opponent_is_home ?? false,
+        // Используем уже обогащённые поля из useSquadData
+        nextOpponent: p.nextOpponent || "",
+        nextOpponentHome: p.nextOpponentHome ?? false,
         // Добавляем статусы из API
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,

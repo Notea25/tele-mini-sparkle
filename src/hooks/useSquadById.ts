@@ -16,6 +16,9 @@ export interface EnrichedPlayer {
   hasRedCard?: boolean;
   isInjured?: boolean;
   hasLeftLeague?: boolean; // Игрок покинул чемпионат
+  // Информация о следующем сопернике для подписи на плитке
+  nextOpponent?: string;
+  nextOpponentHome?: boolean;
 }
 
 interface UseSquadByIdResult {

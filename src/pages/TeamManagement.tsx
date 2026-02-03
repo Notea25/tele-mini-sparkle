@@ -292,8 +292,9 @@ const TeamManagement = () => {
           hasRedCard: p.hasRedCard,
           isInjured: p.isInjured,
           hasLeftLeague: p.hasLeftLeague,
-          nextOpponent: p.next_opponent_team_name || "",
-          nextOpponentHome: p.next_opponent_is_home ?? false,
+          // Используем уже обогащённые поля из useSquadData
+          nextOpponent: p.nextOpponent || "",
+          nextOpponentHome: p.nextOpponentHome ?? false,
         };
       });
       setMainSquadPlayers(convertedMain);
@@ -314,8 +315,9 @@ const TeamManagement = () => {
           hasRedCard: p.hasRedCard,
           isInjured: p.isInjured,
           hasLeftLeague: p.hasLeftLeague,
-          nextOpponent: p.next_opponent_team_name || "",
-          nextOpponentHome: p.next_opponent_is_home ?? false,
+          // Используем уже обогащённые поля из useSquadData
+          nextOpponent: p.nextOpponent || "",
+          nextOpponentHome: p.nextOpponentHome ?? false,
         };
       });
       
