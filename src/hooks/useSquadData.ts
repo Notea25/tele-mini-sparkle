@@ -219,7 +219,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     const playersWithPositions = squadTourData.main_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
       const statusFlags = getPlayerStatusFlags(sp.id);
-      return {
+        return {
         id: sp.id,
         name: sp.name,
         team_id: sp.team_id,
@@ -234,6 +234,8 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         hasRedCard: statusFlags.hasRedCard,
         isInjured: statusFlags.isInjured,
         hasLeftLeague: statusFlags.hasLeftLeague,
+        nextOpponent: sp.next_opponent_team_name || "",
+        nextOpponentHome: sp.next_opponent_is_home ?? false,
       };
     });
 
@@ -277,6 +279,8 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         hasRedCard: statusFlags.hasRedCard,
         isInjured: statusFlags.isInjured,
         hasLeftLeague: statusFlags.hasLeftLeague,
+        nextOpponent: sp.next_opponent_team_name || "",
+        nextOpponentHome: sp.next_opponent_is_home ?? false,
       };
     });
   }, [squadTourData, playerMap, playerStatusMap]);

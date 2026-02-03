@@ -212,6 +212,8 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         hasRedCard: statusFlags.hasRedCard,
         isInjured: statusFlags.isInjured,
         hasLeftLeague: statusFlags.hasLeftLeague,
+        nextOpponent: sp.next_opponent_team_name || "",
+        nextOpponentHome: sp.next_opponent_is_home ?? false,
       };
     });
 
@@ -253,6 +255,8 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         hasRedCard: statusFlags.hasRedCard,
         isInjured: statusFlags.isInjured,
         hasLeftLeague: statusFlags.hasLeftLeague,
+        nextOpponent: sp.next_opponent_team_name || "",
+        nextOpponentHome: sp.next_opponent_is_home ?? false,
       };
     });
   }, [squadTourData, playerMap, playerStatusMap]);

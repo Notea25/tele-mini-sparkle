@@ -276,7 +276,6 @@ const TeamManagement = () => {
     if (apiMainPlayers.length > 0 && apiBenchPlayers.length > 0) {
       // Convert main players
       const convertedMain = apiMainPlayers.map(p => {
-        const opponentData = getNextOpponentData(p.team_name);
         return {
           id: p.id,
           name: p.name,
@@ -293,15 +292,14 @@ const TeamManagement = () => {
           hasRedCard: p.hasRedCard,
           isInjured: p.isInjured,
           hasLeftLeague: p.hasLeftLeague,
-          nextOpponent: opponentData.nextOpponent,
-          nextOpponentHome: opponentData.nextOpponentHome,
+          nextOpponent: p.next_opponent_team_name || "",
+          nextOpponentHome: p.next_opponent_is_home ?? false,
         };
       });
       setMainSquadPlayers(convertedMain);
       
       // Convert bench players
       const convertedBench = apiBenchPlayers.map(p => {
-        const opponentData = getNextOpponentData(p.team_name);
         return {
           id: p.id,
           name: p.name,
@@ -316,8 +314,8 @@ const TeamManagement = () => {
           hasRedCard: p.hasRedCard,
           isInjured: p.isInjured,
           hasLeftLeague: p.hasLeftLeague,
-          nextOpponent: opponentData.nextOpponent,
-          nextOpponentHome: opponentData.nextOpponentHome,
+          nextOpponent: p.next_opponent_team_name || "",
+          nextOpponentHome: p.next_opponent_is_home ?? false,
         };
       });
       

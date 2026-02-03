@@ -194,6 +194,8 @@ const ViewTeam = () => {
     total_points: p.total_points,
     tour_points: p.tour_points,
     slotIndex,
+    nextOpponent: p.next_opponent_team_name || "",
+    nextOpponentHome: p.next_opponent_is_home ?? false,
   });
 
   // Get display players - either from history snapshot or current squad
@@ -218,7 +220,6 @@ const ViewTeam = () => {
   // Convert EnrichedPlayer to PlayerData for FormationField
   const mainSquadForField = useMemo((): PlayerData[] => {
     return displayMainPlayers.map(p => {
-      const opponentData = getNextOpponentData(p.team_name);
       return {
         id: p.id,
         name: p.name,
@@ -229,8 +230,8 @@ const ViewTeam = () => {
         slotIndex: p.slotIndex,
         isCaptain: displayCaptainId === p.id,
         isViceCaptain: displayViceCaptainId === p.id,
-        nextOpponent: opponentData.nextOpponent,
-        nextOpponentHome: opponentData.nextOpponentHome,
+        nextOpponent: p.nextOpponent || "",
+        nextOpponentHome: p.nextOpponentHome ?? false,
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
       };
@@ -239,7 +240,6 @@ const ViewTeam = () => {
 
   const benchForField = useMemo((): PlayerData[] => {
     return displayBenchPlayers.map(p => {
-      const opponentData = getNextOpponentData(p.team_name);
       return {
         id: p.id,
         name: p.name,
@@ -248,8 +248,8 @@ const ViewTeam = () => {
         price: p.price,
         points: p.tour_points ?? p.points ?? 0,
         slotIndex: p.slotIndex,
-        nextOpponent: opponentData.nextOpponent,
-        nextOpponentHome: opponentData.nextOpponentHome,
+        nextOpponent: p.nextOpponent || "",
+        nextOpponentHome: p.nextOpponentHome ?? false,
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
       };

@@ -448,7 +448,6 @@ const Transfers = () => {
 
     // Convert API players to local format with next opponent data
     const mainSquadConverted = apiMainPlayers.map((p) => {
-      const opponentData = getNextOpponentData(p.team_name);
       return {
         id: p.id,
         name: p.name,
@@ -461,8 +460,8 @@ const Transfers = () => {
         team_logo: p.team_logo,
         isCaptain: squadTourData?.captain_id === p.id,
         isViceCaptain: squadTourData?.vice_captain_id === p.id,
-        nextOpponent: opponentData.nextOpponent,
-        nextOpponentHome: opponentData.nextOpponentHome,
+        nextOpponent: p.next_opponent_team_name || "",
+        nextOpponentHome: p.next_opponent_is_home ?? false,
         // Добавляем статусы из API
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
@@ -471,7 +470,6 @@ const Transfers = () => {
     });
 
     const benchConverted = apiBenchPlayers.map((p) => {
-      const opponentData = getNextOpponentData(p.team_name);
       return {
         id: p.id,
         name: p.name,
@@ -482,8 +480,8 @@ const Transfers = () => {
         total_points: p.total_points,
         slotIndex: p.slotIndex,
         team_logo: p.team_logo,
-        nextOpponent: opponentData.nextOpponent,
-        nextOpponentHome: opponentData.nextOpponentHome,
+        nextOpponent: p.next_opponent_team_name || "",
+        nextOpponentHome: p.next_opponent_is_home ?? false,
         // Добавляем статусы из API
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,

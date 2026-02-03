@@ -226,12 +226,10 @@ const TeamBuilder = () => {
     .filter((p) => selectedPlayerIds.includes(p.id))
     .map((p) => {
       const slotInfo = selectedPlayers.find((sp) => sp.id === p.id);
-      const opponentData = getNextOpponentData(p.team);
+      // TODO: сюда можно подставить реальные данные календаря, когда backend начнёт их отдавать
       return { 
         ...p, 
         slotIndex: slotInfo?.slotIndex,
-        nextOpponent: opponentData.nextOpponent,
-        nextOpponentHome: opponentData.nextOpponentHome,
       };
     });
 
