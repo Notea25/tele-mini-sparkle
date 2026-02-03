@@ -1383,7 +1383,7 @@ const Transfers = () => {
                             {clubLogos[team] && (
                               <img src={clubLogos[team]} alt={team} className="w-5 h-5 object-contain" />
                             )}
-                            <span>{team}</span>
+                            <span>{team.name}</span>
                           </div>
                         </SelectItem>
                       ))

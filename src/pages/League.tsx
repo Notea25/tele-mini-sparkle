@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, ChevronDown, ChevronUp, User, ArrowRight, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import SportHeader from "@/components/SportHeader";
 import EditTeamNameModal from "@/components/EditTeamNameModal";
-import SwipeableTabs from "@/components/SwipeableTabs";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { squadsApi, toursApi, customLeaguesApi, commercialLeaguesApi, Squad, LeaderboardEntry, CustomLeagueLeaderboardEntry, CommercialLeague, MySquadLeague } from "@/lib/api";
@@ -525,11 +524,6 @@ const League = () => {
     { id: "cup", label: "Кубок" },
   ];
 
-  // Handle tab change from swipe or click
-  const handleTabChange = useCallback((tabId: string) => {
-    setActiveTab(tabId as "main" | "leagues" | "cup");
-  }, []);
-
   // Handle back button - if team was just created, go to home instead of team builder
   const handleBackClick = () => {
     const teamJustCreated = sessionStorage.getItem("fantasyTeamJustCreated");
@@ -558,14 +552,28 @@ const League = () => {
 
       <main className="flex-1 px-4 pb-6 overflow-x-hidden">
 
-        {/* Swipeable Tabs */}
-        <SwipeableTabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-        >
-          {/* Main Tab Content */}
-          <div>
+        {/* Tabs */}
+        <div className="bg-secondary/50 rounded-lg p-1 flex mb-6">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                const newTab = tab.id as "main" | "leagues" | "cup";
+                setActiveTab(newTab);
+              }}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === "main" && (
+          <>
             {/* Team Name */}
             <div className="flex items-center justify-center gap-2 mb-4">
               <h1 className="text-2xl font-display text-foreground">{currentSquad?.name || teamName}</h1>
@@ -764,10 +772,11 @@ const League = () => {
             >
               Смотреть все
             </Button>
-          </div>
+          </>
+        )}
 
-          {/* Leagues Tab Content */}
-          <div>
+        {activeTab === "leagues" && (
+          <>
             {/* Commercial Leagues Section */}
             <div className="mb-8">
               {/* Section Title */}
@@ -1247,10 +1256,11 @@ const League = () => {
                 })()}
               </>
             )}
-          </div>
+          </>
+        )}
 
-          {/* Cup Tab Content */}
-          <div>
+        {activeTab === "cup" && (
+          <div className="w-full">
             {/* Main Cup */}
             <h2 className="text-2xl font-display text-foreground mb-4">Кубок</h2>
 
@@ -1261,7 +1271,7 @@ const League = () => {
               className="w-full rounded-xl"
             />
           </div>
-        </SwipeableTabs>
+        )}
       </main>
 
       {/* Home Button */}
