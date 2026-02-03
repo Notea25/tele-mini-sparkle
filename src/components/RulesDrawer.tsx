@@ -296,7 +296,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                   <div>
                     <h4 className="text-primary font-medium text-medium mb-2">Общая лига</h4>
                     <p className="mb-2">
-                      <span className="text-primary font-semibold">Общая лига</span> — это основная лига сезона, в которой участвуют все пользователи, собравшие команду.
+                      Общая лига — это основная лига сезона, в которой участвуют все пользователи, собравшие команду.
                     </p>
                     <p className="font-medium text-foreground mb-1">Особенности:</p>
                     <ul className="space-y-1 mb-2">
@@ -319,7 +319,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                   <div>
                     <h4 className="text-primary font-medium text-medium mb-2">Мои лиги (частные лиги)</h4>
                     <p className="mb-2">
-                      <span className="text-primary font-semibold">Мои лиги</span> — это частные лиги, создаваемые пользователями для игры с друзьями, коллегами или знакомыми.
+                      Мои лиги — это частные лиги, создаваемые пользователями для игры с друзьями, коллегами или знакомыми.
                     </p>
                     <p className="font-medium text-foreground mb-1">Особенности:</p>
                     <ul className="space-y-1">
@@ -338,7 +338,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                   <div>
                     <h4 className="text-primary font-medium text-medium mb-2">Лига по клубам</h4>
                     <p className="mb-2">
-                      <span className="text-primary font-semibold">Лига по клубам</span> — это рейтинг пользователей, сгруппированных по выбранному клубу.
+                      Лига по клубам — это рейтинг пользователей, сгруппированных по выбранному клубу.
                     </p>
                     <p className="font-medium text-foreground mb-1">Особенности:</p>
                     <ul className="space-y-1">
@@ -356,7 +356,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                   <div>
                     <h4 className="text-primary font-medium text-medium mb-2">Коммерческие лиги</h4>
                     <p className="mb-2">
-                      <span className="text-primary font-semibold">Коммерческие лиги</span> — это специальные лиги, создаваемые партнёрами или организаторами с дополнительными призами.
+                      Коммерческие лиги — это специальные лиги, создаваемые партнёрами или организаторами с дополнительными призами.
                     </p>
                     <p className="font-medium text-foreground mb-1">Формат:</p>
                     <ul className="space-y-1 mb-2">
