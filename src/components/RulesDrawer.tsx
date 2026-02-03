@@ -294,7 +294,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
 
                   {/* Общая лига */}
                   <div>
-                    <h4 className="text-foreground font-medium text-medium mb-2">Общая лига</h4>
+                    <h4 className="text-primary font-medium text-medium mb-2">Общая лига</h4>
                     <p className="mb-2">
                       <span className="text-primary font-semibold">Общая лига</span> — это основная лига сезона, в которой участвуют все пользователи, собравшие команду.
                     </p>
@@ -317,7 +317,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
 
                   {/* Мои лиги */}
                   <div>
-                    <h4 className="text-foreground font-medium text-medium mb-2">Мои лиги (частные лиги)</h4>
+                    <h4 className="text-primary font-medium text-medium mb-2">Мои лиги (частные лиги)</h4>
                     <p className="mb-2">
                       <span className="text-primary font-semibold">Мои лиги</span> — это частные лиги, создаваемые пользователями для игры с друзьями, коллегами или знакомыми.
                     </p>
@@ -336,7 +336,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
 
                   {/* Лига по клубам */}
                   <div>
-                    <h4 className="text-foreground font-medium text-medium mb-2">Лига по клубам</h4>
+                    <h4 className="text-primary font-medium text-medium mb-2">Лига по клубам</h4>
                     <p className="mb-2">
                       <span className="text-primary font-semibold">Лига по клубам</span> — это рейтинг пользователей, сгруппированных по выбранному клубу.
                     </p>
@@ -354,7 +354,7 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
 
                   {/* Коммерческие лиги */}
                   <div>
-                    <h4 className="text-foreground font-medium text-medium mb-2">Коммерческие лиги</h4>
+                    <h4 className="text-primary font-medium text-medium mb-2">Коммерческие лиги</h4>
                     <p className="mb-2">
                       <span className="text-primary font-semibold">Коммерческие лиги</span> — это специальные лиги, создаваемые партнёрами или организаторами с дополнительными призами.
                     </p>
