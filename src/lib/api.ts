@@ -199,8 +199,8 @@ export interface SquadPlayer {
   id: number;
   name: string;
   team_id: number;
-  points: number;
-}
+  team_name: string;
+  team_logo: string;
   position: string;
   market_value: number;
   photo: string;
