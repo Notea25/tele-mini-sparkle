@@ -101,14 +101,7 @@ const League = () => {
   // Get fav_team_id from current squad
   const favTeamId = currentSquad?.fav_team_id;
   
-  // Fetch club league data by team (for display purposes)
-  const { data: clubLeagueResponse, isLoading: clubLeagueLoading } = useQuery({
-    queryKey: ['clubLeague', favTeamId],
-    queryFn: () => favTeamId ? customLeaguesApi.getClubByTeam(favTeamId) : Promise.resolve({ success: false, data: undefined }),
-    enabled: !!favTeamId,
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-  });
+  // Club league data removed - using squad leaderboard by fav_team instead
   
   // Fetch club league leaderboard by fav_team_id
   const { data: clubLeaderboardResponse, isLoading: clubLeaderboardLoading } = useQuery({
@@ -1089,13 +1082,9 @@ const League = () => {
             </p>
 
             {/* Club league content */}
-            {clubLeagueLoading || clubLeaderboardLoading ? (
+            {clubLeaderboardLoading ? (
               <div className="text-center py-8 text-muted-foreground">
                 Загрузка...
-              </div>
-            ) : !clubLeagueResponse?.data ? (
-              <div className="text-center py-8 text-muted-foreground bg-secondary/30 rounded-xl">
-                Нет данных
               </div>
             ) : clubLeaderboardData.length === 0 ? (
               <>

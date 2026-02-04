@@ -662,20 +662,7 @@ export interface CreateCustomLeagueResponse {
   invite_code: string;
 }
 
-// Тип для клубной лиги
-export interface ClubLeague {
-  id: number;
-  name: string;
-  description: string | null;
-  league_id: number;
-  type: string;
-  is_public: boolean;
-  invitation_only: boolean;
-  creator_id: number | null;
-  team_id: number;
-  registration_start: string;
-  registration_end: string;
-}
+// ClubLeague removed - club leagues functionality integrated into squad leaderboard by fav_team
 
 // Тип для лидерборда кастомной лиги
 export interface CustomLeagueLeaderboardEntry {
@@ -784,8 +771,7 @@ export const customLeaguesApi = {
     apiRequest<{ success: boolean }>(`/api/custom_leagues/${customLeagueId}`, {
       method: 'DELETE',
     }),
-  getClubByTeam: (teamId: number) =>
-    apiRequest<ClubLeague>(`/api/custom_leagues/club/by_team/${teamId}`),
+  // getClubByTeam removed - club leagues functionality removed
   getLeaderboard: (customLeagueId: number, tourId: number) =>
     apiRequest<CustomLeagueLeaderboardEntry[]>(`/api/custom_leagues/${customLeagueId}/leaderboard/${tourId}`),
   getClubLeaderboard: (tourId: number, favTeamId: number) =>

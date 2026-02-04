@@ -1147,18 +1147,8 @@ const BackendTest = () => {
         </div>
       </Section>
 
-      {/* CLUB LEAGUES SECTION */}
-      <Section title="⚽ Club Leagues" isOpen={false} onToggle={() => {}}>
-        <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">GET /api/club_leagues/?league_id={'{league_id}'}&team_id={'{team_id}'}</p>
-          <p className="text-sm text-muted-foreground">GET /api/club_leagues/{'{club_league_id}'}</p>
-          <p className="text-sm text-muted-foreground">POST /api/club_leagues/{'{club_league_id}'}/squads/{'{squad_id}'}</p>
-          <p className="text-sm text-muted-foreground">GET /api/club_leagues/{'{club_league_id}'}/leaderboard/{'{tour_id}'}</p>
-          <p className="text-sm text-muted-foreground">GET /api/club_leagues/by-league/{'{league_id}'}</p>
-          <p className="text-sm text-muted-foreground">GET /api/club_leagues/by-team/{'{team_id}'}/leaderboard/{'{tour_id}'}</p>
-          <p className="text-sm text-muted-foreground">POST /api/club_leagues/add-squad-by-team/{'{team_id}'}/{'{squad_id}'}</p>
-        </div>
-      </Section>
+      {/* CLUB LEAGUES SECTION - REMOVED */}
+      {/* Club leagues functionality has been removed from backend */}
 
       {/* PLAYER MATCH STATS SECTION */}
       <Section title="📊 Player Match Stats" isOpen={false} onToggle={() => {}}>
