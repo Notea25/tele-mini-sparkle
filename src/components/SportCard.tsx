@@ -177,7 +177,7 @@ const SportCard = ({
             </div>
           </div>
         ) : (
-          <div className="relative p-4 flex items-center justify-between min-h-[100px]">
+          <div className="relative p-4 flex flex-col min-h-[100px]">
             {/* Star in top-right corner */}
             <button
               onClick={handleStarClick}
@@ -195,7 +195,7 @@ const SportCard = ({
 
             <div className="flex items-center gap-4">
               <div
-                className="w-20 h-20 rounded-full flex items-center justify-center"
+                className="w-20 h-20 rounded-full flex items-center justify-center flex-shrink-0"
               >
                 {leagueIcon ? (
                   <img src={leagueIcon} alt={league} className="w-20 h-20 object-contain" />
@@ -203,9 +203,9 @@ const SportCard = ({
                   <span className="text-3xl">{icon}</span>
                 )}
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <h4 className="text-foreground font-bold text-lg">{league}</h4>
-                {participants !== undefined && userRank !== undefined && userRank !== null && (
+                {hasTeam && participants !== undefined && userRank !== undefined && userRank !== null && (
                   <p className="text-sm">
                     <span className="text-primary font-semibold">{formatParticipants(userRank)}</span>
                     <span className="text-muted-foreground"> из {formatParticipants(participants)} участников</span>
@@ -217,12 +217,31 @@ const SportCard = ({
                 </p>
               </div>
             </div>
-            {/* Play button in bottom-right corner */}
-            <div className="absolute bottom-3 right-3 w-6 h-6 rounded-full border border-muted-foreground/30 flex items-center justify-center">
-              <Play className={`w-3 h-3 fill-current ${hasTeam ? "text-primary" : "text-muted-foreground"}`} />
-            </div>
+            
+            {/* CTA Button for users without a team */}
+            {!hasTeam && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (apiLeagueId) {
+                    localStorage.setItem('fantasySelectedLeagueId', apiLeagueId.toString());
+                  }
+                  navigate('/create-team');
+                }}
+                className="mt-4 w-full py-3 bg-primary text-primary-foreground font-medium rounded-lg text-sm hover:bg-primary/90 transition-colors active:scale-[0.98]"
+              >
+                Создать команду
+              </button>
+            )}
+            
+            {/* Play button in bottom-right corner - only show when user has team */}
             {hasTeam && (
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-b-lg" />
+              <>
+                <div className="absolute bottom-3 right-3 w-6 h-6 rounded-full border border-muted-foreground/30 flex items-center justify-center">
+                  <Play className="w-3 h-3 fill-current text-primary" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-b-lg" />
+              </>
             )}
           </div>
         )}
