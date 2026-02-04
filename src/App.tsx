@@ -27,6 +27,7 @@ import Profile from "./pages/Profile";
 import BackendTest from "./pages/BackendTest";
 import NotFound from "./pages/NotFound";
 import TourHistory from "./components/TourHistory";
+import DebugAuth from "./pages/DebugAuth";
 
 // Wrapper to force re-render when team ID changes
 const ViewTeamWrapper = () => {
@@ -287,6 +288,7 @@ const App = () => {
               <Route path="/tour-history/:squadId" element={<TourHistory />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/backtest" element={<BackendTest />} />
+              <Route path="/debug-auth" element={<DebugAuth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

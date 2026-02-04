@@ -1171,7 +1171,13 @@ const BackendTest = () => {
       </Section>
 
       {/* Home Button */}
-      <div className="mt-8">
+      <div className="mt-8 space-y-3">
+        <button
+          onClick={() => navigate("/debug-auth")}
+          className="w-full px-4 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors"
+        >
+          🔐 Debug Auth (Диагностика авторизации)
+        </button>
         <button
           onClick={() => navigate("/")}
           className="w-full px-4 py-3 bg-secondary text-foreground rounded-xl font-medium hover:bg-secondary/80 transition-colors"

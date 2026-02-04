@@ -37,6 +37,16 @@ async function callBackend<T>(
 ): Promise<ApiResponse<T>> {
   const { method = "GET", body, headers = {}, rawBody = false, contentType } = options;
 
+  console.log(`[callBackend] Request to ${endpoint}:`);
+  console.log("- method:", method);
+  console.log("- rawBody:", rawBody);
+  console.log("- contentType:", contentType);
+  console.log("- has accessToken:", !!accessToken);
+  console.log("- body type:", typeof body);
+  if (typeof body === "string") {
+    console.log("- body length:", body.length);
+  }
+
   const finalHeaders: Record<string, string> = { ...headers };
 
   // Добавляем Authorization, если есть токен и включен auth
@@ -45,6 +55,7 @@ async function callBackend<T>(
   }
 
   try {
+    console.log("[callBackend] Invoking Supabase function api-proxy...");
     const { data, error } = await supabase.functions.invoke("api-proxy", {
       method: "POST",
       body: {
@@ -58,14 +69,22 @@ async function callBackend<T>(
     });
 
     if (error) {
+      console.error("[callBackend] Supabase function error:", error);
       return {
         success: false,
         error: error.message,
       };
     }
 
+    console.log("[callBackend] Response from api-proxy:");
+    console.log("- success:", (data as ApiResponse<T>)?.success);
+    console.log("- status:", (data as ApiResponse<T>)?.status);
+    console.log("- has data:", !!(data as ApiResponse<T>)?.data);
+    console.log("- error:", (data as ApiResponse<T>)?.error);
+
     return data as ApiResponse<T>;
   } catch (err) {
+    console.error("[callBackend] Exception:", err);
     return {
       success: false,
       error: err instanceof Error ? err.message : "Unknown error",

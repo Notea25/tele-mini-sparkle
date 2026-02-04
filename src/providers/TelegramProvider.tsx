@@ -103,24 +103,43 @@ export const TelegramProvider = ({ children }: TelegramProviderProps) => {
           // @ts-ignore
           const rawInitData: string | undefined = window.Telegram?.WebApp?.initData;
           console.log("Telegram initData available:", !!rawInitData);
+          console.log("Telegram initData (first 50 chars):", rawInitData?.substring(0, 50));
+          
           if (rawInitData) {
             console.log("Attempting Telegram login...");
             const loginResponse = await loginWithTelegram(rawInitData);
-            console.log("Login response:", loginResponse);
+            console.log("Login response:", JSON.stringify(loginResponse, null, 2));
+            
             if (!loginResponse.success) {
-              console.error("Telegram login failed:", loginResponse.error);
-              // Show error to user if in Telegram but login failed
-              alert(`Ошибка авторизации: ${loginResponse.error || 'Неизвестная ошибка'}. Попробуйте перезапустить приложение.`);
+              console.error("Telegram login failed:");
+              console.error("- success:", loginResponse.success);
+              console.error("- status:", loginResponse.status);
+              console.error("- statusText:", loginResponse.statusText);
+              console.error("- error:", loginResponse.error);
+              console.error("- data:", loginResponse.data);
+              
+              // Формируем детальное сообщение об ошибке
+              const errorDetails = [
+                loginResponse.error,
+                loginResponse.statusText,
+                loginResponse.status ? `Код: ${loginResponse.status}` : null,
+              ].filter(Boolean).join(', ');
+              
+              alert(`Ошибка авторизации: ${errorDetails || 'Неизвестная ошибка'}. Попробуйте перезапустить приложение.`);
             } else {
-              console.log("Telegram login successful");
+              console.log("Telegram login successful!");
+              console.log("- access_token:", loginResponse.data?.access_token ? "present" : "missing");
+              console.log("- refresh_token:", loginResponse.data?.refresh_token ? "present" : "missing");
             }
           } else {
             console.warn("No initData available from Telegram WebApp");
+            alert("Не удалось получить данные авторизации от Telegram. Попробуйте перезапустить приложение.");
           }
         } catch (authError) {
           console.error("Telegram login exception:", authError);
-          // Show error to user
-          alert(`Критическая ошибка авторизации. Попробуйте перезапустить приложение.`);
+          console.error("Exception details:", authError instanceof Error ? authError.message : authError);
+          console.error("Stack trace:", authError instanceof Error ? authError.stack : "N/A");
+          alert(`Критическая ошибка авторизации: ${authError instanceof Error ? authError.message : 'Неизвестная ошибка'}`);
         }
 
         setIsTelegram(true);
