@@ -431,7 +431,7 @@ const Index = () => {
                 apiLeagueId={"apiLeagueId" in leagueData ? leagueData.apiLeagueId : undefined}
                 isFavorite={favorites.includes(leagueData.id)}
                 onToggleFavorite={toggleFavorite}
-                hasTeam={leagueData.id === "football-belarus" && (hasTeam || belarusLeague?.your_place !== null)}
+                hasTeam={leagueData.id === "football-belarus" && (hasTeam || (belarusLeague?.your_place !== null && belarusLeague?.your_place !== undefined))}
                 isLoading={"isLoading" in leagueData ? leagueData.isLoading : false}
               />
             )}
