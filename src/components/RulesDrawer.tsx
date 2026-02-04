@@ -114,21 +114,9 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                     </div>
 
                     <div>
-                      <h4 className="text-foreground font-medium mb-1">Каждый сэйв</h4>
-                      <ul className="space-y-1">
-                        <li>• Вратарь: +0.5 очка</li>
-                        <li>• Остальные позиции: 0 очков</li>
-                      </ul>
-                      <p className="text-xs text-muted-foreground/70 italic mt-1">
-                        *Если, условно, 1.5 — считается за 2
-                      </p>
-                    </div>
-
-                    <div>
                       <h4 className="text-foreground font-medium mb-1">Штрафы</h4>
                       <ul className="space-y-1">
                         <li>• Незабитый пенальти: −2 очка (все позиции)</li>
-                        <li>• Привоз пенальти: −1 очко (все позиции)</li>
                         <li>• Желтая карточка: −1 очко (все позиции)</li>
                         <li>• Прямая красная карточка: −3 очка (все позиции)</li>
                       </ul>

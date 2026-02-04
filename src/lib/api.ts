@@ -836,6 +836,8 @@ export interface SquadTourPlayer {
   points: number;
   total_points: number;
   tour_points: number;
+  next_opponent_team_name?: string;
+  next_opponent_is_home?: boolean;
 }
 
 export interface SquadTourResponse {
