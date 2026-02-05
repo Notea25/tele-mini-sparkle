@@ -4,9 +4,12 @@ import { squadsApi, playersApi, toursApi, squadToursApi, playerStatusesApi, Squa
 export interface EnrichedPlayer {
   id: number;
   name: string;
+  name_rus?: string; // Русское имя игрока
   team_id: number;
   team_name: string;
+  team_name_rus?: string; // Русское название команды
   team_logo: string;
+  photo?: string; // Фото игрока
   position: string; // "ВР", "ЗЩ", "ПЗ", "НП"
   price: number;
   points: number; // Оставлено для обратной совместимости
@@ -203,9 +206,12 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
       return {
         id: sp.id,
         name: sp.name,
+        name_rus: sp.name_rus || fullPlayer?.name_rus,
         team_id: sp.team_id,
         team_name: sp.team_name || fullPlayer?.team_name || "",
+        team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
         team_logo: sp.team_logo || fullPlayer?.team_logo || "",
+        photo: sp.photo || "",
         position: mapPosition(sp.position || fullPlayer?.position || "Midfielder"),
         price: sp.market_value ? Math.round((sp.market_value / 1000) * 10) / 10 : (fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0),
         points: sp.points,
@@ -246,9 +252,12 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
       return {
         id: sp.id,
         name: sp.name,
+        name_rus: sp.name_rus || fullPlayer?.name_rus,
         team_id: sp.team_id,
         team_name: sp.team_name || fullPlayer?.team_name || "",
+        team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
         team_logo: sp.team_logo || fullPlayer?.team_logo || "",
+        photo: sp.photo || "",
         position,
         price: sp.market_value ? Math.round((sp.market_value / 1000) * 10) / 10 : (fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0),
         points: sp.points,
