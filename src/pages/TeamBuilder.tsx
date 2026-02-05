@@ -271,12 +271,10 @@ const TeamBuilder = () => {
     const effectiveSortDirection = sortDirection || "desc";
 
     if (effectiveSortField === "name") {
-      // Сортируем по фамилии (последнее слово в ФИО). Если фамилии нет, используем полное имя.
-      const [aFirst, ...aLastParts] = a.name.split(" ");
-      const [bFirst, ...bLastParts] = b.name.split(" ");
-      const aLast = (aLastParts.join(" ") || a.name).toLowerCase();
-      const bLast = (bLastParts.join(" ") || b.name).toLowerCase();
-      const comparison = aLast.localeCompare(bLast, "ru");
+      // Сортируем по русскому имени с фоллбеком на английское
+      const aName = (a.name_rus || a.name).toLowerCase();
+      const bName = (b.name_rus || b.name).toLowerCase();
+      const comparison = aName.localeCompare(bName, "ru");
       return effectiveSortDirection === "asc" ? comparison : -comparison;
     }
     if (effectiveSortField === "points") {
