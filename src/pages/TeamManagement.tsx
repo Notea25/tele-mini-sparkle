@@ -1188,7 +1188,7 @@ const TeamManagement = () => {
         <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-primary px-4 py-4 z-50">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1">
-              <p className="text-foreground font-medium">Замена: {swapModePlayer.name}</p>
+              <p className="text-foreground font-medium">Замена: {swapModePlayer.name_rus || swapModePlayer.name}</p>
               <p className="text-muted-foreground text-sm">Выбери игрока для замены</p>
             </div>
             <Button
