@@ -4,6 +4,7 @@ import clubLogoDefault from "@/assets/club-logo.png";
 interface PlayerData {
   id: number;
   name: string;
+  name_rus?: string;
   team: string;
   team_logo?: string;
   position: string;
