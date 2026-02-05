@@ -96,7 +96,7 @@ const TeamListView = ({
                               className="w-5 h-5 object-contain"
                             />
                           </div>
-                          <span className="text-foreground font-medium truncate">{slot.player.name}</span>
+                          <span className="text-foreground font-medium truncate">{slot.player.name_rus || slot.player.name}</span>
                           <span className="text-muted-foreground text-xs ml-2">{section.position}</span>
                           {slot.player.hasLeftLeague && !slot.player.hasRedCard && !slot.player.isInjured && (
                             <span className="bg-gray-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0 ml-2">
