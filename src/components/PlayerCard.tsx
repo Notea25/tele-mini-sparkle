@@ -107,7 +107,9 @@ function generateClubSchedule(teamName: string, playerId: number) {
 interface PlayerData {
   id: number;
   name: string;
+  name_rus?: string;
   team: string;
+  team_rus?: string;
   position: string;
   points: number; // Оставлено для обратной совместимости
   price: number;
