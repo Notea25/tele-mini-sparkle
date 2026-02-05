@@ -1018,7 +1018,7 @@ const TeamManagement = () => {
             <Select value={viceCaptain?.toString() || ""} onValueChange={(v) => setViceCaptain(Number(v))}>
               <SelectTrigger className="w-full bg-card border-border text-foreground rounded-xl">
                 <SelectValue placeholder="Выбрать">
-                  {viceCaptain ? allPlayers.find((p) => p.id === viceCaptain)?.name : "Чиж"}
+                  {viceCaptain ? allPlayers.find((p) => p.id === viceCaptain)?.name_rus || allPlayers.find((p) => p.id === viceCaptain)?.name : "Чиж"}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
