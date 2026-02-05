@@ -495,8 +495,10 @@ export interface PlayerStatusUpdate {
 export interface Player {
   id: number;
   name: string;
+  name_rus: string;
   team_id: number;
   team_name: string;
+  team_name_rus?: string;
   team_logo: string;
   position: string; // "Defender", "Attacker", "Midfielder", "Goalkeeper"
   market_value: number;
