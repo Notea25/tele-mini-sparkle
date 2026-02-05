@@ -1029,7 +1029,7 @@ const TeamManagement = () => {
                     className="text-foreground hover:bg-secondary cursor-pointer"
                     disabled={player.id === captain}
                   >
-                    {player.name}
+                    {player.name_rus || player.name}
                   </SelectItem>
                 ))}
               </SelectContent>
