@@ -328,9 +328,11 @@ export interface ReplacePlayersResponse {
 export interface TourHistoryPlayer {
   id: number;
   name: string;
+  name_rus?: string;
   position: string;
   team_id: number;
   team_name: string;
+  team_name_rus?: string;
   team_logo: string | null;
   market_value: number;
   photo: string | null;
