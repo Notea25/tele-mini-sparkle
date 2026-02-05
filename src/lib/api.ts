@@ -185,6 +185,7 @@ export const toursApi = {
 export interface Team {
   id: number;
   name: string;
+  name_rus: string;
   logo: string;
 }
 
