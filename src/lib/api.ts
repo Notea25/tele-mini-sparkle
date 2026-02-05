@@ -218,8 +218,10 @@ export interface CreateSquadResponse {
 export interface SquadPlayer {
   id: number;
   name: string;
+  name_rus?: string;
   team_id: number;
   team_name: string;
+  team_name_rus?: string;
   team_logo: string;
   position: string;
   market_value: number;
