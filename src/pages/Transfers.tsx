@@ -1092,8 +1092,8 @@ const Transfers = () => {
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                   onClick={() => setSelectedPlayerForCard(player.id)}
                 >
-                  <img src={clubLogoSrc} alt={player.team_rus} className="w-5 h-5 object-contain flex-shrink-0" />
-                  <span className="text-foreground font-medium text-medium truncate">{player.name_rus}</span>
+                  <img src={clubLogoSrc} alt={player.team_rus || player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                  <span className="text-foreground font-medium text-medium truncate">{player.name_rus || player.name}</span>
                   <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
 
                   {/* Капитанские значки */}
