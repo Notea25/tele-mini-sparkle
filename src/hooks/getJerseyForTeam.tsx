@@ -60,9 +60,6 @@ const TEAM_JERSEY_MAP: Record<string, { regular: string; gk: string }> = {
   "Belshina": { regular: jerseyBelshina, gk: jerseyBelshinaGk },
   "Dnepr Mogilev": { regular: jerseyDnepr, gk: jerseyDneprGk },
   "FC Dnepr Mogilev": { regular: jerseyDnepr, gk: jerseyDneprGk },
-  "Gomel": { regular: jerseyGomel, gk: jerseyGomelGk },
-  "FC Vitebsk": { regular: jerseyVitebsk, gk: jerseyVitebskGk },
-  "Belshina": { regular: jerseyBelshina, gk: jerseyBelshinaGk },
   // Старые русские названия (для совместимости)
   "Динамо-Минск": { regular: jerseyDinamoMinsk, gk: jerseyDinamoMinskGk },
   "БАТЭ": { regular: jerseyBate, gk: jerseyBateGk },
