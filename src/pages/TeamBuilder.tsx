@@ -1251,7 +1251,7 @@ const TeamBuilder = () => {
                 className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                 onClick={() => setSelectedPlayerForCard(player.id)}
               >
-                <span className="text-foreground font-medium truncate">{player.name}</span>
+                <span className="text-foreground font-medium truncate">{(player as TransformedPlayer).name_rus || player.name}</span>
                 <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
               </div>
 
