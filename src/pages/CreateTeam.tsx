@@ -258,8 +258,8 @@ const CreateTeam = () => {
                   className="focus:bg-white/10 focus:text-white data-[state=checked]:text-primary"
                 >
                   <div className="flex items-center gap-2">
-                    <img src={team.logo} alt={team.name} className="w-5 h-5 object-contain" />
-                    <span>{team.name}</span>
+                    <img src={team.logo} alt={team.name_rus} className="w-5 h-5 object-contain" />
+                    <span>{team.name_rus}</span>
                   </div>
                 </SelectItem>
               ))
