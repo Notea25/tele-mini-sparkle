@@ -83,6 +83,8 @@ interface PlayerDataExt extends PlayerData {
   hasRedCard?: boolean;
   isInjured?: boolean;
   hasLeftLeague?: boolean;
+  name_rus?: string;
+  team_rus?: string;
 }
 
 // Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
@@ -451,7 +453,9 @@ const Transfers = () => {
       return {
         id: p.id,
         name: p.name,
+        name_rus: p.name_rus,
         team: p.team_name,
+        team_rus: p.team_name_rus,
         position: p.position,
         price: p.price,
         points: p.points,
@@ -474,7 +478,9 @@ const Transfers = () => {
       return {
         id: p.id,
         name: p.name,
+        name_rus: p.name_rus,
         team: p.team_name,
+        team_rus: p.team_name_rus,
         position: p.position,
         price: p.price,
         points: p.points,
@@ -892,12 +898,9 @@ const Transfers = () => {
     if (currentTeamPlayerIds.includes(player.id)) return false;
 
     const query = searchQuery.trim().toLowerCase();
-    // Ищем по фамилии (последнее слово в ФИО), но если её нет — по полному имени
-    const [firstName, ...lastNameParts] = player.name.split(" ");
-    const lastName = lastNameParts.join(" ").toLowerCase();
-    const fullName = player.name.toLowerCase();
-    const searchTarget = lastName || fullName;
-    const matchesSearch = query === "" || searchTarget.includes(query);
+    // Ищем по русскому имени (фамилии), с фоллбеком на английское
+    const displayName = player.name_rus || player.name;
+    const matchesSearch = query === "" || displayName.toLowerCase().includes(query);
     if (!matchesSearch) return false;
 
     const matchesTeam = selectedTeam === "Все команды" || player.team === selectedTeam;
@@ -921,12 +924,10 @@ const Transfers = () => {
     const effectiveSortDirection = sortDirection || "desc";
 
     if (effectiveSortField === "name") {
-      // Сортируем по фамилии (последнее слово в ФИО). Если фамилии нет, используем полное имя.
-      const [aFirst, ...aLastParts] = a.name.split(" ");
-      const [bFirst, ...bLastParts] = b.name.split(" ");
-      const aLast = (aLastParts.join(" ") || a.name).toLowerCase();
-      const bLast = (bLastParts.join(" ") || b.name).toLowerCase();
-      const comparison = aLast.localeCompare(bLast, "ru");
+      // Сортируем по русскому имени с фоллбеком на английское
+      const aName = (a.name_rus || a.name).toLowerCase();
+      const bName = (b.name_rus || b.name).toLowerCase();
+      const comparison = aName.localeCompare(bName, "ru");
       return effectiveSortDirection === "asc" ? comparison : -comparison;
     }
     if (effectiveSortField === "points") {
@@ -1534,7 +1535,7 @@ const Transfers = () => {
                     className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                     onClick={() => setBuyPlayerForCard(player)}
                   >
-                    <span className="text-foreground font-medium truncate">{player.name}</span>
+                    <span className="text-foreground font-medium truncate">{playerExt.name_rus || player.name}</span>
                     <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
 
                     {/* Значки статусов для доступных игроков */}
