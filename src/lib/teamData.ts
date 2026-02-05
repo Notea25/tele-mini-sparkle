@@ -6,6 +6,7 @@ export interface PlayerData {
   name_rus?: string;
   team: string;
   team_rus?: string;
+  photo?: string; // Фото игрока
   position: string;
   points: number;
   total_points?: number; // Total points across all tours
