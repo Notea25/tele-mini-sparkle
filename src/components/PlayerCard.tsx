@@ -319,7 +319,7 @@ const PlayerCard = ({
               ) : (
                 <img 
                   src={playerPhoto_url} 
-                  alt={player.name} 
+                   alt={player.name_rus || player.name}
                   className="w-full h-full object-cover"
                   onError={(e) => { e.currentTarget.src = playerPhoto; }}
                 />
