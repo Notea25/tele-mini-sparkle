@@ -236,12 +236,9 @@ const TeamBuilder = () => {
   // Filter players based on activeFilter, search query, team, and points
   const filteredPlayers = players.filter((player) => {
     const query = searchQuery.trim().toLowerCase();
-    // Ищем по фамилии (последнее слово в ФИО), но если её нет — по полному имени
-    const [firstName, ...lastNameParts] = player.name.split(" ");
-    const lastName = lastNameParts.join(" ").toLowerCase();
-    const fullName = player.name.toLowerCase();
-    const searchTarget = lastName || fullName;
-    const matchesSearch = query === "" || searchTarget.includes(query);
+    // Ищем по русскому имени, с фоллбеком на английское
+    const displayName = player.name_rus || player.name;
+    const matchesSearch = query === "" || displayName.toLowerCase().includes(query);
     if (!matchesSearch) return false;
 
     const matchesTeam = selectedTeam === "Все команды" || player.team === selectedTeam;
