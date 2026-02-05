@@ -1359,16 +1359,16 @@ const Transfers = () => {
                     <div className="px-4 py-2 text-muted-foreground">Загрузка...</div>
                   ) : apiTeams.length > 0 ? (
                     apiTeams.map((team) => (
-                      <SelectItem
-                        key={team.id}
-                        value={team.name}
-                        className="text-foreground hover:bg-secondary cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          <img src={team.logo} alt={team.name} className="w-5 h-5 object-contain" />
-                          <span>{team.name}</span>
-                        </div>
-                      </SelectItem>
+                <SelectItem
+                  key={team.id}
+                  value={team.name}
+                  className="text-foreground hover:bg-secondary cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <img src={team.logo} alt={team.name_rus} className="w-5 h-5 object-contain" />
+                    <span>{team.name_rus}</span>
+                  </div>
+                </SelectItem>
                     ))
                   ) : (
                     teams
