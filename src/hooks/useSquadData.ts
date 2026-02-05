@@ -5,9 +5,12 @@ import { squadsApi, playersApi, toursApi, squadToursApi, playerStatusesApi, Squa
 export interface EnrichedPlayer {
   id: number;
   name: string;
+  name_rus?: string; // Русское имя игрока
   team_id: number;
   team_name: string;
+  team_name_rus?: string; // Русское название команды
   team_logo: string;
+  photo?: string; // Фото игрока
   position: string; // "ВР", "ЗЩ", "ПЗ", "НП"
   price: number;
   points: number; // Legacy field for backward compatibility

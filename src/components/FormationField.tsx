@@ -926,7 +926,10 @@ import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/for
 export interface FormationPlayerData {
   id: number;
   name: string;
+  name_rus?: string; // Русское имя игрока
   team: string;
+  team_rus?: string; // Русское название команды
+  photo?: string; // Фото игрока
   position: string;
   points: number;
   price?: number;
