@@ -1283,8 +1283,8 @@ const FormationField = ({
       const allPlayersList =
         mode === "management" || mode === "view" ? [...mainSquadPlayers, ...benchPlayers] : players;
 
-      // Format name: surname only, or with initials for duplicates
-      const formattedName = formatPlayerName(player.name, allPlayersList);
+      // Format name: surname only, or with initials for duplicates (uses name_rus if available)
+      const formattedName = formatPlayerName(player, allPlayersList);
       const displayName = truncateName(formattedName, maxNameLength);
 
       // Next opponent display - use provided data or fallback to team name
