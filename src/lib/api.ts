@@ -535,9 +535,11 @@ export interface PlayerFullInfoResponse {
   base_info: {
     id: number;
     name: string;
+    name_rus?: string;
     photo: string;
     team_id: number;
     team_name: string;
+    team_name_rus?: string;
     team_logo: string;
     position: string;
   };
