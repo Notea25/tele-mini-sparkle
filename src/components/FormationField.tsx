@@ -1134,7 +1134,11 @@ const FormationField = ({
   }, []);
 
   // Format player name: show only surname, add initials for players with same surname
-  const formatPlayerName = useCallback((playerName: string, allPlayersList: FormationPlayerData[]) => {
+  // Uses name_rus if available, otherwise falls back to name
+  const formatPlayerName = useCallback((player: FormationPlayerData, allPlayersList: FormationPlayerData[]) => {
+    // Use Russian name if available
+    const playerName = player.name_rus || player.name;
+    
     // Parse name - could be "Имя Фамилия" or "И. Фамилия"
     const parts = playerName.trim().split(/\s+/);
     if (parts.length < 2) return playerName;
@@ -1143,19 +1147,21 @@ const FormationField = ({
     const surname = parts.slice(1).join(" ");
 
     // Get all surnames from all players
-    const getSurname = (name: string) => {
-      const p = name.trim().split(/\s+/);
-      return p.length >= 2 ? p.slice(1).join(" ") : name;
+    const getSurname = (p: FormationPlayerData) => {
+      const name = p.name_rus || p.name;
+      const nameParts = name.trim().split(/\s+/);
+      return nameParts.length >= 2 ? nameParts.slice(1).join(" ") : name;
     };
 
-    const getFirstName = (name: string) => {
-      const p = name.trim().split(/\s+/);
-      return p.length >= 2 ? p[0] : "";
+    const getFirstName = (p: FormationPlayerData) => {
+      const name = p.name_rus || p.name;
+      const nameParts = name.trim().split(/\s+/);
+      return nameParts.length >= 2 ? nameParts[0] : "";
     };
 
     // Find players with the same surname
     const playersWithSameSurname = allPlayersList.filter(
-      (p) => getSurname(p.name) === surname && p.name !== playerName,
+      (p) => getSurname(p) === surname && p.id !== player.id,
     );
 
     // If no duplicates, just return surname
@@ -1165,7 +1171,7 @@ const FormationField = ({
 
     // Check if first letter distinguishes
     const myFirstLetter = firstName.charAt(0).toUpperCase();
-    const othersFirstLetters = playersWithSameSurname.map((p) => getFirstName(p.name).charAt(0).toUpperCase());
+    const othersFirstLetters = playersWithSameSurname.map((p) => getFirstName(p).charAt(0).toUpperCase());
 
     if (!othersFirstLetters.includes(myFirstLetter)) {
       return `${myFirstLetter}. ${surname}`;
