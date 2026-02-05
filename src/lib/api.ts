@@ -185,6 +185,7 @@ export const toursApi = {
 export interface Team {
   id: number;
   name: string;
+  name_rus: string;
   logo: string;
 }
 
@@ -217,8 +218,10 @@ export interface CreateSquadResponse {
 export interface SquadPlayer {
   id: number;
   name: string;
+  name_rus?: string;
   team_id: number;
   team_name: string;
+  team_name_rus?: string;
   team_logo: string;
   position: string;
   market_value: number;
@@ -325,9 +328,11 @@ export interface ReplacePlayersResponse {
 export interface TourHistoryPlayer {
   id: number;
   name: string;
+  name_rus?: string;
   position: string;
   team_id: number;
   team_name: string;
+  team_name_rus?: string;
   team_logo: string | null;
   market_value: number;
   photo: string | null;
@@ -494,8 +499,10 @@ export interface PlayerStatusUpdate {
 export interface Player {
   id: number;
   name: string;
+  name_rus: string;
   team_id: number;
   team_name: string;
+  team_name_rus?: string;
   team_logo: string;
   position: string; // "Defender", "Attacker", "Midfielder", "Goalkeeper"
   market_value: number;
@@ -528,9 +535,11 @@ export interface PlayerFullInfoResponse {
   base_info: {
     id: number;
     name: string;
+    name_rus?: string;
     photo: string;
     team_id: number;
     team_name: string;
+    team_name_rus?: string;
     team_logo: string;
     position: string;
   };

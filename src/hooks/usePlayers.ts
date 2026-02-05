@@ -13,7 +13,9 @@ const POSITION_MAP: Record<string, string> = {
 export interface TransformedPlayer {
   id: number;
   name: string;
+  name_rus: string;
   team: string;        // team_name из API
+  team_rus: string;    // team_name_rus из API
   team_id: number;
   team_logo: string;   // URL логотипа из API
   position: string;    // Преобразовано в ВР/ЗЩ/ПЗ/НП
@@ -76,7 +78,9 @@ export function usePlayers(leagueId: string | null) {
           const transformedPlayers: TransformedPlayer[] = response.data.map((player: Player) => ({
             id: player.id,
             name: player.name,
+            name_rus: player.name_rus,
             team: player.team_name,
+            team_rus: player.team_name_rus || player.team_name,
             team_id: player.team_id,
             team_logo: player.team_logo,
             position: POSITION_MAP[player.position] || player.position,

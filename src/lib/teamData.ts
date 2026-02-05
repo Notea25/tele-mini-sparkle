@@ -3,7 +3,9 @@ import { safeGetItem, safeGetString } from "./safeStorage";
 export interface PlayerData {
   id: number;
   name: string;
+  name_rus?: string;
   team: string;
+  team_rus?: string;
   position: string;
   points: number;
   total_points?: number; // Total points across all tours

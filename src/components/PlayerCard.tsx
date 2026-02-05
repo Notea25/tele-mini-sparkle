@@ -107,7 +107,9 @@ function generateClubSchedule(teamName: string, playerId: number) {
 interface PlayerData {
   id: number;
   name: string;
+  name_rus?: string;
   team: string;
+  team_rus?: string;
   position: string;
   points: number; // Оставлено для обратной совместимости
   price: number;
@@ -317,7 +319,7 @@ const PlayerCard = ({
               ) : (
                 <img 
                   src={playerPhoto_url} 
-                  alt={player.name} 
+                   alt={player.name_rus || player.name}
                   className="w-full h-full object-cover"
                   onError={(e) => { e.currentTarget.src = playerPhoto; }}
                 />
@@ -326,7 +328,7 @@ const PlayerCard = ({
 
             <div className="flex-1 flex flex-col justify-center h-28">
               {/* Player surname */}
-              <h2 className="text-foreground text-2xl font-normal font-display">{player.name}</h2>
+              <h2 className="text-foreground text-2xl font-normal font-display">{player.name_rus || player.name}</h2>
 
               {/* Team with logo - Rubik font */}
               <div className="flex items-center gap-2 mt-1">

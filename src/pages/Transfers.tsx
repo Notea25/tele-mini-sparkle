@@ -1092,8 +1092,8 @@ const Transfers = () => {
                   className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                   onClick={() => setSelectedPlayerForCard(player.id)}
                 >
-                  <img src={clubLogoSrc} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
-                  <span className="text-foreground font-medium text-medium truncate">{player.name}</span>
+                  <img src={clubLogoSrc} alt={player.team_rus || player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                  <span className="text-foreground font-medium text-medium truncate">{player.name_rus || player.name}</span>
                   <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
 
                   {/* Капитанские значки */}
@@ -1359,16 +1359,16 @@ const Transfers = () => {
                     <div className="px-4 py-2 text-muted-foreground">Загрузка...</div>
                   ) : apiTeams.length > 0 ? (
                     apiTeams.map((team) => (
-                      <SelectItem
-                        key={team.id}
-                        value={team.name}
-                        className="text-foreground hover:bg-secondary cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          <img src={team.logo} alt={team.name} className="w-5 h-5 object-contain" />
-                          <span>{team.name}</span>
-                        </div>
-                      </SelectItem>
+                <SelectItem
+                  key={team.id}
+                  value={team.name}
+                  className="text-foreground hover:bg-secondary cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <img src={team.logo} alt={team.name_rus} className="w-5 h-5 object-contain" />
+                    <span>{team.name_rus}</span>
+                  </div>
+                </SelectItem>
                     ))
                   ) : (
                     teams
