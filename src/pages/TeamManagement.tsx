@@ -606,7 +606,7 @@ const TeamManagement = () => {
         const newBench = [...benchPlayersExt];
         [newBench[fromIdx], newBench[toIdx]] = [newBench[toIdx], newBench[fromIdx]];
         setBenchPlayersExt(ensureGoalkeeperFirst(newBench).map((p, i) => ({ ...p, slotIndex: i })));
-        toast.success(`${fromPlayer.name} ↔ ${toPlayer.name}`);
+        toast.success(`${fromPlayer.name_rus || fromPlayer.name} ↔ ${toPlayer.name_rus || toPlayer.name}`);
       }
       exitSwapMode();
       return;
@@ -648,7 +648,7 @@ const TeamManagement = () => {
     setMainSquadPlayers(reassignSlotIndices(newMain));
     setBenchPlayersExt(ensureGoalkeeperFirst(newBench).map((p, i) => ({ ...p, slotIndex: i })));
     
-    toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
+    toast.success(`${mainPlayer.name_rus || mainPlayer.name} ↔ ${benchPlayer.name_rus || benchPlayer.name}`);
     exitSwapMode();
   };
 
@@ -761,7 +761,7 @@ const TeamManagement = () => {
                 onClick={!swapModePlayer ? () => setSelectedPlayerForCard(player.id) : undefined}
               >
                 {clubLogoSrc && <img src={clubLogoSrc} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />}
-                <span className="text-foreground font-medium text-medium truncate">{player.name}</span>
+                <span className="text-foreground font-medium text-medium truncate">{player.name_rus || player.name}</span>
                 <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
                 {/* Captain badge */}
                 {isCaptainPlayer && (
@@ -1007,7 +1007,7 @@ const TeamManagement = () => {
                     className="text-foreground hover:bg-secondary cursor-pointer"
                     disabled={player.id === viceCaptain}
                   >
-                    {player.name}
+                    {player.name_rus || player.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -1018,7 +1018,7 @@ const TeamManagement = () => {
             <Select value={viceCaptain?.toString() || ""} onValueChange={(v) => setViceCaptain(Number(v))}>
               <SelectTrigger className="w-full bg-card border-border text-foreground rounded-xl">
                 <SelectValue placeholder="Выбрать">
-                  {viceCaptain ? allPlayers.find((p) => p.id === viceCaptain)?.name : "Чиж"}
+                  {viceCaptain ? allPlayers.find((p) => p.id === viceCaptain)?.name_rus || allPlayers.find((p) => p.id === viceCaptain)?.name : "Чиж"}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
@@ -1029,7 +1029,7 @@ const TeamManagement = () => {
                     className="text-foreground hover:bg-secondary cursor-pointer"
                     disabled={player.id === captain}
                   >
-                    {player.name}
+                    {player.name_rus || player.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -1121,7 +1121,7 @@ const TeamManagement = () => {
                     {clubLogoSrc && (
                       <img src={clubLogoSrc} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
                     )}
-                    <span className="text-foreground font-medium truncate">{player.name}</span>
+                    <span className="text-foreground font-medium truncate">{player.name_rus || player.name}</span>
                     <span className="text-muted-foreground text-xs">{player.position}</span>
                     {/* Captain badge */}
                     {isCaptainPlayer && (
@@ -1188,7 +1188,7 @@ const TeamManagement = () => {
         <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-primary px-4 py-4 z-50">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1">
-              <p className="text-foreground font-medium">Замена: {swapModePlayer.name}</p>
+              <p className="text-foreground font-medium">Замена: {swapModePlayer.name_rus || swapModePlayer.name}</p>
               <p className="text-muted-foreground text-sm">Выбери игрока для замены</p>
             </div>
             <Button

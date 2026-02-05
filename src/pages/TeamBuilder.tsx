@@ -236,12 +236,9 @@ const TeamBuilder = () => {
   // Filter players based on activeFilter, search query, team, and points
   const filteredPlayers = players.filter((player) => {
     const query = searchQuery.trim().toLowerCase();
-    // Ищем по фамилии (последнее слово в ФИО), но если её нет — по полному имени
-    const [firstName, ...lastNameParts] = player.name.split(" ");
-    const lastName = lastNameParts.join(" ").toLowerCase();
-    const fullName = player.name.toLowerCase();
-    const searchTarget = lastName || fullName;
-    const matchesSearch = query === "" || searchTarget.includes(query);
+    // Ищем по русскому имени, с фоллбеком на английское
+    const displayName = player.name_rus || player.name;
+    const matchesSearch = query === "" || displayName.toLowerCase().includes(query);
     if (!matchesSearch) return false;
 
     const matchesTeam = selectedTeam === "Все команды" || player.team === selectedTeam;
@@ -274,12 +271,10 @@ const TeamBuilder = () => {
     const effectiveSortDirection = sortDirection || "desc";
 
     if (effectiveSortField === "name") {
-      // Сортируем по фамилии (последнее слово в ФИО). Если фамилии нет, используем полное имя.
-      const [aFirst, ...aLastParts] = a.name.split(" ");
-      const [bFirst, ...bLastParts] = b.name.split(" ");
-      const aLast = (aLastParts.join(" ") || a.name).toLowerCase();
-      const bLast = (bLastParts.join(" ") || b.name).toLowerCase();
-      const comparison = aLast.localeCompare(bLast, "ru");
+      // Сортируем по русскому имени с фоллбеком на английское
+      const aName = (a.name_rus || a.name).toLowerCase();
+      const bName = (b.name_rus || b.name).toLowerCase();
+      const comparison = aName.localeCompare(bName, "ru");
       return effectiveSortDirection === "asc" ? comparison : -comparison;
     }
     if (effectiveSortField === "points") {
@@ -1256,7 +1251,7 @@ const TeamBuilder = () => {
                 className="flex-1 flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
                 onClick={() => setSelectedPlayerForCard(player.id)}
               >
-                <span className="text-foreground font-medium truncate">{player.name}</span>
+                <span className="text-foreground font-medium truncate">{(player as TransformedPlayer).name_rus || player.name}</span>
                 <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
               </div>
 
