@@ -276,9 +276,12 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
       return {
         id: sp.id,
         name: sp.name,
+        name_rus: sp.name_rus || fullPlayer?.name_rus,
         team_id: sp.team_id,
         team_name: sp.team_name || fullPlayer?.team_name || "",
+        team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
         team_logo: sp.team_logo || fullPlayer?.team_logo || "",
+        photo: sp.photo || "",
         position,
         price: sp.market_value ? Math.round((sp.market_value / 1000) * 10) / 10 : (fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0),
         points: sp.points,
