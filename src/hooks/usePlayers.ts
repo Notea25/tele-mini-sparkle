@@ -78,7 +78,9 @@ export function usePlayers(leagueId: string | null) {
           const transformedPlayers: TransformedPlayer[] = response.data.map((player: Player) => ({
             id: player.id,
             name: player.name,
+            name_rus: player.name_rus,
             team: player.team_name,
+            team_rus: player.team_name_rus || player.team_name,
             team_id: player.team_id,
             team_logo: player.team_logo,
             position: POSITION_MAP[player.position] || player.position,
