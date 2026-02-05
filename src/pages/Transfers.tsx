@@ -83,6 +83,8 @@ interface PlayerDataExt extends PlayerData {
   hasRedCard?: boolean;
   isInjured?: boolean;
   hasLeftLeague?: boolean;
+  name_rus?: string;
+  team_rus?: string;
 }
 
 // Fixed formation for transfers: 2 GK, 5 DEF, 5 MID, 3 FWD = 15 players
