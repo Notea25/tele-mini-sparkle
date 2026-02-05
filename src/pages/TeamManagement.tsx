@@ -648,7 +648,7 @@ const TeamManagement = () => {
     setMainSquadPlayers(reassignSlotIndices(newMain));
     setBenchPlayersExt(ensureGoalkeeperFirst(newBench).map((p, i) => ({ ...p, slotIndex: i })));
     
-    toast.success(`${mainPlayer.name} ↔ ${benchPlayer.name}`);
+    toast.success(`${mainPlayer.name_rus || mainPlayer.name} ↔ ${benchPlayer.name_rus || benchPlayer.name}`);
     exitSwapMode();
   };
 
