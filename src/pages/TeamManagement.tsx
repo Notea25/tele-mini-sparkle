@@ -606,7 +606,7 @@ const TeamManagement = () => {
         const newBench = [...benchPlayersExt];
         [newBench[fromIdx], newBench[toIdx]] = [newBench[toIdx], newBench[fromIdx]];
         setBenchPlayersExt(ensureGoalkeeperFirst(newBench).map((p, i) => ({ ...p, slotIndex: i })));
-        toast.success(`${fromPlayer.name} ↔ ${toPlayer.name}`);
+        toast.success(`${fromPlayer.name_rus || fromPlayer.name} ↔ ${toPlayer.name_rus || toPlayer.name}`);
       }
       exitSwapMode();
       return;
