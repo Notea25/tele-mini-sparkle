@@ -307,8 +307,11 @@ const TeamManagement = () => {
         return {
           id: p.id,
           name: p.name,
+          name_rus: p.name_rus,
           team: p.team_name,
+          team_rus: p.team_name_rus,
           team_logo: p.team_logo,
+          photo: p.photo,
           position: p.position,
           price: p.price,
           points: p.points,
