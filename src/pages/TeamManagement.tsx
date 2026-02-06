@@ -1123,7 +1123,7 @@ const TeamManagement = () => {
                     onClick={!swapModePlayer ? () => setSelectedPlayerForCard(player.id) : undefined}
                   >
                     {clubLogoSrc && (
-                      <img src={clubLogoSrc} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />
+                      <img src={clubLogoSrc} alt={player.team_rus || player.team} className="w-5 h-5 object-contain flex-shrink-0" />
                     )}
                     <span className="text-foreground font-medium truncate">{player.name_rus || player.name}</span>
                     <span className="text-muted-foreground text-xs">{player.position}</span>
