@@ -84,7 +84,9 @@ const truncateTeamName = (name: string, maxLength: number = 10) => {
 interface PlayerData {
   id: number;
   name: string;
+  name_rus?: string;
   team: string;
+  team_rus?: string;
   position: string;
   points: number;
   price: number;
