@@ -1287,8 +1287,8 @@ const FormationField = ({
       const formattedName = formatPlayerName(player, allPlayersList);
       const displayName = truncateName(formattedName, maxNameLength);
 
-      // Next opponent display - use provided data or fallback to team name
-      const nextOpponent = player.nextOpponent || player.team;
+      // Next opponent display - use provided data or fallback to Russian team name
+      const nextOpponent = player.nextOpponent || player.team_rus || player.team;
       const isHome = player.nextOpponentHome !== undefined ? player.nextOpponentHome : true;
       const homeAwayLabel = isHome ? "(Д)" : "(Г)";
       const displayOpponent = truncateName(nextOpponent, maxTeamLength);
