@@ -360,12 +360,12 @@ export default function TourHistory({ squadId: propSquadId }: TourHistoryProps) 
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-white truncate">
-                              {player.name}
+                              {player.name_rus || player.name}
                             </div>
                             <div className="text-sm text-gray-400 flex items-center gap-2">
                               <span>{player.position}</span>
                               <span>•</span>
-                              <span>{player.team_name}</span>
+                              <span>{player.team_name_rus || player.team_name}</span>
                             </div>
                           </div>
                           <div className="text-right">
