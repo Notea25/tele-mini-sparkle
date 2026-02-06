@@ -120,7 +120,9 @@ interface PlayerData {
 interface SwapablePlayer {
   id: number;
   name: string;
+  name_rus?: string;
   team: string;
+  team_rus?: string;
   team_logo?: string;
   position: string;
   points?: number;
