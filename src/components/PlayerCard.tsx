@@ -222,7 +222,7 @@ const PlayerCard = ({
   // Get data from API or fallback to player props
   const playerPhoto_url = fullInfo?.base_info?.photo || playerPhoto;
   const teamLogo_url = fullInfo?.base_info?.team_logo || clubLogos[player.team] || clubLogo;
-  const teamName = fullInfo?.base_info?.team_name || player.team;
+  const teamName = fullInfo?.base_info?.team_name_rus || fullInfo?.base_info?.team_name || player.team_rus || player.team;
   const positionDisplay = fullInfo?.base_info?.position 
     ? positionNames[fullInfo.base_info.position] || fullInfo.base_info.position
     : positionNames[player.position] || player.position;
