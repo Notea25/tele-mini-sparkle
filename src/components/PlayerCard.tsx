@@ -120,7 +120,9 @@ interface PlayerData {
 interface SwapablePlayer {
   id: number;
   name: string;
+  name_rus?: string;
   team: string;
+  team_rus?: string;
   team_logo?: string;
   position: string;
   points?: number;
@@ -222,7 +224,7 @@ const PlayerCard = ({
   // Get data from API or fallback to player props
   const playerPhoto_url = fullInfo?.base_info?.photo || playerPhoto;
   const teamLogo_url = fullInfo?.base_info?.team_logo || clubLogos[player.team] || clubLogo;
-  const teamName = fullInfo?.base_info?.team_name || player.team;
+  const teamName = fullInfo?.base_info?.team_name_rus || fullInfo?.base_info?.team_name || player.team_rus || player.team;
   const positionDisplay = fullInfo?.base_info?.position 
     ? positionNames[fullInfo.base_info.position] || fullInfo.base_info.position
     : positionNames[player.position] || player.position;
@@ -627,12 +629,12 @@ const PlayerCard = ({
                           {swapPlayerLogo && (
                             <img 
                               src={swapPlayerLogo} 
-                              alt={swapPlayer.team} 
+                              alt={swapPlayer.team_rus || swapPlayer.team} 
                               className="w-5 h-5 object-contain flex-shrink-0" 
                             />
                           )}
                           <span className={`text-sm font-medium truncate ${isValid ? "text-foreground" : "text-muted-foreground"}`}>
-                            {swapPlayer.name}
+                            {swapPlayer.name_rus || swapPlayer.name}
                           </span>
                           <span className="text-muted-foreground text-xs flex-shrink-0">{positionLabel}</span>
                           {swapPlayer.isInjured && (

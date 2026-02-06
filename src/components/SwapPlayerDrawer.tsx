@@ -84,7 +84,9 @@ const truncateTeamName = (name: string, maxLength: number = 10) => {
 interface PlayerData {
   id: number;
   name: string;
+  name_rus?: string;
   team: string;
+  team_rus?: string;
   position: string;
   points: number;
   price: number;
@@ -156,14 +158,14 @@ const SwapPlayerCard = ({
         {/* Bottom info overlay */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-4 pb-1 px-1">
           <p className="text-foreground text-[10px] font-medium text-center truncate leading-tight">
-            {player.name}
+            {player.name_rus || player.name}
           </p>
           <div className="flex items-center justify-center gap-1 mt-0.5">
             <span className="text-muted-foreground text-[8px]">
               ({player.position})
             </span>
             <span className="text-muted-foreground text-[8px] truncate max-w-[50px]">
-              {truncateTeamName(player.team, 8)}
+              {truncateTeamName(player.team_rus || player.team, 8)}
             </span>
           </div>
         </div>

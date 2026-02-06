@@ -397,11 +397,11 @@ const BuyPlayerDrawer = ({
                     {clubLogos[player.team] && (
                       <img 
                         src={clubLogos[player.team]} 
-                        alt={player.team}
+                        alt={player.team_rus || player.team}
                         className="w-5 h-5 object-contain flex-shrink-0"
                       />
                     )}
-                    <span className="text-foreground font-medium text-sm truncate">{player.name}</span>
+                    <span className="text-foreground font-medium text-sm truncate">{player.name_rus || player.name}</span>
                     <span className="text-muted-foreground text-xs flex-shrink-0">{player.position}</span>
                   </div>
                   
