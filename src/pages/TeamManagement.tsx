@@ -764,7 +764,7 @@ const TeamManagement = () => {
                 className={`flex-1 flex items-center gap-2 min-w-0 ${!swapModePlayer ? 'cursor-pointer hover:opacity-80' : ''}`}
                 onClick={!swapModePlayer ? () => setSelectedPlayerForCard(player.id) : undefined}
               >
-                {clubLogoSrc && <img src={clubLogoSrc} alt={player.team} className="w-5 h-5 object-contain flex-shrink-0" />}
+                {clubLogoSrc && <img src={clubLogoSrc} alt={player.team_rus || player.team} className="w-5 h-5 object-contain flex-shrink-0" />}
                 <span className="text-foreground font-medium text-medium truncate">{player.name_rus || player.name}</span>
                 <span className="text-muted-foreground text-xs text-regular">{player.position}</span>
                 {/* Captain badge */}
