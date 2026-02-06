@@ -513,7 +513,7 @@ const PlayerCard = ({
           {/* Swap Player Selection Section - only for management variant */}
           {variant === "management" && swapablePlayers.length > 0 && (
             <div className="mt-6">
-              <h3 className="text-foreground text-sm font-bold mb-3 text-left">Выбери игрока для замены</h3>
+              <h3 className="text-foreground text-sm font-normal font-display mb-3 text-left">Выбери игрока для замены</h3>
               
               {/* Column Headers */}
               <div className="grid grid-cols-2 gap-4 mb-2">
