@@ -74,6 +74,10 @@ interface PlayerDataExt extends PlayerData {
   isInjured?: boolean;
   hasLeftLeague?: boolean;
   team_logo?: string;
+  team_rus?: string;
+  name_rus?: string;
+  nextOpponent?: string;
+  nextOpponentHome?: boolean;
 }
 
 // Ensure goalkeeper is always first on the bench (utility function)
