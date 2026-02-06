@@ -627,12 +627,12 @@ const PlayerCard = ({
                           {swapPlayerLogo && (
                             <img 
                               src={swapPlayerLogo} 
-                              alt={swapPlayer.team} 
+                              alt={swapPlayer.team_rus || swapPlayer.team} 
                               className="w-5 h-5 object-contain flex-shrink-0" 
                             />
                           )}
                           <span className={`text-sm font-medium truncate ${isValid ? "text-foreground" : "text-muted-foreground"}`}>
-                            {swapPlayer.name}
+                            {swapPlayer.name_rus || swapPlayer.name}
                           </span>
                           <span className="text-muted-foreground text-xs flex-shrink-0">{positionLabel}</span>
                           {swapPlayer.isInjured && (
