@@ -921,6 +921,7 @@ import iconClose from "@/assets/icon-close.png";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
+import { getTeamAbbreviation } from "@/lib/teamAbbreviations";
 
 // Player data interface
 export interface FormationPlayerData {
