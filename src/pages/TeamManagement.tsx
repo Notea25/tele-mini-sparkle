@@ -20,6 +20,7 @@ import {
   resetAllBoosts,
 } from "@/lib/boostState";
 import { clubLogos } from "@/lib/clubLogos";
+import { getTeamAbbreviation } from "@/lib/teamAbbreviations";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
@@ -690,33 +691,15 @@ const TeamManagement = () => {
   };
 
 
-  // Team abbreviations for next match
-  const teamAbbreviations: Record<string, string> = {
-    Арсенал: "АРС",
-    БАТЭ: "БАТ",
-    Белшина: "БЕЛ",
-    Витебск: "ВИТ",
-    Гомель: "ГОМ",
-    "Динамо-Минск": "ДМН",
-    "Динамо-Брест": "ДБР",
-    Днепр: "ДНП",
-    Ислочь: "ИСЛ",
-    "МЛ Витебск": "МЛ",
-    Минск: "МИН",
-    Нафтан: "НАФ",
-    Неман: "НЕМ",
-    "Славия-Мозырь": "СЛА",
-    "Торпедо-БелАЗ": "ТОР",
-    Шахтер: "ШАХ",
-    Барановичи: "БАР",
-  };
-
-  // Get next opponent for a team (simplified - just shows a random opponent)
-  const getNextOpponent = (team: string): string => {
-    const teams = Object.keys(teamAbbreviations).filter((t) => t !== team);
-    const hash = team.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const opponent = teams[hash % teams.length];
-    return teamAbbreviations[opponent] || "—";
+  // Get next opponent display with abbreviation and home/away indicator
+  const getNextOpponentDisplay = (player: PlayerDataExt): string => {
+    const hasOpponentData = player.nextOpponent !== undefined && player.nextOpponent !== null && player.nextOpponent !== "";
+    if (!hasOpponentData) {
+      return "—";
+    }
+    const abbreviation = getTeamAbbreviation(player.nextOpponent);
+    const homeAwayLabel = player.nextOpponentHome ? "(Д)" : "(Г)";
+    return `${abbreviation} ${homeAwayLabel}`;
   };
 
   const renderListSection = (position: PositionCode, players: PlayerDataExt[]) => (
@@ -802,7 +785,7 @@ const TeamManagement = () => {
 
               {/* Next match opponent */}
               <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">
-                {getNextOpponent(player.team)}
+                {getNextOpponentDisplay(player)}
               </div>
 
               {/* Swap button */}
@@ -1162,7 +1145,7 @@ const TeamManagement = () => {
 
                   {/* Next match opponent */}
                   <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">
-                    {getNextOpponent(player.team)}
+                    {getNextOpponentDisplay(player)}
                   </div>
 
                   {/* Swap button */}
