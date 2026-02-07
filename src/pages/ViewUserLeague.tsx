@@ -57,12 +57,12 @@ const ViewUserLeague = () => {
 
   // Fetch leaderboard from user leagues API
   const { data: leaderboardResponse, isLoading: leaderboardLoading } = useQuery({
-    queryKey: ['userLeagueLeaderboard', leagueId, currentTourId],
+    queryKey: ['userLeagueLeaderboard', leagueId, leaderboardTourId],
     queryFn: async () => {
-      if (!leagueId || !currentTourId) return null;
-      return customLeaguesApi.getUserLeagueLeaderboard(leagueId, currentTourId);
+      if (!leagueId || !leaderboardTourId) return null;
+      return customLeaguesApi.getUserLeagueLeaderboard(leagueId, leaderboardTourId);
     },
-    enabled: !!leagueId && !!currentTourId,
+    enabled: !!leagueId && !!leaderboardTourId,
     staleTime: 0,
     gcTime: 0,
   });

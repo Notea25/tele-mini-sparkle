@@ -60,12 +60,12 @@ const ViewComLeague = () => {
 
   // Fetch leaderboard from commercial leagues API
   const { data: leaderboardResponse, isLoading: leaderboardLoading } = useQuery({
-    queryKey: ['commercialLeagueLeaderboard', customLeagueId, currentTourId],
+    queryKey: ['commercialLeagueLeaderboard', customLeagueId, leaderboardTourId],
     queryFn: async () => {
-      if (!customLeagueId || !currentTourId) return null;
-      return commercialLeaguesApi.getLeaderboard(customLeagueId, currentTourId);
+      if (!customLeagueId || !leaderboardTourId) return null;
+      return commercialLeaguesApi.getLeaderboard(customLeagueId, leaderboardTourId);
     },
-    enabled: !!customLeagueId && !!currentTourId,
+    enabled: !!customLeagueId && !!leaderboardTourId,
     staleTime: 0,
     gcTime: 0,
   });
