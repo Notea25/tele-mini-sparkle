@@ -255,17 +255,9 @@ const ViewTeam = () => {
     });
   }, [displayMainPlayers, displayCaptainId, displayViceCaptainId]);
 
-  // Sort bench by position: ВР first, then ЗЩ, ПЗ, НП
+  // Bench order should match user-defined substitution priority (same as /team-management)
   const benchForField = useMemo((): PlayerData[] => {
-    const positionOrder: Record<string, number> = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
-    
-    const sortedBench = [...displayBenchPlayers].sort((a, b) => {
-      const orderA = positionOrder[a.position] ?? 99;
-      const orderB = positionOrder[b.position] ?? 99;
-      return orderA - orderB;
-    });
-    
-    return sortedBench.map(p => {
+    return displayBenchPlayers.map(p => {
       return {
         id: p.id,
         name: p.name,
