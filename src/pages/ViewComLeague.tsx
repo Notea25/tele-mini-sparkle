@@ -54,7 +54,7 @@ const ViewComLeague = () => {
   const sportLeagueId = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116', 10);
   
   // Get current squad and tour info
-  const { squad, currentTour, currentTourId, isLoading: squadLoading } = useSquadData(sportLeagueId);
+  const { squad, currentTour, leaderboardTourId, isLoading: squadLoading } = useSquadData(sportLeagueId);
 
   const queryClient = useQueryClient();
 
