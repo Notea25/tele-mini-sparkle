@@ -320,6 +320,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     squadTourData,
     mainPlayers,
     benchPlayers,
+    previousTour,
     currentTour,
     currentTourId,
     nextTour,
