@@ -99,8 +99,15 @@ export function useDeadline(leagueId: string = '116') {
     return () => clearInterval(timer);
   }, [deadlineDate]);
 
+  // Format deadline to match Index.tsx format: "DD.MM в HH.MM"
   const formattedDeadline = deadlineDate
-    ? `${deadlineDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })} в ${deadlineDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`
+    ? (() => {
+        const day = String(deadlineDate.getDate()).padStart(2, '0');
+        const month = String(deadlineDate.getMonth() + 1).padStart(2, '0');
+        const hours = String(deadlineDate.getHours()).padStart(2, '0');
+        const minutes = String(deadlineDate.getMinutes()).padStart(2, '0');
+        return `${day}.${month}.${deadlineDate.getFullYear()} в ${hours}:${minutes}`;
+      })()
     : null;
 
   return {
