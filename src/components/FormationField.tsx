@@ -1636,7 +1636,7 @@ const FormationField = ({
                     fontSize: "8px",
                     lineHeight: "13px",
                   }}
-                  title={`${homeAwayLabel} ${nextOpponent}`}
+                  title={`${homeAwayLabel} ${nextOpponentFull}`}
                 >
                   <span className="text-[#7D7A94]">{homeAwayLabel}</span>
                   <span className="text-white"> {displayOpponent}</span>
