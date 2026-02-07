@@ -93,6 +93,12 @@ const ViewTeam = () => {
           }
         }
         
+        // If no tours available yet (no current tour with passed deadline), 
+        // show next tour data if available
+        if (tours.length === 0 && toursResponse.data.next_tour) {
+          tours.push(toursResponse.data.next_tour);
+        }
+        
         setAllTours(tours);
 
         // Set initial selected tour to the most recent available
