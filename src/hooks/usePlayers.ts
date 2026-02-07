@@ -35,7 +35,7 @@ interface PlayersCache {
 
 const CACHE_KEY = 'fantasyPlayersCache';
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 2; // Increment to invalidate old cache
+const CACHE_VERSION = 3; // Increment to invalidate old cache - added team_rus support
 
 export function usePlayers(leagueId: string | null) {
   const [players, setPlayers] = useState<TransformedPlayer[]>([]);
