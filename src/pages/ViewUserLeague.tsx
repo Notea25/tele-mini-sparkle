@@ -43,7 +43,7 @@ const ViewUserLeague = () => {
   const sportLeagueId = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116', 10);
   
   // Get current squad and tour info
-  const { squad, currentTour, leaderboardTourId } = useSquadData(sportLeagueId);
+  const { squad, currentTour, leaderboardTourId, leaderboardTourNumber } = useSquadData(sportLeagueId);
   
   // Fetch league details from API
   const { data: leagueResponse, isLoading: leagueLoading } = useQuery({
@@ -159,8 +159,8 @@ const ViewUserLeague = () => {
       });
   }, [leaderboardResponse, leagueData, squad?.id]);
 
-  // Current tour number for display
-  const currentTourNumber = currentTour || 29;
+  // Current tour number for display - use leaderboardTourNumber from API
+  const currentTourNumber = leaderboardTourNumber || currentTour || 1;
 
   // Restore scroll position when returning to this page
   useEffect(() => {

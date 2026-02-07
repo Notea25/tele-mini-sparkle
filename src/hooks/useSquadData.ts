@@ -37,6 +37,7 @@ interface UseSquadDataResult {
   nextTourId: number | null;
   boostTourId: number | null; // ID тура для бустов (next_tour.id или current_tour.id)
   leaderboardTourId: number | null; // ID тура для лидербордов (current ?? previous ?? next)
+  leaderboardTourNumber: number | null; // Номер тура для отображения в лидербордах
   tourPoints: number;
   isLoading: boolean;
   error: string | null;
@@ -313,6 +314,13 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     ?? toursData?.previous_tour?.id 
     ?? toursData?.next_tour?.id 
     ?? null;
+  
+  // Tour NUMBER for leaderboard display (matches leaderboardTourId)
+  const leaderboardTourNumber = toursData?.current_tour?.id 
+    ? toursData.current_tour.number
+    : toursData?.previous_tour?.id 
+      ? toursData.previous_tour.number
+      : toursData?.next_tour?.number ?? null;
 
   const isLoading = squadsLoading || playersLoading || toursLoading || squadTourLoading || statusesLoading;
   const error = squadsError ? (squadsError instanceof Error ? squadsError.message : 'Unknown error') : null;
@@ -335,6 +343,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     nextTourId,
     boostTourId,
     leaderboardTourId,
+    leaderboardTourNumber,
     tourPoints,
     isLoading,
     error,
