@@ -771,19 +771,24 @@ const Transfers = () => {
   // Check if transfer boost is active
   const hasTransfersBoost = specialChips.some((c) => c.id === "transfers" && c.status === "pending");
   const hasGoldenTourBoost = specialChips.some((c) => c.id === "golden" && c.status === "pending");
-  const hasAnyTransferBoost = hasTransfersBoost || hasGoldenTourBoost;
+  // If season hasn't started (no previous/current tour), treat as unlimited free transfers
+  const hasAnyTransferBoost = hasTransfersBoost || hasGoldenTourBoost || isSeasonNotStarted;
 
   // Calculate pending transfer costs
   // NEW ARCHITECTURE: Use squadTourData.replacements from backend as source of truth
+  // If season hasn't started, no penalty applies
   const pendingTransferCount = getTransferRecords().length;
-  const transferCosts = calculateTransferCosts(
-    pendingTransferCount,
-    hasTransfersBoost,
-    hasGoldenTourBoost,
-    squadTourData?.replacements ?? 2, // Backend data as source of truth
-  );
+  const transferCosts = isSeasonNotStarted
+    ? { freeTransfersUsed: 0, paidTransfers: 0, pointsPenalty: 0 }
+    : calculateTransferCosts(
+        pendingTransferCount,
+        hasTransfersBoost,
+        hasGoldenTourBoost,
+        squadTourData?.replacements ?? 2, // Backend data as source of truth
+      );
 
   // Calculate free transfers remaining dynamically - subtract pending transfers
+  // If season hasn't started, show infinity
   const freeTransfersRemaining = hasAnyTransferBoost
     ? "∞"
     : Math.max(0, (squadTourData?.replacements ?? 2) - pendingTransferCount);
