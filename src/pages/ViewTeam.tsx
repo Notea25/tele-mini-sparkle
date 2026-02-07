@@ -221,11 +221,40 @@ const ViewTeam = () => {
   }, [selectedSnapshot, mainPlayers]);
 
   const displayBenchPlayers = useMemo((): EnrichedPlayer[] => {
+    let baseBench: EnrichedPlayer[];
+    
     if (selectedSnapshot && selectedSnapshot.bench_players) {
-      return selectedSnapshot.bench_players.map((p, i) => convertHistoryPlayer(p, i));
+      baseBench = selectedSnapshot.bench_players.map((p, i) => convertHistoryPlayer(p, i));
+    } else {
+      baseBench = benchPlayers;
     }
-    return benchPlayers;
-  }, [selectedSnapshot, benchPlayers]);
+    
+    // Apply saved bench order from localStorage (same logic as /team-management)
+    if (squadId && baseBench.length > 0) {
+      const benchOrderKey = `benchOrder_${squadId}`;
+      const savedOrder = localStorage.getItem(benchOrderKey);
+      if (savedOrder) {
+        try {
+          const orderIds: number[] = JSON.parse(savedOrder);
+          // Sort bench players according to saved order
+          const orderedBench = [...baseBench].sort((a, b) => {
+            const indexA = orderIds.indexOf(a.id);
+            const indexB = orderIds.indexOf(b.id);
+            // If player not in saved order, put them at the end
+            if (indexA === -1 && indexB === -1) return 0;
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            return indexA - indexB;
+          });
+          return orderedBench;
+        } catch {
+          // If parsing fails, return original order
+        }
+      }
+    }
+    
+    return baseBench;
+  }, [selectedSnapshot, benchPlayers, squadId]);
 
   // Get captain/vice-captain IDs
   const displayCaptainId = selectedSnapshot?.captain_id ?? squadTourData?.captain_id ?? null;
