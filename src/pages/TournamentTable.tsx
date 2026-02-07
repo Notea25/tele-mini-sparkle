@@ -44,10 +44,16 @@ const TournamentTable = () => {
     gcTime: 30 * 60 * 1000,
   });
 
-  // Если есть текущий тур — показываем его.
-  // Если текущего тура нет (сезон ещё не начался или уже закончился) — используем предыдущий.
-  const targetTourId = toursData?.current_tour?.id ?? toursData?.previous_tour?.id;
-  const currentTourNumber = toursData?.current_tour?.number ?? toursData?.previous_tour?.number;
+  // Приоритет выбора тура для лидерборда:
+  // 1. current_tour — если есть
+  // 2. previous_tour — если нет текущего
+  // 3. next_tour — если нет ни текущего, ни предыдущего (сезон ещё не начался)
+  const targetTourId = toursData?.current_tour?.id 
+    ?? toursData?.previous_tour?.id 
+    ?? toursData?.next_tour?.id;
+  const currentTourNumber = toursData?.current_tour?.number 
+    ?? toursData?.previous_tour?.number 
+    ?? toursData?.next_tour?.number;
   
   // Find squad for current league
   const squadsData = Array.isArray(mySquadsData) ? mySquadsData : [];
