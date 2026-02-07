@@ -36,6 +36,7 @@ interface UseSquadDataResult {
   nextTour: number | null; // Номер следующего тура
   nextTourId: number | null;
   boostTourId: number | null; // ID тура для бустов (next_tour.id или current_tour.id)
+  leaderboardTourId: number | null; // ID тура для лидербордов (current ?? previous ?? next)
   tourPoints: number;
   isLoading: boolean;
   error: string | null;
