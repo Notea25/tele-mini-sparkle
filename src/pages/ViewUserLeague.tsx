@@ -43,7 +43,7 @@ const ViewUserLeague = () => {
   const sportLeagueId = parseInt(localStorage.getItem('fantasySelectedLeagueId') || '116', 10);
   
   // Get current squad and tour info
-  const { squad, currentTour, leaderboardTourId } = useSquadData(sportLeagueId);
+  const { squad, currentTour, leaderboardTourId, leaderboardTourNumber } = useSquadData(sportLeagueId);
   
   // Fetch league details from API
   const { data: leagueResponse, isLoading: leagueLoading } = useQuery({
