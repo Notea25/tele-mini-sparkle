@@ -297,6 +297,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     });
   }, [squadTourData, playerMap, playerStatusMap]);
 
+  const previousTour = toursData?.previous_tour?.number || null;
   const currentTour = toursData?.current_tour?.number || null;
   const nextTour = toursData?.next_tour?.number || null;
   const nextTourId = toursData?.next_tour?.id || null;
