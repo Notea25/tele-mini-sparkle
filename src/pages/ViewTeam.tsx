@@ -191,9 +191,12 @@ const ViewTeam = () => {
   const convertHistoryPlayer = (p: TourHistoryPlayer, slotIndex: number): EnrichedPlayer => ({
     id: p.id,
     name: p.name,
+    name_rus: p.name_rus,
     team_id: p.team_id,
     team_name: p.team_name,
+    team_name_rus: p.team_name_rus,
     team_logo: p.team_logo || "",
+    photo: p.photo || "",
     position: mapPosition(p.position),
     price: Math.round((p.market_value / 1000) * 10) / 10,
     points: p.tour_points,
