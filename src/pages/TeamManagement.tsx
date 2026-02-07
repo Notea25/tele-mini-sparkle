@@ -785,7 +785,7 @@ const TeamManagement = () => {
 
               {/* Next match opponent */}
               <div className="w-14 flex-shrink-0 flex justify-center text-muted-foreground text-sm ml-2">
-                {getNextOpponent(player.team)}
+                {getNextOpponentDisplay(player)}
               </div>
 
               {/* Swap button */}
