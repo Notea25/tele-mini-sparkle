@@ -56,7 +56,7 @@ export const TEAM_ABBREVIATIONS: Record<string, string> = {
   "FC Dnepr Mogilev": "ДНП",
   "Isloch": "ИСЛ",
   "FC Isloch Minsk R.": "ИСЛ",
-  "ML Vitebsk": "МЛВ",
+  "ML Vitebsk": "МЛ",
   "Minsk": "МИН",
   "FC Minsk": "МИН",
   "Naftan": "НАФ",
