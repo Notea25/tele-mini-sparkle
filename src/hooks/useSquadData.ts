@@ -30,6 +30,7 @@ interface UseSquadDataResult {
   squadTourData: SquadTourResponse | null; // NEW: tour-specific state from squad_tours API
   mainPlayers: EnrichedPlayer[];
   benchPlayers: EnrichedPlayer[];
+  previousTour: number | null; // Номер предыдущего тура
   currentTour: number | null;
   currentTourId: number | null;
   nextTour: number | null; // Номер следующего тура
