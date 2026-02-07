@@ -251,18 +251,20 @@ const CreateTeam = () => {
             {isLoadingTeams ? (
               <div className="px-4 py-2 text-muted-foreground">Загрузка...</div>
             ) : apiTeams.length > 0 ? (
-              apiTeams.map((team) => (
-                <SelectItem
-                  key={team.id}
-                  value={team.id.toString()}
-                  className="focus:bg-white/10 focus:text-white data-[state=checked]:text-primary"
-                >
-                  <div className="flex items-center gap-2">
-                    <img src={team.logo} alt={team.name_rus} className="w-5 h-5 object-contain" />
-                    <span>{team.name_rus}</span>
-                  </div>
-                </SelectItem>
-              ))
+              [...apiTeams]
+                .sort((a, b) => (a.name_rus || a.name).localeCompare(b.name_rus || b.name, 'ru'))
+                .map((team) => (
+                  <SelectItem
+                    key={team.id}
+                    value={team.id.toString()}
+                    className="focus:bg-white/10 focus:text-white data-[state=checked]:text-primary"
+                  >
+                    <div className="flex items-center gap-2">
+                      <img src={team.logo} alt={team.name_rus || team.name} className="w-5 h-5 object-contain" />
+                      <span>{team.name_rus || team.name}</span>
+                    </div>
+                  </SelectItem>
+                ))
             ) : (
               TEAM_OPTIONS.map((option) => (
                 <SelectItem
