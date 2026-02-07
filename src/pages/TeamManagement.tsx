@@ -20,6 +20,7 @@ import {
   resetAllBoosts,
 } from "@/lib/boostState";
 import { clubLogos } from "@/lib/clubLogos";
+import { getTeamAbbreviation } from "@/lib/teamAbbreviations";
 import clubBelshina from "@/assets/club-belshina.png";
 import clubLogo from "@/assets/club-logo.png";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
