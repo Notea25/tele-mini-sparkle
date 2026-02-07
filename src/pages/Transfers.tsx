@@ -48,6 +48,7 @@ import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipState
 import { PositionCode } from "@/constants/positions";
 import clubLogo from "@/assets/club-logo.png";
 import boostTransfers from "@/assets/boost-transfers.png";
+import { pluralizeDays } from "@/lib/pluralize";
 import boostGolden from "@/assets/boost-golden.png";
 import boostBench from "@/assets/boost-bench.png";
 import boostCaptain3x from "@/assets/boost-captain3x.png";
@@ -1184,7 +1185,7 @@ const Transfers = () => {
             <span className="text-foreground font-medium">{deadlineLoading ? "..." : formattedDeadline || "—"}</span>
           </span>
           <span className="text-foreground">
-            {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
+            {timeLeft.days} {pluralizeDays(timeLeft.days)} {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
             {String(timeLeft.seconds).padStart(2, "0")}
           </span>
         </div>
