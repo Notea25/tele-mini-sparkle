@@ -274,12 +274,16 @@ const Transfers = () => {
     squadTourData,
     mainPlayers: apiMainPlayers,
     benchPlayers: apiBenchPlayers,
+    previousTour,
     currentTour,
     nextTour,
     boostTourId,
     isLoading: isLoadingSquad,
     refetch: refetchSquad,
   } = useSquadData(leagueIdNum);
+
+  // Check if season hasn't started yet (no previous tour and no current tour)
+  const isSeasonNotStarted = previousTour === null && currentTour === null;
 
   const teamName = squad?.name || getSavedTeam().teamName || "Lucky Team";
 
