@@ -1289,11 +1289,12 @@ const FormationField = ({
 
       // Next opponent display - use provided data if available
       // Only show home/away label if we have actual opponent data
+      // Display abbreviated team name (3 letters) using mapping
       const hasOpponentData = player.nextOpponent !== undefined && player.nextOpponent !== null && player.nextOpponent !== "";
-      const nextOpponent = hasOpponentData ? player.nextOpponent : (player.team_rus || player.team);
+      const nextOpponentFull = hasOpponentData ? player.nextOpponent : (player.team_rus || player.team);
       const isHome = player.nextOpponentHome !== undefined ? player.nextOpponentHome : true;
       const homeAwayLabel = hasOpponentData ? (isHome ? "(Д)" : "(Г)") : "";
-      const displayOpponent = truncateName(nextOpponent, maxTeamLength);
+      const displayOpponent = getTeamAbbreviation(nextOpponentFull);
 
       // Определяем отступ сверху для джерси
       const jerseyPaddingTop = isDesktop ? "20px" : "13px";
