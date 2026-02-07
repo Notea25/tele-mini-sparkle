@@ -114,11 +114,16 @@ const ViewTeam = () => {
   }, [squad, squadId, selectedTourId]);
 
   // Get current tour ID for comparison
+  // Include both 'current' and 'next' type tours as "current" (not historical)
   const currentTourId = useMemo(() => {
-    return allTours.find(t => t.type === 'current')?.id ?? null;
+    // First try to find current tour, if not available use next tour
+    const current = allTours.find(t => t.type === 'current');
+    if (current) return current.id;
+    const next = allTours.find(t => t.type === 'next');
+    return next?.id ?? null;
   }, [allTours]);
 
-  // Check if we're viewing a historical tour (not current)
+  // Check if we're viewing a historical tour (not current/next)
   const isViewingHistoricalTour = selectedTourId !== null && selectedTourId !== currentTourId;
 
   // Get historical snapshot for selected tour
