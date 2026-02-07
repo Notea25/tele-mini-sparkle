@@ -343,6 +343,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     nextTourId,
     boostTourId,
     leaderboardTourId,
+    leaderboardTourNumber,
     tourPoints,
     isLoading,
     error,
