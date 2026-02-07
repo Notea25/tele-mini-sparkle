@@ -46,6 +46,7 @@ import { BoostSection, TEAM_MANAGEMENT_BOOSTS, BoostId, BOOST_ID_TO_TYPE } from 
 import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipStateForPage, BoostAvailabilityMap } from "@/lib/boostViewModel";
 import { PositionCode, getPositionLabel } from "@/constants/positions";
 import { isValidFormation } from "@/constants/formations";
+import { pluralizeDays } from "@/lib/pluralize";
 import type { ApplyBoostRequest } from "@/lib/api";
 
 // Special chips data with icons - only team management boosts
@@ -866,7 +867,7 @@ const TeamManagement = () => {
             Дедлайн: <span className="text-foreground font-medium">{deadlineLoading ? '...' : formattedDeadline || '—'}</span>
           </span>
           <span className="text-foreground">
-            {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
+            {timeLeft.days} {pluralizeDays(timeLeft.days)} {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:
             {String(timeLeft.seconds).padStart(2, "0")}
           </span>
         </div>

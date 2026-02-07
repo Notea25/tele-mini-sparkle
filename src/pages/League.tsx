@@ -29,6 +29,7 @@ import { getGoldenTourBackup, clearGoldenTourBackup, getBoostState, markBoostAsU
 import { BoostId } from "@/constants/boosts";
 import { restoreTeamFromBackup } from "@/lib/teamData";
 import { safeGetItem } from "@/lib/safeStorage";
+import { pluralizeDays } from "@/lib/pluralize";
 import cupComingSoon from "@/assets/cup-coming-soon.png";
 
 // Preload all page images at module level to start loading immediately
@@ -651,7 +652,7 @@ const League = () => {
                 Дедлайн: <span className="text-foreground font-medium">{deadlineLoading ? '...' : formattedDeadline || '—'}</span>
               </span>
               <span className="text-foreground text-sm">
-                {timeLeft.days} дня {String(timeLeft.hours).padStart(2, "0")}:
+                {timeLeft.days} {pluralizeDays(timeLeft.days)} {String(timeLeft.hours).padStart(2, "0")}:
                 {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
               </span>
             </div>
