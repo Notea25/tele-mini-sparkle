@@ -255,8 +255,17 @@ const ViewTeam = () => {
     });
   }, [displayMainPlayers, displayCaptainId, displayViceCaptainId]);
 
+  // Sort bench by position: ВР first, then ЗЩ, ПЗ, НП
   const benchForField = useMemo((): PlayerData[] => {
-    return displayBenchPlayers.map(p => {
+    const positionOrder: Record<string, number> = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
+    
+    const sortedBench = [...displayBenchPlayers].sort((a, b) => {
+      const orderA = positionOrder[a.position] ?? 99;
+      const orderB = positionOrder[b.position] ?? 99;
+      return orderA - orderB;
+    });
+    
+    return sortedBench.map(p => {
       return {
         id: p.id,
         name: p.name,
