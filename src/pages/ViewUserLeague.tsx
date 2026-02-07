@@ -159,8 +159,8 @@ const ViewUserLeague = () => {
       });
   }, [leaderboardResponse, leagueData, squad?.id]);
 
-  // Current tour number for display
-  const currentTourNumber = currentTour || 29;
+  // Current tour number for display - use leaderboardTourNumber from API
+  const currentTourNumber = leaderboardTourNumber || currentTour || 1;
 
   // Restore scroll position when returning to this page
   useEffect(() => {
