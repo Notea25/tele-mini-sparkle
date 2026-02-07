@@ -30,6 +30,7 @@ interface UseSquadDataResult {
   squadTourData: SquadTourResponse | null; // NEW: tour-specific state from squad_tours API
   mainPlayers: EnrichedPlayer[];
   benchPlayers: EnrichedPlayer[];
+  previousTour: number | null; // Номер предыдущего тура
   currentTour: number | null;
   currentTourId: number | null;
   nextTour: number | null; // Номер следующего тура
@@ -297,6 +298,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     });
   }, [squadTourData, playerMap, playerStatusMap]);
 
+  const previousTour = toursData?.previous_tour?.number || null;
   const currentTour = toursData?.current_tour?.number || null;
   const nextTour = toursData?.next_tour?.number || null;
   const nextTourId = toursData?.next_tour?.id || null;
@@ -318,6 +320,7 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     squadTourData,
     mainPlayers,
     benchPlayers,
+    previousTour,
     currentTour,
     currentTourId,
     nextTour,
