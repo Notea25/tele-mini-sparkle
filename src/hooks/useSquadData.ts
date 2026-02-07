@@ -313,6 +313,13 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
     ?? toursData?.previous_tour?.id 
     ?? toursData?.next_tour?.id 
     ?? null;
+  
+  // Tour NUMBER for leaderboard display (matches leaderboardTourId)
+  const leaderboardTourNumber = toursData?.current_tour?.id 
+    ? toursData.current_tour.number
+    : toursData?.previous_tour?.id 
+      ? toursData.previous_tour.number
+      : toursData?.next_tour?.number ?? null;
 
   const isLoading = squadsLoading || playersLoading || toursLoading || squadTourLoading || statusesLoading;
   const error = squadsError ? (squadsError instanceof Error ? squadsError.message : 'Unknown error') : null;
