@@ -355,13 +355,16 @@ const ViewUserLeague = () => {
         {leagueData ? (
           isOwner ? (
             <>
-              <Button
-                onClick={() => setShowDeleteConfirmDrawer(true)}
-                variant="outline"
-                className="w-full rounded-lg py-6 font-semibold border-destructive text-destructive hover:bg-destructive/10"
-              >
-                Удалить лигу
-              </Button>
+              {/* Show delete button only if owner is the only participant */}
+              {leagueStandings.length <= 1 && (
+                <Button
+                  onClick={() => setShowDeleteConfirmDrawer(true)}
+                  variant="outline"
+                  className="w-full rounded-lg py-6 font-semibold border-destructive text-destructive hover:bg-destructive/10"
+                >
+                  Удалить лигу
+                </Button>
+              )}
               <Button
                 onClick={handleClose}
                 variant="outline"
