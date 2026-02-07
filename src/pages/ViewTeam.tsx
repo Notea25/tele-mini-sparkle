@@ -584,13 +584,8 @@ const ViewTeam = () => {
             <div className="w-10 flex justify-center">Цена</div>
           </div>
           <div className="space-y-2">
-            {/* Sort bench: ВР first, then ЗЩ, ПЗ, НП */}
-            {[...displayBenchPlayers]
-              .sort((a, b) => {
-                const order = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
-                return (order[a.position as keyof typeof order] ?? 4) - (order[b.position as keyof typeof order] ?? 4);
-              })
-              .map((player) => {
+            {/* Bench order matches user-defined substitution priority (same as formation view) */}
+            {displayBenchPlayers.map((player) => {
               const isCaptain = displayCaptainId === player.id;
               const isViceCaptain = displayViceCaptainId === player.id;
               
