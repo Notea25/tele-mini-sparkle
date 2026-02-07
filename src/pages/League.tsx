@@ -76,17 +76,27 @@ const League = () => {
   const mySquadId = currentSquad?.id;
   
   // Get tour info from API response
-  // Use current tour only if its deadline has passed, otherwise use previous tour
+  // Priority for leaderboard tour selection:
+  // 1. current_tour — if deadline has passed
+  // 2. previous_tour — if current tour deadline hasn't passed yet
+  // 3. next_tour — if neither previous nor current tour exists (season not started)
   const toursData = toursResponse?.data;
   const currentTourDeadline = toursData?.current_tour?.deadline ? new Date(toursData.current_tour.deadline) : null;
   const useCurrentTour = currentTourDeadline && currentTourDeadline <= new Date();
   
-  const currentTourId = useCurrentTour 
-    ? toursData?.current_tour?.id 
-    : (toursData?.previous_tour?.id ?? null);
-  const currentTourNumber = useCurrentTour 
-    ? toursData?.current_tour?.number 
-    : (toursData?.previous_tour?.number ?? 1);
+  // Check if season hasn't started (no previous and no current tour)
+  const isSeasonNotStarted = !toursData?.previous_tour && !toursData?.current_tour;
+  
+  const currentTourId = isSeasonNotStarted
+    ? toursData?.next_tour?.id
+    : (useCurrentTour 
+        ? toursData?.current_tour?.id 
+        : (toursData?.previous_tour?.id ?? null));
+  const currentTourNumber = isSeasonNotStarted
+    ? toursData?.next_tour?.number
+    : (useCurrentTour 
+        ? toursData?.current_tour?.number 
+        : (toursData?.previous_tour?.number ?? 1));
   const nextTourNumber = toursData?.next_tour?.number ?? (useCurrentTour ? (toursData?.current_tour?.number ?? 1) + 1 : 2);
   
   // Fetch leaderboard data for tournament table preview
