@@ -355,8 +355,8 @@ const ViewUserLeague = () => {
         {leagueData ? (
           isOwner ? (
             <>
-              {/* Show delete button only if owner is the only participant */}
-              {leagueStandings.length <= 1 && (
+              {/* Show delete button only if owner is the only participant and data is loaded */}
+              {!leagueLoading && !leaderboardLoading && leagueStandings.length === 1 && (
                 <Button
                   onClick={() => setShowDeleteConfirmDrawer(true)}
                   variant="outline"
