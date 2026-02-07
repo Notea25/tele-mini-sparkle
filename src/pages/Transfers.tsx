@@ -1948,12 +1948,15 @@ const Transfers = () => {
           }
 
           // Calculate transfer costs for display
-          const finalTransferCosts = calculateTransferCosts(
-            transferCount,
-            hasTransfersBoost,
-            hasGoldenTourBoost,
-            squadTourData?.replacements ?? 2,
-          );
+          // If season hasn't started, no penalty
+          const finalTransferCosts = isSeasonNotStarted
+            ? { freeTransfersUsed: 0, paidTransfers: 0, pointsPenalty: 0 }
+            : calculateTransferCosts(
+                transferCount,
+                hasTransfersBoost,
+                hasGoldenTourBoost,
+                squadTourData?.replacements ?? 2,
+              );
 
           // Debug: log distribution results
           console.log("[Transfers] Distribution result:", {
