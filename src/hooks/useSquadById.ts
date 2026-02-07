@@ -109,20 +109,26 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
           setToursData(toursResponse.data);
 
           // NEW ARCHITECTURE: Fetch SquadTour data using the new squad_tours API
-          // Determine target tour: current if deadline passed, otherwise previous
+          // Determine target tour: current if deadline passed, otherwise previous, or next as fallback
           const currentTourDeadline = toursResponse.data.current_tour?.deadline 
             ? new Date(toursResponse.data.current_tour.deadline) 
             : null;
           const useCurrentTour = currentTourDeadline && currentTourDeadline <= new Date();
           
-          const targetTourId = useCurrentTour
-            ? toursResponse.data.current_tour?.id
-            : toursResponse.data.previous_tour?.id;
-
-          // Get tour number for fetching player statuses
-          const targetTourNumber = useCurrentTour
-            ? toursResponse.data.current_tour?.number
-            : toursResponse.data.previous_tour?.number;
+          let targetTourId: number | undefined;
+          let targetTourNumber: number | undefined;
+          
+          if (useCurrentTour && toursResponse.data.current_tour?.id) {
+            targetTourId = toursResponse.data.current_tour.id;
+            targetTourNumber = toursResponse.data.current_tour.number;
+          } else if (toursResponse.data.previous_tour?.id) {
+            targetTourId = toursResponse.data.previous_tour.id;
+            targetTourNumber = toursResponse.data.previous_tour.number;
+          } else if (toursResponse.data.next_tour?.id) {
+            // Fallback to next tour if no current or previous tour available
+            targetTourId = toursResponse.data.next_tour.id;
+            targetTourNumber = toursResponse.data.next_tour.number;
+          }
 
           // Fetch player statuses for this tour
           if (targetTourNumber) {
