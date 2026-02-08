@@ -334,12 +334,16 @@ const PlayerCard = ({
 
               {/* Team with logo - Rubik font */}
               <div className="flex items-center gap-2 mt-1">
-                <img 
-                  src={teamLogo_url} 
-                  alt={teamName} 
-                  className="w-5 h-5 object-contain"
-                  onError={(e) => { e.currentTarget.src = clubLogo; }}
-                />
+                {isLoadingInfo ? (
+                  <div className="w-5 h-5 rounded-full animate-pulse bg-secondary/50" />
+                ) : (
+                  <img 
+                    src={fullInfo?.base_info?.team_logo || clubLogos[player.team] || clubLogo} 
+                    alt={teamName} 
+                    className="w-5 h-5 object-contain"
+                    onError={(e) => { e.currentTarget.src = clubLogo; }}
+                  />
+                )}
                 <span className="text-foreground text-sm font-rubik">{teamName}</span>
               </div>
 
