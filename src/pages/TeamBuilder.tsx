@@ -32,7 +32,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { PointsColumnHeader } from "@/components/PointsColumnHeader";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
@@ -46,6 +46,7 @@ import { clubLogos } from "@/lib/clubLogos";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
+import { usePlayerStatuses } from "@/hooks/usePlayerStatuses";
 import { squadsApi, customLeaguesApi } from "@/lib/api";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
 
@@ -139,6 +140,9 @@ const TeamBuilder = () => {
   // API teams and players
   const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
   const { players: apiPlayers, isLoading: isLoadingPlayers } = usePlayers(leagueId);
+  
+  // Player statuses for the next tour
+  const { playerStatusMap, isLoading: isLoadingStatuses } = usePlayerStatuses(leagueId);
 
   useEffect(() => {
     const el = headerRef.current;
@@ -218,15 +222,25 @@ const TeamBuilder = () => {
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
-  // Use API players
-  const players = apiPlayers;
+  // Use API players enriched with tour-specific statuses
+  const players = useMemo(() => {
+    return apiPlayers.map((p) => {
+      const tourStatus = playerStatusMap.get(p.id);
+      return {
+        ...p,
+        // Override with tour-specific statuses if available
+        hasRedCard: tourStatus?.hasRedCard ?? p.hasRedCard,
+        isInjured: tourStatus?.isInjured ?? p.isInjured,
+        hasLeftLeague: tourStatus?.hasLeftLeague ?? p.hasLeftLeague,
+      };
+    });
+  }, [apiPlayers, playerStatusMap]);
 
   const selectedPlayerIds = selectedPlayers.map((sp) => sp.id);
   const selectedPlayersData = players
     .filter((p) => selectedPlayerIds.includes(p.id))
     .map((p) => {
       const slotInfo = selectedPlayers.find((sp) => sp.id === p.id);
-      // TODO: сюда можно подставить реальные данные календаря, когда backend начнёт их отдавать
       return { 
         ...p, 
         slotIndex: slotInfo?.slotIndex,
@@ -517,12 +531,12 @@ const TeamBuilder = () => {
       needed: number,
       currentClubCounts: Record<string, number>,
       excludeIds: Set<number>,
-    ): typeof players => {
+    ): TransformedPlayer[] => {
       const available = players
         .filter((p) => p.position === position && !excludeIds.has(p.id))
         .sort((a, b) => a.price - b.price);
 
-      const result: typeof players = [];
+      const result: TransformedPlayer[] = [];
       const tempClubCounts = { ...currentClubCounts };
 
       for (const player of available) {

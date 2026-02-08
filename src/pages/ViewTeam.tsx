@@ -9,8 +9,9 @@ import { PlayerData } from "@/lib/teamData";
 import PlayerCard from "@/components/PlayerCard";
 import { clubLogos } from "@/lib/clubLogos";
 import { useSquadById, EnrichedPlayer } from "@/hooks/useSquadById";
+import { usePlayerStatuses } from "@/hooks/usePlayerStatuses";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
-import { toursApi, squadsApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer } from "@/lib/api";
+import { toursApi, squadsApi, playerStatusesApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
 import {
@@ -48,6 +49,9 @@ const ViewTeam = () => {
   // Historical squad data
   const [historySnapshots, setHistorySnapshots] = useState<TourHistorySnapshot[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  
+  // Player statuses for selected tour
+  const [tourPlayerStatuses, setTourPlayerStatuses] = useState<PlayerStatus[]>([]);
 
   // Get squad ID from URL params
   const squadIdParam = searchParams.get("id");
@@ -162,6 +166,48 @@ const ViewTeam = () => {
     loadTourPoints();
   }, [selectedTourId, squadId, selectedSnapshot]);
 
+  // Load player statuses for selected tour
+  useEffect(() => {
+    if (!selectedTourNumber) {
+      setTourPlayerStatuses([]);
+      return;
+    }
+
+    const loadStatuses = async () => {
+      try {
+        const statusesResponse = await playerStatusesApi.getByTourNumber(selectedTourNumber);
+        if (statusesResponse.success && statusesResponse.data) {
+          setTourPlayerStatuses(statusesResponse.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch player statuses:', err);
+      }
+    };
+
+    loadStatuses();
+  }, [selectedTourNumber]);
+
+  // Create a map for quick status lookup by player_id
+  const playerStatusMap = useMemo(() => {
+    const map = new Map<number, { hasRedCard: boolean; isInjured: boolean; hasLeftLeague: boolean }>();
+    for (const status of tourPlayerStatuses) {
+      const existing = map.get(status.player_id) || {
+        hasRedCard: false,
+        isInjured: false,
+        hasLeftLeague: false,
+      };
+      if (status.status_type === STATUS_RED_CARD) {
+        existing.hasRedCard = true;
+      } else if (status.status_type === STATUS_INJURED) {
+        existing.isInjured = true;
+      } else if (status.status_type === STATUS_LEFT_LEAGUE) {
+        existing.hasLeftLeague = true;
+      }
+      map.set(status.player_id, existing);
+    }
+    return map;
+  }, [tourPlayerStatuses]);
+
   // Navigate to previous tour
   const goToPreviousTour = () => {
     const currentIndex = allTours.findIndex(t => t.id === selectedTourId);
@@ -192,24 +238,42 @@ const ViewTeam = () => {
     return currentIndex < allTours.length - 1 && currentIndex !== -1;
   };
 
-  // Convert TourHistoryPlayer to EnrichedPlayer format
-  const convertHistoryPlayer = (p: TourHistoryPlayer, slotIndex: number): EnrichedPlayer => ({
-    id: p.id,
-    name: p.name,
-    team_id: p.team_id,
-    team_name: p.team_name,
-    team_name_rus: p.team_name_rus,
-    team_logo: p.team_logo || "",
-    photo: p.photo || "",
-    position: mapPosition(p.position),
-    price: Math.round((p.market_value / 1000) * 10) / 10,
-    points: p.tour_points,
-    total_points: p.total_points,
-    tour_points: p.tour_points,
-    slotIndex,
-    nextOpponent: p.next_opponent_team_name || "",
-    nextOpponentHome: p.next_opponent_is_home ?? false,
-  });
+  // Convert TourHistoryPlayer to EnrichedPlayer format with status lookup
+  const convertHistoryPlayer = (p: TourHistoryPlayer, slotIndex: number): EnrichedPlayer => {
+    const statusFlags = playerStatusMap.get(p.id);
+    return {
+      id: p.id,
+      name: p.name,
+      team_id: p.team_id,
+      team_name: p.team_name,
+      team_name_rus: p.team_name_rus,
+      team_logo: p.team_logo || "",
+      photo: p.photo || "",
+      position: mapPosition(p.position),
+      price: Math.round((p.market_value / 1000) * 10) / 10,
+      points: p.tour_points,
+      total_points: p.total_points,
+      tour_points: p.tour_points,
+      slotIndex,
+      nextOpponent: p.next_opponent_team_name || "",
+      nextOpponentHome: p.next_opponent_is_home ?? false,
+      hasRedCard: statusFlags?.hasRedCard,
+      isInjured: statusFlags?.isInjured,
+      hasLeftLeague: statusFlags?.hasLeftLeague,
+    };
+  };
+
+  // Apply statuses to current (non-historical) players
+  const applyStatusesToPlayer = (p: EnrichedPlayer): EnrichedPlayer => {
+    const statusFlags = playerStatusMap.get(p.id);
+    if (!statusFlags) return p;
+    return {
+      ...p,
+      hasRedCard: statusFlags.hasRedCard || p.hasRedCard,
+      isInjured: statusFlags.isInjured || p.isInjured,
+      hasLeftLeague: statusFlags.hasLeftLeague || p.hasLeftLeague,
+    };
+  };
 
   // Get display players - either from history snapshot or current squad
   // IMPORTANT: match /team-management behavior — keep incoming order and only assign slotIndex sequentially per position.
@@ -225,8 +289,9 @@ const ViewTeam = () => {
       });
     }
 
-    return mainPlayers;
-  }, [selectedSnapshot, mainPlayers]);
+    // Apply tour-specific statuses to current players
+    return mainPlayers.map(applyStatusesToPlayer);
+  }, [selectedSnapshot, mainPlayers, playerStatusMap]);
 
   const displayBenchPlayers = useMemo((): EnrichedPlayer[] => {
     let baseBench: EnrichedPlayer[];
@@ -250,7 +315,8 @@ const ViewTeam = () => {
         return convertHistoryPlayer(p, slotIndex);
       });
     } else {
-      baseBench = benchPlayers;
+      // Apply tour-specific statuses to current players
+      baseBench = benchPlayers.map(applyStatusesToPlayer);
     }
     
     // Apply saved bench order from localStorage (same logic as /team-management)
@@ -278,7 +344,7 @@ const ViewTeam = () => {
     }
     
     return baseBench;
-  }, [selectedSnapshot, benchPlayers, squadId]);
+  }, [selectedSnapshot, benchPlayers, squadId, playerStatusMap]);
 
   // Get captain/vice-captain IDs
   const displayCaptainId = selectedSnapshot?.captain_id ?? squadTourData?.captain_id ?? null;
@@ -303,6 +369,7 @@ const ViewTeam = () => {
         nextOpponentHome: p.nextOpponentHome ?? false,
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
+        hasLeftLeague: p.hasLeftLeague,
       };
     });
   }, [displayMainPlayers, displayCaptainId, displayViceCaptainId]);
@@ -324,6 +391,7 @@ const ViewTeam = () => {
         nextOpponentHome: p.nextOpponentHome ?? false,
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
+        hasLeftLeague: p.hasLeftLeague,
       };
     });
   }, [displayBenchPlayers]);
