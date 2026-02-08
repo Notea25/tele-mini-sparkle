@@ -3,8 +3,7 @@ import { squadsApi, playersApi, toursApi, squadToursApi, playerStatusesApi, Squa
 
 export interface EnrichedPlayer {
   id: number;
-  name: string;
-  name_rus?: string; // Русское имя игрока
+  name: string; // Имя уже переведено на бэкэнде (русское)
   team_id: number;
   team_name: string;
   team_name_rus?: string; // Русское название команды
@@ -215,8 +214,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
       const statusFlags = getPlayerStatusFlags(sp.id);
       return {
         id: sp.id,
-        name: sp.name,
-        name_rus: sp.name_rus || fullPlayer?.name_rus,
+        name: sp.name || fullPlayer?.name || "",
         team_id: sp.team_id,
         team_name: sp.team_name || fullPlayer?.team_name || "",
         team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
@@ -268,8 +266,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
       return {
         id: sp.id,
-        name: sp.name,
-        name_rus: sp.name_rus || fullPlayer?.name_rus,
+        name: sp.name || fullPlayer?.name || "",
         team_id: sp.team_id,
         team_name: sp.team_name || fullPlayer?.team_name || "",
         team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
