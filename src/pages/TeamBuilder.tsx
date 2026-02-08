@@ -222,15 +222,25 @@ const TeamBuilder = () => {
 
   const filters = ["Все", "Вратари", "Защитники", "Полузащитники", "Нападающие"];
 
-  // Use API players
-  const players = apiPlayers;
+  // Use API players enriched with tour-specific statuses
+  const players = useMemo(() => {
+    return apiPlayers.map((p) => {
+      const tourStatus = playerStatusMap.get(p.id);
+      return {
+        ...p,
+        // Override with tour-specific statuses if available
+        hasRedCard: tourStatus?.hasRedCard ?? p.hasRedCard,
+        isInjured: tourStatus?.isInjured ?? p.isInjured,
+        hasLeftLeague: tourStatus?.hasLeftLeague ?? p.hasLeftLeague,
+      };
+    });
+  }, [apiPlayers, playerStatusMap]);
 
   const selectedPlayerIds = selectedPlayers.map((sp) => sp.id);
   const selectedPlayersData = players
     .filter((p) => selectedPlayerIds.includes(p.id))
     .map((p) => {
       const slotInfo = selectedPlayers.find((sp) => sp.id === p.id);
-      // TODO: сюда можно подставить реальные данные календаря, когда backend начнёт их отдавать
       return { 
         ...p, 
         slotIndex: slotInfo?.slotIndex,
