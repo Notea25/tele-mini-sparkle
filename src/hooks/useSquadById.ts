@@ -209,7 +209,8 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
     // Position order priority for correct field positioning
     const positionOrder: Record<string, number> = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
 
-    const playersWithPositions = squadTourData.main_players.map((sp) => {
+    // First pass: map players and preserve original index for stable sorting
+    const playersWithPositions = squadTourData.main_players.map((sp, originalIndex) => {
       const fullPlayer = playerMap.get(sp.id);
       const statusFlags = getPlayerStatusFlags(sp.id);
       return {
@@ -217,7 +218,6 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         name: sp.name || fullPlayer?.name || "",
         team_id: sp.team_id,
         team_name: sp.team_name || fullPlayer?.team_name || "",
-        team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
         team_logo: sp.team_logo || fullPlayer?.team_logo || "",
         photo: sp.photo || "",
         position: mapPosition(sp.position || fullPlayer?.position || "Midfielder"),
@@ -231,14 +231,16 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         hasLeftLeague: statusFlags.hasLeftLeague,
         nextOpponent: sp.next_opponent_team_name || "",
         nextOpponentHome: sp.next_opponent_is_home ?? false,
+        _originalIndex: originalIndex, // Preserve original order for stable sort
       };
     });
 
-    // Sort by position order to ensure correct slotIndex assignment
+    // Stable sort: by position first, then by original index to preserve backend order
     playersWithPositions.sort((a, b) => {
       const orderA = positionOrder[a.position] ?? 99;
       const orderB = positionOrder[b.position] ?? 99;
-      return orderA - orderB;
+      if (orderA !== orderB) return orderA - orderB;
+      return a._originalIndex - b._originalIndex; // Stable: preserve original order within position
     });
 
     const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
@@ -246,7 +248,9 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
     return playersWithPositions.map((player) => {
       const slotIndex = positionCounters[player.position] || 0;
       positionCounters[player.position] = slotIndex + 1;
-      return { ...player, slotIndex };
+      // Remove internal field before returning
+      const { _originalIndex, ...playerData } = player;
+      return { ...playerData, slotIndex };
     });
   }, [squadTourData, playerMap, playerStatusMap]);
 
