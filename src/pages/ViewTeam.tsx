@@ -49,6 +49,9 @@ const ViewTeam = () => {
   // Historical squad data
   const [historySnapshots, setHistorySnapshots] = useState<TourHistorySnapshot[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  
+  // Player statuses for selected tour
+  const [tourPlayerStatuses, setTourPlayerStatuses] = useState<PlayerStatus[]>([]);
 
   // Get squad ID from URL params
   const squadIdParam = searchParams.get("id");
