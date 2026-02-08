@@ -315,7 +315,8 @@ const ViewTeam = () => {
         return convertHistoryPlayer(p, slotIndex);
       });
     } else {
-      baseBench = benchPlayers;
+      // Apply tour-specific statuses to current players
+      baseBench = benchPlayers.map(applyStatusesToPlayer);
     }
     
     // Apply saved bench order from localStorage (same logic as /team-management)
@@ -343,7 +344,7 @@ const ViewTeam = () => {
     }
     
     return baseBench;
-  }, [selectedSnapshot, benchPlayers, squadId]);
+  }, [selectedSnapshot, benchPlayers, squadId, playerStatusMap]);
 
   // Get captain/vice-captain IDs
   const displayCaptainId = selectedSnapshot?.captain_id ?? squadTourData?.captain_id ?? null;
