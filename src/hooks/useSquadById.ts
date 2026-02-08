@@ -266,8 +266,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
 
       return {
         id: sp.id,
-        name: sp.name,
-        name_rus: sp.name_rus || fullPlayer?.name_rus,
+        name: sp.name || fullPlayer?.name || "",
         team_id: sp.team_id,
         team_name: sp.team_name || fullPlayer?.team_name || "",
         team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
