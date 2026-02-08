@@ -140,6 +140,9 @@ const TeamBuilder = () => {
   // API teams and players
   const { teams: apiTeams, isLoading: isLoadingTeams } = useTeams(leagueId);
   const { players: apiPlayers, isLoading: isLoadingPlayers } = usePlayers(leagueId);
+  
+  // Player statuses for the next tour
+  const { playerStatusMap, isLoading: isLoadingStatuses } = usePlayerStatuses(leagueId);
 
   useEffect(() => {
     const el = headerRef.current;
