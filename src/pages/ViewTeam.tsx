@@ -213,9 +213,16 @@ const ViewTeam = () => {
   });
 
   // Get display players - either from history snapshot or current squad
+  // Assign slotIndex per position (not array index) to match FormationField slot detection
   const displayMainPlayers = useMemo((): EnrichedPlayer[] => {
     if (selectedSnapshot && selectedSnapshot.main_players) {
-      return selectedSnapshot.main_players.map((p, i) => convertHistoryPlayer(p, i));
+      const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
+      return selectedSnapshot.main_players.map((p) => {
+        const position = mapPosition(p.position);
+        const slotIndex = positionCounters[position] || 0;
+        positionCounters[position] = slotIndex + 1;
+        return convertHistoryPlayer(p, slotIndex);
+      });
     }
     return mainPlayers;
   }, [selectedSnapshot, mainPlayers]);
@@ -224,7 +231,13 @@ const ViewTeam = () => {
     let baseBench: EnrichedPlayer[];
     
     if (selectedSnapshot && selectedSnapshot.bench_players) {
-      baseBench = selectedSnapshot.bench_players.map((p, i) => convertHistoryPlayer(p, i));
+      const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
+      baseBench = selectedSnapshot.bench_players.map((p) => {
+        const position = mapPosition(p.position);
+        const slotIndex = positionCounters[position] || 0;
+        positionCounters[position] = slotIndex + 1;
+        return convertHistoryPlayer(p, slotIndex);
+      });
     } else {
       baseBench = benchPlayers;
     }
