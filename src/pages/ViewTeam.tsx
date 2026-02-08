@@ -196,7 +196,6 @@ const ViewTeam = () => {
   const convertHistoryPlayer = (p: TourHistoryPlayer, slotIndex: number): EnrichedPlayer => ({
     id: p.id,
     name: p.name,
-    name_rus: p.name_rus,
     team_id: p.team_id,
     team_name: p.team_name,
     team_name_rus: p.team_name_rus,
