@@ -641,7 +641,7 @@ const ViewTeam = () => {
                         className="w-5 h-5 object-contain flex-shrink-0"
                       />
                     )}
-                    <span className="text-foreground font-medium truncate flex-1">{player.name_rus || player.name}</span>
+                    <span className="text-foreground font-medium truncate flex-1">{player.name}</span>
                     <span className="text-muted-foreground/50 text-[10px]">({player.position})</span>
                     {isCaptain && (
                       <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
