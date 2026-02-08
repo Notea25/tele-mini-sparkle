@@ -166,6 +166,48 @@ const ViewTeam = () => {
     loadTourPoints();
   }, [selectedTourId, squadId, selectedSnapshot]);
 
+  // Load player statuses for selected tour
+  useEffect(() => {
+    if (!selectedTourNumber) {
+      setTourPlayerStatuses([]);
+      return;
+    }
+
+    const loadStatuses = async () => {
+      try {
+        const statusesResponse = await playerStatusesApi.getByTourNumber(selectedTourNumber);
+        if (statusesResponse.success && statusesResponse.data) {
+          setTourPlayerStatuses(statusesResponse.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch player statuses:', err);
+      }
+    };
+
+    loadStatuses();
+  }, [selectedTourNumber]);
+
+  // Create a map for quick status lookup by player_id
+  const playerStatusMap = useMemo(() => {
+    const map = new Map<number, { hasRedCard: boolean; isInjured: boolean; hasLeftLeague: boolean }>();
+    for (const status of tourPlayerStatuses) {
+      const existing = map.get(status.player_id) || {
+        hasRedCard: false,
+        isInjured: false,
+        hasLeftLeague: false,
+      };
+      if (status.status_type === STATUS_RED_CARD) {
+        existing.hasRedCard = true;
+      } else if (status.status_type === STATUS_INJURED) {
+        existing.isInjured = true;
+      } else if (status.status_type === STATUS_LEFT_LEAGUE) {
+        existing.hasLeftLeague = true;
+      }
+      map.set(status.player_id, existing);
+    }
+    return map;
+  }, [tourPlayerStatuses]);
+
   // Navigate to previous tour
   const goToPreviousTour = () => {
     const currentIndex = allTours.findIndex(t => t.id === selectedTourId);
