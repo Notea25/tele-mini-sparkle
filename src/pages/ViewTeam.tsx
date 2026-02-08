@@ -9,8 +9,9 @@ import { PlayerData } from "@/lib/teamData";
 import PlayerCard from "@/components/PlayerCard";
 import { clubLogos } from "@/lib/clubLogos";
 import { useSquadById, EnrichedPlayer } from "@/hooks/useSquadById";
+import { usePlayerStatuses } from "@/hooks/usePlayerStatuses";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
-import { toursApi, squadsApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer } from "@/lib/api";
+import { toursApi, squadsApi, playerStatusesApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
 import {

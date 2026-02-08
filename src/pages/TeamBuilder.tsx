@@ -46,6 +46,7 @@ import { clubLogos } from "@/lib/clubLogos";
 import { useDeadline } from "@/hooks/useDeadline";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
+import { usePlayerStatuses } from "@/hooks/usePlayerStatuses";
 import { squadsApi, customLeaguesApi } from "@/lib/api";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
 
