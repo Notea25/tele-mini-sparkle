@@ -802,14 +802,46 @@ const BackendTest = () => {
 
       {/* TOURS SECTION */}
       <Section title="📅 Tours" isOpen={isToursOpen} onToggle={() => setIsToursOpen(!isToursOpen)}>
-        <Button onClick={testDeadlineApi} disabled={loadingDeadline} className="w-full">
-          {loadingDeadline ? 'Загрузка...' : 'GET /api/tours/get_deadline_for_next_tour/116'}
-        </Button>
-        <Button onClick={testToursApi} disabled={loadingTours} className="w-full">
-          {loadingTours ? 'Загрузка...' : 'GET /api/tours/get_previous_current_next_tour/116'}
-        </Button>
+        <div className="space-y-4">
+          <Button onClick={testDeadlineApi} disabled={loadingDeadline} className="w-full">
+            {loadingDeadline ? 'Загрузка...' : 'GET /api/tours/get_deadline_for_next_tour/116'}
+          </Button>
+          <Button onClick={testToursApi} disabled={loadingTours} className="w-full">
+            {loadingTours ? 'Загрузка...' : 'GET /api/tours/get_previous_current_next_tour/116'}
+          </Button>
+          
+          <h3 className="text-sm font-semibold text-muted-foreground pt-4">POST /api/tours/start_tour/{'{tour_id}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={startTourIdInput}
+              onChange={(e) => setStartTourIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Tour ID"
+            />
+            <Button onClick={testStartTourApi} disabled={loadingStartTour} variant="destructive" className="flex-1">
+              {loadingStartTour ? 'Загрузка...' : `POST /api/tours/start_tour/${startTourIdInput}`}
+            </Button>
+          </div>
+          
+          <h3 className="text-sm font-semibold text-muted-foreground pt-2">POST /api/tours/finalize_tour/{'{tour_id}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={finalizeTourIdInput}
+              onChange={(e) => setFinalizeTourIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Tour ID"
+            />
+            <Button onClick={testFinalizeTourApi} disabled={loadingFinalizeTour} variant="destructive" className="flex-1">
+              {loadingFinalizeTour ? 'Загрузка...' : `POST /api/tours/finalize_tour/${finalizeTourIdInput}`}
+            </Button>
+          </div>
+        </div>
         {renderResponse(deadlineResponse, 'Ответ: Deadline')}
         {renderResponse(toursResponse, 'Ответ: Tours (prev/current/next)')}
+        {renderResponse(startTourResponse, 'Ответ: Start Tour')}
+        {renderResponse(finalizeTourResponse, 'Ответ: Finalize Tour')}
       </Section>
 
       {/* PLAYERS SECTION */}
