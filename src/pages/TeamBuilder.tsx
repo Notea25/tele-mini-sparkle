@@ -32,7 +32,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { PointsColumnHeader } from "@/components/PointsColumnHeader";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import SportHeader from "@/components/SportHeader";
 import FooterNav from "@/components/FooterNav";
