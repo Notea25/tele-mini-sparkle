@@ -278,6 +278,36 @@ const BackendTest = () => {
     }
   };
 
+  const testStartTourApi = async () => {
+    setLoadingStartTour(true);
+    try {
+      const result = await toursApi.startTour(parseInt(startTourIdInput) || 1);
+      setStartTourResponse(result);
+    } catch (err) {
+      setStartTourResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingStartTour(false);
+    }
+  };
+
+  const testFinalizeTourApi = async () => {
+    setLoadingFinalizeTour(true);
+    try {
+      const result = await toursApi.finalizeTour(parseInt(finalizeTourIdInput) || 1);
+      setFinalizeTourResponse(result);
+    } catch (err) {
+      setFinalizeTourResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingFinalizeTour(false);
+    }
+  };
+
   const testPlayersApi = async () => {
     setLoadingPlayers(true);
     try {
