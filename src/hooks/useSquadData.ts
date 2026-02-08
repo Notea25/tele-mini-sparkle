@@ -221,8 +221,12 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
 
   // Enrich main players with full data and assign slotIndex per position
   // Now using squadTourData from squad_tours API which already contains player details
+  // IMPORTANT: Sort by position order first, then assign slotIndex to match FormationField slot detection
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
     if (!squadTourData || !squadTourData.main_players) return [];
+
+    // Position order priority for correct field positioning
+    const positionOrder: Record<string, number> = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
 
     // First, map all players with their positions
     const playersWithPositions = squadTourData.main_players.map((sp) => {
@@ -249,6 +253,13 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
         nextOpponent: sp.next_opponent_team_name || "",
         nextOpponentHome: sp.next_opponent_is_home ?? false,
       };
+    });
+
+    // Sort by position order to ensure correct slotIndex assignment
+    playersWithPositions.sort((a, b) => {
+      const orderA = positionOrder[a.position] ?? 99;
+      const orderB = positionOrder[b.position] ?? 99;
+      return orderA - orderB;
     });
 
     // Assign slotIndex per position

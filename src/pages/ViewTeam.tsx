@@ -213,11 +213,23 @@ const ViewTeam = () => {
   });
 
   // Get display players - either from history snapshot or current squad
-  // Assign slotIndex per position (not array index) to match FormationField slot detection
+  // Sort by position order (ВР → ЗЩ → ПЗ → НП) first, then assign slotIndex per position
+  // This ensures correct field positioning matching TeamManagement behavior
   const displayMainPlayers = useMemo((): EnrichedPlayer[] => {
     if (selectedSnapshot && selectedSnapshot.main_players) {
+      // Position order priority
+      const positionOrder: Record<string, number> = { "ВР": 0, "Goalkeeper": 0, "ЗЩ": 1, "Defender": 1, "ПЗ": 2, "Midfielder": 2, "НП": 3, "Attacker": 3, "Forward": 3 };
+      
+      // Sort players by position order first
+      const sortedPlayers = [...selectedSnapshot.main_players].sort((a, b) => {
+        const orderA = positionOrder[a.position] ?? 99;
+        const orderB = positionOrder[b.position] ?? 99;
+        return orderA - orderB;
+      });
+      
+      // Now assign slotIndex per position
       const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
-      return selectedSnapshot.main_players.map((p) => {
+      return sortedPlayers.map((p) => {
         const position = mapPosition(p.position);
         const slotIndex = positionCounters[position] || 0;
         positionCounters[position] = slotIndex + 1;
@@ -231,8 +243,18 @@ const ViewTeam = () => {
     let baseBench: EnrichedPlayer[];
     
     if (selectedSnapshot && selectedSnapshot.bench_players) {
+      // Position order priority for bench (ВР always first)
+      const positionOrder: Record<string, number> = { "ВР": 0, "Goalkeeper": 0, "ЗЩ": 1, "Defender": 1, "ПЗ": 2, "Midfielder": 2, "НП": 3, "Attacker": 3, "Forward": 3 };
+      
+      // Sort bench players by position order first
+      const sortedBench = [...selectedSnapshot.bench_players].sort((a, b) => {
+        const orderA = positionOrder[a.position] ?? 99;
+        const orderB = positionOrder[b.position] ?? 99;
+        return orderA - orderB;
+      });
+      
       const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
-      baseBench = selectedSnapshot.bench_players.map((p) => {
+      baseBench = sortedBench.map((p) => {
         const position = mapPosition(p.position);
         const slotIndex = positionCounters[position] || 0;
         positionCounters[position] = slotIndex + 1;
