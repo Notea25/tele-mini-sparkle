@@ -679,7 +679,7 @@ const ViewTeam = () => {
           selectedPlayer
             ? {
                 id: selectedPlayer.id,
-                name: selectedPlayer.name_rus || selectedPlayer.name,
+                name: selectedPlayer.name,
                 team: selectedPlayer.team_name,
                 position: selectedPlayer.position,
                 price: selectedPlayer.price,
