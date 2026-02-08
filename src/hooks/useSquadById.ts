@@ -206,13 +206,17 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
   const mainPlayers = useMemo((): EnrichedPlayer[] => {
     if (!squadTourData || !squadTourData.main_players) return [];
 
-    // Position order priority for correct field positioning
-    const positionOrder: Record<string, number> = { "ВР": 0, "ЗЩ": 1, "ПЗ": 2, "НП": 3 };
+    // IMPORTANT: keep backend order (TeamManagement assigns slotIndex in the incoming order).
+    // We only map positions to RU codes and then assign slotIndex sequentially per position.
+    const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
 
-    // First pass: map players and preserve original index for stable sorting
-    const playersWithPositions = squadTourData.main_players.map((sp, originalIndex) => {
+    return squadTourData.main_players.map((sp) => {
       const fullPlayer = playerMap.get(sp.id);
       const statusFlags = getPlayerStatusFlags(sp.id);
+      const position = mapPosition(sp.position || fullPlayer?.position || "Midfielder");
+      const slotIndex = positionCounters[position] || 0;
+      positionCounters[position] = slotIndex + 1;
+
       return {
         id: sp.id,
         name: sp.name || fullPlayer?.name || "",
@@ -220,37 +224,22 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         team_name: sp.team_name || fullPlayer?.team_name || "",
         team_logo: sp.team_logo || fullPlayer?.team_logo || "",
         photo: sp.photo || "",
-        position: mapPosition(sp.position || fullPlayer?.position || "Midfielder"),
-        price: sp.market_value ? Math.round((sp.market_value / 1000) * 10) / 10 : (fullPlayer ? Math.round((fullPlayer.market_value / 1000) * 10) / 10 : 0),
+        position,
+        price: sp.market_value
+          ? Math.round((sp.market_value / 1000) * 10) / 10
+          : fullPlayer
+            ? Math.round((fullPlayer.market_value / 1000) * 10) / 10
+            : 0,
         points: sp.points,
         total_points: sp.total_points,
         tour_points: sp.tour_points,
-        slotIndex: 0,
+        slotIndex,
         hasRedCard: statusFlags.hasRedCard,
         isInjured: statusFlags.isInjured,
         hasLeftLeague: statusFlags.hasLeftLeague,
         nextOpponent: sp.next_opponent_team_name || "",
         nextOpponentHome: sp.next_opponent_is_home ?? false,
-        _originalIndex: originalIndex, // Preserve original order for stable sort
       };
-    });
-
-    // Stable sort: by position first, then by original index to preserve backend order
-    playersWithPositions.sort((a, b) => {
-      const orderA = positionOrder[a.position] ?? 99;
-      const orderB = positionOrder[b.position] ?? 99;
-      if (orderA !== orderB) return orderA - orderB;
-      return a._originalIndex - b._originalIndex; // Stable: preserve original order within position
-    });
-
-    const positionCounters: Record<string, number> = { "ВР": 0, "ЗЩ": 0, "ПЗ": 0, "НП": 0 };
-
-    return playersWithPositions.map((player) => {
-      const slotIndex = positionCounters[player.position] || 0;
-      positionCounters[player.position] = slotIndex + 1;
-      // Remove internal field before returning
-      const { _originalIndex, ...playerData } = player;
-      return { ...playerData, slotIndex };
     });
   }, [squadTourData, playerMap, playerStatusMap]);
 
