@@ -16,6 +16,8 @@ const BackendTest = () => {
   const [getSquadByIdPublicResponse, setGetSquadByIdPublicResponse] = useState<ApiResponse<unknown> | null>(null);
   const [deadlineResponse, setDeadlineResponse] = useState<ApiResponse<unknown> | null>(null);
   const [toursResponse, setToursResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [startTourResponse, setStartTourResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [finalizeTourResponse, setFinalizeTourResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playersResponse, setPlayersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playerFullInfoResponse, setPlayerFullInfoResponse] = useState<ApiResponse<unknown> | null>(null);
   const [leaderboardResponse, setLeaderboardResponse] = useState<ApiResponse<unknown> | null>(null);
@@ -36,6 +38,8 @@ const BackendTest = () => {
   const [loadingSquadHistory, setLoadingSquadHistory] = useState(false);
   const [loadingDeadline, setLoadingDeadline] = useState(false);
   const [loadingTours, setLoadingTours] = useState(false);
+  const [loadingStartTour, setLoadingStartTour] = useState(false);
+  const [loadingFinalizeTour, setLoadingFinalizeTour] = useState(false);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
   const [loadingPlayerFullInfo, setLoadingPlayerFullInfo] = useState(false);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
@@ -51,6 +55,8 @@ const BackendTest = () => {
   const [joinSquadIdInput, setJoinSquadIdInput] = useState('7');
   const [playerIdInput, setPlayerIdInput] = useState('1');
   const [tourIdInput, setTourIdInput] = useState('2');
+  const [startTourIdInput, setStartTourIdInput] = useState('1');
+  const [finalizeTourIdInput, setFinalizeTourIdInput] = useState('1');
   const [squadIdInput, setSquadIdInput] = useState('1');
   const [getSquadIdInput, setGetSquadIdInput] = useState('7');
   const [historySquadIdInput, setHistorySquadIdInput] = useState('7');
@@ -269,6 +275,36 @@ const BackendTest = () => {
       });
     } finally {
       setLoadingTours(false);
+    }
+  };
+
+  const testStartTourApi = async () => {
+    setLoadingStartTour(true);
+    try {
+      const result = await toursApi.startTour(parseInt(startTourIdInput) || 1);
+      setStartTourResponse(result);
+    } catch (err) {
+      setStartTourResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingStartTour(false);
+    }
+  };
+
+  const testFinalizeTourApi = async () => {
+    setLoadingFinalizeTour(true);
+    try {
+      const result = await toursApi.finalizeTour(parseInt(finalizeTourIdInput) || 1);
+      setFinalizeTourResponse(result);
+    } catch (err) {
+      setFinalizeTourResponse({
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoadingFinalizeTour(false);
     }
   };
 
@@ -802,14 +838,46 @@ const BackendTest = () => {
 
       {/* TOURS SECTION */}
       <Section title="📅 Tours" isOpen={isToursOpen} onToggle={() => setIsToursOpen(!isToursOpen)}>
-        <Button onClick={testDeadlineApi} disabled={loadingDeadline} className="w-full">
-          {loadingDeadline ? 'Загрузка...' : 'GET /api/tours/get_deadline_for_next_tour/116'}
-        </Button>
-        <Button onClick={testToursApi} disabled={loadingTours} className="w-full">
-          {loadingTours ? 'Загрузка...' : 'GET /api/tours/get_previous_current_next_tour/116'}
-        </Button>
+        <div className="space-y-4">
+          <Button onClick={testDeadlineApi} disabled={loadingDeadline} className="w-full">
+            {loadingDeadline ? 'Загрузка...' : 'GET /api/tours/get_deadline_for_next_tour/116'}
+          </Button>
+          <Button onClick={testToursApi} disabled={loadingTours} className="w-full">
+            {loadingTours ? 'Загрузка...' : 'GET /api/tours/get_previous_current_next_tour/116'}
+          </Button>
+          
+          <h3 className="text-sm font-semibold text-muted-foreground pt-4">POST /api/tours/start_tour/{'{tour_id}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={startTourIdInput}
+              onChange={(e) => setStartTourIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Tour ID"
+            />
+            <Button onClick={testStartTourApi} disabled={loadingStartTour} variant="destructive" className="flex-1">
+              {loadingStartTour ? 'Загрузка...' : `POST /api/tours/start_tour/${startTourIdInput}`}
+            </Button>
+          </div>
+          
+          <h3 className="text-sm font-semibold text-muted-foreground pt-2">POST /api/tours/finalize_tour/{'{tour_id}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={finalizeTourIdInput}
+              onChange={(e) => setFinalizeTourIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Tour ID"
+            />
+            <Button onClick={testFinalizeTourApi} disabled={loadingFinalizeTour} variant="destructive" className="flex-1">
+              {loadingFinalizeTour ? 'Загрузка...' : `POST /api/tours/finalize_tour/${finalizeTourIdInput}`}
+            </Button>
+          </div>
+        </div>
         {renderResponse(deadlineResponse, 'Ответ: Deadline')}
         {renderResponse(toursResponse, 'Ответ: Tours (prev/current/next)')}
+        {renderResponse(startTourResponse, 'Ответ: Start Tour')}
+        {renderResponse(finalizeTourResponse, 'Ответ: Finalize Tour')}
       </Section>
 
       {/* PLAYERS SECTION */}
