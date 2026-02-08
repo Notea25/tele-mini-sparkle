@@ -531,12 +531,12 @@ const TeamBuilder = () => {
       needed: number,
       currentClubCounts: Record<string, number>,
       excludeIds: Set<number>,
-    ): typeof players => {
+    ): TransformedPlayer[] => {
       const available = players
         .filter((p) => p.position === position && !excludeIds.has(p.id))
         .sort((a, b) => a.price - b.price);
 
-      const result: typeof players = [];
+      const result: TransformedPlayer[] = [];
       const tempClubCounts = { ...currentClubCounts };
 
       for (const player of available) {
