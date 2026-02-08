@@ -323,7 +323,6 @@ const ViewTeam = () => {
       return {
         id: p.id,
         name: p.name,
-        name_rus: p.name_rus,
         team: p.team_name,
         team_rus: p.team_name_rus,
         photo: p.photo,
