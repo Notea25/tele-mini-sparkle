@@ -369,6 +369,7 @@ const ViewTeam = () => {
         nextOpponentHome: p.nextOpponentHome ?? false,
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
+        hasLeftLeague: p.hasLeftLeague,
       };
     });
   }, [displayMainPlayers, displayCaptainId, displayViceCaptainId]);
@@ -390,6 +391,7 @@ const ViewTeam = () => {
         nextOpponentHome: p.nextOpponentHome ?? false,
         hasRedCard: p.hasRedCard,
         isInjured: p.isInjured,
+        hasLeftLeague: p.hasLeftLeague,
       };
     });
   }, [displayBenchPlayers]);
