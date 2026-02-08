@@ -55,6 +55,8 @@ const BackendTest = () => {
   const [joinSquadIdInput, setJoinSquadIdInput] = useState('7');
   const [playerIdInput, setPlayerIdInput] = useState('1');
   const [tourIdInput, setTourIdInput] = useState('2');
+  const [startTourIdInput, setStartTourIdInput] = useState('1');
+  const [finalizeTourIdInput, setFinalizeTourIdInput] = useState('1');
   const [squadIdInput, setSquadIdInput] = useState('1');
   const [getSquadIdInput, setGetSquadIdInput] = useState('7');
   const [historySquadIdInput, setHistorySquadIdInput] = useState('7');

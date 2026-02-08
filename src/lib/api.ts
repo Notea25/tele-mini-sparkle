@@ -179,6 +179,8 @@ export interface ToursResponse {
 export const toursApi = {
   getDeadlineForNextTour: (leagueId: number) => apiRequest<TourDeadline>(`/api/tours/get_deadline_for_next_tour/${leagueId}`),
   getPreviousCurrentNextTour: (leagueId: number) => apiRequest<ToursResponse>(`/api/tours/get_previous_current_next_tour/${leagueId}`),
+  startTour: (tourId: number) => apiRequest<unknown>(`/api/tours/start_tour/${tourId}`, { method: 'POST' }),
+  finalizeTour: (tourId: number) => apiRequest<unknown>(`/api/tours/finalize_tour/${tourId}`, { method: 'POST' }),
 };
 
 // Типы для команд
