@@ -16,6 +16,8 @@ const BackendTest = () => {
   const [getSquadByIdPublicResponse, setGetSquadByIdPublicResponse] = useState<ApiResponse<unknown> | null>(null);
   const [deadlineResponse, setDeadlineResponse] = useState<ApiResponse<unknown> | null>(null);
   const [toursResponse, setToursResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [startTourResponse, setStartTourResponse] = useState<ApiResponse<unknown> | null>(null);
+  const [finalizeTourResponse, setFinalizeTourResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playersResponse, setPlayersResponse] = useState<ApiResponse<unknown> | null>(null);
   const [playerFullInfoResponse, setPlayerFullInfoResponse] = useState<ApiResponse<unknown> | null>(null);
   const [leaderboardResponse, setLeaderboardResponse] = useState<ApiResponse<unknown> | null>(null);
