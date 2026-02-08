@@ -36,6 +36,8 @@ const BackendTest = () => {
   const [loadingSquadHistory, setLoadingSquadHistory] = useState(false);
   const [loadingDeadline, setLoadingDeadline] = useState(false);
   const [loadingTours, setLoadingTours] = useState(false);
+  const [loadingStartTour, setLoadingStartTour] = useState(false);
+  const [loadingFinalizeTour, setLoadingFinalizeTour] = useState(false);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
   const [loadingPlayerFullInfo, setLoadingPlayerFullInfo] = useState(false);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
