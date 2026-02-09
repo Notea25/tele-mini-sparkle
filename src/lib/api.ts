@@ -1,5 +1,6 @@
-import { supabase } from "@/integrations/supabase/client";
 import { getAccessToken, getRefreshToken, setTokens } from "./authStorage";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -14,19 +15,8 @@ interface ApiOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: unknown;
   headers?: Record<string, string>;
-  /**
-   * Нужно ли автоматически подставлять access токен и пытаться обновлять его по refresh токену.
-   * По умолчанию включено.
-   */
   auth?: boolean;
-  /**
-   * Если true — тело передаётся на бэкенд как есть (строка), без JSON.stringify.
-   * Используется, например, для Telegram initData.
-   */
   rawBody?: boolean;
-  /**
-   * Явный Content-Type для бэкенда (например, "text/plain").
-   */
   contentType?: string;
 }
 
@@ -37,52 +27,63 @@ async function callBackend<T>(
 ): Promise<ApiResponse<T>> {
   const { method = "GET", body, headers = {}, rawBody = false, contentType } = options;
 
-  console.log(`[callBackend] Request to ${endpoint}:`);
-  console.log("- method:", method);
-  console.log("- rawBody:", rawBody);
-  console.log("- contentType:", contentType);
-  console.log("- has accessToken:", !!accessToken);
-  console.log("- body type:", typeof body);
-  if (typeof body === "string") {
-    console.log("- body length:", body.length);
-  }
-
+  const url = `${API_BASE_URL}${endpoint}`;
   const finalHeaders: Record<string, string> = { ...headers };
 
-  // Добавляем Authorization, если есть токен и включен auth
   if (options.auth !== false && accessToken) {
     finalHeaders["Authorization"] = `Bearer ${accessToken}`;
   }
 
-  try {
-    console.log("[callBackend] Invoking Supabase function api-proxy...");
-    const { data, error } = await supabase.functions.invoke("api-proxy", {
-      method: "POST",
-      body: {
-        path: endpoint,
-        method,
-        body,
-        headers: finalHeaders,
-        rawBody,
-        contentType,
-      },
-    });
+  // Set Content-Type
+  if (contentType) {
+    finalHeaders["Content-Type"] = contentType;
+  } else if (body && !rawBody) {
+    finalHeaders["Content-Type"] = "application/json";
+  }
 
-    if (error) {
-      console.error("[callBackend] Supabase function error:", error);
+  try {
+    const fetchOptions: RequestInit = {
+      method,
+      headers: finalHeaders,
+    };
+
+    if (body !== undefined && method !== "GET") {
+      fetchOptions.body = rawBody ? (body as string) : JSON.stringify(body);
+    }
+
+    const response = await fetch(url, fetchOptions);
+
+    let data: unknown = null;
+    const responseContentType = response.headers.get("content-type") || "";
+    if (responseContentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
+    }
+
+    if (!response.ok) {
       return {
         success: false,
-        error: error.message,
+        status: response.status,
+        statusText: response.statusText,
+        error: typeof data === "object" && data && "detail" in data
+          ? String((data as any).detail)
+          : response.statusText,
+        data: data as T,
       };
     }
 
-    console.log("[callBackend] Response from api-proxy:");
-    console.log("- success:", (data as ApiResponse<T>)?.success);
-    console.log("- status:", (data as ApiResponse<T>)?.status);
-    console.log("- has data:", !!(data as ApiResponse<T>)?.data);
-    console.log("- error:", (data as ApiResponse<T>)?.error);
-
-    return data as ApiResponse<T>;
+    return {
+      success: true,
+      status: response.status,
+      statusText: response.statusText,
+      data: data as T,
+    };
   } catch (err) {
     console.error("[callBackend] Exception:", err);
     return {
@@ -97,20 +98,12 @@ async function refreshTokens(): Promise<boolean> {
   if (!refreshToken) return false;
 
   try {
-    const { data, error } = await supabase.functions.invoke("api-proxy", {
+    const response = await callBackend<unknown>("/api/users/refresh", {
       method: "POST",
-      body: {
-        path: "/api/users/refresh",
-        method: "POST",
-        body: { refresh_token: refreshToken },
-      },
+      body: { refresh_token: refreshToken },
+      auth: false,
     });
 
-    if (error || !data) {
-      return false;
-    }
-
-    const response = data as ApiResponse<unknown>;
     if (!response.success || !response.data) return false;
 
     const anyData = response.data as any;
@@ -132,11 +125,9 @@ export async function apiRequest<T>(
 ): Promise<ApiResponse<T>> {
   const authEnabled = options.auth !== false;
 
-  // Первая попытка — с текущим access токеном (если есть)
   const accessToken = authEnabled ? getAccessToken() : null;
   let response = await callBackend<T>(endpoint, options, accessToken);
 
-  // Если авторизация включена и бэкенд вернул 401/403 — пробуем обновить токен и повторить запрос
   if (
     authEnabled &&
     (response.status === 401 || response.status === 403) &&
