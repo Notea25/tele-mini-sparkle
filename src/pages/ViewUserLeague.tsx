@@ -13,11 +13,10 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { customLeaguesApi, UserLeagueDetails, UserLeagueLeaderboardEntry } from "@/lib/api";
 import { useSquadData } from "@/hooks/useSquadData";
 import { safeGetItem } from "@/lib/safeStorage";
@@ -286,18 +285,16 @@ const ViewUserLeague = () => {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-display text-foreground">{leagueName}</h1>
           {isOwner && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center cursor-pointer">
-                    <User className="w-5 h-5 text-primary" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-card border-border text-foreground">
-                  <p>Вы являетесь создателем этой лиги</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <User className="w-5 h-5 text-primary" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="bottom" align="end" className="w-auto px-3 py-2 bg-card border-border text-foreground text-sm">
+                Вы являетесь создателем этой лиги
+              </PopoverContent>
+            </Popover>
           )}
         </div>
 
