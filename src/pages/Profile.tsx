@@ -21,10 +21,10 @@ interface ProfileData {
 }
 
 const getDefaultProfile = (): ProfileData => ({
-  userName: "Ричард Хенсон",
+  userName: "",
   birthDate: "",
   profileImage: null,
-  createdAt: new Date().toLocaleDateString("ru-RU"),
+  createdAt: "",
 });
 
 const Profile = () => {
@@ -37,27 +37,31 @@ const Profile = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isEditUsernameModalOpen, setIsEditUsernameModalOpen] = useState(false);
   const [referralStatsDrawerOpen, setReferralStatsDrawerOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Load saved profile
-  const [savedProfile, setSavedProfile] = useState<ProfileData>(() => {
-    const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return getDefaultProfile();
-      }
-    }
-    return getDefaultProfile();
-  });
+  // Load saved profile - start with empty defaults
+  const [savedProfile, setSavedProfile] = useState<ProfileData>(getDefaultProfile);
 
   // Current editable profile state
-  const [profile, setProfile] = useState<ProfileData>(savedProfile);
+  const [profile, setProfile] = useState<ProfileData>(getDefaultProfile);
 
   // Подтягиваем данные пользователя с бэка (имя, дата рождения, дата регистрации)
   useEffect(() => {
     const loadBackendProfile = async () => {
+      setIsLoading(true);
       try {
+        // Try to load from localStorage first for faster display
+        const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            setSavedProfile(parsed);
+            setProfile(parsed);
+          } catch {
+            // ignore parse errors
+          }
+        }
+
         const response = await usersApi.getProtected();
         if (response.success && response.data) {
           const anyData = response.data as any;
@@ -67,21 +71,21 @@ const Profile = () => {
 
             const registrationDate = user.registration_date
               ? new Date(user.registration_date).toLocaleDateString("ru-RU")
-              : savedProfile.createdAt;
+              : new Date().toLocaleDateString("ru-RU");
 
             const birthDateFromBackend = (() => {
               const value = user.birth_date;
-              if (!value || typeof value !== "string") return savedProfile.birthDate;
+              if (!value || typeof value !== "string") return "";
               const parts = value.split("-");
               if (parts.length === 3) {
                 const [year, month, day] = parts;
                 return `${day}.${month}.${year}`;
               }
-              return savedProfile.birthDate;
+              return "";
             })();
 
-            const nameFromBackend = user.username || savedProfile.userName;
-            const photoFromBackend = user.photo_url || savedProfile.profileImage;
+            const nameFromBackend = user.username || "";
+            const photoFromBackend = user.photo_url || null;
 
             const updated: ProfileData = {
               userName: nameFromBackend,
@@ -92,15 +96,17 @@ const Profile = () => {
 
             setSavedProfile(updated);
             setProfile(updated);
+            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updated));
           }
         }
       } catch {
         // Если запрос не удался, просто остаёмся на локальном профиле
+      } finally {
+        setIsLoading(false);
       }
     };
 
     void loadBackendProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Check if there are unsaved changes (only image now, username is edited via modal)
@@ -251,7 +257,9 @@ const Profile = () => {
           {/* Profile Image with Edit Button */}
           <div className="relative">
             <div className="w-28 h-28 rounded-xl bg-gradient-to-br from-primary/30 to-accent/30 overflow-hidden">
-              {profile.profileImage ? (
+              {isLoading ? (
+                <div className="w-full h-full bg-secondary animate-pulse" />
+              ) : profile.profileImage ? (
                 <img 
                   src={profile.profileImage} 
                   alt="Profile" 
@@ -263,15 +271,17 @@ const Profile = () => {
                 </div>
               )}
             </div>
-            {/* Edit button */}
-            <button 
-              onClick={handleImageClick}
-              className="absolute bottom-2 right-2 w-8 h-8 bg-background rounded-full flex items-center justify-center border border-border shadow-lg hover:bg-secondary transition-colors"
-            >
-              <Pencil className="w-4 h-4 text-foreground" />
-            </button>
-            {/* Remove button - only show when there's an image */}
-            {profile.profileImage && (
+            {/* Edit button - hide during loading */}
+            {!isLoading && (
+              <button 
+                onClick={handleImageClick}
+                className="absolute bottom-2 right-2 w-8 h-8 bg-background rounded-full flex items-center justify-center border border-border shadow-lg hover:bg-secondary transition-colors"
+              >
+                <Pencil className="w-4 h-4 text-foreground" />
+              </button>
+            )}
+            {/* Remove button - only show when there's an image and not loading */}
+            {!isLoading && profile.profileImage && (
               <button 
                 onClick={handleRemoveImage}
                 className="absolute top-2 right-2 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity"
@@ -283,17 +293,26 @@ const Profile = () => {
 
           {/* User Info */}
           <div className="flex flex-col pt-2">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-display text-foreground">{profile.userName || "Не указано"}</h1>
-              <Pencil
-                className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground"
-                onClick={() => setIsEditUsernameModalOpen(true)}
-              />
-            </div>
-            {backendUser?.tg_username && (
-              <span className="text-muted-foreground text-sm text-regular">@{backendUser.tg_username}</span>
+            {isLoading ? (
+              <>
+                <div className="h-7 w-40 bg-secondary rounded animate-pulse mb-1" />
+                <div className="h-4 w-24 bg-secondary rounded animate-pulse mt-1" />
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-display text-foreground">{profile.userName || "Не указано"}</h1>
+                  <Pencil
+                    className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground"
+                    onClick={() => setIsEditUsernameModalOpen(true)}
+                  />
+                </div>
+                {backendUser?.tg_username && (
+                  <span className="text-muted-foreground text-sm text-regular">@{backendUser.tg_username}</span>
+                )}
+                <span className="text-muted-foreground text-sm mt-1 text-regular">Создан {profile.createdAt}</span>
+              </>
             )}
-            <span className="text-muted-foreground text-sm mt-1 text-regular">Создан {profile.createdAt}</span>
           </div>
         </div>
 
