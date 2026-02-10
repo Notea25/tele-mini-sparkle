@@ -324,7 +324,7 @@ const PlayerCard = ({
                   src={playerPhoto_url} 
                    alt={player.name_rus || player.name}
                   className="w-full h-full object-cover"
-                  onError={(e) => { e.currentTarget.src = playerPhoto; }}
+                  onError={(e) => { e.currentTarget.src = playerDefault; }}
                 />
               )}
             </div>

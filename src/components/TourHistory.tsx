@@ -345,15 +345,12 @@ export default function TourHistory({ squadId: propSquadId }: TourHistoryProps) 
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
-                            {player.photo ? (
-                              <img
-                                src={player.photo}
-                                alt={player.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <Icon className="w-6 h-6 text-gray-400" />
-                            )}
+                            <img
+                              src={player.photo || playerDefault}
+                              alt={player.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => { e.currentTarget.src = playerDefault; }}
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-white truncate">
