@@ -1988,7 +1988,7 @@ const Transfers = () => {
               viceCaptain,
             );
 
-            if (!response.success) {
+            if (!response.success || response.data?.status !== "success") {
               console.error("[Transfers] Save failed:", response);
 
               // Extract error message from response.data.detail or response.error

@@ -321,9 +321,14 @@ export interface ReplacePlayersRequest {
 }
 
 export interface ReplacePlayersResponse {
-  id: number;
-  main_player_ids: number[];
-  bench_player_ids: number[];
+  status: string;
+  message: string;
+  remaining_replacements: number;
+  squad_tour: TourHistorySnapshot;
+  transfers_applied?: number;
+  free_transfers_used?: number;
+  paid_transfers?: number;
+  penalty?: number;
 }
 
 // Типы для истории туров

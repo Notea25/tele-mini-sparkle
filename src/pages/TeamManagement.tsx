@@ -458,7 +458,7 @@ const TeamManagement = () => {
     try {
       const requestBody = buildRequestBody();
       // Use new squad_tours API endpoint
-      const result = await squadsApi.replacePlayers(
+      const response = await squadsApi.replacePlayers(
         squad.id,
         {
           main_player_ids: requestBody.main_player_ids || [],
@@ -468,7 +468,7 @@ const TeamManagement = () => {
         requestBody.vice_captain_id
       );
       
-      if (result.success) {
+      if (response.success && response.data?.status === "success") {
         // Save bench order to localStorage so it persists across page visits
         // This is a workaround for backend not preserving bench order
         const benchOrderKey = `benchOrder_${squad.id}`;
@@ -488,7 +488,7 @@ const TeamManagement = () => {
         toast.success("Изменения сохранены");
         // Остаёмся на странице "Моя команда" после сохранения
       } else {
-        toast.error(`Ошибка: ${result.error || 'Неизвестная ошибка'}`);
+        toast.error(`Ошибка: ${response.error || response.data?.message || 'Неизвестная ошибка'}`);
       }
     } catch (err) {
       toast.error(`Ошибка: ${err instanceof Error ? err.message : 'Неизвестная ошибка'}`);
