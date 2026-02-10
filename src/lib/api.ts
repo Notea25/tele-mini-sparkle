@@ -898,3 +898,9 @@ export const squadToursApi = {
   getAll: () =>
     apiRequest<SquadTourResponse[]>(`/api/squad_tours/all`),
 };
+
+// Методы для работы с матчами
+export const matchesApi = {
+  finalizeMatch: (matchId: number) =>
+    apiRequest<unknown>(`/api/matches/finalize/${matchId}`, { method: 'POST' }),
+};

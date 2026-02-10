@@ -23,6 +23,7 @@ const ALLOWED_PATH_PREFIXES = [
   "/api/custom_leagues/",
   "/api/user_leagues/",
   "/api/commercial_leagues/",
+  "/api/matches/",
 ];
 
 // Paths that require authentication (must have Authorization header)

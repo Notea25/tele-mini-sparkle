@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, customLeaguesApi, commercialLeaguesApi, playerStatusesApi, ApiResponse, BoostType, apiRequest, PlayerStatusCreate, PlayerStatusType } from '@/lib/api';
+import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, customLeaguesApi, commercialLeaguesApi, playerStatusesApi, matchesApi, ApiResponse, BoostType, apiRequest, PlayerStatusCreate, PlayerStatusType } from '@/lib/api';
 
 const BackendTest = () => {
   const navigate = useNavigate();
@@ -88,6 +88,12 @@ const BackendTest = () => {
   const [isCommercialLeaguesOpen, setIsCommercialLeaguesOpen] = useState(false);
   const [isSquadToursOpen, setIsSquadToursOpen] = useState(false);
   const [isPlayerStatusesOpen, setIsPlayerStatusesOpen] = useState(false);
+  const [isMatchesOpen, setIsMatchesOpen] = useState(false);
+
+  // Matches state
+  const [finalizeMatchIdInput, setFinalizeMatchIdInput] = useState('1');
+  const [loadingFinalizeMatch, setLoadingFinalizeMatch] = useState(false);
+  const [finalizeMatchResponse, setFinalizeMatchResponse] = useState<ApiResponse<unknown> | null>(null);
 
   // Player Statuses state
   const [statusIdInput, setStatusIdInput] = useState('1');
@@ -1191,13 +1197,43 @@ const BackendTest = () => {
       </Section>
 
       {/* MATCHES SECTION */}
-      <Section title="⚽ Matches" isOpen={false} onToggle={() => {}}>
+      <Section title="⚽ Matches" isOpen={isMatchesOpen} onToggle={() => setIsMatchesOpen(!isMatchesOpen)}>
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">GET /api/matches/all</p>
           <p className="text-sm text-muted-foreground">GET /api/matches/id_{'{id}'}</p>
           <p className="text-sm text-muted-foreground">GET /api/matches/league_{'{league_id}'}</p>
           <p className="text-sm text-muted-foreground">GET /api/matches/team/{'{team_id}'}</p>
+
+          <h3 className="text-sm font-semibold text-muted-foreground mt-4">POST /api/matches/finalize/{'{match_id}'}</h3>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              value={finalizeMatchIdInput}
+              onChange={(e) => setFinalizeMatchIdInput(e.target.value)}
+              className="w-24 px-2 py-2 bg-muted text-foreground rounded border border-border"
+              placeholder="Match ID"
+            />
+            <Button
+              onClick={async () => {
+                setLoadingFinalizeMatch(true);
+                try {
+                  const result = await matchesApi.finalizeMatch(parseInt(finalizeMatchIdInput) || 1);
+                  setFinalizeMatchResponse(result);
+                } catch (err) {
+                  setFinalizeMatchResponse({ success: false, error: err instanceof Error ? err.message : 'Unknown error' });
+                } finally {
+                  setLoadingFinalizeMatch(false);
+                }
+              }}
+              disabled={loadingFinalizeMatch}
+              variant="destructive"
+              className="flex-1"
+            >
+              {loadingFinalizeMatch ? 'Загрузка...' : `POST /api/matches/finalize/${finalizeMatchIdInput}`}
+            </Button>
+          </div>
         </div>
+        {renderResponse(finalizeMatchResponse, 'Ответ: Finalize Match')}
       </Section>
 
 
