@@ -504,7 +504,7 @@ const TeamManagement = () => {
           errorMessage = response.error;
         }
         
-        toast.error(`Ошибка: ${errorMessage}`);
+        toast.error(`Ошибка: ${errorMessage}`, { duration: 7000 });
       }
     } catch (err) {
       toast.error(`Ошибка: ${err instanceof Error ? err.message : 'Неизвестная ошибка'}`);

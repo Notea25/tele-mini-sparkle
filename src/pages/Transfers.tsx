@@ -2014,7 +2014,7 @@ const Transfers = () => {
                 errorMessage = `Ошибка сохранения (${response.status} ${response.statusText || ""})`;
               }
 
-              toast.error(`Ошибка: ${errorMessage}`, { duration: 5000 });
+              toast.error(`Ошибка: ${errorMessage}`, { duration: 7000 });
               return;
             }
 
