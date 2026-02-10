@@ -20,7 +20,7 @@ export interface TransformedPlayer {
   team_logo: string;   // URL логотипа из API
   position: string;    // Преобразовано в ВР/ЗЩ/ПЗ/НП
   points: number;
-  price: number;       // market_value / 1000
+  price: number;       // market_value as-is from backend
   hasRedCard?: boolean;
   isInjured?: boolean;
   hasLeftLeague?: boolean;
