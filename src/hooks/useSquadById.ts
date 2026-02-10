@@ -225,11 +225,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         team_logo: sp.team_logo || fullPlayer?.team_logo || "",
         photo: sp.photo || "",
         position,
-        price: sp.market_value
-          ? Math.round((sp.market_value / 1000) * 10) / 10
-          : fullPlayer
-            ? Math.round((fullPlayer.market_value / 1000) * 10) / 10
-            : 0,
+        price: sp.market_value ?? fullPlayer?.market_value ?? 0,
         points: sp.points,
         total_points: sp.total_points,
         tour_points: sp.tour_points,
