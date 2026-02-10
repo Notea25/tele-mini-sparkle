@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import playerPhoto from "@/assets/player-photo.png";
+import playerDefault from "@/assets/player-default.png";
 import clubLogo from "@/assets/club-logo.png";
 import { clubLogos, getClubLogo } from "@/lib/clubLogos";
 import injuryBadge from "@/assets/injury-badge.png";
@@ -222,7 +223,7 @@ const PlayerCard = ({
   };
 
   // Get data from API or fallback to player props
-  const playerPhoto_url = fullInfo?.base_info?.photo || playerPhoto;
+  const playerPhoto_url = fullInfo?.base_info?.photo || playerDefault;
   const teamLogo_url = fullInfo?.base_info?.team_logo || clubLogos[player.team] || clubLogo;
   const teamName = fullInfo?.base_info?.team_name_rus || fullInfo?.base_info?.team_name || player.team_rus || player.team;
   const positionDisplay = fullInfo?.base_info?.position 
@@ -323,7 +324,7 @@ const PlayerCard = ({
                   src={playerPhoto_url} 
                    alt={player.name_rus || player.name}
                   className="w-full h-full object-cover"
-                  onError={(e) => { e.currentTarget.src = playerPhoto; }}
+                  onError={(e) => { e.currentTarget.src = playerDefault; }}
                 />
               )}
             </div>
