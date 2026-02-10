@@ -1993,27 +1993,28 @@ const Transfers = () => {
 
               // Extract error message from response.data.detail or response.error
               const backendDetail = (response.data as any)?.detail;
+              let errorMessage = 'Неизвестная ошибка';
 
-              // Special handling for "No replacements left" error
-              if (backendDetail === "No replacements left") {
+              // Special handling for specific errors
+              if (backendDetail === "No open tour available for transfers") {
+                errorMessage = "Дедлайн прошёл. Изменения будут применены к следующему туру после его начала";
+              } else if (backendDetail === "Cannot edit finalized tour") {
+                errorMessage = "Тур завершён. Изменения невозможны";
+              } else if (backendDetail === "No replacements left") {
                 const paidTransfersCount = transferCount - freeTransfers;
                 const penalty = paidTransfersCount * 4;
-                toast.error(
-                  `Бэкенд не поддерживает платные трансферы. ` +
-                    `Вы хотели сделать ${transferCount} замен (бесплатных: ${freeTransfers}, платных: ${paidTransfersCount}, штраф: -${penalty} очков). ` +
-                    `Нужно исправить серверную логику.`,
-                  { duration: 8000 },
-                );
-                return;
+                errorMessage = `Бэкенд не поддерживает платные трансферы. ` +
+                  `Вы хотели сделать ${transferCount} замен (бесплатных: ${freeTransfers}, платных: ${paidTransfersCount}, штраф: -${penalty} очков). ` +
+                  `Нужно исправить серверную логику.`;
+              } else if (backendDetail) {
+                errorMessage = backendDetail;
+              } else if (response.error) {
+                errorMessage = response.error;
+              } else if (response.status) {
+                errorMessage = `Ошибка сохранения (${response.status} ${response.statusText || ""})`;
               }
 
-              const errorMessage = backendDetail
-                ? `Ошибка: ${backendDetail}`
-                : response.error
-                  ? `Ошибка: ${response.error}`
-                  : `Ошибка сохранения (${response.status || "unknown"} ${response.statusText || ""})`;
-
-              toast.error(errorMessage, { duration: 5000 });
+              toast.error(`Ошибка: ${errorMessage}`, { duration: 5000 });
               return;
             }
 

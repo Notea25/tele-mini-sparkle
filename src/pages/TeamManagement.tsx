@@ -488,7 +488,23 @@ const TeamManagement = () => {
         toast.success("Изменения сохранены");
         // Остаёмся на странице "Моя команда" после сохранения
       } else {
-        toast.error(`Ошибка: ${response.error || response.data?.message || 'Неизвестная ошибка'}`);
+        // Extract detailed error message
+        const backendDetail = (response.data as any)?.detail;
+        let errorMessage = 'Неизвестная ошибка';
+        
+        if (backendDetail === "No open tour available for transfers") {
+          errorMessage = "Дедлайн прошёл. Изменения будут применены к следующему туру после его начала";
+        } else if (backendDetail === "Cannot edit finalized tour") {
+          errorMessage = "Тур завершён. Изменения невозможны";
+        } else if (backendDetail) {
+          errorMessage = backendDetail;
+        } else if (response.data?.message) {
+          errorMessage = response.data.message;
+        } else if (response.error) {
+          errorMessage = response.error;
+        }
+        
+        toast.error(`Ошибка: ${errorMessage}`);
       }
     } catch (err) {
       toast.error(`Ошибка: ${err instanceof Error ? err.message : 'Неизвестная ошибка'}`);
