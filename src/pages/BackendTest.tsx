@@ -88,6 +88,12 @@ const BackendTest = () => {
   const [isCommercialLeaguesOpen, setIsCommercialLeaguesOpen] = useState(false);
   const [isSquadToursOpen, setIsSquadToursOpen] = useState(false);
   const [isPlayerStatusesOpen, setIsPlayerStatusesOpen] = useState(false);
+  const [isMatchesOpen, setIsMatchesOpen] = useState(false);
+
+  // Matches state
+  const [finalizeMatchIdInput, setFinalizeMatchIdInput] = useState('1');
+  const [loadingFinalizeMatch, setLoadingFinalizeMatch] = useState(false);
+  const [finalizeMatchResponse, setFinalizeMatchResponse] = useState<ApiResponse<unknown> | null>(null);
 
   // Player Statuses state
   const [statusIdInput, setStatusIdInput] = useState('1');
