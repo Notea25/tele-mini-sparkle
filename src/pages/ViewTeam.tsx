@@ -250,7 +250,7 @@ const ViewTeam = () => {
       team_logo: p.team_logo || "",
       photo: p.photo || "",
       position: mapPosition(p.position),
-      price: Math.round((p.market_value / 1000) * 10) / 10,
+      price: p.market_value,
       points: p.tour_points,
       total_points: p.total_points,
       tour_points: p.tour_points,

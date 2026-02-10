@@ -85,7 +85,7 @@ export function usePlayers(leagueId: string | null) {
             team_logo: player.team_logo,
             position: POSITION_MAP[player.position] || player.position,
             points: player.points,
-            price: Math.round((player.market_value / 1000) * 10) / 10, // 8224 → 8.2
+            price: player.market_value,
             hasRedCard: player.has_red_card,
             isInjured: player.is_injured,
             hasLeftLeague: player.has_left_league,
