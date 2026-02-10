@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import playerPhoto from "@/assets/player-photo.png";
+import playerDefault from "@/assets/player-default.png";
 import clubLogo from "@/assets/club-logo.png";
 import { clubLogos, getClubLogo } from "@/lib/clubLogos";
 import injuryBadge from "@/assets/injury-badge.png";
