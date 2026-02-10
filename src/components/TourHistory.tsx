@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, Trophy, Users, TrendingUp, Shield } from "lucide-react";
 import { squadsApi, TourHistorySnapshot } from "@/lib/api";
+import playerDefault from "@/assets/player-default.png";
 import { Button } from "@/components/ui/button";
 import {
   Card,
