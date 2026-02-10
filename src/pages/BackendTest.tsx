@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, customLeaguesApi, commercialLeaguesApi, playerStatusesApi, ApiResponse, BoostType, apiRequest, PlayerStatusCreate, PlayerStatusType } from '@/lib/api';
+import { leaguesApi, teamsApi, usersApi, squadsApi, toursApi, playersApi, boostsApi, customLeaguesApi, commercialLeaguesApi, playerStatusesApi, matchesApi, ApiResponse, BoostType, apiRequest, PlayerStatusCreate, PlayerStatusType } from '@/lib/api';
 
 const BackendTest = () => {
   const navigate = useNavigate();
