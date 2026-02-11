@@ -1065,10 +1065,16 @@ const TeamBuilder = () => {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
+                ref={searchInputRef}
                 placeholder="Поиск"
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
+                onFocus={() => {
+                  setIsSearchFocused(true);
+                  window.setTimeout(() => {
+                    scrollSearchIntoView("smooth");
+                  }, 350);
+                }}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
                 className="pl-10 pr-10 h-10 bg-card border-border rounded-xl text-foreground placeholder:text-muted-foreground"
               />
