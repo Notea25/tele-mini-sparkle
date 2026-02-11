@@ -492,8 +492,8 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
-                      <p className="text-primary text-lg font-bold">2026</p>
+                       <p className="text-foreground text-lg font-normal font-display mb-2">Скоро запустим</p>
+                       <p className="text-primary text-lg font-normal font-display">2026</p>
                     </div>
                   </div>
                 </Card>
@@ -556,8 +556,8 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
-                      <p className="text-primary text-lg font-bold">2027</p>
+                       <p className="text-foreground text-lg font-normal font-display mb-2">Скоро запустим</p>
+                       <p className="text-primary text-lg font-normal font-display">2027</p>
                     </div>
                   </div>
                 </Card>
@@ -620,8 +620,8 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
-                      <p className="text-primary text-lg font-bold">2026</p>
+                       <p className="text-foreground text-lg font-normal font-display mb-2">Скоро запустим</p>
+                       <p className="text-primary text-lg font-normal font-display">2026</p>
                     </div>
                   </div>
                 </Card>
@@ -684,8 +684,8 @@ const Index = () => {
 
                     {/* Overlay text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
-                      <p className="text-primary text-lg font-bold">2027</p>
+                       <p className="text-foreground text-lg font-normal font-display mb-2">Скоро запустим</p>
+                       <p className="text-primary text-lg font-normal font-display">2027</p>
                     </div>
                   </div>
                 </Card>
