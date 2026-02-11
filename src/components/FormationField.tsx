@@ -922,6 +922,17 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 import { getTeamAbbreviation } from "@/lib/teamAbbreviations";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import { SortableContext, useSortable, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 // Player data interface
 export interface FormationPlayerData {
@@ -980,6 +991,33 @@ const FIXED_FORMATION: FormationPosition[] = [
 
 // Mode types
 export type FormationMode = "create" | "management" | "transfers" | "view";
+
+// SortableBenchPlayer component for drag and drop
+interface SortableBenchPlayerProps {
+  id: string;
+  children: React.ReactNode;
+  disabled?: boolean;
+}
+
+const SortableBenchPlayer = ({ id, children, disabled }: SortableBenchPlayerProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+    disabled,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    cursor: disabled ? 'default' : 'grab',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="flex flex-col items-center flex-1 relative">
+      {children}
+    </div>
+  );
+};
 
 export interface FormationFieldProps {
   // Mode determines behavior and available features
@@ -1105,6 +1143,49 @@ const FormationField = ({
     const width = typeof window !== 'undefined' ? window.innerWidth : 768;
     return getCardSizeForWidth(width).isDesktop;
   });
+
+  // Drag and drop sensors for bench reordering
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before drag starts
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 150, // 150ms delay before drag starts on touch
+        tolerance: 5,
+      },
+    })
+  );
+
+  // Handle drag end for bench reordering
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+
+      if (!over || !onSwapBenchPlayers) return;
+
+      const activeIndex = benchPlayers.findIndex((p) => p && `bench-${p.id}` === active.id);
+      const overIndex = benchPlayers.findIndex((p) => p && `bench-${p.id}` === over.id);
+
+      if (activeIndex === -1 || overIndex === -1 || activeIndex === overIndex) return;
+
+      // Don't allow moving goalkeeper or moving players to/from goalkeeper position
+      const activePlayer = benchPlayers[activeIndex];
+      const overPlayer = benchPlayers[overIndex];
+      
+      if (!activePlayer) return;
+      
+      // Goalkeeper must stay first
+      if (activePlayer.position === "ВР" || (overPlayer && overIndex === 0 && overPlayer.position === "ВР")) {
+        return;
+      }
+
+      onSwapBenchPlayers(activeIndex, overIndex);
+    },
+    [benchPlayers, onSwapBenchPlayers]
+  );
 
   // Only handle resize events - initial size is already calculated
   useEffect(() => {
@@ -1265,16 +1346,6 @@ const FormationField = ({
 
       // Shadow for new players
       const shadowClass = isNewPlayer ? "shadow-[0_0_12px_hsl(var(--primary)/0.4)]" : "";
-
-      // Bench swap button visibility (arrow up to move higher in priority)
-      // Rules:
-      // 1. Goalkeeper (ВР) cannot move - they stay first
-      // 2. Player at index 1 cannot move up if player at index 0 is goalkeeper
-      // 3. All other bench players can move up
-      const isGoalkeeper = player.position === "ВР";
-      const playerAboveIsGK = benchIndex !== undefined && benchIndex === 1 && benchPlayers[0]?.position === "ВР";
-      const canSwapOnBench =
-        isOnBench && benchIndex !== undefined && benchIndex > 0 && !isGoalkeeper && !playerAboveIsGK;
 
       // Calculate display text
       const maxNameLength = Math.floor(cardSize.width / 7);
@@ -1476,38 +1547,6 @@ const FormationField = ({
                 />
               </button>
             )}
-
-          {/* Bench swap button - swap with player above - 4px from top and left */}
-          {canSwapOnBench && onSwapBenchPlayers && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onSwapBenchPlayers(benchIndex, benchIndex - 1);
-              }}
-              className="absolute z-50 bg-primary/80 rounded-sm"
-              title="Поднять в очереди"
-              aria-label="Поднять в очереди"
-              style={{
-                top: "4px",
-                left: "4px",
-                padding: `${cardSize.width * 0.02}px`,
-              }}
-            >
-              <svg
-                className="text-white"
-                style={{
-                  width: `${cardSize.width * 0.1}px`,
-                  height: `${cardSize.width * 0.1}px`,
-                }}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-              >
-                <path d="M12 19V5M5 12l7-7 7 7" />
-              </svg>
-            </button>
-          )}
 
           {/* Jersey - увеличенная, занимает большую часть карточки */}
           <div
@@ -1949,22 +1988,42 @@ const FormationField = ({
                   padding: `${cardSize.height * 0.15}px`,
                 }}
               >
-                <div className="flex gap-2 justify-between" style={{ gap: `${benchGap}px` }}>
-                  {(() => {
-                    // Use benchPlayers in their current order (already sorted by priority)
-                    // Don't re-sort here - the order from state IS the priority order
-                    return Array.from({ length: maxBenchSize }).map((_, idx) => {
-                      const player = benchPlayers[idx];
-                      const key = `bench-${idx}`;
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={benchPlayers.filter(p => p).map((p) => `bench-${p.id}`)}
+                    strategy={horizontalListSortingStrategy}
+                  >
+                    <div className="flex gap-2 justify-between" style={{ gap: `${benchGap}px` }}>
+                      {(() => {
+                        // Use benchPlayers in their current order (already sorted by priority)
+                        // Don't re-sort here - the order from state IS the priority order
+                        return Array.from({ length: maxBenchSize }).map((_, idx) => {
+                          const player = benchPlayers[idx];
+                          const key = player ? `bench-${player.id}` : `bench-empty-${idx}`;
+                          const isGoalkeeper = player?.position === "ВР";
 
-                      return (
-                        <div key={key} className="flex flex-col items-center flex-1 relative">
-                          {player ? renderPlayer(player, true, idx) : renderEmptySlot("ЗАМ", true, idx)}
-                        </div>
-                      );
-                    });
-                  })()}
-                </div>
+                          if (!player) {
+                            return (
+                              <div key={key} className="flex flex-col items-center flex-1 relative">
+                                {renderEmptySlot("ЗАМ", true, idx)}
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <SortableBenchPlayer key={key} id={key} disabled={isGoalkeeper || mode === "view"}>
+                              {renderPlayer(player, true, idx)}
+                            </SortableBenchPlayer>
+                          );
+                        });
+                      })()}
+                    </div>
+                  </SortableContext>
+                </DndContext>
                 {onSwapBenchPlayers && mode === "management" && (
                   <div
                     className="text-center text-muted-foreground mt-4"
