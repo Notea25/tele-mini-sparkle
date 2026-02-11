@@ -336,11 +336,18 @@ const ViewTeam = () => {
             if (indexB === -1) return -1;
             return indexA - indexB;
           });
-          return orderedBench;
+          baseBench = orderedBench;
         } catch {
-          // If parsing fails, return original order
+          // If parsing fails, continue with original order
         }
       }
+    }
+    
+    // Ensure GK is always in the leftmost (first) slot
+    const gkIndex = baseBench.findIndex(p => p.position === "ВР");
+    if (gkIndex > 0) {
+      const [gk] = baseBench.splice(gkIndex, 1);
+      baseBench.unshift(gk);
     }
     
     return baseBench;
