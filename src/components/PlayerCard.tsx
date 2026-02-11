@@ -461,7 +461,7 @@ const PlayerCard = ({
           {/* Points breakdown section - "Набранные очки" */}
           {!hidePointsBreakdown && (
             <div className="mt-6">
-              <h3 className="text-foreground text-sm font-bold mb-3 text-left">Набранные очки</h3>
+              <h3 className="text-foreground text-sm font-normal font-display mb-3 text-left">Набранные очки</h3>
               <div className="bg-secondary/30 rounded-xl p-3 space-y-2">
                 {pointBreakdown.length > 0 ? (
                   <>
