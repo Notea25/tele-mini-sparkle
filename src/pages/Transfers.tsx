@@ -885,10 +885,6 @@ const Transfers = () => {
     const filterName = positionToFilter[position] || "Все";
     setActiveFilter(filterName);
     setCurrentPage(1);
-    // Switch to formation tab if currently on list tab (search is in formation view)
-    if (activeTab === "list") {
-      setActiveTab("formation");
-    }
     setTimeout(() => {
       scrollToPlayerList("smooth");
     }, 100);
@@ -899,10 +895,6 @@ const Transfers = () => {
     setPendingSlotIndex(null);
     setActiveFilter("Все");
     setCurrentPage(1);
-    // Switch to formation tab if currently on list tab (search is in formation view)
-    if (activeTab === "list") {
-      setActiveTab("formation");
-    }
     setTimeout(() => {
       scrollToPlayerList("smooth");
     }, 100);
