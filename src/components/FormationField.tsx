@@ -1967,13 +1967,15 @@ const FormationField = ({
                 </div>
                 {onSwapBenchPlayers && mode === "management" && (
                   <div
-                    className="flex items-center justify-center gap-2 text-muted-foreground mt-4"
+                    className="text-center text-muted-foreground mt-4"
                     style={{
-                      fontSize: `${cardSize.width * 0.12}px`,
+                      fontSize: `${cardSize.width * 0.11}px`,
                       marginTop: `${cardSize.height * 0.15}px`,
                     }}
                   >
-                    <span>Перетащите игроков для изменения приоритета выхода на поле</span>
+                    <span>Перетащите игроков для изменения приоритета замен</span>
+                    <br />
+                    <span style={{ fontSize: `${cardSize.width * 0.10}px`, opacity: 0.7 }}>(Вратарь всегда первый)</span>
                   </div>
                 )}
               </div>
