@@ -204,7 +204,7 @@ const SportCard = ({
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-foreground font-bold text-lg">{league}</h4>
+                <h4 className="text-foreground font-normal font-display text-lg">{league}</h4>
                 {hasTeam && participants !== undefined && userRank !== undefined && userRank !== null && (
                   <p className="text-sm">
                     <span className="text-primary font-semibold">{formatParticipants(userRank)}</span>
