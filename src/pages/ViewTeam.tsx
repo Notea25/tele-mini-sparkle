@@ -575,7 +575,7 @@ const ViewTeam = () => {
 
       {/* Formation View */}
       {activeTab === "formation" && (
-        <div className="mt-2">
+        <div className="mt-10">
           <FormationField
             mode="view"
             mainSquadPlayers={mainSquadForField}
