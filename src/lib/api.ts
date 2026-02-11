@@ -252,6 +252,8 @@ export interface SquadTourData {
   captain_id: number | null;
   vice_captain_id: number | null;
   main_players?: SquadPlayer[];
+  // IMPORTANT: bench_players array order matters for auto-substitutions
+  // Players are returned in bench_order (1, 2, 3, 4) - goalkeeper always first
   bench_players?: SquadPlayer[];
   points: number;
   penalty_points: number;
@@ -317,6 +319,9 @@ export interface UpdateSquadPlayersResponse {
 // Типы для замены игроков (трансферы)
 export interface ReplacePlayersRequest {
   main_player_ids: number[];
+  // IMPORTANT: Order of bench_player_ids determines substitution priority
+  // Backend saves them with bench_order (1, 2, 3, 4) based on array order
+  // Goalkeeper must be first, then other players in desired priority
   bench_player_ids: number[];
 }
 
