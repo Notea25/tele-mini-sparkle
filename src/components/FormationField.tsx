@@ -1973,8 +1973,7 @@ const FormationField = ({
                       marginTop: `${cardSize.height * 0.15}px`,
                     }}
                   >
-                    <ArrowUp size={cardSize.width * 0.16} className="text-primary" />
-                    <span>Используй стрелку для изменения приоритета выхода на поле</span>
+                    <span>Перетащите игроков для изменения приоритета выхода на поле</span>
                   </div>
                 )}
               </div>
