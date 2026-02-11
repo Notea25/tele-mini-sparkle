@@ -485,12 +485,12 @@ const ViewTeam = () => {
       <SportHeader />
 
       {/* Team Name */}
-      <div className="px-4 mt-4 flex items-center justify-center gap-2">
-        <h1 className="text-foreground text-3xl font-display">{squad.name}</h1>
+      <div className="px-4 mt-2 flex items-center justify-center gap-2">
+        <h1 className="text-foreground text-2xl font-display">{squad.name}</h1>
       </div>
 
       {/* Tour Navigation */}
-      <div className="px-4 mt-4 flex items-center justify-center gap-3">
+      <div className="px-4 mt-1 flex items-center justify-center gap-3">
         <Button
           variant="ghost"
           size="icon"
@@ -519,7 +519,7 @@ const ViewTeam = () => {
       </div>
 
       {/* Points Block */}
-      <div className="px-4 mt-3 flex flex-col items-center gap-1">
+      <div className="px-4 mt-2 flex flex-col items-center gap-1">
         <div className="bg-primary rounded-xl px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
           {isLoadingTourPoints && !selectedSnapshot ? (
             <Loader2 className="w-6 h-6 animate-spin text-primary-foreground" />
@@ -548,7 +548,7 @@ const ViewTeam = () => {
       </div>
 
       {/* Tabs */}
-      <div className="px-4 mt-6">
+      <div className="px-4 mt-3">
         <div className="flex bg-secondary rounded-lg p-1">
           <Button
             onClick={() => setActiveTab("formation")}
@@ -575,7 +575,7 @@ const ViewTeam = () => {
 
       {/* Formation View */}
       {activeTab === "formation" && (
-        <div className="mt-10 sm:mt-14 md:mt-16 lg:mt-20">
+        <div className="mt-2">
           <FormationField
             mode="view"
             mainSquadPlayers={mainSquadForField}
