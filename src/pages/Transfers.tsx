@@ -1665,7 +1665,7 @@ const Transfers = () => {
           <div className="px-4 mt-6">
             <h2 className="text-foreground text-xl font-display mb-4">Состав команды</h2>
           </div>
-          <div className="px-4">
+          <div className={`px-4 ${hasChanges ? 'pb-12' : ''}`}>
             {Object.entries(playersByPosition).map(([position, positionPlayers]) =>
               renderListSection(position as PositionCode, positionPlayers),
             )}
