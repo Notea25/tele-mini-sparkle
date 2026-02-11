@@ -161,8 +161,8 @@ const SportCard = ({
         {comingSoon ? (
           <div className="relative p-6 flex flex-col items-center justify-center min-h-[180px]">
             <div className="relative text-center">
-              <p className="text-foreground text-lg font-bold mb-2">Скоро запустим</p>
-              <p className="text-primary text-lg font-bold">{comingSoonYear}</p>
+              <p className="text-foreground text-lg font-normal font-display mb-2">Скоро запустим</p>
+              <p className="text-primary text-lg font-normal font-display">{comingSoonYear}</p>
             </div>
           </div>
         ) : isLoading ? (
