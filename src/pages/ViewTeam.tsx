@@ -360,6 +360,23 @@ const ViewTeam = () => {
   // Convert EnrichedPlayer to PlayerData for FormationField
   const mainSquadForField = useMemo((): PlayerData[] => {
     return displayMainPlayers.map(p => {
+      const basePoints = p.tour_points ?? p.points ?? 0;
+      const isCaptain = displayCaptainId === p.id;
+      const isViceCaptain = displayViceCaptainId === p.id;
+      
+      // Apply captain/vice-captain multiplier
+      let displayPoints = basePoints;
+      if (isCaptain) {
+        displayPoints = basePoints * 2;
+      } else if (isViceCaptain) {
+        // Vice-captain gets 2x only if captain has 0 points
+        const captainPlayer = displayMainPlayers.find(player => player.id === displayCaptainId);
+        const captainPoints = captainPlayer?.tour_points ?? captainPlayer?.points ?? 0;
+        if (captainPoints === 0) {
+          displayPoints = basePoints * 2;
+        }
+      }
+      
       return {
         id: p.id,
         name: p.name,
@@ -368,10 +385,10 @@ const ViewTeam = () => {
         photo: p.photo,
         position: p.position,
         price: p.price,
-        points: p.tour_points ?? p.points ?? 0,
+        points: displayPoints,
         slotIndex: p.slotIndex,
-        isCaptain: displayCaptainId === p.id,
-        isViceCaptain: displayViceCaptainId === p.id,
+        isCaptain: isCaptain,
+        isViceCaptain: isViceCaptain,
         nextOpponent: p.nextOpponent || "",
         nextOpponentHome: p.nextOpponentHome ?? false,
         hasRedCard: p.hasRedCard,
