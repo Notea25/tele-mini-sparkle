@@ -660,7 +660,16 @@ const ViewTeam = () => {
                           )}
                         </div>
                         <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
-                          {player.tour_points ?? player.points ?? 0}
+                          {(() => {
+                            const basePoints = player.tour_points ?? player.points ?? 0;
+                            // Captain gets 2x points
+                            if (isCaptain) return basePoints * 2;
+                            // Vice-captain gets 2x only if captain has 0 points
+                            const captainPlayer = displayMainPlayers.find(p => p.id === displayCaptainId);
+                            const captainPoints = captainPlayer?.tour_points ?? captainPlayer?.points ?? 0;
+                            if (isViceCaptain && captainPoints === 0) return basePoints * 2;
+                            return basePoints;
+                          })()}
                         </div>
                         <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
                           {player.price}
@@ -723,7 +732,16 @@ const ViewTeam = () => {
                     )}
                   </div>
                   <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
-                    {player.tour_points ?? player.points ?? 0}
+                    {(() => {
+                      const basePoints = player.tour_points ?? player.points ?? 0;
+                      // Captain gets 2x points
+                      if (isCaptain) return basePoints * 2;
+                      // Vice-captain gets 2x only if captain has 0 points
+                      const captainPlayer = displayMainPlayers.find(p => p.id === displayCaptainId);
+                      const captainPoints = captainPlayer?.tour_points ?? captainPlayer?.points ?? 0;
+                      if (isViceCaptain && captainPoints === 0) return basePoints * 2;
+                      return basePoints;
+                    })()}
                   </div>
                   <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
                     {player.price}

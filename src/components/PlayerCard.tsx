@@ -489,10 +489,21 @@ const PlayerCard = ({
                         </div>
                       ));
                     })()}
+                    {/* Captain/Vice-Captain multiplier */}
+                    {(isCaptain || isViceCaptain) && displayPoints > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground text-sm">
+                          {isCaptain ? "Бонус за капитана" : "Бонус за вице-капитана"}
+                        </span>
+                        <span className="text-sm font-bold text-success">
+                          +{displayPoints}
+                        </span>
+                      </div>
+                    )}
                     <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
                       <span className="text-foreground text-sm font-semibold">Итого</span>
-                      <span className={`text-sm font-bold ${player.points > 0 ? "text-success" : player.points < 0 ? "text-destructive" : "text-foreground"}`}>
-                        {player.points > 0 ? "+" : ""}{player.points}
+                      <span className={`text-sm font-bold ${(isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints) > 0 ? "text-success" : (isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints) < 0 ? "text-destructive" : "text-foreground"}`}>
+                        {(isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints) > 0 ? "+" : ""}{isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints}
                       </span>
                     </div>
                   </>
