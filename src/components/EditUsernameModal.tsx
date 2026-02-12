@@ -106,7 +106,7 @@ const EditUsernameModal = ({
         className="bg-card border-border w-[calc(100%-32px)] max-w-md top-[20%] translate-y-0 rounded-xl"
         onPointerDownOutside={(e) => e.preventDefault()}
       >
-        <DialogTitle className="text-foreground text-xl font-bold text-center">
+        <DialogTitle className="text-foreground text-sm font-normal font-display text-center">
           Изменить имя пользователя
         </DialogTitle>
         
