@@ -179,7 +179,7 @@ const ViewLeague = () => {
   };
 
   const handleClose = () => {
-    navigate("/league");
+    navigate("/league?tab=leagues");
   };
 
   // Prize data for commercial leagues
