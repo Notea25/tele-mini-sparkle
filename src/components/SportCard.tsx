@@ -205,16 +205,10 @@ const SportCard = ({
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="text-foreground font-normal font-display text-lg">{league}</h4>
-                {participants !== undefined && participants > 0 && (
+                {hasTeam && participants !== undefined && userRank !== undefined && userRank !== null && (
                   <p className="text-sm">
-                    {hasTeam && userRank !== undefined && userRank !== null ? (
-                      <>
-                        <span className="text-primary font-semibold">{formatParticipants(userRank)}</span>
-                        <span className="text-muted-foreground"> из {formatParticipants(participants)} участников</span>
-                      </>
-                    ) : (
-                      <span className="text-muted-foreground">{formatParticipants(participants)} участников</span>
-                    )}
+                    <span className="text-primary font-semibold">{formatParticipants(userRank)}</span>
+                    <span className="text-muted-foreground"> из {formatParticipants(participants)} участников</span>
                   </p>
                 )}
                 <p className="text-sm">
