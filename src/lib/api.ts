@@ -30,7 +30,7 @@ interface ApiOptions {
   contentType?: string;
 }
 
-const DIRECT_API_URL = import.meta.env.VITE_API_DIRECT_URL;
+const DIRECT_API_URL = import.meta.env.VITE_API_URL;
 
 async function callBackend<T>(
   endpoint: string,
