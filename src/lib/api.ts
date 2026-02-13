@@ -30,6 +30,8 @@ interface ApiOptions {
   contentType?: string;
 }
 
+const DIRECT_API_URL = import.meta.env.VITE_API_DIRECT_URL;
+
 async function callBackend<T>(
   endpoint: string,
   options: ApiOptions,
@@ -54,6 +56,37 @@ async function callBackend<T>(
     finalHeaders["Authorization"] = `Bearer ${accessToken}`;
   }
 
+  // Direct mode — bypass Supabase, call backend directly
+  if (DIRECT_API_URL) {
+    try {
+      const fetchHeaders: Record<string, string> = { ...finalHeaders };
+      if (!rawBody && body) {
+        fetchHeaders["Content-Type"] = contentType || "application/json";
+      }
+
+      const res = await fetch(`${DIRECT_API_URL}${endpoint}`, {
+        method,
+        headers: fetchHeaders,
+        body: body ? (rawBody ? (body as string) : JSON.stringify(body)) : undefined,
+      });
+
+      const data = await res.json().catch(() => null);
+      return {
+        success: res.ok,
+        status: res.status,
+        statusText: res.statusText,
+        data: res.ok ? data : undefined,
+        error: res.ok ? undefined : (data?.detail || res.statusText),
+      };
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : "Unknown error",
+      };
+    }
+  }      
+    
+  // Original Supabase proxy mode  
   try {
     console.log("[callBackend] Invoking Supabase function api-proxy...");
     const { data, error } = await supabase.functions.invoke("api-proxy", {
