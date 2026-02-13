@@ -15,4 +15,6 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
-CMD sh -c "sed -i 's/listen 80/listen '\"${PORT:-80}\"'/' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
