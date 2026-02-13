@@ -261,7 +261,7 @@ const ViewUserLeague = () => {
   };
 
   const handleClose = () => {
-    navigate("/league");
+    navigate("/league?tab=leagues");
   };
 
   const handleTeamClick = (team: typeof leagueStandings[0]) => {
