@@ -125,18 +125,6 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                         (−3 очка)
                       </p>
                     </div>
-
-                    <div>
-                      <h4 className="text-foreground font-medium mb-1">Каждые 2 пропущенных мяча</h4>
-                      <ul className="space-y-1">
-                        <li>• Вратарь: −1 очко</li>
-                        <li>• Защитник: −1 очко</li>
-                      </ul>
-                      <p className="text-xs text-muted-foreground/70 italic mt-1">
-                        *Если пропущен 1 мяч — очки не отнимаются. Например: 1 пропущен (нет минуса), 2 пропущено (−1
-                        очко), 3 пропущено (−1 очко), 4 пропущено (−2 очка)
-                      </p>
-                    </div>
                   </div>
                 </div>
               </AccordionContent>
