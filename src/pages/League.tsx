@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Pencil, ChevronDown, ChevronUp, User, ArrowRight, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -185,8 +185,14 @@ const League = () => {
       };
     });
   }, [clubLeaderboardResponse?.data, mySquadId]);
-  // Always start on "main" tab when entering the page
-  const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">("main");
+  // Support ?tab=leagues query param for direct navigation to a specific tab
+  const [searchParams] = useSearchParams();
+  const initialTab = (() => {
+    const t = searchParams.get("tab");
+    if (t === "leagues" || t === "cup") return t;
+    return "main";
+  })();
+  const [activeTab, setActiveTab] = useState<"main" | "leagues" | "cup">(initialTab);
   const [teamName, setTeamName] = useState(() => {
     return localStorage.getItem("fantasyTeamName") || "Lucky Team";
   });

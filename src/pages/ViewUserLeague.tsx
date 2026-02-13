@@ -244,7 +244,7 @@ const ViewUserLeague = () => {
         // Invalidate my squad leagues cache so list refreshes
         queryClient.invalidateQueries({ queryKey: ['mySquadLeagues'] });
         toast.success("Лига удалена");
-        navigate("/league");
+        navigate("/league?tab=leagues");
       } else {
         toast.error(response.error || "Ошибка при удалении лиги");
       }

@@ -164,7 +164,7 @@ const ViewLeague = () => {
     const updatedLeagues = existingLeagues.filter((l) => l.id !== leagueId);
     localStorage.setItem("userCreatedLeagues", JSON.stringify(updatedLeagues));
     toast.success("Лига удалена");
-    navigate("/league");
+    navigate("/league?tab=leagues");
   };
 
   const handleInviteFriend = () => {
