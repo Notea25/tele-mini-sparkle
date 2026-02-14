@@ -790,6 +790,8 @@ const ViewTeam = () => {
         onClose={() => setIsPlayerCardOpen(false)}
         variant="view"
         showTourPoints={true}
+        isCaptain={selectedPlayer ? displayCaptainId === selectedPlayer.id : false}
+        isViceCaptain={selectedPlayer ? displayViceCaptainId === selectedPlayer.id : false}
       />
 
       {/* Home Button */}

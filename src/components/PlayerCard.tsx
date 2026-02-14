@@ -352,6 +352,13 @@ const PlayerCard = ({
               <span className="text-muted-foreground text-sm font-rubik mt-1">
                 {positionDisplay}
               </span>
+
+              {/* Captain / Vice-Captain badge text */}
+              {(isCaptain || isViceCaptain) && (
+                <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium font-rubik">
+                  {isCaptain ? "Капитан (очки x2 в очках команды)" : "Вице-капитан"}
+                </span>
+              )}
             </div>
           </div>
 
@@ -489,7 +496,7 @@ const PlayerCard = ({
                         </div>
                       ));
                     })()}
-                    {/* Captain/Vice-Captain multiplier */}
+                    {/* Captain/Vice-Captain multiplier */
                     {(isCaptain || isViceCaptain) && displayPoints > 0 && (
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground text-sm">
@@ -506,6 +513,7 @@ const PlayerCard = ({
                         {(isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints) > 0 ? "+" : ""}{isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints}
                       </span>
                     </div>
+
                   </>
                 ) : (
                   /* Placeholder when no points data - similar to Form/Calendar */
