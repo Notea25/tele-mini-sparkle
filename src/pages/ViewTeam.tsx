@@ -770,7 +770,7 @@ const ViewTeam = () => {
         </div>
       )}
 
-      {/* Player Card Drawer */}
+      {/* Player Card Drawer - show BASE points from API, not multiplied */}
       <PlayerCard
         player={
           selectedPlayer
@@ -780,7 +780,8 @@ const ViewTeam = () => {
                 team: selectedPlayer.team_name,
                 position: selectedPlayer.position,
                 price: selectedPlayer.price,
-                points: selectedPlayer.points,
+                // Important: use base tour_points from API (without captain multiplier)
+                points: selectedPlayer.tour_points ?? 0,
                 total_points: selectedPlayer.total_points,
                 tour_points: selectedPlayer.tour_points,
               }
