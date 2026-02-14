@@ -254,29 +254,37 @@ const League = () => {
     }
   }, [currentTour]);
 
-  // Club to league name mapping
+  // Club to league name mapping (English API name -> Russian display name)
   const clubToLeagueName: Record<string, string> = {
-    arsenal: "Лига «Арсенала»",
-    baranovichi: "Лига «Барановичи»",
-    bate: "Лига «БАТЭ»",
-    belshina: "Лига «Белшина»",
-    vitebsk: "Лига «Витебск»",
-    gomel: "Лига «Гомель»",
-    "dinamo-brest": "Лига «Динамо-Брест»",
-    "dinamo-minsk": "Лига «Динамо-Минск»",
-    "dnepr-mogilev": "Лига «Днепр-Могилев»",
-    isloch: "Лига «Ислочь»",
-    minsk: "Лига «Минск»",
-    ml: "Лига «МЛ Витебск»",
-    "naftan-novopolotsk": "Лига «Нафтан-Новополоцк»",
-    neman: "Лига «Неман»",
-    slavia: "Лига «Славия-Мозырь»",
-    torpedo: "Лига «Торпедо-БелАЗ»",
+    "Arsenal": "Лига «Арсенала»",
+    "Baranovichi": "Лига «Барановичи»",
+    "BATE": "Лига «БАТЭ»",
+    "Belshina": "Лига «Белшина»",
+    "Vitebsk": "Лига «Витебск»",
+    "Gomel": "Лига «Гомель»",
+    "Dinamo Brest": "Лига «Динамо-Брест»",
+    "Dinamo-Brest": "Лига «Динамо-Брест»",
+    "Dinamo Minsk": "Лига «Динамо-Минск»",
+    "Dinamo-Minsk": "Лига «Динамо-Минск»",
+    "Dnepr Mogilev": "Лига «Днепр-Могилев»",
+    "Dnepr-Mogilev": "Лига «Днепр-Могилев»",
+    "Isloch": "Лига «Ислочь»",
+    "Minsk": "Лига «Минск»",
+    "ML Vitebsk": "Лига «МЛ Витебск»",
+    "Naftan": "Лига «Нафтан-Новополоцк»",
+    "Naftan Novopolotsk": "Лига «Нафтан-Новополоцк»",
+    "Naftan-Novopolotsk": "Лига «Нафтан-Новополоцк»",
+    "Neman": "Лига «Неман»",
+    "Slavia": "Лига «Славия-Мозырь»",
+    "Slavia-Mozyr": "Лига «Славия-Мозырь»",
+    "Torpedo": "Лига «Торпедо-БелАЗ»",
+    "Torpedo-BelAZ": "Лига «Торпедо-БелАЗ»",
   };
 
   // Get club league name from API response - use fav_team_name from leaderboard
-  const clubLeagueName = clubLeaderboardResponse?.data?.[0]?.fav_team_name 
-    ? `Лига ${clubLeaderboardResponse.data[0].fav_team_name}` 
+  const rawFavTeamName = clubLeaderboardResponse?.data?.[0]?.fav_team_name;
+  const clubLeagueName = rawFavTeamName
+    ? (clubToLeagueName[rawFavTeamName] || `Лига «${rawFavTeamName}»`)
     : "Лига клуба";
   // Save team name - send to backend
   const [isRenamingSaving, setIsRenamingSaving] = useState(false);
