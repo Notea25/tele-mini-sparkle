@@ -192,8 +192,19 @@ const PlayerCard = ({
       playersApi.getFullInfo(player.id)
         .then((response) => {
           if (response.success && response.data) {
+            console.log(`[PlayerCard] Full info for ${player.name}:`, response.data);
+            console.log(`[PlayerCard] Last 3 tours:`, response.data.last_3_tours);
+            if (response.data.last_3_tours?.[0]) {
+              console.log(`[PlayerCard] First tour matches:`, response.data.last_3_tours[0].matches);
+              console.log(`[PlayerCard] First match player_points:`, response.data.last_3_tours[0].matches[0]?.player_points);
+            }
             setFullInfo(response.data);
+          } else {
+            console.log(`[PlayerCard] API response not successful or no data`);
           }
+        })
+        .catch((err) => {
+          console.error(`[PlayerCard] Error loading full info:`, err);
         })
         .finally(() => {
           setIsLoadingInfo(false);
