@@ -5,6 +5,9 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_PUBLISHABLE_KEY
+ARG VITE_SUPABASE_PROJECT_ID
 RUN npm run build  # Создает папку /dist
 
 FROM nginx:alpine
