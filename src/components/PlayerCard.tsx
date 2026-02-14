@@ -206,10 +206,16 @@ const PlayerCard = ({
 
   if (!player) return null;
 
+  // Get points from recent match in API if available, otherwise use prop points
+  const recentMatchPoints = fullInfo?.last_3_tours?.[0]?.matches?.[0]?.player_points;
+  
   // Выбираем какие очки показывать
-  const displayPoints = showTourPoints 
-    ? (player.tour_points ?? 0) 
-    : (player.total_points ?? player.points ?? 0);
+  // Priority: recent match points from API > showTourPoints > total_points > points prop
+  const displayPoints = (recentMatchPoints !== null && recentMatchPoints !== undefined) 
+    ? recentMatchPoints
+    : showTourPoints 
+      ? (player.tour_points ?? 0) 
+      : (player.total_points ?? player.points ?? 0);
 
   const positionNames: Record<string, string> = {
     ВР: "Вратарь",
@@ -241,7 +247,7 @@ const PlayerCard = ({
       tour: tour.tour_number,
       opponent: match ? getTeamAbbreviation(match.opponent_team_name) : "???",
       home: match?.is_home ?? false,
-      points: match?.player_points ?? 0,
+      points: match?.player_points !== null && match?.player_points !== undefined ? match.player_points : null,
       logo: match?.opponent_team_logo || clubLogo,
     };
   }) || [];
@@ -420,8 +426,8 @@ const PlayerCard = ({
                           {recentForm[idx].opponent} ({recentForm[idx].home ? "Д" : "Г"})
                         </span>
                       </div>
-                      <span className={`text-sm font-bold text-right ${(recentForm[idx].points ?? 0) < 0 ? "text-red-500" : "text-foreground"}`}>
-                        {recentForm[idx].points ?? "-"}
+                      <span className={`text-sm font-bold text-right ${(recentForm[idx].points ?? 0) < 0 ? "text-red-500" : recentForm[idx].points === null ? "text-muted-foreground" : "text-foreground"}`}>
+                        {recentForm[idx].points !== null ? recentForm[idx].points : "-"}
                       </span>
                     </div>
                   ) : (
