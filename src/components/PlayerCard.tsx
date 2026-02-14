@@ -502,8 +502,8 @@ const PlayerCard = ({
                         <span className="text-muted-foreground text-sm">
                           {isCaptain ? "Бонус за капитана" : "Бонус за вице-капитана"}
                         </span>
-                        <span className="text-sm font-bold text-success">
-                          +{displayPoints}
+                        <span className="text-sm font-bold text-purple-500">
+                          ×2
                         </span>
                       </div>
                     )}
