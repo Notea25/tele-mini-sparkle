@@ -568,6 +568,11 @@ export interface PlayerFullInfoMatch {
   opponent_team_name: string;
   opponent_team_logo: string;
   player_points: number | null;
+  goals_total: number | null;
+  assists: number | null;
+  yellow_cards: number | null;
+  red_cards: number | null;
+  minutes_played: number | null;
 }
 
 export interface PlayerFullInfoTour {

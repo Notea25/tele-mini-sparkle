@@ -257,50 +257,41 @@ const PlayerCard = ({
     };
   }) || [];
 
-  // Generate point breakdown that sums up to the player's actual points
+  // Get real point breakdown from the most recent match in last_3_tours
   const getPointBreakdown = () => {
     const actions: { action: string; points: number }[] = [];
-    let remaining = displayPoints;
     
-    const goalPoints = player.position === "ВР" ? 6 : player.position === "ЗЩ" ? 6 : player.position === "ПЗ" ? 5 : 4;
-    const assistPoints = 3;
+    // Find the most recent match from API data (first in last_3_tours)
+    const recentMatch = fullInfo?.last_3_tours?.[0]?.matches?.[0];
     
-    if (remaining >= 2) {
+    if (!recentMatch) {
+      return actions; // No data available
+    }
+    
+    // Base points for appearance
+    if (recentMatch.minutes_played && recentMatch.minutes_played > 0) {
       actions.push({ action: "Выход на поле", points: 2 });
-      remaining -= 2;
     }
     
-    while (remaining >= goalPoints) {
-      actions.push({ action: "Гол", points: goalPoints });
-      remaining -= goalPoints;
+    // Goals
+    if (recentMatch.goals_total && recentMatch.goals_total > 0) {
+      const goalPoints = player.position === "ВР" ? 6 : player.position === "ЗЩ" ? 6 : player.position === "ПЗ" ? 5 : 4;
+      actions.push({ action: "Гол", points: goalPoints * recentMatch.goals_total });
     }
     
-    while (remaining >= assistPoints) {
-      actions.push({ action: "Голевая передача", points: assistPoints });
-      remaining -= assistPoints;
+    // Assists
+    if (recentMatch.assists && recentMatch.assists > 0) {
+      actions.push({ action: "Голевая передача", points: 3 * recentMatch.assists });
     }
     
-    if (remaining === 4 && (player.position === "ВР" || player.position === "ЗЩ")) {
-      actions.push({ action: "Сухой матч", points: 4 });
-      remaining -= 4;
+    // Yellow cards
+    if (recentMatch.yellow_cards && recentMatch.yellow_cards > 0) {
+      actions.push({ action: "Жёлтая карточка", points: -1 * recentMatch.yellow_cards });
     }
     
-    if (remaining === 2) {
-      actions.push({ action: "Бонус за передачи", points: 2 });
-      remaining -= 2;
-    } else if (remaining === 1) {
-      actions.push({ action: "Бонус за отборы", points: 1 });
-      remaining -= 1;
-    }
-    
-    while (remaining < 0 && remaining <= -1) {
-      if (remaining <= -3) {
-        actions.push({ action: "Красная карточка", points: -3 });
-        remaining += 3;
-      } else {
-        actions.push({ action: "Жёлтая карточка", points: -1 });
-        remaining += 1;
-      }
+    // Red cards
+    if (recentMatch.red_cards && recentMatch.red_cards > 0) {
+      actions.push({ action: "Красная карточка", points: -3 * recentMatch.red_cards });
     }
     
     return actions;
@@ -490,7 +481,7 @@ const PlayerCard = ({
                           <span className="text-muted-foreground text-sm">
                             {item.action}{item.count > 1 ? ` x${item.count}` : ""}
                           </span>
-                          <span className={`text-sm font-bold ${item.points > 0 ? "text-success" : "text-destructive"}`}>
+                          <span className={`text-sm font-bold ${item.points > 0 ? "text-success" : item.points < 0 ? "text-red-500" : "text-foreground"}`}>
                             {item.points > 0 ? `+${item.points}` : item.points}
                           </span>
                         </div>
