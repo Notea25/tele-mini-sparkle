@@ -10,6 +10,7 @@ import { useDeadline } from "@/hooks/useDeadline";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { squadsApi, toursApi, customLeaguesApi, commercialLeaguesApi, Squad, LeaderboardEntry, CustomLeagueLeaderboardEntry, CommercialLeague, MySquadLeague } from "@/lib/api";
 import { useImagePreloader } from "@/hooks/useImagePreloader";
+import { useTeams } from "@/hooks/useTeams";
 
 import RulesDrawer from "@/components/RulesDrawer";
 import arrowUpRed from "@/assets/arrow-up-red.png";
@@ -254,38 +255,15 @@ const League = () => {
     }
   }, [currentTour]);
 
-  // Club to league name mapping (English API name -> Russian display name)
-  const clubToLeagueName: Record<string, string> = {
-    "Arsenal": "Лига «Арсенала»",
-    "Baranovichi": "Лига «Барановичи»",
-    "BATE": "Лига «БАТЭ»",
-    "Belshina": "Лига «Белшина»",
-    "Vitebsk": "Лига «Витебск»",
-    "Gomel": "Лига «Гомель»",
-    "Dinamo Brest": "Лига «Динамо-Брест»",
-    "Dinamo-Brest": "Лига «Динамо-Брест»",
-    "Dinamo Minsk": "Лига «Динамо-Минск»",
-    "Dinamo-Minsk": "Лига «Динамо-Минск»",
-    "Dnepr Mogilev": "Лига «Днепр-Могилев»",
-    "Dnepr-Mogilev": "Лига «Днепр-Могилев»",
-    "Isloch": "Лига «Ислочь»",
-    "Minsk": "Лига «Минск»",
-    "ML Vitebsk": "Лига «МЛ Витебск»",
-    "Naftan": "Лига «Нафтан-Новополоцк»",
-    "Naftan Novopolotsk": "Лига «Нафтан-Новополоцк»",
-    "Naftan-Novopolotsk": "Лига «Нафтан-Новополоцк»",
-    "Neman": "Лига «Неман»",
-    "Slavia": "Лига «Славия-Мозырь»",
-    "Slavia-Mozyr": "Лига «Славия-Мозырь»",
-    "Torpedo": "Лига «Торпедо-БелАЗ»",
-    "Torpedo-BelAZ": "Лига «Торпедо-БелАЗ»",
-  };
-
-  // Get club league name from API response - use fav_team_name from leaderboard
-  const rawFavTeamName = clubLeaderboardResponse?.data?.[0]?.fav_team_name;
-  const clubLeagueName = rawFavTeamName
-    ? (clubToLeagueName[rawFavTeamName] || `Лига «${rawFavTeamName}»`)
-    : "Лига клуба";
+  // Get Russian team name from teams API (same source as CreateTeam)
+  const { teams: apiTeams } = useTeams(String(leagueId));
+  
+  const clubLeagueName = useMemo(() => {
+    if (!favTeamId || !apiTeams.length) return "Лига клуба";
+    const team = apiTeams.find(t => t.id === favTeamId);
+    const teamName = team ? (team.name_rus || team.name) : null;
+    return teamName ? `Лига «${teamName}»` : "Лига клуба";
+  }, [favTeamId, apiTeams]);
   // Save team name - send to backend
   const [isRenamingSaving, setIsRenamingSaving] = useState(false);
   
