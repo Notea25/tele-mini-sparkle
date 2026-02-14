@@ -496,7 +496,7 @@ const PlayerCard = ({
                         </div>
                       ));
                     })()}
-                    {/* Captain/Vice-Captain multiplier */
+                    {/* Captain/Vice-Captain multiplier */}
                     {(isCaptain || isViceCaptain) && displayPoints > 0 && (
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground text-sm">
