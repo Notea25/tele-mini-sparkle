@@ -1,4 +1,11 @@
 import { useState, useEffect } from "react";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -103,6 +110,38 @@ function generateClubSchedule(teamName: string, playerId: number) {
   ];
   
   return { upcomingMatches };
+}
+
+/** Small stat cell with info tooltip */
+function StatCell({ label, value, rank, tooltip }: { label: string; value: React.ReactNode; rank: string; tooltip: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="text-center">
+      <TooltipProvider delayDuration={0}>
+        <Tooltip open={open} onOpenChange={setOpen}>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className="inline-flex items-center gap-0.5 cursor-pointer text-muted-foreground text-xs hover:text-foreground transition-colors"
+              onClick={() => setOpen(!open)}
+            >
+              {label}
+              <Info className="w-3 h-3 opacity-60" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent
+            side="top"
+            align="center"
+            className="max-w-[220px] text-center text-xs bg-popover border-border z-[100]"
+          >
+            <p>{tooltip}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <span className="text-foreground text-xl font-bold block">{value}</span>
+      <span className="text-muted-foreground text-xs block">{rank}</span>
+    </div>
+  );
 }
 
 interface PlayerData {
@@ -372,42 +411,30 @@ const PlayerCard = ({
 
           {/* Stats row */}
           <div className="grid grid-cols-4 gap-2 mt-6 bg-secondary/50 rounded-xl p-4">
-            <div className="text-center">
-              <span className="text-muted-foreground text-xs block">Цена</span>
-              <span className="text-foreground text-xl font-bold">
-                {typeof player.price === "number" ? player.price.toFixed(1) : player.price}
-              </span>
-              <span className="text-muted-foreground text-xs block">
-                {extInfo ? `${extInfo.market_value_rank} из ${totalPlayers}` : "-"}
-              </span>
-            </div>
-            <div className="text-center">
-              <span className="text-muted-foreground text-xs block">Очки / матч</span>
-              <span className="text-foreground text-xl font-bold">
-                {extInfo ? Math.round(extInfo.avg_points_all_matches) : Math.round(displayPoints / 10)}
-              </span>
-              <span className="text-muted-foreground text-xs block">
-                {extInfo ? `${extInfo.avg_points_all_matches_rank} из ${totalPlayers}` : "-"}
-              </span>
-            </div>
-            <div className="text-center">
-              <span className="text-muted-foreground text-xs block">Форма</span>
-              <span className="text-foreground text-xl font-bold">
-                {extInfo ? Math.round(extInfo.avg_points_last_5_matches) : "-"}
-              </span>
-              <span className="text-muted-foreground text-xs block">
-                {extInfo ? `${extInfo.avg_points_last_5_matches_rank} из ${totalPlayers}` : "-"}
-              </span>
-            </div>
-            <div className="text-center">
-              <span className="text-muted-foreground text-xs block">Выбран</span>
-              <span className="text-foreground text-xl font-bold">
-                {extInfo?.squad_presence_percentage?.toFixed(0) ?? 0}%
-              </span>
-              <span className="text-muted-foreground text-xs block">
-                {extInfo ? `${extInfo.squad_presence_rank} из ${totalPlayers}` : "-"}
-              </span>
-            </div>
+            <StatCell
+              label="Цена"
+              value={typeof player.price === "number" ? player.price.toFixed(1) : player.price}
+              rank={extInfo ? `${extInfo.market_value_rank} из ${totalPlayers}` : "-"}
+              tooltip="Стоимость игрока, а также его место в общем списке по этому критерию."
+            />
+            <StatCell
+              label="Очки / матч"
+              value={extInfo ? Math.round(extInfo.avg_points_all_matches) : Math.round(displayPoints / 10)}
+              rank={extInfo ? `${extInfo.avg_points_all_matches_rank} из ${totalPlayers}` : "-"}
+              tooltip="Среднее количество очков, набранное игроком за все прошедшие туры чемпионата, а также его место в общем списке по этому критерию."
+            />
+            <StatCell
+              label="Форма"
+              value={extInfo ? Math.round(extInfo.avg_points_last_5_matches) : "-"}
+              rank={extInfo ? `${extInfo.avg_points_last_5_matches_rank} из ${totalPlayers}` : "-"}
+              tooltip="Среднее количество очков, набранные игроком за последние 3 тура, а также его место в общем списке по этому критерию."
+            />
+            <StatCell
+              label="Выбран"
+              value={`${extInfo?.squad_presence_percentage?.toFixed(0) ?? 0}%`}
+              rank={extInfo ? `${extInfo.squad_presence_rank} из ${totalPlayers}` : "-"}
+              tooltip="Процент владения игроком среди всех пользователей, а также его место в общем списке по этому критерию."
+            />
           </div>
 
           {/* Form and Calendar sections */}

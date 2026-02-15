@@ -902,6 +902,8 @@ export interface SquadTourPlayer {
   team_name: string;
   team_name_rus?: string;
   team_logo: string;
+  field_player_jersey?: string;
+  goalkeeper_jersey?: string;
   position: string;
   market_value: number;
   photo: string;
