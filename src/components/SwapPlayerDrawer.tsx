@@ -79,16 +79,22 @@ const SwapPlayerCard = ({
         
         {/* Jersey */}
         <div className="absolute inset-0 flex items-center justify-center pt-2">
-          <img 
-            src={getJerseyForTeam({
+          {(() => {
+            const jerseyUrl = getJerseyForTeam({
               name: player.team,
               name_rus: player.team_rus,
               field_player_jersey: player.field_player_jersey,
               goalkeeper_jersey: player.goalkeeper_jersey
-            }, player.position)} 
-            alt={player.name} 
-            className={`w-[120%] h-auto object-contain ${disabled ? 'grayscale' : ''}`}
-          />
+            }, player.position);
+            
+            return jerseyUrl ? (
+              <img 
+                src={jerseyUrl}
+                alt={player.name} 
+                className={`w-[120%] h-auto object-contain ${disabled ? 'grayscale' : ''}`}
+              />
+            ) : null;
+          })()}
         </div>
         
         {/* Bottom info overlay */}

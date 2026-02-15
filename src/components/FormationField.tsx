@@ -1556,24 +1556,27 @@ const FormationField = ({
             style={{ paddingTop: jerseyPaddingTop }}
           >
             <div className="relative flex items-start justify-center w-full h-full">
-              <img
-                src={getJerseyForTeam({
+              {(() => {
+                const jerseyUrl = getJerseyForTeam({
                   name: player.team,
                   name_rus: player.team_rus,
                   field_player_jersey: player.field_player_jersey,
                   goalkeeper_jersey: player.goalkeeper_jersey
-                }, player.position)}
-                alt={player.name}
-                className="object-contain scale-150"
-                style={{
-                  transform: "scale(1.5)",
-                  maxWidth: `${cardSize.width * 1.1}px`,
-                  maxHeight: `${cardSize.height * 1.1}px`,
-                }}
-                onError={(e) => {
-                  e.currentTarget.src = playerJerseyNew;
-                }}
-              />
+                }, player.position);
+                
+                return jerseyUrl ? (
+                  <img
+                    src={jerseyUrl}
+                    alt={player.name}
+                    className="object-contain scale-150"
+                    style={{
+                      transform: "scale(1.5)",
+                      maxWidth: `${cardSize.width * 1.1}px`,
+                      maxHeight: `${cardSize.height * 1.1}px`,
+                    }}
+                  />
+                ) : null;
+              })()}
 
               {/* Status badges - all same size and position, priority: leftLeague > redCard > injury */}
               {hasLeftLeague && (
