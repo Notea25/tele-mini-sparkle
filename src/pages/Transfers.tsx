@@ -80,6 +80,8 @@ interface PlayerDataExt extends PlayerData {
   isCaptain?: boolean;
   isViceCaptain?: boolean;
   team_logo?: string;
+  field_player_jersey?: string;
+  goalkeeper_jersey?: string;
   isOnBench?: boolean;
   hasRedCard?: boolean;
   isInjured?: boolean;
@@ -467,6 +469,8 @@ const Transfers = () => {
         total_points: p.total_points,
         slotIndex: p.slotIndex,
         team_logo: p.team_logo,
+        field_player_jersey: p.field_player_jersey,
+        goalkeeper_jersey: p.goalkeeper_jersey,
         isCaptain: squadTourData?.captain_id === p.id,
         isViceCaptain: squadTourData?.vice_captain_id === p.id,
         // Используем уже обогащённые поля из useSquadData
@@ -492,6 +496,8 @@ const Transfers = () => {
         total_points: p.total_points,
         slotIndex: p.slotIndex,
         team_logo: p.team_logo,
+        field_player_jersey: p.field_player_jersey,
+        goalkeeper_jersey: p.goalkeeper_jersey,
         // Используем уже обогащённые поля из useSquadData
         nextOpponent: p.nextOpponent || "",
         nextOpponentHome: p.nextOpponentHome ?? false,
