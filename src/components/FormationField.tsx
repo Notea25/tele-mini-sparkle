@@ -941,6 +941,8 @@ export interface FormationPlayerData {
   name_rus?: string; // Русское имя игрока
   team: string;
   team_rus?: string; // Русское название команды
+  field_player_jersey?: string; // URL майки полевого игрока
+  goalkeeper_jersey?: string; // URL майки вратаря
   photo?: string; // Фото игрока
   position: string;
   points: number;
@@ -1555,7 +1557,12 @@ const FormationField = ({
           >
             <div className="relative flex items-start justify-center w-full h-full">
               <img
-                src={getJerseyForTeam(player.team, player.position)}
+                src={getJerseyForTeam({
+                  name: player.team,
+                  name_rus: player.team_rus,
+                  field_player_jersey: player.field_player_jersey,
+                  goalkeeper_jersey: player.goalkeeper_jersey
+                }, player.position)}
                 alt={player.name}
                 className="object-contain scale-150"
                 style={{

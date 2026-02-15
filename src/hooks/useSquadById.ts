@@ -8,6 +8,8 @@ export interface EnrichedPlayer {
   team_name: string;
   team_name_rus?: string; // Русское название команды
   team_logo: string;
+  field_player_jersey?: string; // URL майки полевого игрока
+  goalkeeper_jersey?: string; // URL майки вратаря
   photo?: string; // Фото игрока
   position: string; // "ВР", "ЗЩ", "ПЗ", "НП"
   price: number;
@@ -222,7 +224,10 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         name: sp.name || fullPlayer?.name || "",
         team_id: sp.team_id,
         team_name: sp.team_name || fullPlayer?.team_name || "",
+        team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
         team_logo: sp.team_logo || fullPlayer?.team_logo || "",
+        field_player_jersey: sp.field_player_jersey || fullPlayer?.field_player_jersey,
+        goalkeeper_jersey: sp.goalkeeper_jersey || fullPlayer?.goalkeeper_jersey,
         photo: sp.photo || "",
         position,
         price: sp.market_value ?? fullPlayer?.market_value ?? 0,
@@ -260,6 +265,8 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         team_name: sp.team_name || fullPlayer?.team_name || "",
         team_name_rus: sp.team_name_rus || fullPlayer?.team_name_rus,
         team_logo: sp.team_logo || fullPlayer?.team_logo || "",
+        field_player_jersey: sp.field_player_jersey || fullPlayer?.field_player_jersey,
+        goalkeeper_jersey: sp.goalkeeper_jersey || fullPlayer?.goalkeeper_jersey,
         photo: sp.photo || "",
         position,
         price: sp.market_value ?? fullPlayer?.market_value ?? 0,
