@@ -553,6 +553,8 @@ export interface Player {
   team_name: string;
   team_name_rus?: string;
   team_logo: string;
+  field_player_jersey?: string; // Jersey URL for field players
+  goalkeeper_jersey?: string; // Jersey URL for goalkeepers
   position: string; // "Defender", "Attacker", "Midfielder", "Goalkeeper"
   market_value: number;
   points: number; // total_points - общие очки за все туры с бэкенда

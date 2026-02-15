@@ -18,6 +18,8 @@ export interface TransformedPlayer {
   team_rus: string;    // team_name_rus из API
   team_id: number;
   team_logo: string;   // URL логотипа из API
+  field_player_jersey?: string; // URL майки полевого игрока
+  goalkeeper_jersey?: string;   // URL майки вратаря
   position: string;    // Преобразовано в ВР/ЗЩ/ПЗ/НП
   points: number;
   price: number;       // market_value as-is from backend
@@ -35,7 +37,7 @@ interface PlayersCache {
 
 const CACHE_KEY = 'fantasyPlayersCache';
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 3; // Increment to invalidate old cache - added team_rus support
+const CACHE_VERSION = 4; // Increment to invalidate old cache - added jersey fields
 
 export function usePlayers(leagueId: string | null) {
   const [players, setPlayers] = useState<TransformedPlayer[]>([]);
@@ -83,6 +85,8 @@ export function usePlayers(leagueId: string | null) {
             team_rus: player.team_name_rus || player.team_name,
             team_id: player.team_id,
             team_logo: player.team_logo,
+            field_player_jersey: player.field_player_jersey,
+            goalkeeper_jersey: player.goalkeeper_jersey,
             position: POSITION_MAP[player.position] || player.position,
             points: player.points,
             price: player.market_value,
