@@ -410,7 +410,7 @@ const PlayerCard = ({
           </div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-4 gap-2 mt-6 bg-secondary/50 rounded-xl p-4">
+          <div className="grid grid-cols-4 gap-2 mt-3 bg-secondary/50 rounded-xl p-3">
             <StatCell
               label="Цена"
               value={typeof player.price === "number" ? player.price.toFixed(1) : player.price}
