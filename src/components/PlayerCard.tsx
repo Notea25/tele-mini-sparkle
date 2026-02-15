@@ -122,7 +122,7 @@ function StatCell({ label, value, rank, tooltip }: { label: string; value: React
           <TooltipTrigger asChild>
             <button
               type="button"
-              className="inline-flex items-center justify-center gap-0.5 cursor-pointer text-muted-foreground text-[10px] leading-none whitespace-nowrap hover:text-foreground transition-colors p-0 mb-0.5"
+              className="inline-flex items-center justify-center gap-0.5 cursor-pointer text-muted-foreground text-[10px] leading-none whitespace-nowrap hover:text-foreground transition-colors p-0"
               onClick={() => setOpen(!open)}
             >
               <span>{label}</span>
