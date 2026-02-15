@@ -248,6 +248,8 @@ const ViewTeam = () => {
       team_name: p.team_name,
       team_name_rus: p.team_name_rus,
       team_logo: p.team_logo || "",
+      field_player_jersey: p.field_player_jersey,
+      goalkeeper_jersey: p.goalkeeper_jersey,
       photo: p.photo || "",
       position: mapPosition(p.position),
       price: p.market_value,

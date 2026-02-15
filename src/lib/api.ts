@@ -381,6 +381,8 @@ export interface TourHistoryPlayer {
   team_name: string;
   team_name_rus?: string;
   team_logo: string | null;
+  field_player_jersey?: string;
+  goalkeeper_jersey?: string;
   market_value: number;
   photo: string | null;
   total_points: number; // Общие очки игрока за все туры
