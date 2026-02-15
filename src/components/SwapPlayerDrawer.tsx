@@ -2,78 +2,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/u
 import { AlertCircle } from "lucide-react";
 import swapArrowsPurple from "@/assets/swap-arrows-purple.png";
 import { getClubLogo } from "@/lib/clubLogos";
-
-// Import jerseys from proper folder
-import arsenalJersey from "@/assets/jerseys/arsenalJersey.png";
-import bateJersey from "@/assets/jerseys/bateJersey.png";
-import brestJersey from "@/assets/jerseys/brestJersey.png";
-import dinamoJersey from "@/assets/jerseys/dinamoJersey.png";
-import gomelJersey from "@/assets/jerseys/gomelJersey.png";
-import minskJersey from "@/assets/jerseys/minskJersey.png";
-import mlJersey from "@/assets/jerseys/mlJersey.png";
-import naftanJersey from "@/assets/jerseys/naftanJersey.png";
-import nemanJersey from "@/assets/jerseys/nemanJersey.png";
-import slaviaJersey from "@/assets/jerseys/slaviaJersey.png";
-import torpedoJersey from "@/assets/jerseys/torpedoJersey.png";
-import vitebskJersey from "@/assets/jerseys/vitebskJersey.png";
-
-// Goalkeeper jerseys
-import arsenalGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/arsenalGoalkeeperJersey.png";
-import bateGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/bateGoalkeeperJersey.png";
-import gomelGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/gomelGoalkeeperJersey.png";
-import mlGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/mlGoalkeeperJersey.png";
-import slaviaGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/slaviaGoalkeeperJersey.png";
-import vitebskGoalkeeperJersey from "@/assets/jerseys/goalkeeperJerseys/vitebskGoalkeeperJersey.png";
-
-// Helper function to get jersey based on team and position
-const getJerseyForTeam = (team: string, position?: string) => {
-  const isGoalkeeper = position === "ВР";
-  
-  // Normalize team name
-  const normalizedTeam = team.toLowerCase();
-  
-  if (normalizedTeam.includes("динамо") && normalizedTeam.includes("минск")) {
-    return dinamoJersey;
-  }
-  if (normalizedTeam.includes("динамо") && normalizedTeam.includes("брест")) {
-    return brestJersey;
-  }
-  if (normalizedTeam.includes("батэ") || normalizedTeam === "bate") {
-    return isGoalkeeper ? bateGoalkeeperJersey : bateJersey;
-  }
-  if (normalizedTeam.includes("мл") || normalizedTeam.includes("витебск") && normalizedTeam.includes("мл")) {
-    return isGoalkeeper ? mlGoalkeeperJersey : mlJersey;
-  }
-  if (normalizedTeam.includes("витебск") && !normalizedTeam.includes("мл")) {
-    return isGoalkeeper ? vitebskGoalkeeperJersey : vitebskJersey;
-  }
-  if (normalizedTeam.includes("славия") || normalizedTeam.includes("мозырь")) {
-    return isGoalkeeper ? slaviaGoalkeeperJersey : slaviaJersey;
-  }
-  if (normalizedTeam.includes("арсенал")) {
-    return isGoalkeeper ? arsenalGoalkeeperJersey : arsenalJersey;
-  }
-  if (normalizedTeam.includes("неман")) {
-    return nemanJersey;
-  }
-  if (normalizedTeam.includes("минск") && !normalizedTeam.includes("динамо")) {
-    return minskJersey;
-  }
-  if (normalizedTeam.includes("торпедо") || normalizedTeam.includes("белаз")) {
-    return torpedoJersey;
-  }
-  if (normalizedTeam.includes("гомель")) {
-    return isGoalkeeper ? gomelGoalkeeperJersey : gomelJersey;
-  }
-  if (normalizedTeam.includes("нафтан") || normalizedTeam.includes("новополоцк")) {
-    return naftanJersey;
-  }
-  if (normalizedTeam.includes("белшина")) {
-    return slaviaJersey; // fallback
-  }
-  
-  return dinamoJersey; // default fallback
-};
+import { getJerseyForTeam } from "@/hooks/getJerseyForTeam";
 
 // Truncate team name for display
 const truncateTeamName = (name: string, maxLength: number = 10) => {
@@ -87,6 +16,8 @@ interface PlayerData {
   name_rus?: string;
   team: string;
   team_rus?: string;
+  field_player_jersey?: string;
+  goalkeeper_jersey?: string;
   position: string;
   points: number;
   price: number;
@@ -149,7 +80,12 @@ const SwapPlayerCard = ({
         {/* Jersey */}
         <div className="absolute inset-0 flex items-center justify-center pt-2">
           <img 
-            src={getJerseyForTeam(player.team, player.position)} 
+            src={getJerseyForTeam({
+              name: player.team,
+              name_rus: player.team_rus,
+              field_player_jersey: player.field_player_jersey,
+              goalkeeper_jersey: player.goalkeeper_jersey
+            }, player.position)} 
             alt={player.name} 
             className={`w-[120%] h-auto object-contain ${disabled ? 'grayscale' : ''}`}
           />
