@@ -99,12 +99,37 @@ const TEAM_JERSEY_MAP: Record<string, { regular: string; gk: string }> = {
 };
 
 // Helper function to get jersey based on team and position
-export const getJerseyForTeam = (team: string, position?: string) => {
+// Now supports both API data (team object with jersey URLs) and legacy string-based lookup
+export const getJerseyForTeam = (
+  team: string | { field_player_jersey?: string; goalkeeper_jersey?: string; name?: string; name_rus?: string }, 
+  position?: string
+) => {
   const isGoalkeeper = position === "ВР" || position === "Goalkeeper";
-  const jerseySet = TEAM_JERSEY_MAP[team];
   
-  if (jerseySet) {
-    return isGoalkeeper ? jerseySet.gk : jerseySet.regular;
+  // If team is an object with jersey URLs from API, use them
+  if (typeof team === "object" && team !== null) {
+    if (isGoalkeeper && team.goalkeeper_jersey) {
+      return team.goalkeeper_jersey;
+    }
+    if (!isGoalkeeper && team.field_player_jersey) {
+      return team.field_player_jersey;
+    }
+    // Fallback to legacy mapping if API data is not available
+    const teamName = team.name_rus || team.name;
+    if (teamName) {
+      const jerseySet = TEAM_JERSEY_MAP[teamName];
+      if (jerseySet) {
+        return isGoalkeeper ? jerseySet.gk : jerseySet.regular;
+      }
+    }
+  }
+  
+  // Legacy: team is a string (team name)
+  if (typeof team === "string") {
+    const jerseySet = TEAM_JERSEY_MAP[team];
+    if (jerseySet) {
+      return isGoalkeeper ? jerseySet.gk : jerseySet.regular;
+    }
   }
   
   // Fallback на стандартную футболку Славии

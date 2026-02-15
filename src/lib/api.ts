@@ -222,6 +222,8 @@ export interface Team {
   name: string;
   name_rus: string;
   logo: string;
+  field_player_jersey?: string;
+  goalkeeper_jersey?: string;
 }
 
 // Методы для работы с командами
