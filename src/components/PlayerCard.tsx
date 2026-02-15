@@ -116,17 +116,17 @@ function generateClubSchedule(teamName: string, playerId: number) {
 function StatCell({ label, value, rank, tooltip }: { label: string; value: React.ReactNode; rank: string; tooltip: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="text-center">
+    <div className="text-center min-w-0">
       <TooltipProvider delayDuration={0}>
         <Tooltip open={open} onOpenChange={setOpen}>
           <TooltipTrigger asChild>
             <button
               type="button"
-              className="inline-flex items-center gap-0.5 cursor-pointer text-muted-foreground text-xs hover:text-foreground transition-colors"
+              className="inline-flex items-center justify-center gap-0.5 cursor-pointer text-muted-foreground text-[10px] leading-tight whitespace-nowrap hover:text-foreground transition-colors"
               onClick={() => setOpen(!open)}
             >
-              {label}
-              <Info className="w-3 h-3 opacity-60" />
+              <span>{label}</span>
+              <Info className="w-2.5 h-2.5 opacity-60 flex-shrink-0" />
             </button>
           </TooltipTrigger>
           <TooltipContent
