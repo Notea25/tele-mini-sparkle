@@ -361,6 +361,7 @@ const ViewTeam = () => {
 
   // Convert EnrichedPlayer to PlayerData for FormationField
   const mainSquadForField = useMemo((): PlayerData[] => {
+    console.log('[ViewTeam] Converting displayMainPlayers to field data:', displayMainPlayers[0]);
     return displayMainPlayers.map(p => {
       const basePoints = p.tour_points ?? p.points ?? 0;
       const isCaptain = displayCaptainId === p.id;
@@ -379,7 +380,7 @@ const ViewTeam = () => {
         }
       }
       
-      return {
+      const result = {
         id: p.id,
         name: p.name,
         team: p.team_name,
@@ -399,6 +400,8 @@ const ViewTeam = () => {
         isInjured: p.isInjured,
         hasLeftLeague: p.hasLeftLeague,
       };
+      console.log('[ViewTeam] Mapped player:', p.name, 'jerseys:', { field: p.field_player_jersey, gk: p.goalkeeper_jersey });
+      return result;
     });
   }, [displayMainPlayers, displayCaptainId, displayViceCaptainId]);
 
