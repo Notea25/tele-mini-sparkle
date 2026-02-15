@@ -59,6 +59,17 @@ const ViewTeam = () => {
 
   const { squad, squadTourData, mainPlayers, benchPlayers, currentTour, tourPoints, isLoading, error } = useSquadById(squadId);
 
+  // Debug: check what useSquadById returns
+  useEffect(() => {
+    if (mainPlayers.length > 0) {
+      console.log('[ViewTeam] mainPlayers from useSquadById:', mainPlayers[0]);
+      console.log('[ViewTeam] Has jersey fields in mainPlayers?', {
+        field: mainPlayers[0].field_player_jersey,
+        gk: mainPlayers[0].goalkeeper_jersey
+      });
+    }
+  }, [mainPlayers]);
+
   // Load squad history first, then filter tours based on history
   useEffect(() => {
     if (!squad || !squadId) return;
