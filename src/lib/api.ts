@@ -372,6 +372,20 @@ export interface ReplacePlayersResponse {
 }
 
 // Типы для истории туров
+export interface MatchStats {
+  match_id: number;
+  minutes_played: number;
+  goals_total: number;
+  assists: number;
+  yellow_cards: number;
+  red_cards: number;
+  penalty_missed: number;
+  penalty_saved: number;
+  clean_sheet: boolean;
+  goals_conceded: number;
+  points: number;
+}
+
 export interface TourHistoryPlayer {
   id: number;
   name: string;
@@ -388,6 +402,7 @@ export interface TourHistoryPlayer {
   total_points: number; // Общие очки игрока за все туры
   tour_points: number;  // Базовые очки игрока за этот тур (без модификаторов)
   final_tour_points: number; // Финальные очки за тур с учетом капитанства/буста
+  match_stats?: MatchStats[]; // Статистика по матчам тура
   next_opponent_team_name?: string | null; // Соперник в этом туре
   next_opponent_is_home?: boolean | null;  // True, если матч домашний
 }
