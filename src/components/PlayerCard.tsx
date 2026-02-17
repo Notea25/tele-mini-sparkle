@@ -403,7 +403,7 @@ const PlayerCard = ({
               {/* Captain / Vice-Captain badge text */}
               {(isCaptain || isViceCaptain) && (
                 <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium font-rubik">
-                  {isCaptain ? "Капитан (очки x2 в очках команды)" : "Вице-капитан"}
+                  {isCaptain ? "Капитан (очки x2)" : "Вице-капитан (очки x2 если капитан не играл)"}
                 </span>
               )}
             </div>
@@ -531,11 +531,11 @@ const PlayerCard = ({
                         </div>
                       ));
                     })()}
-                    {/* Captain/Vice-Captain multiplier */}
-                    {(isCaptain || isViceCaptain) && displayPoints > 0 && (
+                    {/* Captain/Vice-Captain multiplier - отображаем только для капитана */}
+                    {isCaptain && displayPoints > 0 && (
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground text-sm">
-                          {isCaptain ? "Бонус за капитана" : "Бонус за вице-капитана"}
+                          Бонус за капитана
                         </span>
                         <span className="text-sm font-bold text-purple-500">
                           ×2
@@ -544,8 +544,8 @@ const PlayerCard = ({
                     )}
                     <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
                       <span className="text-foreground text-sm font-semibold">Итого</span>
-                      <span className={`text-sm font-bold ${(isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints) > 0 ? "text-success" : (isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints) < 0 ? "text-destructive" : "text-foreground"}`}>
-                        {(isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints) > 0 ? "+" : ""}{isCaptain || isViceCaptain ? displayPoints * 2 : displayPoints}
+                      <span className={`text-sm font-bold ${(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "text-success" : (isCaptain ? displayPoints * 2 : displayPoints) < 0 ? "text-destructive" : "text-foreground"}`}>
+                        {(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "+" : ""}{isCaptain ? displayPoints * 2 : displayPoints}
                       </span>
                     </div>
 

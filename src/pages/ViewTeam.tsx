@@ -697,16 +697,8 @@ const ViewTeam = () => {
                           )}
                         </div>
                         <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
-                          {(() => {
-                            const basePoints = player.tour_points ?? player.points ?? 0;
-                            // Captain gets 2x points
-                            if (isCaptain) return basePoints * 2;
-                            // Vice-captain gets 2x only if captain has 0 points
-                            const captainPlayer = displayMainPlayers.find(p => p.id === displayCaptainId);
-                            const captainPoints = captainPlayer?.tour_points ?? captainPlayer?.points ?? 0;
-                            if (isViceCaptain && captainPoints === 0) return basePoints * 2;
-                            return basePoints;
-                          })()}
+                          {/* Используем final_tour_points из API, который уже учитывает капитанство */}
+                          {(player as any).final_tour_points ?? player.tour_points ?? player.points ?? 0}
                         </div>
                         <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
                           {player.price}
@@ -769,16 +761,8 @@ const ViewTeam = () => {
                     )}
                   </div>
                   <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
-                    {(() => {
-                      const basePoints = player.tour_points ?? player.points ?? 0;
-                      // Captain gets 2x points
-                      if (isCaptain) return basePoints * 2;
-                      // Vice-captain gets 2x only if captain has 0 points
-                      const captainPlayer = displayMainPlayers.find(p => p.id === displayCaptainId);
-                      const captainPoints = captainPlayer?.tour_points ?? captainPlayer?.points ?? 0;
-                      if (isViceCaptain && captainPoints === 0) return basePoints * 2;
-                      return basePoints;
-                    })()}
+                    {/* Используем final_tour_points из API, который уже учитывает капитанство */}
+                    {(player as any).final_tour_points ?? player.tour_points ?? player.points ?? 0}
                   </div>
                   <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
                     {player.price}

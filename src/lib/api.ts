@@ -386,7 +386,8 @@ export interface TourHistoryPlayer {
   market_value: number;
   photo: string | null;
   total_points: number; // Общие очки игрока за все туры
-  tour_points: number;  // Очки игрока за этот конкретный тур
+  tour_points: number;  // Базовые очки игрока за этот тур (без модификаторов)
+  final_tour_points: number; // Финальные очки за тур с учетом капитанства/буста
   next_opponent_team_name?: string | null; // Соперник в этом туре
   next_opponent_is_home?: boolean | null;  // True, если матч домашний
 }
@@ -910,6 +911,7 @@ export interface SquadTourPlayer {
   points: number;
   total_points: number;
   tour_points: number;
+  final_tour_points: number;
   next_opponent_team_name?: string;
   next_opponent_is_home?: boolean;
 }
