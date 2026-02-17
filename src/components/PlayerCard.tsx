@@ -342,53 +342,55 @@ const PlayerCard = ({
       recentMatch
     });
     
-    // Base points for appearance
-    if (recentMatch.minutes_played && recentMatch.minutes_played > 0) {
-      actions.push({ action: "Выход на поле", points: 2 });
+    // 1. Minutes played (appearance points)
+    const minutesPlayed = recentMatch.minutes_played || 0;
+    if (minutesPlayed >= 60) {
+      actions.push({ action: "Выход на поле (60+ мин)", points: 2 });
+    } else if (minutesPlayed > 0) {
+      actions.push({ action: "Выход на поле (<60 мин)", points: 1 });
     }
     
-    // Goals
+    // 2. Goals (depends on position)
     if (recentMatch.goals_total && recentMatch.goals_total > 0) {
       const goalPoints = isGoalkeeper ? 6 : isDefender ? 6 : isMidfielder ? 5 : 4;
       actions.push({ action: "Гол", points: goalPoints * recentMatch.goals_total });
     }
     
-    // Assists
+    // 3. Assists (all positions +3)
     if (recentMatch.assists && recentMatch.assists > 0) {
       actions.push({ action: "Голевая передача", points: 3 * recentMatch.assists });
     }
     
-    // Yellow cards
-    if (recentMatch.yellow_cards && recentMatch.yellow_cards > 0) {
-      actions.push({ action: "Жёлтая карточка", points: -1 * recentMatch.yellow_cards });
-    }
-    
-    // Red cards
-    if (recentMatch.red_cards && recentMatch.red_cards > 0) {
-      actions.push({ action: "Красная карточка", points: -3 * recentMatch.red_cards });
-    }
-    
-    // Penalty missed
-    if (recentMatch.penalty_missed && recentMatch.penalty_missed > 0) {
-      actions.push({ action: "Незабитый пенальти", points: -2 * recentMatch.penalty_missed });
-    }
-    
-    // Penalty saved (for goalkeepers)
-    if (recentMatch.penalty_saved && recentMatch.penalty_saved > 0) {
-      actions.push({ action: "Отраженный пенальти", points: 5 * recentMatch.penalty_saved });
-    }
-    
-    // Clean sheet (for goalkeepers and defenders who played > 60 min)
-    if (recentMatch.clean_sheet && recentMatch.minutes_played && recentMatch.minutes_played > 60) {
+    // 4. Clean sheet (for goalkeepers and defenders who played >= 60 min)
+    if (recentMatch.clean_sheet && minutesPlayed >= 60) {
       if (isGoalkeeper || isDefender) {
         actions.push({ action: "Сухой матч", points: 4 });
       }
     }
     
-    // Goals conceded (for goalkeepers and defenders)
+    // 5. Penalty saved (only for goalkeepers)
+    if (recentMatch.penalty_saved && recentMatch.penalty_saved > 0 && isGoalkeeper) {
+      actions.push({ action: "Отраженный пенальти", points: 5 * recentMatch.penalty_saved });
+    }
+    
+    // 6. Penalty missed (all positions -2)
+    if (recentMatch.penalty_missed && recentMatch.penalty_missed > 0) {
+      actions.push({ action: "Незабитый пенальти", points: -2 * recentMatch.penalty_missed });
+    }
+    
+    // 7. Yellow cards (all positions -1)
+    if (recentMatch.yellow_cards && recentMatch.yellow_cards > 0) {
+      actions.push({ action: "Жёлтая карточка", points: -1 * recentMatch.yellow_cards });
+    }
+    
+    // 8. Red cards (all positions -3)
+    if (recentMatch.red_cards && recentMatch.red_cards > 0) {
+      actions.push({ action: "Красная карточка", points: -3 * recentMatch.red_cards });
+    }
+    
+    // 9. Goals conceded (only for goalkeepers and defenders, -1 per 2 goals)
     if (recentMatch.goals_conceded && recentMatch.goals_conceded > 0) {
       if (isGoalkeeper || isDefender) {
-        // Penalty: -1 for every 2 goals conceded
         const penalty = Math.floor(recentMatch.goals_conceded / 2) * -1;
         if (penalty < 0) {
           actions.push({ action: "Пропущенные голы", points: penalty });
