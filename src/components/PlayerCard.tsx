@@ -324,6 +324,13 @@ const PlayerCard = ({
       return actions; // No data available
     }
     
+    // Get player position (support both API format and prop format)
+    const playerPos = fullInfo?.base_info?.position || player.position;
+    const isGoalkeeper = playerPos === "ВР" || playerPos === "Goalkeeper";
+    const isDefender = playerPos === "ЗЩ" || playerPos === "Defender";
+    const isMidfielder = playerPos === "ПЗ" || playerPos === "Midfielder";
+    const isAttacker = playerPos === "НП" || playerPos === "Attacker" || playerPos === "Forward";
+    
     // Base points for appearance
     if (recentMatch.minutes_played && recentMatch.minutes_played > 0) {
       actions.push({ action: "Выход на поле", points: 2 });
@@ -331,7 +338,7 @@ const PlayerCard = ({
     
     // Goals
     if (recentMatch.goals_total && recentMatch.goals_total > 0) {
-      const goalPoints = player.position === "ВР" ? 6 : player.position === "ЗЩ" ? 6 : player.position === "ПЗ" ? 5 : 4;
+      const goalPoints = isGoalkeeper ? 6 : isDefender ? 6 : isMidfielder ? 5 : 4;
       actions.push({ action: "Гол", points: goalPoints * recentMatch.goals_total });
     }
     
@@ -362,14 +369,14 @@ const PlayerCard = ({
     
     // Clean sheet (for goalkeepers and defenders who played > 60 min)
     if (recentMatch.clean_sheet && recentMatch.minutes_played && recentMatch.minutes_played > 60) {
-      if (player.position === "ВР" || player.position === "ЗЩ") {
+      if (isGoalkeeper || isDefender) {
         actions.push({ action: "Сухой матч", points: 4 });
       }
     }
     
     // Goals conceded (for goalkeepers and defenders)
     if (recentMatch.goals_conceded && recentMatch.goals_conceded > 0) {
-      if (player.position === "ВР" || player.position === "ЗЩ") {
+      if (isGoalkeeper || isDefender) {
         // Penalty: -1 for every 2 goals conceded
         const penalty = Math.floor(recentMatch.goals_conceded / 2) * -1;
         if (penalty < 0) {
