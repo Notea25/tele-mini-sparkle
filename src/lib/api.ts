@@ -595,6 +595,10 @@ export interface PlayerFullInfoMatch {
   yellow_cards: number | null;
   red_cards: number | null;
   minutes_played: number | null;
+  penalty_missed: number | null;
+  penalty_saved: number | null;
+  clean_sheet: boolean | null;
+  goals_conceded: number | null;
 }
 
 export interface PlayerFullInfoTour {
