@@ -350,6 +350,34 @@ const PlayerCard = ({
       actions.push({ action: "Красная карточка", points: -3 * recentMatch.red_cards });
     }
     
+    // Penalty missed
+    if (recentMatch.penalty_missed && recentMatch.penalty_missed > 0) {
+      actions.push({ action: "Незабитый пенальти", points: -2 * recentMatch.penalty_missed });
+    }
+    
+    // Penalty saved (for goalkeepers)
+    if (recentMatch.penalty_saved && recentMatch.penalty_saved > 0) {
+      actions.push({ action: "Отраженный пенальти", points: 5 * recentMatch.penalty_saved });
+    }
+    
+    // Clean sheet (for goalkeepers and defenders who played > 60 min)
+    if (recentMatch.clean_sheet && recentMatch.minutes_played && recentMatch.minutes_played > 60) {
+      if (player.position === "ВР" || player.position === "ЗЩ") {
+        actions.push({ action: "Сухой матч", points: 4 });
+      }
+    }
+    
+    // Goals conceded (for goalkeepers and defenders)
+    if (recentMatch.goals_conceded && recentMatch.goals_conceded > 0) {
+      if (player.position === "ВР" || player.position === "ЗЩ") {
+        // Penalty: -1 for every 2 goals conceded
+        const penalty = Math.floor(recentMatch.goals_conceded / 2) * -1;
+        if (penalty < 0) {
+          actions.push({ action: "Пропущенные голы", points: penalty });
+        }
+      }
+    }
+    
     return actions;
   };
 
