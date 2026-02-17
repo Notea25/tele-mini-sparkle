@@ -331,6 +331,17 @@ const PlayerCard = ({
     const isMidfielder = playerPos === "ПЗ" || playerPos === "Midfielder";
     const isAttacker = playerPos === "НП" || playerPos === "Attacker" || playerPos === "Forward";
     
+    // Debug logging
+    console.log('[PlayerCard] Point breakdown debug:', {
+      playerPos,
+      isGoalkeeper,
+      isDefender,
+      clean_sheet: recentMatch.clean_sheet,
+      minutes_played: recentMatch.minutes_played,
+      goals_conceded: recentMatch.goals_conceded,
+      recentMatch
+    });
+    
     // Base points for appearance
     if (recentMatch.minutes_played && recentMatch.minutes_played > 0) {
       actions.push({ action: "Выход на поле", points: 2 });
