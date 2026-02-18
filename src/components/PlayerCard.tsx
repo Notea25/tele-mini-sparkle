@@ -155,6 +155,19 @@ interface PlayerData {
   price: number;
   total_points?: number; // Общие очки за все туры
   tour_points?: number; // Очки за последний/текущий тур
+  match_stats?: Array<{
+    match_id: number;
+    minutes_played: number;
+    goals_total: number;
+    assists: number;
+    yellow_cards: number;
+    red_cards: number;
+    penalty_missed: number;
+    penalty_saved: number;
+    clean_sheet: boolean;
+    goals_conceded: number;
+    points: number;
+  }>;
 }
 
 interface SwapablePlayer {
@@ -554,13 +567,44 @@ const PlayerCard = ({
               <h3 className="text-foreground text-sm font-normal font-display mb-3 text-left">Набранные очки</h3>
               <div className="bg-secondary/30 rounded-xl p-3 space-y-2">
                 {/* Check if player has 0 minutes played */}
-                {fullInfo?.last_3_tours?.[0]?.matches?.[0]?.minutes_played === 0 ? (
-                  <div className="flex items-center justify-center py-4">
-                    <span className="text-red-500 text-sm font-semibold text-center">
-                      Игрок не вышел на поле
-                    </span>
-                  </div>
-                ) : pointBreakdown.length > 0 ? (
+                {(() => {
+                  // Check from API data first
+                  const apiMinutes = fullInfo?.last_3_tours?.[0]?.matches?.[0]?.minutes_played;
+                  // Fallback to player props match_stats (most recent match)
+                  const propMinutes = player.match_stats?.[0]?.minutes_played;
+                  
+                  // If we have match data and player played 0 minutes
+                  const hasMatchData = (apiMinutes !== undefined && apiMinutes !== null) || (propMinutes !== undefined && propMinutes !== null);
+                  const playedZeroMinutes = apiMinutes === 0 || (apiMinutes === undefined && propMinutes === 0);
+                  
+                  if (hasMatchData && playedZeroMinutes) {
+                    return (
+                      <div className="flex items-center justify-center py-4">
+                        <span className="text-red-500 text-sm font-semibold text-center">
+                          Игрок не вышел на поле
+                        </span>
+                      </div>
+                    );
+                  }
+                  
+                  return null;
+                })()}
+                {(() => {
+                  // Check from API data first
+                  const apiMinutes = fullInfo?.last_3_tours?.[0]?.matches?.[0]?.minutes_played;
+                  // Fallback to player props match_stats
+                  const propMinutes = player.match_stats?.[0]?.minutes_played;
+                  
+                  const hasMatchData = (apiMinutes !== undefined && apiMinutes !== null) || (propMinutes !== undefined && propMinutes !== null);
+                  const playedZeroMinutes = apiMinutes === 0 || (apiMinutes === undefined && propMinutes === 0);
+                  
+                  // If played 0 minutes, don't show breakdown (already showing warning above)
+                  if (hasMatchData && playedZeroMinutes) {
+                    return null;
+                  }
+                  
+                  // Otherwise show normal breakdown or placeholder
+                  return pointBreakdown.length > 0 ? (
                   <>
                     {(() => {
                       // Group actions by name
@@ -621,7 +665,7 @@ const PlayerCard = ({
                       <span className="text-muted-foreground text-sm">—</span>
                     </div>
                   </div>
-                )}
+                );})()}
               </div>
             </div>
           )}
