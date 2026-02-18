@@ -13,6 +13,7 @@ import { hasCreatedTeam } from "@/lib/onboardingUtils";
 import { leaguesApi, customLeaguesApi, squadsApi } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePrefetchLeagueData } from "@/hooks/usePrefetchLeagueData";
+import { useDeadline } from "@/hooks/useDeadline";
 import leagueLogo from "@/assets/belarus-league-logo.png";
 import iconFootball from "@/assets/icon-football.png";
 import iconBasketball from "@/assets/icon-basketball.png";
@@ -66,6 +67,9 @@ const Index = () => {
   const [isLoadingLeague, setIsLoadingLeague] = useState(true);
   const [isJoiningLeague, setIsJoiningLeague] = useState(false);
   const [alreadyInLeague, setAlreadyInLeague] = useState(false);
+  
+  // Use deadline hook to get fresh deadline data (same source as other pages)
+  const { deadlineDate } = useDeadline('116');
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -260,22 +264,21 @@ const Index = () => {
 
   const sortOptions = ["Избранные", "ТОП-лиги", "От А до Я", "От Я до А"];
 
-  // Format deadline from API response
-  const formatDeadline = (deadline: string | null) => {
+  // Format deadline from useDeadline hook (always fresh from API)
+  const formatDeadline = (deadline: Date | null) => {
     if (!deadline) return { date: "—", time: "—" };
     try {
-      const dateObj = new Date(deadline);
-      const day = String(dateObj.getDate()).padStart(2, "0");
-      const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-      const hours = String(dateObj.getHours()).padStart(2, "0");
-      const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+      const day = String(deadline.getDate()).padStart(2, "0");
+      const month = String(deadline.getMonth() + 1).padStart(2, "0");
+      const hours = String(deadline.getHours()).padStart(2, "0");
+      const minutes = String(deadline.getMinutes()).padStart(2, "0");
       return { date: `${day}.${month}`, time: `${hours}.${minutes}` };
     } catch {
       return { date: "—", time: "—" };
     }
   };
 
-  const belarusDeadline = formatDeadline(belarusLeague?.deadline ?? null);
+  const belarusDeadline = formatDeadline(deadlineDate);
 
   // Define all leagues data for sorting
   const allLeagues = [
