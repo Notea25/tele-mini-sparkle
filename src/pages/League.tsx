@@ -78,27 +78,19 @@ const League = () => {
   const mySquadId = currentSquad?.id;
   
   // Get tour info from API response
-  // Priority for display:
-  // 1. current_tour — if it exists (tour has started, even if deadline not passed)
-  // 2. next_tour — if neither previous nor current tour exists (season not started)
-  // Priority for leaderboard:
-  // 1. current_tour — if deadline has passed (show current tour stats)
-  // 2. previous_tour — if current tour deadline hasn't passed yet (show previous tour stats)
+  // When a tour starts, we immediately show its number and leaderboard data,
+  // even if matches haven't finished yet (leaderboard will show 0 points initially)
   const toursData = toursResponse?.data;
-  const currentTourDeadline = toursData?.current_tour?.deadline ? new Date(toursData.current_tour.deadline) : null;
-  const useCurrentTourForLeaderboard = currentTourDeadline && currentTourDeadline <= new Date();
   
   // Check if season hasn't started (no previous and no current tour)
   const isSeasonNotStarted = !toursData?.previous_tour && !toursData?.current_tour;
   
-  // For leaderboard: use current tour if deadline passed, otherwise previous tour
+  // For leaderboard and display: use current tour if it exists (tour has started)
+  // Otherwise use next tour if season hasn't started
   const currentTourId = isSeasonNotStarted
     ? toursData?.next_tour?.id
-    : (useCurrentTourForLeaderboard 
-        ? toursData?.current_tour?.id 
-        : (toursData?.previous_tour?.id ?? null));
+    : (toursData?.current_tour?.id ?? toursData?.previous_tour?.id ?? null);
   
-  // For display: always use current_tour number if it exists (tour has started)
   const currentTourNumber = isSeasonNotStarted
     ? toursData?.next_tour?.number
     : (toursData?.current_tour?.number ?? toursData?.previous_tour?.number ?? 1);
