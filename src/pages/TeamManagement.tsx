@@ -345,16 +345,14 @@ const TeamManagement = () => {
       
       // Initialize original state with the SORTED order (after ensureGoalkeeperFirst)
       // This ensures originalState matches what we actually display
-      if (!originalState) {
-        setOriginalState({
-          mainPlayerIds: convertedMain.map(p => p.id),
-          benchPlayerIds: finalBench.map(p => p.id),
-          captain: squadTourData?.captain_id ?? null,
-          viceCaptain: squadTourData?.vice_captain_id ?? null,
-        });
-      }
+      setOriginalState({
+        mainPlayerIds: convertedMain.map(p => p.id),
+        benchPlayerIds: finalBench.map(p => p.id),
+        captain: squadTourData?.captain_id ?? null,
+        viceCaptain: squadTourData?.vice_captain_id ?? null,
+      });
     }
-  }, [apiMainPlayers, apiBenchPlayers, squadTourData?.captain_id, squadTourData?.vice_captain_id, originalState, mainSquadPlayers.length, benchPlayersExt.length, squad?.id]);
+  }, [apiMainPlayers, apiBenchPlayers, squadTourData?.captain_id, squadTourData?.vice_captain_id, mainSquadPlayers.length, benchPlayersExt.length, squad?.id]);
 
   // Initialize captain/vice-captain from squad data
   useEffect(() => {
@@ -489,18 +487,36 @@ const TeamManagement = () => {
     const currentMainIds = mainSquadPlayers.map(p => p.id);
     const currentBenchIds = benchPlayersExt.map(p => p.id);
     
-    // Check if arrays differ (including order for bench)
+    // Compare sets (order doesn't matter for main squad)
+    const mainSet = new Set(currentMainIds);
+    const originalMainSet = new Set(originalState.mainPlayerIds);
     const mainChanged = currentMainIds.length !== originalState.mainPlayerIds.length ||
-      currentMainIds.some((id, i) => originalState.mainPlayerIds[i] !== id) ||
-      originalState.mainPlayerIds.some((id, i) => currentMainIds[i] !== id);
+      [...mainSet].some(id => !originalMainSet.has(id));
     
+    // Compare bench order (order matters for bench)
     const benchChanged = currentBenchIds.length !== originalState.benchPlayerIds.length ||
       currentBenchIds.some((id, i) => originalState.benchPlayerIds[i] !== id);
     
     const captainChanged = captain !== originalState.captain;
     const viceCaptainChanged = viceCaptain !== originalState.viceCaptain;
     
-    return mainChanged || benchChanged || captainChanged || viceCaptainChanged;
+    const hasChanges = mainChanged || benchChanged || captainChanged || viceCaptainChanged;
+    
+    // Debug logging in development
+    if (process.env.NODE_ENV === 'development' && hasChanges) {
+      console.log('[TeamManagement] Unsaved changes detected:', {
+        mainChanged,
+        benchChanged,
+        captainChanged,
+        viceCaptainChanged,
+        currentMainIds,
+        originalMainIds: originalState.mainPlayerIds,
+        currentBenchIds,
+        originalBenchIds: originalState.benchPlayerIds,
+      });
+    }
+    
+    return hasChanges;
   }, [originalState, mainSquadPlayers, benchPlayersExt, captain, viceCaptain]);
 
   // Handle discard changes - revert to original state
