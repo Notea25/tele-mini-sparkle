@@ -568,14 +568,9 @@ const ViewTeam = () => {
         </Button>
         <div className="flex-1 flex items-center justify-center gap-3">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent to-muted-foreground/30" />
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-sm font-medium min-w-[80px] text-center">
-              {displayTourNumber ? `${displayTourNumber} тур` : "—"}
-            </span>
-            {boostIcon && (
-              <img src={boostIcon} alt="Boost" className="w-6 h-6 object-contain" />
-            )}
-          </div>
+          <span className="text-muted-foreground text-sm font-medium min-w-[80px] text-center">
+            {displayTourNumber ? `${displayTourNumber} тур` : "—"}
+          </span>
           <div className="flex-1 h-px bg-gradient-to-l from-transparent to-muted-foreground/30" />
         </div>
         <Button
@@ -591,7 +586,7 @@ const ViewTeam = () => {
 
       {/* Points Block */}
       <div className="px-4 mt-2 flex flex-col items-center gap-1">
-        <div className="bg-primary rounded-xl px-6 py-2 flex items-center justify-center gap-2 min-w-[200px]">
+        <div className="bg-primary rounded-xl px-6 py-2 flex items-center justify-center gap-2 min-w-[200px] relative">
           {isLoadingTourPoints && !selectedSnapshot ? (
             <Loader2 className="w-6 h-6 animate-spin text-primary-foreground" />
           ) : (
@@ -599,6 +594,11 @@ const ViewTeam = () => {
               <span className="text-2xl font-bold text-primary-foreground">{displayPoints}</span>
               <span className="text-primary-foreground/80 text-sm">очков</span>
             </>
+          )}
+          {boostIcon && (
+            <div className="absolute -right-2 -top-2 w-8 h-8 bg-background rounded-full flex items-center justify-center border-2 border-primary">
+              <img src={boostIcon} alt="Boost" className="w-5 h-5 object-contain" />
+            </div>
           )}
         </div>
         {displayPenaltyPoints > 0 && (
