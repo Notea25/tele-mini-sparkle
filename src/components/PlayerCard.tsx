@@ -570,8 +570,9 @@ const PlayerCard = ({
                 {(() => {
                   // Check from API data first
                   const apiMinutes = fullInfo?.last_3_tours?.[0]?.matches?.[0]?.minutes_played;
-                  // Fallback to player props match_stats (most recent match)
-                  const propMinutes = player.match_stats?.[0]?.minutes_played;
+                  // Fallback to player props match_stats (last match in array = most recent)
+                  const lastMatchIndex = (player.match_stats?.length ?? 0) - 1;
+                  const propMinutes = lastMatchIndex >= 0 ? player.match_stats?.[lastMatchIndex]?.minutes_played : undefined;
                   
                   // If we have match data and player played 0 minutes
                   const hasMatchData = (apiMinutes !== undefined && apiMinutes !== null) || (propMinutes !== undefined && propMinutes !== null);
@@ -592,8 +593,9 @@ const PlayerCard = ({
                 {(() => {
                   // Check from API data first
                   const apiMinutes = fullInfo?.last_3_tours?.[0]?.matches?.[0]?.minutes_played;
-                  // Fallback to player props match_stats
-                  const propMinutes = player.match_stats?.[0]?.minutes_played;
+                  // Fallback to player props match_stats (last match = most recent)
+                  const lastMatchIndex = (player.match_stats?.length ?? 0) - 1;
+                  const propMinutes = lastMatchIndex >= 0 ? player.match_stats?.[lastMatchIndex]?.minutes_played : undefined;
                   
                   const hasMatchData = (apiMinutes !== undefined && apiMinutes !== null) || (propMinutes !== undefined && propMinutes !== null);
                   const playedZeroMinutes = apiMinutes === 0 || (apiMinutes === undefined && propMinutes === 0);
