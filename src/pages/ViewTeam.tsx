@@ -14,6 +14,8 @@ import { getNextOpponentData } from "@/lib/scheduleUtils";
 import { toursApi, squadsApi, playerStatusesApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
+import boostCaptain3x from "@/assets/boost-captain3x.png";
+import boostDouble from "@/assets/boost-double.png";
 import {
   Popover,
   PopoverContent,
@@ -492,19 +494,19 @@ const ViewTeam = () => {
   
   const displayTourNumber = selectedTourNumber || currentTour;
   
-  // Get boost label for the current tour (x2, x3, etc.)
-  const getBoostLabel = (boostType: string | null): string | null => {
+  // Get boost icon for the current tour
+  const getBoostIcon = (boostType: string | null): string | null => {
     if (!boostType) return null;
-    const boostLabelMap: Record<string, string> = {
-      "triple_captain": "x3",
-      "double_bet": "x2",
+    const boostIconMap: Record<string, string> = {
+      "triple_captain": boostCaptain3x,
+      "double_bet": boostDouble,
     };
-    return boostLabelMap[boostType] || null;
+    return boostIconMap[boostType] || null;
   };
   
   // Get used boost for display
   const displayBoost = selectedSnapshot?.used_boost ?? squadTourData?.used_boost ?? null;
-  const boostLabel = getBoostLabel(displayBoost);
+  const boostIcon = getBoostIcon(displayBoost);
 
   if (!squadId) {
     return (
@@ -587,9 +589,9 @@ const ViewTeam = () => {
               <span className="text-primary-foreground/80 text-sm">очков</span>
             </>
           )}
-          {boostLabel && (
-            <div className="absolute -right-2 -top-2 w-8 h-8 bg-background rounded-full flex items-center justify-center border-2 border-primary">
-              <span className="text-primary text-sm font-bold">{boostLabel}</span>
+          {boostIcon && (
+            <div className="absolute -right-2 -top-2 w-10 h-10 bg-background rounded-full flex items-center justify-center border-2 border-primary p-1">
+              <img src={boostIcon} alt="boost" className="w-full h-full object-contain" />
             </div>
           )}
         </div>
