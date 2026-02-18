@@ -14,6 +14,11 @@ import { getNextOpponentData } from "@/lib/scheduleUtils";
 import { toursApi, squadsApi, playerStatusesApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
+import boostBench from "@/assets/boost-badge-bench.png";
+import boostCaptain3x from "@/assets/boost-badge-3x.png";
+import boostDouble from "@/assets/boost-badge-2x.png";
+import boostTransfers from "@/assets/boost-transfers.png";
+import boostGolden from "@/assets/boost-golden.png";
 import {
   Popover,
   PopoverContent,
@@ -491,6 +496,23 @@ const ViewTeam = () => {
   }, [isLoadingTourPoints, selectedSnapshot, selectedTourId, viewTourPoints, tourPoints, displayPenaltyPoints]);
   
   const displayTourNumber = selectedTourNumber || currentTour;
+  
+  // Get boost icon for the current tour
+  const getBoostIcon = (boostType: string | null): string | null => {
+    if (!boostType) return null;
+    const boostMap: Record<string, string> = {
+      "bench_boost": boostBench,
+      "triple_captain": boostCaptain3x,
+      "double_bet": boostDouble,
+      "transfers_plus": boostTransfers,
+      "gold_tour": boostGolden,
+    };
+    return boostMap[boostType] || null;
+  };
+  
+  // Get used boost for display
+  const displayBoost = selectedSnapshot?.used_boost ?? squadTourData?.used_boost ?? null;
+  const boostIcon = getBoostIcon(displayBoost);
 
   if (!squadId) {
     return (
@@ -546,9 +568,14 @@ const ViewTeam = () => {
         </Button>
         <div className="flex-1 flex items-center justify-center gap-3">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent to-muted-foreground/30" />
-          <span className="text-muted-foreground text-sm font-medium min-w-[80px] text-center">
-            {displayTourNumber ? `${displayTourNumber} тур` : "—"}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground text-sm font-medium min-w-[80px] text-center">
+              {displayTourNumber ? `${displayTourNumber} тур` : "—"}
+            </span>
+            {boostIcon && (
+              <img src={boostIcon} alt="Boost" className="w-6 h-6 object-contain" />
+            )}
+          </div>
           <div className="flex-1 h-px bg-gradient-to-l from-transparent to-muted-foreground/30" />
         </div>
         <Button
