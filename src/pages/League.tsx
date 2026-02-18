@@ -749,6 +749,9 @@ const League = () => {
                       )}
                       {row.change === "same" && <img src={arrowSame} alt="same" className="w-3 h-3" />}
                       <span className={`text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.position}</span>
+                      {row.position === 1 && <img src={trophyGold} alt="1st" className="w-4 h-4" />}
+                      {row.position === 2 && <img src={trophySilver} alt="2nd" className="w-4 h-4" />}
+                      {row.position === 3 && <img src={trophyBronze} alt="3rd" className="w-4 h-4" />}
                     </div>
                     <span className={`col-span-4 text-sm truncate ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.name}</span>
                     <span className={`col-span-3 text-center text-sm ${row.isUser ? "text-primary-foreground" : "text-foreground"}`}>{row.tourPoints}</span>
