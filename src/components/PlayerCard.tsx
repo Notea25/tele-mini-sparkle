@@ -326,15 +326,24 @@ const PlayerCard = ({
     };
   }) || [];
 
-  // Get real point breakdown from the most recent match in last_3_tours
+  // Get real point breakdown from the most recent match in last_3_tours OR from match_stats prop
   const getPointBreakdown = () => {
     const actions: { action: string; points: number }[] = [];
     
-    // Find the most recent match from API data (first in last_3_tours)
-    const recentMatch = fullInfo?.last_3_tours?.[0]?.matches?.[0];
+    // Priority: use match_stats from props (tour-specific data), fallback to API data
+    const matchStats = player.match_stats && player.match_stats.length > 0 
+      ? player.match_stats 
+      : fullInfo?.last_3_tours?.[0]?.matches;
+    
+    if (!matchStats || matchStats.length === 0) {
+      return actions; // No data available
+    }
+    
+    // Use first match for breakdown (or aggregate if multiple matches)
+    const recentMatch = matchStats[0];
     
     if (!recentMatch) {
-      return actions; // No data available
+      return actions;
     }
     
     // Get player position (support both API format and prop format)
@@ -568,15 +577,21 @@ const PlayerCard = ({
               <div className="bg-secondary/30 rounded-xl p-3 space-y-2">
                 {/* Check if player has 0 minutes played */}
                 {(() => {
-                  // Check from API data first
-                  const apiMinutes = fullInfo?.last_3_tours?.[0]?.matches?.[0]?.minutes_played;
-                  // Fallback to player props match_stats (last match in array = most recent)
-                  const lastMatchIndex = (player.match_stats?.length ?? 0) - 1;
-                  const propMinutes = lastMatchIndex >= 0 ? player.match_stats?.[lastMatchIndex]?.minutes_played : undefined;
+                  // Priority: check match_stats from props (tour-specific), fallback to API
+                  let hasMatchData = false;
+                  let playedZeroMinutes = false;
                   
-                  // If we have match data and player played 0 minutes
-                  const hasMatchData = (apiMinutes !== undefined && apiMinutes !== null) || (propMinutes !== undefined && propMinutes !== null);
-                  const playedZeroMinutes = apiMinutes === 0 || (apiMinutes === undefined && propMinutes === 0);
+                  if (player.match_stats && player.match_stats.length > 0) {
+                    // Check if player played 0 minutes in ALL matches of this tour
+                    hasMatchData = true;
+                    const totalMinutes = player.match_stats.reduce((sum, match) => sum + (match.minutes_played || 0), 0);
+                    playedZeroMinutes = totalMinutes === 0;
+                  } else if (fullInfo?.last_3_tours?.[0]?.matches?.[0]) {
+                    // Fallback to API data
+                    hasMatchData = true;
+                    const apiMinutes = fullInfo.last_3_tours[0].matches[0].minutes_played;
+                    playedZeroMinutes = apiMinutes === 0;
+                  }
                   
                   if (hasMatchData && playedZeroMinutes) {
                     return (
@@ -591,14 +606,19 @@ const PlayerCard = ({
                   return null;
                 })()}
                 {(() => {
-                  // Check from API data first
-                  const apiMinutes = fullInfo?.last_3_tours?.[0]?.matches?.[0]?.minutes_played;
-                  // Fallback to player props match_stats (last match = most recent)
-                  const lastMatchIndex = (player.match_stats?.length ?? 0) - 1;
-                  const propMinutes = lastMatchIndex >= 0 ? player.match_stats?.[lastMatchIndex]?.minutes_played : undefined;
+                  // Same check as above for consistency
+                  let hasMatchData = false;
+                  let playedZeroMinutes = false;
                   
-                  const hasMatchData = (apiMinutes !== undefined && apiMinutes !== null) || (propMinutes !== undefined && propMinutes !== null);
-                  const playedZeroMinutes = apiMinutes === 0 || (apiMinutes === undefined && propMinutes === 0);
+                  if (player.match_stats && player.match_stats.length > 0) {
+                    hasMatchData = true;
+                    const totalMinutes = player.match_stats.reduce((sum, match) => sum + (match.minutes_played || 0), 0);
+                    playedZeroMinutes = totalMinutes === 0;
+                  } else if (fullInfo?.last_3_tours?.[0]?.matches?.[0]) {
+                    hasMatchData = true;
+                    const apiMinutes = fullInfo.last_3_tours[0].matches[0].minutes_played;
+                    playedZeroMinutes = apiMinutes === 0;
+                  }
                   
                   // If played 0 minutes, don't show breakdown (already showing warning above)
                   if (hasMatchData && playedZeroMinutes) {
