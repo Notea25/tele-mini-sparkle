@@ -553,7 +553,14 @@ const PlayerCard = ({
             <div className="mt-6">
               <h3 className="text-foreground text-sm font-normal font-display mb-3 text-left">Набранные очки</h3>
               <div className="bg-secondary/30 rounded-xl p-3 space-y-2">
-                {pointBreakdown.length > 0 ? (
+                {/* Check if player has 0 minutes played */}
+                {fullInfo?.last_3_tours?.[0]?.matches?.[0]?.minutes_played === 0 ? (
+                  <div className="flex items-center justify-center py-4">
+                    <span className="text-red-500 text-sm font-semibold text-center">
+                      Игрок не вышел на поле
+                    </span>
+                  </div>
+                ) : pointBreakdown.length > 0 ? (
                   <>
                     {(() => {
                       // Group actions by name
