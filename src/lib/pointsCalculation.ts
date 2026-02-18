@@ -11,16 +11,20 @@ interface PlayerForCalculation {
 
 /**
  * Calculate displayed points for a player with boost multipliers applied
- * - Default: Captain gets x2
- * - 3x Captain boost (triple_captain): Captain gets x3
- * - Double Power boost (double_bet): Captain and Vice-Captain get x2
+ * - Default: Captain gets x2, Vice-Captain gets x2 only if captain didn't play
+ * - 3x Captain boost (triple_captain): Captain gets x3, Vice-Captain gets x3 if captain didn't play
+ * - Double Power boost (double_bet): Captain and Vice-Captain both get x2
  * - Bench+ boost (bench_boost): No multiplier change, but bench players count in total
+ * 
+ * Note: This function only calculates multipliers based on boost type.
+ * The "captain didn't play" logic is handled separately in the backend.
  */
 export function getDisplayedPoints(
   basePoints: number,
   isCaptain: boolean,
   isViceCaptain: boolean,
-  boostType: BoostType | null
+  boostType: BoostType | null,
+  captainPlayed: boolean = true
 ): number {
   if (isCaptain) {
     if (boostType === "triple_captain") {
@@ -30,8 +34,18 @@ export function getDisplayedPoints(
     return basePoints * 2;
   }
   
-  if (isViceCaptain && boostType === "double_bet") {
-    return basePoints * 2;
+  if (isViceCaptain) {
+    // If captain didn't play, vice-captain gets captain's multiplier
+    if (!captainPlayed) {
+      if (boostType === "triple_captain") {
+        return basePoints * 3;
+      }
+      return basePoints * 2;
+    }
+    // With double_bet, vice-captain gets x2 even if captain played
+    if (boostType === "double_bet") {
+      return basePoints * 2;
+    }
   }
   
   return basePoints;
@@ -39,15 +53,16 @@ export function getDisplayedPoints(
 
 /**
  * Calculate total tour points based on active boost
- * - Default: Sum of 11 main squad players, captain's points doubled
- * - 3x Captain (triple_captain): Sum of 11 main squad players, captain's points tripled
+ * - Default: Sum of 11 main squad players, captain's points doubled (vice-captain x2 if captain didn't play)
+ * - 3x Captain (triple_captain): Sum of 11 main squad players, captain's points tripled (vice-captain x3 if captain didn't play)
  * - Double Power (double_bet): Sum of 11 main squad players, captain and vice-captain's points doubled
  * - Bench+ (bench_boost): Sum of all 15 players, captain's points doubled
  */
 export function calculateTotalTourPoints(
   mainSquadPlayers: PlayerForCalculation[],
   benchPlayers: PlayerForCalculation[],
-  boostType: BoostType | null
+  boostType: BoostType | null,
+  captainPlayed: boolean = true
 ): number {
   let total = 0;
   
@@ -57,7 +72,8 @@ export function calculateTotalTourPoints(
       player.points,
       !!player.isCaptain,
       !!player.isViceCaptain,
-      boostType
+      boostType,
+      captainPlayed
     );
     total += displayedPoints;
   }
@@ -78,13 +94,21 @@ export function calculateTotalTourPoints(
 export function getPointsMultiplier(
   isCaptain: boolean,
   isViceCaptain: boolean,
-  boostType: BoostType | null
+  boostType: BoostType | null,
+  captainPlayed: boolean = true
 ): number {
   if (isCaptain) {
     return boostType === "triple_captain" ? 3 : 2;
   }
-  if (isViceCaptain && boostType === "double_bet") {
-    return 2;
+  if (isViceCaptain) {
+    // If captain didn't play, vice-captain gets captain's multiplier
+    if (!captainPlayed) {
+      return boostType === "triple_captain" ? 3 : 2;
+    }
+    // With double_bet, vice-captain gets x2 even if captain played
+    if (boostType === "double_bet") {
+      return 2;
+    }
   }
   return 1;
 }
