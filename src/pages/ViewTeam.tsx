@@ -14,11 +14,6 @@ import { getNextOpponentData } from "@/lib/scheduleUtils";
 import { toursApi, squadsApi, playerStatusesApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
-import boostBench from "@/assets/boost-badge-bench.png";
-import boostCaptain3x from "@/assets/boost-badge-3x.png";
-import boostDouble from "@/assets/boost-badge-2x.png";
-import boostTransfers from "@/assets/boost-transfers.png";
-import boostGolden from "@/assets/boost-golden.png";
 import {
   Popover,
   PopoverContent,
@@ -497,22 +492,19 @@ const ViewTeam = () => {
   
   const displayTourNumber = selectedTourNumber || currentTour;
   
-  // Get boost icon for the current tour
-  const getBoostIcon = (boostType: string | null): string | null => {
+  // Get boost label for the current tour (x2, x3, etc.)
+  const getBoostLabel = (boostType: string | null): string | null => {
     if (!boostType) return null;
-    const boostMap: Record<string, string> = {
-      "bench_boost": boostBench,
-      "triple_captain": boostCaptain3x,
-      "double_bet": boostDouble,
-      "transfers_plus": boostTransfers,
-      "gold_tour": boostGolden,
+    const boostLabelMap: Record<string, string> = {
+      "triple_captain": "x3",
+      "double_bet": "x2",
     };
-    return boostMap[boostType] || null;
+    return boostLabelMap[boostType] || null;
   };
   
   // Get used boost for display
   const displayBoost = selectedSnapshot?.used_boost ?? squadTourData?.used_boost ?? null;
-  const boostIcon = getBoostIcon(displayBoost);
+  const boostLabel = getBoostLabel(displayBoost);
 
   if (!squadId) {
     return (
@@ -595,9 +587,9 @@ const ViewTeam = () => {
               <span className="text-primary-foreground/80 text-sm">очков</span>
             </>
           )}
-          {boostIcon && (
+          {boostLabel && (
             <div className="absolute -right-2 -top-2 w-8 h-8 bg-background rounded-full flex items-center justify-center border-2 border-primary">
-              <img src={boostIcon} alt="Boost" className="w-5 h-5 object-contain" />
+              <span className="text-primary text-sm font-bold">{boostLabel}</span>
             </div>
           )}
         </div>
