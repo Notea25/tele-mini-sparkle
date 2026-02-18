@@ -99,20 +99,13 @@ const ViewTeam = () => {
           tours.push(toursResponse.data.previous_tour);
         }
         
-        // Add current tour if deadline passed AND (tour ended OR has history)
+        // Add current tour as soon as it starts (exists in API)
+        // This allows viewing the current tour even before deadline passes
         if (toursResponse.data.current_tour) {
-          const currentDeadline = new Date(toursResponse.data.current_tour.deadline);
-          const currentEndDate = new Date(toursResponse.data.current_tour.end_date);
-          const hasHistory = historyTourIds.has(toursResponse.data.current_tour.id);
-          
-          // Show tour if deadline passed and either: tour ended OR we have snapshot data
-          if (currentDeadline <= now && (currentEndDate <= now || hasHistory)) {
-            tours.push(toursResponse.data.current_tour);
-          }
+          tours.push(toursResponse.data.current_tour);
         }
         
-        // If no tours available yet (no current tour with passed deadline), 
-        // show next tour data if available
+        // If no tours available yet (season not started), show next tour
         if (tours.length === 0 && toursResponse.data.next_tour) {
           tours.push(toursResponse.data.next_tour);
         }
