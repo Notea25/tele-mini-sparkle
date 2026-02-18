@@ -14,6 +14,7 @@ import { getNextOpponentData } from "@/lib/scheduleUtils";
 import { toursApi, squadsApi, playerStatusesApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
+import boostBench from "@/assets/boost-bench.png";
 import boostCaptain3x from "@/assets/boost-captain3x.png";
 import boostDouble from "@/assets/boost-double.png";
 import {
@@ -498,6 +499,7 @@ const ViewTeam = () => {
   const getBoostIcon = (boostType: string | null): string | null => {
     if (!boostType) return null;
     const boostIconMap: Record<string, string> = {
+      "bench_boost": boostBench,
       "triple_captain": boostCaptain3x,
       "double_bet": boostDouble,
     };
