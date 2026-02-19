@@ -581,7 +581,7 @@ const ViewTeam = () => {
             <Loader2 className="w-6 h-6 animate-spin text-primary-foreground" />
           ) : (
             <>
-              <span className="text-2xl font-bold text-primary-foreground">{displayPoints}</span>
+              <span className="text-2xl font-normal font-display text-primary-foreground">{displayPoints}</span>
               <span className="text-primary-foreground/80 text-sm">{pluralizePoints(displayPoints)}</span>
             </>
           )}
