@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { pluralizePoints } from "@/lib/pluralize";
 import { Loader2, ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { PointsColumnHeader } from "@/components/PointsColumnHeader";
@@ -581,7 +582,7 @@ const ViewTeam = () => {
           ) : (
             <>
               <span className="text-2xl font-bold text-primary-foreground">{displayPoints}</span>
-              <span className="text-primary-foreground/80 text-sm">очков</span>
+              <span className="text-primary-foreground/80 text-sm">{pluralizePoints(displayPoints)}</span>
             </>
           )}
           {boostIcon && (
