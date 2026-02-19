@@ -48,7 +48,7 @@ import { mapAvailableBoostsToView, getActiveNextTourBoostId, buildBoostChipState
 import { PositionCode } from "@/constants/positions";
 import clubLogo from "@/assets/club-logo.png";
 import boostTransfers from "@/assets/boost-transfers.png";
-import { pluralizeDays } from "@/lib/pluralize";
+import { pluralizeDays, pluralizePoints } from "@/lib/pluralize";
 import boostGolden from "@/assets/boost-golden.png";
 import boostBench from "@/assets/boost-bench.png";
 import boostCaptain3x from "@/assets/boost-captain3x.png";
@@ -2006,7 +2006,7 @@ const Transfers = () => {
                 const paidTransfersCount = transferCount - freeTransfers;
                 const penalty = paidTransfersCount * 4;
                 errorMessage = `Бэкенд не поддерживает платные трансферы. ` +
-                  `Вы хотели сделать ${transferCount} замен (бесплатных: ${freeTransfers}, платных: ${paidTransfersCount}, штраф: -${penalty} очков). ` +
+                  `Вы хотели сделать ${transferCount} замен (бесплатных: ${freeTransfers}, платных: ${paidTransfersCount}, штраф: -${penalty} ${pluralizePoints(penalty)}). ` +
                   `Нужно исправить серверную логику.`;
               } else if (backendDetail) {
                 errorMessage = backendDetail;
@@ -2034,7 +2034,7 @@ const Transfers = () => {
           setHasChanges(false);
 
           if (finalTransferCosts.pointsPenalty > 0) {
-            toast.success(`Изменения сохранены. Штраф: -${finalTransferCosts.pointsPenalty} очков`);
+            toast.success(`Изменения сохранены. Штраф: -${finalTransferCosts.pointsPenalty} ${pluralizePoints(finalTransferCosts.pointsPenalty)}`);
           } else {
             toast.success("Изменения сохранены");
           }

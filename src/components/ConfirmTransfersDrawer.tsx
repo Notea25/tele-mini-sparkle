@@ -1,4 +1,5 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { pluralizePoints } from "@/lib/pluralize";
 import { Button } from "@/components/ui/button";
 import { getClubLogo } from "@/lib/clubLogos";
 import swapArrowsPurple from "@/assets/swap-arrows-purple.png";
@@ -159,7 +160,7 @@ const ConfirmTransfersDrawer = ({
               {pointsPenalty > 0 && (
                 <div className="flex justify-between items-center py-1.5 border-b border-border">
                   <span className="text-muted-foreground text-sm">Штраф за трансферы (в след. туре)</span>
-                  <span className="text-red-500 text-sm font-medium">-{pointsPenalty} очков</span>
+                  <span className="text-red-500 text-sm font-medium">-{pointsPenalty} {pluralizePoints(pointsPenalty)}</span>
                 </div>
               )}
               <div className="flex justify-between items-center py-1.5 border-b border-border">
