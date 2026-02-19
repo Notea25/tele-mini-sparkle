@@ -659,7 +659,7 @@ const League = () => {
                 className="relative w-full h-[50px] bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all overflow-hidden"
                 onClick={() => handleNavigate("/team-management")}
               >
-                <span className="text-primary-foreground font-semibold text-base">Команда</span>
+                <span className="text-primary-foreground font-normal text-base font-display">Команда</span>
                 <div className="absolute -bottom-[2px] -right-[2px] w-[36px] h-[36px] bg-secondary rounded-tl-xl flex items-center justify-center">
                   <img src={btnTeamIcon} alt="" className="w-4 h-4 brightness-0 invert" />
                 </div>
@@ -668,7 +668,7 @@ const League = () => {
                 className="relative w-full h-[50px] bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:opacity-90 transition-all overflow-hidden"
                 onClick={() => handleNavigate("/transfers")}
               >
-                <span className="text-primary-foreground font-semibold text-base">Трансферы</span>
+                <span className="text-primary-foreground font-normal text-base font-display">Трансферы</span>
                 <div className="absolute -bottom-[2px] -right-[2px] w-[36px] h-[36px] bg-secondary rounded-tl-xl flex items-center justify-center">
                   <img src={btnTransfersIcon} alt="" className="w-4 h-4 brightness-0 invert" />
                 </div>
@@ -681,7 +681,7 @@ const League = () => {
               onClick={() => setIsRulesDrawerOpen(true)}
             >
               <HelpCircle className="w-4 h-4 text-muted-foreground" />
-              <span className="text-muted-foreground font-medium text-sm">Правила игры</span>
+              <span className="text-muted-foreground font-normal text-sm font-display">Правила игры</span>
             </div>
 
             {/* Tournament Table */}
