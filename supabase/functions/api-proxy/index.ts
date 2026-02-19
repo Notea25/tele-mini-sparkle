@@ -192,10 +192,9 @@ serve(async (req) => {
     if (requiresAuth(pathStr) && !headersObj["Authorization"]) {
       return new Response(JSON.stringify({
         success: false,
-        status: 401,
         error: "Authorization required",
       }), {
-        status: 200,
+        status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
