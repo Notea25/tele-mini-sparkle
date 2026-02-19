@@ -589,7 +589,7 @@ const League = () => {
                 className="bg-secondary rounded-xl py-3 flex flex-col items-center cursor-pointer hover:bg-secondary/80 transition-all"
                 onClick={() => handleNavigate("/tournament-table")}
               >
-                <span className="text-xl font-medium text-foreground">
+                <span className="text-xl font-normal text-foreground font-display">
                   {leaderboardLoading ? "—" : (isTournamentStarted ? tourStats.averagePoints : 0)}
                 </span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Средний результат</span>
@@ -603,7 +603,7 @@ const League = () => {
                   }
                 }}
               >
-                <span className="text-2xl font-medium text-primary-foreground">
+                <span className="text-2xl font-normal text-primary-foreground font-display">
                   {leaderboardLoading ? "—" : (isTournamentStarted ? tourStats.myPoints : 0)}
                 </span>
                 <span className="text-[10px] text-primary-foreground/70 whitespace-nowrap text-regular">Мои очки</span>
@@ -617,7 +617,7 @@ const League = () => {
                   }
                 }}
               >
-                <span className="text-xl font-medium text-foreground">
+                <span className="text-xl font-normal text-foreground font-display">
                   {leaderboardLoading ? "—" : (isTournamentStarted ? tourStats.bestPoints : 0)}
                 </span>
                 <span className="text-[9px] text-muted-foreground whitespace-nowrap text-regular">Лучший результат</span>
