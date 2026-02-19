@@ -712,7 +712,7 @@ const ViewTeam = () => {
                             <img src={injuryBadge} alt="injury" className="w-4 h-4 flex-shrink-0" />
                           )}
                         </div>
-                        <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
+                        <div className="w-12 flex-shrink-0 flex justify-center text-sm text-success font-medium">
                           {/* Используем final_tour_points из API, который уже учитывает капитанство */}
                           {(player as any).final_tour_points ?? player.tour_points ?? player.points ?? 0}
                         </div>
@@ -776,7 +776,7 @@ const ViewTeam = () => {
                       <img src={injuryBadge} alt="injury" className="w-4 h-4 flex-shrink-0" />
                     )}
                   </div>
-                  <div className="w-12 flex-shrink-0 flex justify-center text-foreground text-sm">
+                  <div className="w-12 flex-shrink-0 flex justify-center text-sm text-success font-medium">
                     {/* Используем final_tour_points из API, который уже учитывает капитанство */}
                     {(player as any).final_tour_points ?? player.tour_points ?? player.points ?? 0}
                   </div>
