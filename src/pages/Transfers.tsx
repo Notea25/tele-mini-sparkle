@@ -1145,11 +1145,9 @@ const Transfers = () => {
 
                 <span
                   className={`w-12 flex-shrink-0 text-sm text-center font-medium ${
-                    (player.total_points ?? player.points ?? 0) > 0
-                      ? "text-success"
-                      : (player.total_points ?? player.points ?? 0) < 0
-                        ? "text-destructive"
-                        : "text-foreground"
+                    (player.total_points ?? player.points ?? 0) < 0
+                      ? "text-destructive"
+                      : "text-foreground"
                   }`}
                 >
                   {(player.total_points ?? player.points ?? 0) > 0
