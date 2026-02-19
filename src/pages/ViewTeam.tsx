@@ -714,7 +714,7 @@ const ViewTeam = () => {
                         </div>
                         <div className="w-12 flex-shrink-0 flex justify-center text-sm text-success font-medium">
                           {/* Используем final_tour_points из API, который уже учитывает капитанство */}
-                          {(player as any).final_tour_points ?? player.tour_points ?? player.points ?? 0}
+                          {(() => { const pts = (player as any).final_tour_points ?? player.tour_points ?? player.points ?? 0; return pts > 0 ? `+${pts}` : pts; })()}
                         </div>
                         <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
                           {player.price}
@@ -778,7 +778,7 @@ const ViewTeam = () => {
                   </div>
                   <div className="w-12 flex-shrink-0 flex justify-center text-sm text-success font-medium">
                     {/* Используем final_tour_points из API, который уже учитывает капитанство */}
-                    {(player as any).final_tour_points ?? player.tour_points ?? player.points ?? 0}
+                    {(() => { const pts = (player as any).final_tour_points ?? player.tour_points ?? player.points ?? 0; return pts > 0 ? `+${pts}` : pts; })()}
                   </div>
                   <div className="w-10 flex-shrink-0 flex justify-center text-foreground text-sm">
                     {player.price}
