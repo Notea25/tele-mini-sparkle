@@ -1150,9 +1150,7 @@ const Transfers = () => {
                       : "text-foreground"
                   }`}
                 >
-                  {(player.total_points ?? player.points ?? 0) > 0
-                    ? `+${player.total_points ?? player.points ?? 0}`
-                    : (player.total_points ?? player.points ?? 0)}
+                  {player.total_points ?? player.points ?? 0}
                 </span>
                 <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
 

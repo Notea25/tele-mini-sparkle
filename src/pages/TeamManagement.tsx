@@ -782,7 +782,7 @@ const TeamManagement = () => {
               <div className={`w-12 flex-shrink-0 flex justify-center text-sm font-medium ${
                 (player.total_points ?? player.points ?? 0) < 0 ? "text-destructive" : "text-foreground"
               }`}>
-                {(player.total_points ?? player.points ?? 0) > 0 ? `+${player.total_points ?? player.points ?? 0}` : (player.total_points ?? player.points ?? 0)}
+                {player.total_points ?? player.points ?? 0}
               </div>
 
               {/* Next match opponent */}
