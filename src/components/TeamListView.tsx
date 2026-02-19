@@ -1,5 +1,6 @@
 import { X, Plus } from "lucide-react";
 import clubLogoDefault from "@/assets/club-logo.png";
+import { PointsColumnHeader } from "@/components/PointsColumnHeader";
 
 interface PlayerData {
   id: number;
@@ -67,7 +68,9 @@ const TeamListView = ({
             {/* Column Headers */}
             <div className="flex items-center px-4 py-1 text-xs text-muted-foreground mb-1">
               <span className="flex-1">Игрок</span>
-              <span className="w-12 text-center">Очки</span>
+              <span className="w-12 text-center">
+                <PointsColumnHeader type="season">Очки</PointsColumnHeader>
+              </span>
               <span className="w-10 text-center mr-10">Цена</span>
             </div>
 
@@ -99,7 +102,7 @@ const TeamListView = ({
                           <span className="text-foreground font-medium truncate">{slot.player.name_rus || slot.player.name}</span>
                           <span className="text-muted-foreground text-xs ml-2">{section.position}</span>
                           {slot.player.hasLeftLeague && !slot.player.hasRedCard && !slot.player.isInjured && (
-                            <span className="bg-gray-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0 ml-2">
+                            <span className="bg-muted text-muted-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0 ml-2">
                               У
                             </span>
                           )}
@@ -107,9 +110,9 @@ const TeamListView = ({
 
                         {/* Points */}
                         <span className={`w-12 flex-shrink-0 text-sm text-center font-medium ${
-                          slot.player.points > 0 ? "text-success" : slot.player.points < 0 ? "text-destructive" : "text-foreground"
+                          slot.player.points < 0 ? "text-destructive" : "text-foreground"
                         }`}>
-                          {slot.player.points > 0 ? `+${slot.player.points}` : slot.player.points}
+                          {slot.player.points}
                         </span>
 
                         {/* Price */}
