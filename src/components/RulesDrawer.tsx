@@ -443,6 +443,37 @@ const RulesDrawer = ({ isOpen, onClose }: RulesDrawerProps) => {
                 </div>
               </AccordionContent>
             </AccordionItem>
+
+            {/* Technical regulations section */}
+            <AccordionItem value="technical" className="border border-border rounded-xl overflow-hidden">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline bg-card">
+                <span className="text-foreground font-display">Технические положения</span>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4 pt-2 bg-card/50">
+                <div className="space-y-4 text-muted-foreground text-sm leading-relaxed text-left text-regular">
+                  <div>
+                    <h4 className="text-primary font-medium text-medium mb-1">1. Начисление очков</h4>
+                    <p>Очки начисляются на основании официальной статистики матчей Высшей лиги.</p>
+                  </div>
+                  <div>
+                    <h4 className="text-primary font-medium text-medium mb-1">2. Корректировки статистики</h4>
+                    <p>В случае изменения официальной статистики после завершения тура организаторы производят перерасчёт очков.</p>
+                  </div>
+                  <div>
+                    <h4 className="text-primary font-medium text-medium mb-1">3. Технические ошибки</h4>
+                    <p>При обнаружении технической ошибки, повлиявшей на результаты тура (некорректное начисление очков, сбой сохранения составов и т.п.), организаторы оставляют за собой право произвести корректировку результатов.</p>
+                  </div>
+                  <div>
+                    <h4 className="text-primary font-medium text-medium mb-1">4. Информирование</h4>
+                    <p>О всех корректировках участники информируются через официальные каналы проекта.</p>
+                  </div>
+                  <div>
+                    <h4 className="text-primary font-medium text-medium mb-1">5. Форс-мажор</h4>
+                    <p>В случае обстоятельств, не зависящих от организаторов (отмена матчей, переносы, изменения регламента лиги и т.д.), решения принимаются исходя из принципов справедливости и прозрачности.</p>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           </Accordion>
 
           {/* Bottom padding */}
