@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useImagePreloader } from "@/hooks/useImagePreloader";
-import onboardingField from "@/assets/onboarding-field.png";
-import onboardingTransfers from "@/assets/onboarding-transfers.png";
+import onboardingField from "@/assets/onboarding-field-new.png";
+import onboardingTransfers from "@/assets/onboarding-transfers-new.png";
 import onboardingPrizes from "@/assets/onboarding-prizes-new.png";
 import logo from "@/assets/logo-new.png";
 
