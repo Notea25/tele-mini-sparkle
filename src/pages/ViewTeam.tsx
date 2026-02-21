@@ -74,6 +74,16 @@ const ViewTeam = () => {
     }
   }, [mainPlayers]);
 
+  // Reset tour navigation state when squadId changes to avoid stale tour data
+  useEffect(() => {
+    setSelectedTourId(null);
+    setSelectedTourNumber(null);
+    setViewTourPoints(0);
+    setAllTours([]);
+    setHistorySnapshots([]);
+    setTourPlayerStatuses([]);
+  }, [squadId]);
+
   // Load squad history first, then filter tours based on history
   useEffect(() => {
     if (!squad || !squadId) return;
@@ -264,6 +274,7 @@ const ViewTeam = () => {
       points: p.tour_points,
       total_points: p.total_points,
       tour_points: p.tour_points,
+      final_tour_points: p.final_tour_points,
       slotIndex,
       nextOpponent: p.next_opponent_team_name || "",
       nextOpponentHome: p.next_opponent_is_home ?? false,
@@ -371,20 +382,24 @@ const ViewTeam = () => {
   const mainSquadForField = useMemo((): PlayerData[] => {
     console.log('[ViewTeam] Converting displayMainPlayers to field data:', displayMainPlayers[0]);
     return displayMainPlayers.map(p => {
-      const basePoints = p.tour_points ?? p.points ?? 0;
-      const isCaptain = displayCaptainId === p.id;
-      const isViceCaptain = displayViceCaptainId === p.id;
-      
-      // Apply captain/vice-captain multiplier
-      let displayPoints = basePoints;
-      if (isCaptain) {
-        displayPoints = basePoints * 2;
-      } else if (isViceCaptain) {
-        // Vice-captain gets 2x only if captain has 0 points
-        const captainPlayer = displayMainPlayers.find(player => player.id === displayCaptainId);
-        const captainPoints = captainPlayer?.tour_points ?? captainPlayer?.points ?? 0;
-        if (captainPoints === 0) {
+      // Use final_tour_points from API (already includes captain/boost multipliers)
+      // Fall back to manual calculation only if final_tour_points is not available
+      let displayPoints: number;
+      if (p.final_tour_points !== undefined && p.final_tour_points !== null) {
+        displayPoints = p.final_tour_points;
+      } else {
+        const basePoints = p.tour_points ?? p.points ?? 0;
+        const isCaptain = displayCaptainId === p.id;
+        const isViceCaptain = displayViceCaptainId === p.id;
+        displayPoints = basePoints;
+        if (isCaptain) {
           displayPoints = basePoints * 2;
+        } else if (isViceCaptain) {
+          const captainPlayer = displayMainPlayers.find(player => player.id === displayCaptainId);
+          const captainPoints = captainPlayer?.tour_points ?? captainPlayer?.points ?? 0;
+          if (captainPoints === 0) {
+            displayPoints = basePoints * 2;
+          }
         }
       }
       
@@ -426,7 +441,7 @@ const ViewTeam = () => {
         photo: p.photo,
         position: p.position,
         price: p.price,
-        points: p.tour_points ?? p.points ?? 0,
+        points: p.final_tour_points ?? p.tour_points ?? p.points ?? 0,
         slotIndex: p.slotIndex,
         nextOpponent: p.nextOpponent || "",
         nextOpponentHome: p.nextOpponentHome ?? false,

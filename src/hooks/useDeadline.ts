@@ -12,6 +12,7 @@ interface TimeLeft {
 export function useDeadline(leagueId: string = '116') {
   const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasNextTour, setHasNextTour] = useState<boolean | null>(null);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0, progress: 0 });
 
   // Fetch deadline from API (always fetch fresh data, no caching)
@@ -22,7 +23,12 @@ export function useDeadline(leagueId: string = '116') {
         if (response.success && response.data?.deadline) {
           const deadline = new Date(response.data.deadline);
           setDeadlineDate(deadline);
+          setHasNextTour(true);
+        } else if (response.success) {
+          // API succeeded but returned no deadline — season is over, no next tour
+          setHasNextTour(false);
         }
+        // If response.success === false, hasNextTour stays null (unknown — API error)
       } catch (error) {
         console.error('Error fetching deadline:', error);
       } finally {
@@ -77,6 +83,7 @@ export function useDeadline(leagueId: string = '116') {
   return {
     deadlineDate,
     isLoading,
+    hasNextTour,
     timeLeft,
     formattedDeadline,
   };

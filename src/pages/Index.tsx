@@ -69,7 +69,9 @@ const Index = () => {
   const [alreadyInLeague, setAlreadyInLeague] = useState(false);
   
   // Use deadline hook to get fresh deadline data (same source as other pages)
-  const { deadlineDate } = useDeadline('116');
+  const { deadlineDate, hasNextTour } = useDeadline('116');
+  // Season is over when API confirmed there is no next tour
+  const isSeasonOver = hasNextTour === false;
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -213,9 +215,12 @@ const Index = () => {
       // Get user's squad
       const squadsResponse = await squadsApi.getMySquads();
       if (!squadsResponse.success || !squadsResponse.data || squadsResponse.data.length === 0) {
-        // User doesn't have a team yet - don't show error, just close modal
-        // The modal itself already handles navigation to team creation
+        // User doesn't have a team yet — explain and redirect to team creation
         setShowLeagueInvite(false);
+        toast.info("Чтобы вступить в лигу, нужно сначала создать команду в Высшей лиге Беларуси", {
+          duration: 4000,
+        });
+        navigate("/create-team");
         return;
       }
 
@@ -434,8 +439,9 @@ const Index = () => {
                 apiLeagueId={"apiLeagueId" in leagueData ? leagueData.apiLeagueId : undefined}
                 isFavorite={favorites.includes(leagueData.id)}
                 onToggleFavorite={toggleFavorite}
-                hasTeam={leagueData.id === "football-belarus" && (hasTeam || (belarusLeague?.your_place !== null && belarusLeague?.your_place !== undefined))}
+              hasTeam={leagueData.id === "football-belarus" && (hasTeam || (belarusLeague?.your_place !== null && belarusLeague?.your_place !== undefined))}
                 isLoading={"isLoading" in leagueData ? leagueData.isLoading : false}
+                seasonOver={leagueData.id === "football-belarus" ? isSeasonOver : false}
               />
             )}
 

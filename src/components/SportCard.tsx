@@ -3,6 +3,7 @@ import { Play, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { squadsApi } from "@/lib/api";
+import { toast } from "sonner";
 
 interface SportCardProps {
   title: string;
@@ -24,6 +25,7 @@ interface SportCardProps {
   onToggleFavorite?: (leagueId: string) => void;
   hasTeam?: boolean;
   isLoading?: boolean;
+  seasonOver?: boolean;
 }
 
 const SportCard = ({
@@ -46,6 +48,7 @@ const SportCard = ({
   onToggleFavorite,
   hasTeam = false,
   isLoading = false,
+  seasonOver = false,
 }: SportCardProps) => {
   const navigate = useNavigate();
   const [isNavigating, setIsNavigating] = useState(false);
@@ -101,6 +104,8 @@ const SportCard = ({
             localStorage.setItem('fantasyHasTeam', 'true');
             console.log('[SportCard] Navigating to /league');
             navigate('/league');
+          } else if (seasonOver) {
+            toast.info("Сезон 2026 окончен, возвращайся в феврале и собирай команду на сезон 2027.", { duration: 4000 });
           } else {
             localStorage.removeItem('fantasyUserSquad');
             console.log('[SportCard] Navigating to /create-team (no squad)');
@@ -108,8 +113,12 @@ const SportCard = ({
           }
         } else {
           console.log('[SportCard] No squads found or response failed');
-          localStorage.removeItem('fantasyUserSquad');
-          navigate('/create-team');
+          if (seasonOver) {
+            toast.info("Сезон 2026 окончен, возвращайся в феврале и собирай команду на сезон 2027.", { duration: 4000 });
+          } else {
+            localStorage.removeItem('fantasyUserSquad');
+            navigate('/create-team');
+          }
         }
       } catch (error) {
         console.error('[SportCard] Error checking squads:', error);
@@ -223,14 +232,22 @@ const SportCard = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  if (seasonOver) {
+                    toast.info("Сезон 2026 окончен, возвращайся в феврале и собирай команду на сезон 2027.", { duration: 4000 });
+                    return;
+                  }
                   if (apiLeagueId) {
                     localStorage.setItem('fantasySelectedLeagueId', apiLeagueId.toString());
                   }
                   navigate('/create-team');
                 }}
-                className="mt-4 w-full py-3 bg-primary text-primary-foreground font-medium rounded-lg text-sm hover:bg-primary/90 transition-colors active:scale-[0.98]"
+                className={`mt-4 w-full py-3 font-medium rounded-lg text-sm transition-colors ${
+                  seasonOver
+                    ? "bg-primary/30 text-primary-foreground/50 cursor-not-allowed blur-[1.5px] select-none"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
+                }`}
               >
-                Создать команду
+                Собрать команду
               </button>
             )}
             

@@ -16,6 +16,7 @@ export interface EnrichedPlayer {
   points: number; // Оставлено для обратной совместимости
   total_points?: number; // Общие очки за все туры
   tour_points?: number; // Очки за последний/текущий тур
+  final_tour_points?: number; // Финальные очки за тур с учетом капитанства/буста
   slotIndex?: number;
   hasRedCard?: boolean;
   isInjured?: boolean;
@@ -64,10 +65,17 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
       return;
     }
 
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
+    // Reset state synchronously so old squad data is never shown during loading
+    setSquad(null);
+    setSquadTourData(null);
+    setAllPlayers([]);
+    setToursData(null);
+    setPlayerStatuses([]);
+    setTourPoints(0);
+    setIsLoading(true);
+    setError(null);
 
+    const fetchData = async () => {
       try {
         // NEW ARCHITECTURE: First fetch squad metadata
         let squadMetadataResponse = await squadsApi.getSquadById(squadId);
@@ -234,6 +242,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         points: sp.points,
         total_points: sp.total_points,
         tour_points: sp.tour_points,
+        final_tour_points: sp.final_tour_points,
         slotIndex,
         hasRedCard: statusFlags.hasRedCard,
         isInjured: statusFlags.isInjured,
@@ -273,6 +282,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
         points: sp.points,
         total_points: sp.total_points,
         tour_points: sp.tour_points,
+        final_tour_points: sp.final_tour_points,
         slotIndex,
         hasRedCard: statusFlags.hasRedCard,
         isInjured: statusFlags.isInjured,
@@ -283,7 +293,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
     });
   }, [squadTourData, playerMap, playerStatusMap]);
 
-  const currentTour = toursData?.current_tour?.number || null;
+  const currentTour
 
   return {
     squad,

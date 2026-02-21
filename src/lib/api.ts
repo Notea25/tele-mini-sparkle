@@ -130,25 +130,15 @@ async function refreshTokens(): Promise<boolean> {
   if (!refreshToken) return false;
 
   try {
-    const { data, error } = await supabase.functions.invoke("api-proxy", {
-      method: "POST",
-      body: {
-        path: "/api/users/refresh",
-        method: "POST",
-        body: { refresh_token: refreshToken },
-      },
-    });
+    const response = await callBackend<{ access_token: string; refresh_token?: string }>(
+      "/api/users/refresh",
+      { method: "POST", body: { refresh_token: refreshToken }, auth: false }
+    );
 
-    if (error || !data) {
-      return false;
-    }
-
-    const response = data as ApiResponse<unknown>;
     if (!response.success || !response.data) return false;
 
-    const anyData = response.data as any;
-    const newAccessToken = anyData.access_token as string | undefined;
-    const newRefreshToken = (anyData.refresh_token as string | undefined) ?? refreshToken;
+    const newAccessToken = response.data.access_token;
+    const newRefreshToken = response.data.refresh_token ?? refreshToken;
 
     if (!newAccessToken) return false;
 

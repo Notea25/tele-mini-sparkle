@@ -20,28 +20,24 @@ export const usePrefetchLeagueData = () => {
       queryClient.prefetchQuery({
         queryKey: ["mySquads"],
         queryFn: () => squadsApi.getMySquads(),
-        staleTime: 10 * 60 * 1000,
       }),
 
       // Tours info
       queryClient.prefetchQuery({
         queryKey: ["tours", leagueId],
         queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
-        staleTime: 10 * 60 * 1000,
       }),
 
       // Commercial leagues
       queryClient.prefetchQuery({
         queryKey: ["commercialLeagues", leagueId],
         queryFn: () => commercialLeaguesApi.getByLeague(leagueId),
-        staleTime: 10 * 60 * 1000,
       }),
 
       // User's leagues
       queryClient.prefetchQuery({
         queryKey: ["mySquadLeagues"],
         queryFn: () => customLeaguesApi.getMySquadLeagues(),
-        staleTime: 10 * 60 * 1000,
       }),
     ];
 
@@ -64,7 +60,6 @@ export const usePrefetchLeagueData = () => {
           queryClient.prefetchQuery({
             queryKey: ["leaderboard", tourId],
             queryFn: () => squadsApi.getLeaderboard(tourId),
-            staleTime: 10 * 60 * 1000,
           }),
           queryClient.prefetchQuery({
             queryKey: ["tournament-leaderboard", tourId],
@@ -72,7 +67,6 @@ export const usePrefetchLeagueData = () => {
               const result = await squadsApi.getLeaderboard(tourId);
               return result.success && Array.isArray(result.data) ? result.data : [];
             },
-            staleTime: 10 * 60 * 1000,
           }),
         ]);
       }

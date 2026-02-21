@@ -1541,7 +1541,7 @@ const TeamBuilder = () => {
                     setShowSaveConfirmation(false);
                     
                     // Invalidate cache to ensure fresh data on next pages
-                    await queryClient.invalidateQueries({ queryKey: ['my-squads'] });
+                    await queryClient.invalidateQueries({ queryKey: ['mySquads'] });
                     await queryClient.invalidateQueries({ queryKey: ['players', leagueIdNum] });
                     await queryClient.invalidateQueries({ queryKey: ['tours', leagueIdNum] });
                     

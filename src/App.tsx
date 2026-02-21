@@ -58,7 +58,16 @@ const ViewUserLeagueQueryWrapper = () => {
   return null;
 };
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 0, // Always consider data stale — refetch on every mount
+      gcTime: 30 * 1000, // Keep data in memory 30 sec to avoid loading flash during navigation
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    },
+  },
+});
 
 const PROFILE_STORAGE_KEY = "fantasyUserProfile";
 
@@ -140,6 +149,15 @@ const App = () => {
     if (refParam) {
       setIsReferral(true);
       localStorage.setItem('fantasyReferrer', refParam);
+    }
+
+    // If this is NOT a league invite link, clear any stale fantasyLeagueInvite.
+    // Otherwise old invite modal appears when opening the app via referral or normally.
+    const isLeagueInviteLink =
+      (startappParam && (startappParam.startsWith('invite_') || startappParam.startsWith('leagueInvite_'))) ||
+      !!leagueInviteParam;
+    if (!isLeagueInviteLink) {
+      localStorage.removeItem('fantasyLeagueInvite');
     }
   }, []);
 

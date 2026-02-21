@@ -28,17 +28,6 @@ export interface TransformedPlayer {
   hasLeftLeague?: boolean;
 }
 
-interface PlayersCache {
-  leagueId: string;
-  players: TransformedPlayer[];
-  cachedAt: number;
-  version?: number; // Cache version for invalidation
-}
-
-const CACHE_KEY = 'fantasyPlayersCache';
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 4; // Increment to invalidate old cache - added jersey fields
-
 export function usePlayers(leagueId: string | null) {
   const [players, setPlayers] = useState<TransformedPlayer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,29 +39,6 @@ export function usePlayers(leagueId: string | null) {
     }
 
     const loadPlayers = async () => {
-      // Проверяем кэш
-      try {
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const parsedCache: PlayersCache = JSON.parse(cached);
-          const now = Date.now();
-          // Check cache validity: same league, not expired, has data, and correct version
-          if (
-            parsedCache.leagueId === leagueId &&
-            now - parsedCache.cachedAt < CACHE_DURATION &&
-            parsedCache.players.length > 0 &&
-            parsedCache.version === CACHE_VERSION
-          ) {
-            setPlayers(parsedCache.players);
-            setIsLoading(false);
-            return;
-          }
-        }
-      } catch (e) {
-        console.error('Error reading players cache:', e);
-      }
-
-      // Загружаем с сервера
       setIsLoading(true);
       try {
         const response = await playersApi.getByLeague(Number(leagueId));
@@ -94,17 +60,7 @@ export function usePlayers(leagueId: string | null) {
             isInjured: player.is_injured,
             hasLeftLeague: player.has_left_league,
           }));
-
           setPlayers(transformedPlayers);
-
-          // Сохраняем в кэш
-          const cacheData: PlayersCache = {
-            leagueId,
-            players: transformedPlayers,
-            cachedAt: Date.now(),
-            version: CACHE_VERSION,
-          };
-          localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
         }
       } catch (e) {
         console.error('Error loading players:', e);

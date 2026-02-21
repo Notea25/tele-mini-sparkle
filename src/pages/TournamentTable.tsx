@@ -28,8 +28,6 @@ const TournamentTable = () => {
   const { data: toursResponse } = useQuery({
     queryKey: ['tours', leagueId],
     queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
   });
   const toursData = toursResponse?.data;
 
@@ -40,8 +38,6 @@ const TournamentTable = () => {
       const result = await squadsApi.getMySquads();
       return result.success ? result.data : null;
     },
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
   });
 
   // Приоритет выбора тура для лидерборда:
@@ -73,8 +69,6 @@ const TournamentTable = () => {
       return result.success && Array.isArray(result.data) ? result.data : [];
     },
     enabled: !!targetTourId,
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
   });
 
 

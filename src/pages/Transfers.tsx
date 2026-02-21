@@ -445,6 +445,8 @@ const Transfers = () => {
   const initialStateRef = useRef<string>("");
   const initialPlayersRef = useRef<PlayerDataExt[]>([]);
   const [hasChanges, setHasChanges] = useState(false);
+  // Ref version of hasChanges to use inside effects without dependency issues
+  const hasLocalChangesRef = useRef(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
@@ -454,6 +456,9 @@ const Transfers = () => {
   // Initialize players from API squad data
   useEffect(() => {
     if (isLoadingSquad || apiMainPlayers.length === 0) return;
+    // If user already has pending (unsaved) changes, don't overwrite them
+    // This prevents losing changes when the app is minimized and restored (refetchOnWindowFocus)
+    if (hasLocalChangesRef.current) return;
 
     // Convert API players to local format with next opponent data
     const mainSquadConverted = apiMainPlayers.map((p) => {
@@ -533,8 +538,10 @@ const Transfers = () => {
     const currentState = JSON.stringify(players.map((p) => p.id).sort());
     if (initialStateRef.current && currentState !== initialStateRef.current) {
       setHasChanges(true);
+      hasLocalChangesRef.current = true;
     } else {
       setHasChanges(false);
+      hasLocalChangesRef.current = false;
     }
   }, [players]);
 

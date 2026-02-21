@@ -55,19 +55,15 @@ const League = () => {
   const leagueId = parseInt(localStorage.getItem(SELECTED_LEAGUE_ID_KEY) || '116', 10);
   
   // Fetch user squads from API (or cache)
-  const { data: mySquadsResponse } = useQuery({
+  const { data: mySquadsResponse, isLoading: isSquadsLoading } = useQuery({
     queryKey: ['mySquads'],
     queryFn: () => squadsApi.getMySquads(),
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
   });
   
   // Fetch tours info from API (or cache)
   const { data: toursResponse } = useQuery({
     queryKey: ['tours', leagueId],
     queryFn: () => toursApi.getPreviousCurrentNextTour(leagueId),
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
   });
  
   // Find the squad for current league (with safety check for API errors)
@@ -102,8 +98,6 @@ const League = () => {
     queryKey: ['leaderboard', currentTourId],
     queryFn: () => currentTourId ? squadsApi.getLeaderboard(currentTourId) : Promise.resolve({ success: false, data: [] }),
     enabled: !!currentTourId,
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
   });
 
   // Get fav_team_id from current squad
@@ -118,24 +112,18 @@ const League = () => {
       ? customLeaguesApi.getClubLeaderboard(currentTourId, favTeamId) 
       : Promise.resolve({ success: false, data: undefined }),
     enabled: !!favTeamId && !!currentTourId,
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
   });
 
   // Fetch commercial leagues from API
   const { data: commercialLeaguesResponse, isLoading: commercialLeaguesLoading } = useQuery({
     queryKey: ['commercialLeagues', leagueId],
     queryFn: () => commercialLeaguesApi.getByLeague(leagueId),
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
   });
 
   // Fetch user's leagues from API
   const { data: mySquadLeaguesResponse, isLoading: myLeaguesLoading } = useQuery({
     queryKey: ['mySquadLeagues'],
     queryFn: () => customLeaguesApi.getMySquadLeagues(),
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
   });
 
   const clubLeaderboardData = useMemo(() => {
@@ -1084,7 +1072,7 @@ const League = () => {
             </p>
 
             {/* Club league content */}
-            {clubLeaderboardLoading ? (
+            {(isSquadsLoading || clubLeaderboardLoading) ? (
               <div className="text-center py-8 text-muted-foreground">
                 Загрузка...
               </div>

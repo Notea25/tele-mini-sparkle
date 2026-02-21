@@ -4,6 +4,10 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
+  "rewrites": [
+    { "source": "/proxy/:path*", "destination": "http://31.222.229.78/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "git": {
     "deploymentEnabled": {
       "main": true,
