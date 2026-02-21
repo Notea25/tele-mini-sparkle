@@ -1595,7 +1595,7 @@ const TeamBuilder = () => {
                     }
                     
                     // No pending invite, go to league page
-                    navigate("/league");
+                    navigate("/league", { state: { justCreatedSquadId: response.data.id } });
                   } else {
                     console.error("Squad creation failed:", response.error);
                     const errorMsg = response.error || "Не удалось создать команду";

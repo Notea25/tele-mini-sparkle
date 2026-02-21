@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Pencil, ChevronDown, ChevronUp, User, ArrowRight, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -47,6 +47,9 @@ const SELECTED_LEAGUE_ID_KEY = "fantasySelectedLeagueId";
 const League = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const location = useLocation();
+  // Squad ID passed from TeamBuilder right after team creation (mySquads query may still be loading)
+  const justCreatedSquadId = (location.state as { justCreatedSquadId?: number } | null)?.justCreatedSquadId;
   
   // Preload all images to prevent flickering when switching tabs
   const imagesLoaded = useImagePreloader(ALL_PAGE_IMAGES);
@@ -71,7 +74,7 @@ const League = () => {
   const currentSquad: Squad | undefined = squadsData.find(
     (squad) => squad.league_id === leagueId
   );
-  const mySquadId = currentSquad?.id;
+  const mySquadId = currentSquad?.id ?? (isSquadsLoading ? justCreatedSquadId : undefined);
   
   // Get tour info from API response
   // When a tour starts, we immediately show its number and leaderboard data,

@@ -290,7 +290,7 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
     });
   }, [squadTourData, playerMap, playerStatusMap]);
 
-  const currentTour
+  const currentTour = squadTourData?.tour_number ?? null;
 
   return {
     squad,
