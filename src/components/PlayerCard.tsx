@@ -328,23 +328,17 @@ const PlayerCard = ({
 
   // Get real point breakdown from the most recent match in last_3_tours OR from match_stats prop
   const getPointBreakdown = () => {
-    const actions: { action: string; points: number }[] = [];
-    
     // Priority: use match_stats from props (tour-specific data), fallback to API data
     const matchStats = player.match_stats && player.match_stats.length > 0 
       ? player.match_stats 
       : fullInfo?.last_3_tours?.[0]?.matches;
     
     if (!matchStats || matchStats.length === 0) {
-      return actions; // No data available
+      return { byMatch: [], hasMultipleMatches: false, totalActions: [] }; // No data available
     }
     
-    // Use first match for breakdown (or aggregate if multiple matches)
-    const recentMatch = matchStats[0];
-    
-    if (!recentMatch) {
-      return actions;
-    }
+    // Check if player has multiple matches in this tour (postponed match scenario)
+    const hasMultipleMatches = matchStats.length > 1;
     
     // Get player position (support both API format and prop format)
     const playerPos = fullInfo?.base_info?.position || player.position;
@@ -353,77 +347,99 @@ const PlayerCard = ({
     const isMidfielder = playerPos === "ПЗ" || playerPos === "Midfielder";
     const isAttacker = playerPos === "НП" || playerPos === "Attacker" || playerPos === "Forward";
     
-    // Debug logging
-    console.log('[PlayerCard] Point breakdown debug:', {
-      playerPos,
-      isGoalkeeper,
-      isDefender,
-      clean_sheet: recentMatch.clean_sheet,
-      minutes_played: recentMatch.minutes_played,
-      goals_conceded: recentMatch.goals_conceded,
-      recentMatch
-    });
-    
-    // 1. Minutes played (appearance points)
-    const minutesPlayed = recentMatch.minutes_played || 0;
-    if (minutesPlayed >= 60) {
-      actions.push({ action: "Выход на поле (60+ мин)", points: 2 });
-    } else if (minutesPlayed > 0) {
-      actions.push({ action: "Выход на поле (<60 мин)", points: 1 });
-    }
-    
-    // 2. Goals (depends on position)
-    if (recentMatch.goals_total && recentMatch.goals_total > 0) {
-      const goalPoints = isGoalkeeper ? 6 : isDefender ? 6 : isMidfielder ? 5 : 4;
-      actions.push({ action: "Гол", points: goalPoints * recentMatch.goals_total });
-    }
-    
-    // 3. Assists (all positions +3)
-    if (recentMatch.assists && recentMatch.assists > 0) {
-      actions.push({ action: "Голевая передача", points: 3 * recentMatch.assists });
-    }
-    
-    // 4. Clean sheet (for goalkeepers and defenders who played >= 60 min)
-    if (recentMatch.clean_sheet && minutesPlayed >= 60) {
-      if (isGoalkeeper || isDefender) {
-        actions.push({ action: "Сухой матч", points: 4 });
+    // Helper function to calculate actions for a single match
+    const calculateMatchActions = (match: any) => {
+      const actions: { action: string; points: number }[] = [];
+      
+      // 1. Minutes played (appearance points)
+      const minutesPlayed = match.minutes_played || 0;
+      if (minutesPlayed >= 60) {
+        actions.push({ action: "Выход на поле (60+ мин)", points: 2 });
+      } else if (minutesPlayed > 0) {
+        actions.push({ action: "Выход на поле (<60 мин)", points: 1 });
       }
-    }
-    
-    // 5. Penalty saved (only for goalkeepers)
-    if (recentMatch.penalty_saved && recentMatch.penalty_saved > 0 && isGoalkeeper) {
-      actions.push({ action: "Отраженный пенальти", points: 5 * recentMatch.penalty_saved });
-    }
-    
-    // 6. Penalty missed (all positions -2)
-    if (recentMatch.penalty_missed && recentMatch.penalty_missed > 0) {
-      actions.push({ action: "Незабитый пенальти", points: -2 * recentMatch.penalty_missed });
-    }
-    
-    // 7. Yellow cards (all positions -1)
-    if (recentMatch.yellow_cards && recentMatch.yellow_cards > 0) {
-      actions.push({ action: "Жёлтая карточка", points: -1 * recentMatch.yellow_cards });
-    }
-    
-    // 8. Red cards (all positions -3)
-    if (recentMatch.red_cards && recentMatch.red_cards > 0) {
-      actions.push({ action: "Красная карточка", points: -3 * recentMatch.red_cards });
-    }
-    
-    // 9. Goals conceded (only for goalkeepers and defenders, -1 per 2 goals)
-    if (recentMatch.goals_conceded && recentMatch.goals_conceded > 0) {
-      if (isGoalkeeper || isDefender) {
-        const penalty = Math.floor(recentMatch.goals_conceded / 2) * -1;
-        if (penalty < 0) {
-          actions.push({ action: "Пропущенные голы", points: penalty });
+      
+      // 2. Goals (depends on position)
+      if (match.goals_total && match.goals_total > 0) {
+        const goalPoints = isGoalkeeper ? 6 : isDefender ? 6 : isMidfielder ? 5 : 4;
+        actions.push({ action: "Гол", points: goalPoints * match.goals_total });
+      }
+      
+      // 3. Assists (all positions +3)
+      if (match.assists && match.assists > 0) {
+        actions.push({ action: "Голевая передача", points: 3 * match.assists });
+      }
+      
+      // 4. Clean sheet (for goalkeepers and defenders who played >= 60 min)
+      if (match.clean_sheet && minutesPlayed >= 60) {
+        if (isGoalkeeper || isDefender) {
+          actions.push({ action: "Сухой матч", points: 4 });
         }
       }
+      
+      // 5. Penalty saved (only for goalkeepers)
+      if (match.penalty_saved && match.penalty_saved > 0 && isGoalkeeper) {
+        actions.push({ action: "Отраженный пенальти", points: 5 * match.penalty_saved });
+      }
+      
+      // 6. Penalty missed (all positions -2)
+      if (match.penalty_missed && match.penalty_missed > 0) {
+        actions.push({ action: "Незабитый пенальти", points: -2 * match.penalty_missed });
+      }
+      
+      // 7. Yellow cards (all positions -1)
+      if (match.yellow_cards && match.yellow_cards > 0) {
+        actions.push({ action: "Жёлтая карточка", points: -1 * match.yellow_cards });
+      }
+      
+      // 8. Red cards (all positions -3)
+      if (match.red_cards && match.red_cards > 0) {
+        actions.push({ action: "Красная карточка", points: -3 * match.red_cards });
+      }
+      
+      // 9. Goals conceded (only for goalkeepers and defenders, -1 per 2 goals)
+      if (match.goals_conceded && match.goals_conceded > 0) {
+        if (isGoalkeeper || isDefender) {
+          const penalty = Math.floor(match.goals_conceded / 2) * -1;
+          if (penalty < 0) {
+            actions.push({ action: "Пропущенные голы", points: penalty });
+          }
+        }
+      }
+      
+      return actions;
+    };
+    
+    // Calculate breakdown per match
+    const byMatch = matchStats.map((match: any) => ({
+      match,
+      actions: calculateMatchActions(match),
+    }));
+    
+    // If single match, aggregate to flat list (Variant B behavior)
+    if (!hasMultipleMatches) {
+      return { byMatch: [], hasMultipleMatches: false, totalActions: byMatch[0]?.actions || [] };
     }
     
-    return actions;
+    // Multiple matches: return grouped by match
+    return { byMatch, hasMultipleMatches: true, totalActions: [] };
   };
 
   const pointBreakdown = getPointBreakdown();
+  const { byMatch, hasMultipleMatches, totalActions } = pointBreakdown;
+  
+  // Helper to get match header text
+  const getMatchHeader = (match: any) => {
+    const homeAway = match.is_home ? "Д" : "Г";
+    const opponentName = match.opponent_team_name || "???";
+    
+    // Check if postponed
+    if (match.is_postponed && match.original_tour_number && match.actual_tour_number) {
+      return `📍 Тур ${match.original_tour_number}→${match.actual_tour_number} 🔄 • ${opponentName} (${homeAway})`;
+    }
+    
+    return `${opponentName} (${homeAway})`;
+  };
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -626,68 +642,137 @@ const PlayerCard = ({
                   }
                   
                   // Otherwise show normal breakdown or placeholder
-                  return pointBreakdown.length > 0 ? (
-                  <>
-                    {(() => {
-                      // Group actions by name
-                      const grouped = pointBreakdown.reduce((acc, item) => {
-                        const key = item.action;
-                        if (!acc[key]) {
-                          acc[key] = { action: item.action, points: item.points, count: 1 };
-                        } else {
-                          acc[key].count += 1;
-                          acc[key].points += item.points;
-                        }
-                        return acc;
-                      }, {} as Record<string, { action: string; points: number; count: number }>);
-                      
-                      return Object.values(grouped).map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between">
-                          <span className="text-muted-foreground text-sm">
-                            {item.action}{item.count > 1 ? ` x${item.count}` : ""}
-                          </span>
-                          <span className={`text-sm font-bold ${item.points > 0 ? "text-success" : item.points < 0 ? "text-red-500" : "text-foreground"}`}>
-                            {item.points > 0 ? `+${item.points}` : item.points}
+                  // Variant B: show match breakdown ONLY when multiple matches
+                  if (hasMultipleMatches && byMatch.length > 0) {
+                    // Multiple matches: group by match with headers
+                    return (
+                      <>
+                        {byMatch.map((matchData, matchIdx) => {
+                          const matchPoints = matchData.actions.reduce((sum, action) => sum + action.points, 0);
+                          return (
+                            <div key={matchIdx} className="space-y-2">
+                              {/* Match header */}
+                              <div className="text-xs font-semibold text-primary">
+                                {getMatchHeader(matchData.match)}
+                              </div>
+                              
+                              {/* Actions for this match */}
+                              {matchData.actions.length > 0 ? (
+                                matchData.actions.map((action, actionIdx) => (
+                                  <div key={actionIdx} className="flex items-center justify-between">
+                                    <span className="text-muted-foreground text-sm">{action.action}</span>
+                                    <span className={`text-sm font-bold ${action.points > 0 ? "text-success" : action.points < 0 ? "text-red-500" : "text-foreground"}`}>
+                                      {action.points > 0 ? `+${action.points}` : action.points}
+                                    </span>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="text-muted-foreground text-sm text-center">Игрок не вышел на поле</div>
+                              )}
+                              
+                              {/* Subtotal for this match */}
+                              <div className="flex items-center justify-between border-t border-border/50 pt-1">
+                                <span className="text-foreground text-sm font-medium">Итого за матч</span>
+                                <span className={`text-sm font-bold ${matchPoints > 0 ? "text-success" : matchPoints < 0 ? "text-destructive" : "text-foreground"}`}>
+                                  {matchPoints > 0 ? "+" : ""}{matchPoints}
+                                </span>
+                              </div>
+                              
+                              {/* Spacing between matches */}
+                              {matchIdx < byMatch.length - 1 && <div className="border-b border-border my-2" />}
+                            </div>
+                          );
+                        })}
+                        
+                        {/* Captain multiplier */}
+                        {isCaptain && displayPoints > 0 && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground text-sm">
+                              Бонус за капитана
+                            </span>
+                            <span className="text-sm font-bold text-purple-500">
+                              ×2
+                            </span>
+                          </div>
+                        )}
+                        
+                        {/* Final total */}
+                        <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
+                          <span className="text-foreground text-sm font-semibold">Итого</span>
+                          <span className={`text-sm font-bold ${(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "text-success" : (isCaptain ? displayPoints * 2 : displayPoints) < 0 ? "text-destructive" : "text-foreground"}`}>
+                            {(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "+" : ""}{isCaptain ? displayPoints * 2 : displayPoints}
                           </span>
                         </div>
-                      ));
-                    })()}
-                    {/* Captain/Vice-Captain multiplier - отображаем только для капитана */}
-                    {isCaptain && displayPoints > 0 && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground text-sm">
-                          Бонус за капитана
-                        </span>
-                        <span className="text-sm font-bold text-purple-500">
-                          ×2
-                        </span>
+                      </>
+                    );
+                  } else if (totalActions.length > 0) {
+                    // Single match: show flat list (original behavior)
+                    return (
+                      <>
+                        {(() => {
+                          // Group actions by name
+                          const grouped = totalActions.reduce((acc, item) => {
+                            const key = item.action;
+                            if (!acc[key]) {
+                              acc[key] = { action: item.action, points: item.points, count: 1 };
+                            } else {
+                              acc[key].count += 1;
+                              acc[key].points += item.points;
+                            }
+                            return acc;
+                          }, {} as Record<string, { action: string; points: number; count: number }>);
+                          
+                          return Object.values(grouped).map((item, idx) => (
+                            <div key={idx} className="flex items-center justify-between">
+                              <span className="text-muted-foreground text-sm">
+                                {item.action}{item.count > 1 ? ` x${item.count}` : ""}
+                              </span>
+                              <span className={`text-sm font-bold ${item.points > 0 ? "text-success" : item.points < 0 ? "text-red-500" : "text-foreground"}`}>
+                                {item.points > 0 ? `+${item.points}` : item.points}
+                              </span>
+                            </div>
+                          ));
+                        })()}
+                        {/* Captain/Vice-Captain multiplier */}
+                        {isCaptain && displayPoints > 0 && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground text-sm">
+                              Бонус за капитана
+                            </span>
+                            <span className="text-sm font-bold text-purple-500">
+                              ×2
+                            </span>
+                          </div>
+                        )}
+                        <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
+                          <span className="text-foreground text-sm font-semibold">Итого</span>
+                          <span className={`text-sm font-bold ${(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "text-success" : (isCaptain ? displayPoints * 2 : displayPoints) < 0 ? "text-destructive" : "text-foreground"}`}>
+                            {(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "+" : ""}{isCaptain ? displayPoints * 2 : displayPoints}
+                          </span>
+                        </div>
+                      </>
+                    );
+                  } else {
+                    // No data: show placeholder
+                    return (
+                      /* Placeholder when no points data - similar to Form/Calendar */
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground text-sm">—</span>
+                          <span className="text-muted-foreground text-sm">—</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground text-sm">—</span>
+                          <span className="text-muted-foreground text-sm">—</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground text-sm">—</span>
+                          <span className="text-muted-foreground text-sm">—</span>
+                        </div>
                       </div>
-                    )}
-                    <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
-                      <span className="text-foreground text-sm font-semibold">Итого</span>
-                      <span className={`text-sm font-bold ${(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "text-success" : (isCaptain ? displayPoints * 2 : displayPoints) < 0 ? "text-destructive" : "text-foreground"}`}>
-                        {(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "+" : ""}{isCaptain ? displayPoints * 2 : displayPoints}
-                      </span>
-                    </div>
-
-                  </>
-                ) : (
-                  /* Placeholder when no points data - similar to Form/Calendar */
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-sm">—</span>
-                      <span className="text-muted-foreground text-sm">—</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-sm">—</span>
-                      <span className="text-muted-foreground text-sm">—</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-sm">—</span>
-                      <span className="text-muted-foreground text-sm">—</span>
-                    </div>
-                  </div>
-                );})()}
+                    );
+                  }
+                })()}
               </div>
             </div>
           )}
