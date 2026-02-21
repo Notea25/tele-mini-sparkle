@@ -384,13 +384,13 @@ const ViewTeam = () => {
     return displayMainPlayers.map(p => {
       // Use final_tour_points from API (already includes captain/boost multipliers)
       // Fall back to manual calculation only if final_tour_points is not available
+      const isCaptain = displayCaptainId === p.id;
+      const isViceCaptain = displayViceCaptainId === p.id;
       let displayPoints: number;
       if (p.final_tour_points !== undefined && p.final_tour_points !== null) {
         displayPoints = p.final_tour_points;
       } else {
         const basePoints = p.tour_points ?? p.points ?? 0;
-        const isCaptain = displayCaptainId === p.id;
-        const isViceCaptain = displayViceCaptainId === p.id;
         displayPoints = basePoints;
         if (isCaptain) {
           displayPoints = basePoints * 2;
