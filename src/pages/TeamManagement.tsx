@@ -839,6 +839,23 @@ const TeamManagement = () => {
     );
   }
 
+  // Squad exists but no SquadTour found for this tour
+  // This can happen if the team was created during an active tour when the next tour wasn't set up yet
+  if (!squadTourData) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center gap-3">
+        <p className="text-foreground text-lg font-medium">{squad.name}</p>
+        <p className="text-muted-foreground">
+          Состав для тура не найден.
+        </p>
+        <p className="text-muted-foreground text-sm">
+          Ваша команда была создана, но ещё не привязана к туру.
+          Обратитесь к администратору.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <SportHeader

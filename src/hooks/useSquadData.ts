@@ -109,27 +109,17 @@ export function useSquadData(leagueId: number): UseSquadDataResult {
   }, [squadsResponse, leagueId]);
 
   // Determine target tour ID for squad_tours API
-  // Priority: next_tour.id, then current_tour.id if deadline passed
+  // Priority: next_tour.id, then current_tour.id as fallback (no deadline check needed)
   const targetTourId = useMemo(() => {
     if (toursData?.next_tour?.id) return toursData.next_tour.id;
-    if (toursData?.current_tour?.id) {
-      const deadline = toursData.current_tour.deadline ? new Date(toursData.current_tour.deadline) : null;
-      if (deadline && deadline <= new Date()) {
-        return toursData.current_tour.id;
-      }
-    }
+    if (toursData?.current_tour?.id) return toursData.current_tour.id;
     return null;
   }, [toursData]);
 
   // Determine target tour NUMBER for fetching player statuses
   const targetTourNumber = useMemo(() => {
     if (toursData?.next_tour?.number) return toursData.next_tour.number;
-    if (toursData?.current_tour?.number) {
-      const deadline = toursData.current_tour.deadline ? new Date(toursData.current_tour.deadline) : null;
-      if (deadline && deadline <= new Date()) {
-        return toursData.current_tour.number;
-      }
-    }
+    if (toursData?.current_tour?.number) return toursData.current_tour.number;
     return null;
   }, [toursData]);
 
