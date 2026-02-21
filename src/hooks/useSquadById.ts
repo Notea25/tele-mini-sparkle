@@ -118,16 +118,13 @@ export function useSquadById(squadId: number | null): UseSquadByIdResult {
           setToursData(toursResponse.data);
 
           // NEW ARCHITECTURE: Fetch SquadTour data using the new squad_tours API
-          // Determine target tour: current if deadline passed, otherwise previous, or next as fallback
-          const currentTourDeadline = toursResponse.data.current_tour?.deadline 
-            ? new Date(toursResponse.data.current_tour.deadline) 
-            : null;
-          const useCurrentTour = currentTourDeadline && currentTourDeadline <= new Date();
-          
+          // ViewTeam always shows the CURRENT running tour so the player cards
+          // display live points.  Use current_tour first (regardless of deadline),
+          // then fall back to previous, then next.
           let targetTourId: number | undefined;
           let targetTourNumber: number | undefined;
           
-          if (useCurrentTour && toursResponse.data.current_tour?.id) {
+          if (toursResponse.data.current_tour?.id) {
             targetTourId = toursResponse.data.current_tour.id;
             targetTourNumber = toursResponse.data.current_tour.number;
           } else if (toursResponse.data.previous_tour?.id) {
