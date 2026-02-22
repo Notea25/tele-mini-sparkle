@@ -449,12 +449,6 @@ const PlayerCard = ({
   const getMatchHeader = (match: any) => {
     const homeAway = match.is_home ? "Д" : "Г";
     const opponentName = match.opponent_team_name || "???";
-    
-    // Check if postponed
-    if (match.is_postponed && match.original_tour_number && match.actual_tour_number) {
-      return `📍 Тур ${match.original_tour_number}→${match.actual_tour_number} 🔄 • ${opponentName} (${homeAway})`;
-    }
-    
     return `${opponentName} (${homeAway})`;
   };
 
@@ -608,25 +602,29 @@ const PlayerCard = ({
             <div className="mt-6">
               <h3 className="text-foreground text-sm font-normal font-display mb-3 text-left">Набранные очки</h3>
               <div className="bg-secondary/30 rounded-xl p-3 space-y-2">
-                {/* Check if player has 0 minutes played */}
+                {/* Check if player has 0 minutes played OR tour is finalized without stats */}
                 {(() => {
                   // Priority: check match_stats from props (tour-specific), fallback to API
                   let hasMatchData = false;
                   let playedZeroMinutes = false;
+                  let tourFinalized = false;
                   
                   if (player.match_stats && player.match_stats.length > 0) {
                     // Check if player played 0 minutes in ALL matches of this tour
                     hasMatchData = true;
                     const totalMinutes = player.match_stats.reduce((sum, match) => sum + (match.minutes_played || 0), 0);
                     playedZeroMinutes = totalMinutes === 0;
-                  } else if (fullInfo?.last_3_tours?.[0]?.matches?.[0]) {
-                    // Fallback to API data
+                  } else if (tourData?.matches && tourData.matches.length > 0) {
+                    // Check if player has match stats from API
                     hasMatchData = true;
-                    const apiMinutes = fullInfo.last_3_tours[0].matches[0].minutes_played;
-                    playedZeroMinutes = apiMinutes === 0;
+                    const totalMinutes = tourData.matches.reduce((sum, match) => sum + (match.minutes_played || 0), 0);
+                    playedZeroMinutes = totalMinutes === 0;
+                  } else if (tourData?.is_finalized) {
+                    // Tour is finalized but no match stats - player didn't play
+                    tourFinalized = true;
                   }
                   
-                  if (hasMatchData && playedZeroMinutes) {
+                  if ((hasMatchData && playedZeroMinutes) || tourFinalized) {
                     return (
                       <div className="flex items-center justify-center py-4">
                         <span className="text-red-500 text-sm font-semibold text-center">
@@ -642,19 +640,22 @@ const PlayerCard = ({
                   // Same check as above for consistency
                   let hasMatchData = false;
                   let playedZeroMinutes = false;
+                  let tourFinalized = false;
                   
                   if (player.match_stats && player.match_stats.length > 0) {
                     hasMatchData = true;
                     const totalMinutes = player.match_stats.reduce((sum, match) => sum + (match.minutes_played || 0), 0);
                     playedZeroMinutes = totalMinutes === 0;
-                  } else if (fullInfo?.last_3_tours?.[0]?.matches?.[0]) {
+                  } else if (tourData?.matches && tourData.matches.length > 0) {
                     hasMatchData = true;
-                    const apiMinutes = fullInfo.last_3_tours[0].matches[0].minutes_played;
-                    playedZeroMinutes = apiMinutes === 0;
+                    const totalMinutes = tourData.matches.reduce((sum, match) => sum + (match.minutes_played || 0), 0);
+                    playedZeroMinutes = totalMinutes === 0;
+                  } else if (tourData?.is_finalized) {
+                    tourFinalized = true;
                   }
                   
-                  // If played 0 minutes, don't show breakdown (already showing warning above)
-                  if (hasMatchData && playedZeroMinutes) {
+                  // If played 0 minutes or tour finalized without stats, don't show breakdown (already showing warning above)
+                  if ((hasMatchData && playedZeroMinutes) || tourFinalized) {
                     return null;
                   }
                   
@@ -714,12 +715,21 @@ const PlayerCard = ({
                         )}
                         
                         {/* Final total */}
-                        <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
-                          <span className="text-foreground text-sm font-semibold">Итого</span>
-                          <span className={`text-sm font-bold ${(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "text-success" : (isCaptain ? displayPoints * 2 : displayPoints) < 0 ? "text-destructive" : "text-foreground"}`}>
-                            {(isCaptain ? displayPoints * 2 : displayPoints) > 0 ? "+" : ""}{isCaptain ? displayPoints * 2 : displayPoints}
-                          </span>
-                        </div>
+                        {(() => {
+                          // Calculate total as sum of all "Итого за матч"
+                          const totalPoints = byMatch.reduce((sum, matchData) => {
+                            return sum + matchData.actions.reduce((matchSum, action) => matchSum + action.points, 0);
+                          }, 0);
+                          const finalPoints = isCaptain ? totalPoints * 2 : totalPoints;
+                          return (
+                            <div className="border-t border-border pt-2 mt-2 flex items-center justify-between">
+                              <span className="text-foreground text-sm font-semibold">Итого</span>
+                              <span className={`text-sm font-bold ${finalPoints > 0 ? "text-success" : finalPoints < 0 ? "text-destructive" : "text-foreground"}`}>
+                                {finalPoints > 0 ? "+" : ""}{finalPoints}
+                              </span>
+                            </div>
+                          );
+                        })()}
                       </>
                     );
                   } else if (totalActions.length > 0) {

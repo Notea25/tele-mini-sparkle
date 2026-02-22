@@ -589,15 +589,12 @@ export interface PlayerFullInfoMatch {
   penalty_saved: number | null;
   clean_sheet: boolean | null;
   goals_conceded: number | null;
-  // Postponement fields
-  is_postponed?: boolean;
-  original_tour_number?: number;
-  actual_tour_number?: number;
 }
 
 export interface PlayerFullInfoTour {
   tour_id: number;
   tour_number: number;
+  is_finalized: boolean;
   matches: PlayerFullInfoMatch[];
 }
 
