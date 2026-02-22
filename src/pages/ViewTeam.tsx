@@ -152,9 +152,14 @@ const ViewTeam = () => {
       if (toursResponse.success && toursResponse.data) {
         const tours: TourInfo[] = [];
         
+        // Get current tour ID to exclude it from historical tours
+        const currentTourId = toursResponse.data.current_tour?.id;
+        
         // Build list of all historical tours from snapshots
+        // EXCLUDE current tour (unfinalized) even if it has a snapshot
         // Sort by tour number to get them in chronological order
         const historicalTours = snapshots
+          .filter(s => s.tour_id !== currentTourId) // Exclude current tour
           .map(s => ({
             id: s.tour_id,
             number: s.tour_number,
@@ -167,12 +172,6 @@ const ViewTeam = () => {
           .sort((a, b) => a.number - b.number);
         
         tours.push(...historicalTours);
-        
-        // Add current tour ONLY if it has a history snapshot (is finalized)
-        // This prevents viewing unfinished tours in history navigation
-        if (toursResponse.data.current_tour && historyTourIds.has(toursResponse.data.current_tour.id)) {
-          tours.push(toursResponse.data.current_tour);
-        }
         
         // If no tours available yet (season not started), show next tour
         if (tours.length === 0 && toursResponse.data.next_tour) {
