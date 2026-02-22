@@ -12,7 +12,7 @@ import { clubLogos } from "@/lib/clubLogos";
 import { useSquadById, EnrichedPlayer } from "@/hooks/useSquadById";
 import { usePlayerStatuses } from "@/hooks/usePlayerStatuses";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
-import { toursApi, squadsApi, playerStatusesApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
+import { toursApi, squadsApi, playerStatusesApi, usersApi, TourInfo, TourHistorySnapshot, TourHistoryPlayer, PlayerStatus, STATUS_INJURED, STATUS_RED_CARD, STATUS_LEFT_LEAGUE } from "@/lib/api";
 import redCardBadge from "@/assets/red-card-badge.png";
 import injuryBadge from "@/assets/injury-badge.png";
 import boostBench from "@/assets/boost-bench.png";
@@ -56,12 +56,49 @@ const ViewTeam = () => {
   
   // Player statuses for selected tour
   const [tourPlayerStatuses, setTourPlayerStatuses] = useState<PlayerStatus[]>([]);
+  
+  // Current user state for access control
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   // Get squad ID from URL params
   const squadIdParam = searchParams.get("id");
   const squadId = squadIdParam ? parseInt(squadIdParam, 10) : null;
 
   const { squad, squadTourData, mainPlayers, benchPlayers, currentTour, tourPoints, isLoading, error } = useSquadById(squadId);
+  
+  // Load current user
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const response = await usersApi.getProtected();
+        if (response.success && response.data?.user) {
+          setCurrentUserId(response.data.user.id);
+        }
+      } catch (err) {
+        console.error('Failed to load current user:', err);
+      } finally {
+        setIsLoadingUser(false);
+      }
+    };
+    loadCurrentUser();
+  }, []);
+  
+  // Check access: can view other's squad only if season has started (has current or previous tour)
+  const canViewSquad = useMemo(() => {
+    // Loading states
+    if (isLoadingUser || isLoading || !squad) return null;
+    
+    // Own squad - always can view
+    if (currentUserId && squad.user_id === currentUserId) return true;
+    
+    // Other's squad - check if season has started
+    // Season is considered started if there's a current tour or previous tour
+    const hasCurrentTour = allTours.some(t => t.type === 'current');
+    const hasPreviousTour = allTours.some(t => t.type === 'previous');
+    
+    return hasCurrentTour || hasPreviousTour;
+  }, [isLoadingUser, isLoading, squad, currentUserId, allTours]);
 
   // Debug: check what useSquadById returns
   useEffect(() => {
@@ -547,6 +584,33 @@ const ViewTeam = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Команда не найдена</p>
+      </div>
+    );
+  }
+  
+  // Check access - if not allowed to view, show message
+  if (canViewSquad === false) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center gap-4">
+        <h2 className="text-foreground text-xl font-display">{squad.name}</h2>
+        <p className="text-muted-foreground max-w-md">
+          Вы не можете видеть состав игрока до начала сезона
+        </p>
+        <Button
+          onClick={() => navigate(-1)}
+          className="bg-primary hover:opacity-90 text-primary-foreground px-6"
+        >
+          Назад
+        </Button>
+      </div>
+    );
+  }
+  
+  // Still loading access check
+  if (canViewSquad === null) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
