@@ -152,14 +152,16 @@ const ViewTeam = () => {
       if (toursResponse.success && toursResponse.data) {
         const tours: TourInfo[] = [];
         
-        // Get current tour ID to exclude it from historical tours
-        const currentTourId = toursResponse.data.current_tour?.id;
+        // Get next tour ID to exclude it from historical tours
+        // Next tour hasn't started yet, so it shouldn't be viewable in history
+        const nextTourId = toursResponse.data.next_tour?.id;
         
         // Build list of all historical tours from snapshots
-        // EXCLUDE current tour (unfinalized) even if it has a snapshot
+        // EXCLUDE next tour (not started yet) even if it has a snapshot
+        // Include current tour (started but not finished) - it can be viewed
         // Sort by tour number to get them in chronological order
         const historicalTours = snapshots
-          .filter(s => s.tour_id !== currentTourId) // Exclude current tour
+          .filter(s => s.tour_id !== nextTourId) // Exclude next tour (not started)
           .map(s => ({
             id: s.tour_id,
             number: s.tour_number,
