@@ -152,11 +152,12 @@ const ViewTeam = () => {
       if (toursResponse.success && toursResponse.data) {
         const tours: TourInfo[] = [];
         
-        // Check if season has started (has current_tour)
-        const hasCurrentTour = !!toursResponse.data.current_tour;
+        // Check if season has started (has current_tour OR previous_tour)
+        // If previous_tour exists, season has definitely started
+        const seasonStarted = !!toursResponse.data.current_tour || !!toursResponse.data.previous_tour;
         
-        if (hasCurrentTour) {
-          // Season has started - show all completed tours + current tour
+        if (seasonStarted) {
+          // Season has started - show all completed tours + current tour (if exists)
           // Exclude only next_tour (not started yet)
           const nextTourId = toursResponse.data.next_tour?.id;
           
@@ -175,7 +176,7 @@ const ViewTeam = () => {
           
           tours.push(...historicalTours);
         } else {
-          // Season hasn't started - show ONLY next tour for team creation
+          // Season hasn't started yet - show ONLY next tour for team creation
           // Don't show any other tours even if they have snapshots
           if (toursResponse.data.next_tour) {
             tours.push(toursResponse.data.next_tour);
