@@ -394,8 +394,8 @@ const TeamBuilder = () => {
   const BUDGET = 100; // Display budget (backend stores as 1000)
   const MAX_PLAYERS_PER_CLUB = 3;
   // Calculate team cost from formatted prices
-  const currentTeamCost = Math.round(selectedPlayersData.reduce((sum, p) => sum + formatPrice(p.price), 0) * 10) / 10;
-  const currentBalance = Math.round((BUDGET - currentTeamCost) * 10) / 10;
+  const currentTeamCost = selectedPlayersData.reduce((sum, p) => sum + formatPrice(p.price), 0);
+  const currentBalance = BUDGET - currentTeamCost;
 
   const getPlayersCountByClub = (playerSelections: { id: number; slotIndex: number }[], clubName: string) => {
     return playerSelections.filter((sel) => {
