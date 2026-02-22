@@ -629,7 +629,7 @@ const PlayerCard = ({
                     hasMatchData = true;
                     const totalMinutes = tourData.matches.reduce((sum, match) => sum + (match.minutes_played || 0), 0);
                     playedZeroMinutes = totalMinutes === 0;
-                  } else if (tourData?.is_finalized) {
+                  } else if (tourData?.is_finalized && (!tourData.matches || tourData.matches.length === 0)) {
                     // Tour is finalized but no match stats - player didn't play
                     tourFinalized = true;
                   }
@@ -660,7 +660,7 @@ const PlayerCard = ({
                     hasMatchData = true;
                     const totalMinutes = tourData.matches.reduce((sum, match) => sum + (match.minutes_played || 0), 0);
                     playedZeroMinutes = totalMinutes === 0;
-                  } else if (tourData?.is_finalized) {
+                  } else if (tourData?.is_finalized && (!tourData.matches || tourData.matches.length === 0)) {
                     tourFinalized = true;
                   }
                   
