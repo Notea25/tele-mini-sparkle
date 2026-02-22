@@ -211,6 +211,7 @@ interface PlayerCardProps {
   onSwapSelect?: (targetPlayerId: number) => void;
   // Points display mode
   showTourPoints?: boolean; // true = показывать tour_points, false/undefined = показывать total_points
+  tourNumber?: number; // номер тура для фильтрации статистики (для ViewTeam)
 }
 
 const PlayerCard = ({
@@ -234,6 +235,7 @@ const PlayerCard = ({
   swapInvalidMessages = {},
   onSwapSelect,
   showTourPoints = false,
+  tourNumber,
 }: PlayerCardProps) => {
   const [selectedSwapTarget, setSelectedSwapTarget] = useState<number | null>(null);
   const [fullInfo, setFullInfo] = useState<PlayerFullInfoResponse | null>(null);
@@ -273,13 +275,18 @@ const PlayerCard = ({
 
   if (!player) return null;
 
-  // Get points from recent match in API if available, otherwise use prop points
-  const recentMatchPoints = fullInfo?.last_3_tours?.[0]?.matches?.[0]?.player_points;
+  // Get points from match in specific tour if tourNumber is provided
+  // Otherwise use the most recent match (last_3_tours[0])
+  const tourData = tourNumber && fullInfo?.last_3_tours
+    ? fullInfo.last_3_tours.find(t => t.tour_number === tourNumber)
+    : fullInfo?.last_3_tours?.[0];
+  
+  const matchPoints = tourData?.matches?.[0]?.player_points;
   
   // Выбираем какие очки показывать
-  // Priority: recent match points from API > showTourPoints > total_points > points prop
-  const displayPoints = (recentMatchPoints !== null && recentMatchPoints !== undefined) 
-    ? recentMatchPoints
+  // Priority: match points from specific tour > showTourPoints > total_points > points prop
+  const displayPoints = (matchPoints !== null && matchPoints !== undefined) 
+    ? matchPoints
     : showTourPoints 
       ? (player.tour_points ?? 0) 
       : (player.total_points ?? player.points ?? 0);
@@ -338,10 +345,10 @@ const PlayerCard = ({
 
   // Get real point breakdown from the most recent match in last_3_tours OR from match_stats prop
   const getPointBreakdown = () => {
-    // Priority: use match_stats from props (tour-specific data), fallback to API data
+    // Priority: use match_stats from props (tour-specific data), fallback to API data from specific tour
     const matchStats = player.match_stats && player.match_stats.length > 0 
       ? player.match_stats 
-      : fullInfo?.last_3_tours?.[0]?.matches;
+      : tourData?.matches;
     
     if (!matchStats || matchStats.length === 0) {
       return { byMatch: [], hasMultipleMatches: false, totalActions: [] }; // No data available

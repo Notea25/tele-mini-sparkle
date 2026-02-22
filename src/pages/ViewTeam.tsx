@@ -49,6 +49,7 @@ const ViewTeam = () => {
   const [viewTourPoints, setViewTourPoints] = useState<number>(0);
   const [allTours, setAllTours] = useState<TourInfo[]>([]);
   const [isLoadingTourPoints, setIsLoadingTourPoints] = useState(false);
+  const [isLoadingTours, setIsLoadingTours] = useState(false);
   
   // Historical squad data
   const [historySnapshots, setHistorySnapshots] = useState<TourHistorySnapshot[]>([]);
@@ -92,9 +93,8 @@ const ViewTeam = () => {
     // Own squad - always can view
     if (currentUserId && squad.user_id === currentUserId) return true;
     
-    // Other's squad - wait for allTours to be populated before checking
-    // If allTours is empty and we're still loading history, don't show access denied yet
-    if (isLoadingHistory || allTours.length === 0) return null;
+    // Other's squad - wait for tours data to load completely
+    if (isLoadingTours) return null;
     
     // Other's squad - check if season has started
     // Season is considered started if there's a current tour or previous tour
@@ -102,7 +102,7 @@ const ViewTeam = () => {
     const hasPreviousTour = allTours.some(t => t.type === 'previous');
     
     return hasCurrentTour || hasPreviousTour;
-  }, [isLoadingUser, isLoading, squad, currentUserId, allTours, isLoadingHistory]);
+  }, [isLoadingUser, isLoading, squad, currentUserId, allTours, isLoadingTours]);
 
   // Debug: check what useSquadById returns
   useEffect(() => {
@@ -123,6 +123,7 @@ const ViewTeam = () => {
     setAllTours([]);
     setHistorySnapshots([]);
     setTourPlayerStatuses([]);
+    setIsLoadingTours(true);
   }, [squadId]);
 
   // Load squad history first, then filter tours based on history
@@ -171,6 +172,9 @@ const ViewTeam = () => {
           setSelectedTourNumber(latestTour.number);
         }
       }
+      
+      // Mark tours loading as complete
+      setIsLoadingTours(false);
     };
 
     loadData();
@@ -895,6 +899,7 @@ const ViewTeam = () => {
         onClose={() => setIsPlayerCardOpen(false)}
         variant="view"
         showTourPoints={true}
+        tourNumber={selectedTourNumber ?? undefined}
         isCaptain={selectedPlayer ? displayCaptainId === selectedPlayer.id : false}
         isViceCaptain={selectedPlayer ? displayViceCaptainId === selectedPlayer.id : false}
       />
