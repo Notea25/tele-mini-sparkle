@@ -152,32 +152,34 @@ const ViewTeam = () => {
       if (toursResponse.success && toursResponse.data) {
         const tours: TourInfo[] = [];
         
-        // Get next tour ID to exclude it from historical tours
-        // Next tour hasn't started yet, so it shouldn't be viewable in history
-        const nextTourId = toursResponse.data.next_tour?.id;
+        // Check if season has started (has current_tour)
+        const hasCurrentTour = !!toursResponse.data.current_tour;
         
-        // Build list of all historical tours from snapshots
-        // EXCLUDE next tour (not started yet) even if it has a snapshot
-        // Include current tour (started but not finished) - it can be viewed
-        // Sort by tour number to get them in chronological order
-        const historicalTours = snapshots
-          .filter(s => s.tour_id !== nextTourId) // Exclude next tour (not started)
-          .map(s => ({
-            id: s.tour_id,
-            number: s.tour_number,
-            league_id: squad.league_id,
-            start_date: '', // Not needed for display
-            end_date: '',
-            deadline: '',
-            type: 'previous' as const,
-          }))
-          .sort((a, b) => a.number - b.number);
-        
-        tours.push(...historicalTours);
-        
-        // If no tours available yet (season not started), show next tour
-        if (tours.length === 0 && toursResponse.data.next_tour) {
-          tours.push(toursResponse.data.next_tour);
+        if (hasCurrentTour) {
+          // Season has started - show all completed tours + current tour
+          // Exclude only next_tour (not started yet)
+          const nextTourId = toursResponse.data.next_tour?.id;
+          
+          const historicalTours = snapshots
+            .filter(s => s.tour_id !== nextTourId) // Exclude next tour (not started)
+            .map(s => ({
+              id: s.tour_id,
+              number: s.tour_number,
+              league_id: squad.league_id,
+              start_date: '',
+              end_date: '',
+              deadline: '',
+              type: 'previous' as const,
+            }))
+            .sort((a, b) => a.number - b.number);
+          
+          tours.push(...historicalTours);
+        } else {
+          // Season hasn't started - show ONLY next tour for team creation
+          // Don't show any other tours even if they have snapshots
+          if (toursResponse.data.next_tour) {
+            tours.push(toursResponse.data.next_tour);
+          }
         }
         
         console.log('[ViewTeam] Final tours list:', tours);
