@@ -141,9 +141,14 @@ const ViewTeam = () => {
       // Get tour IDs and numbers where user has history
       const historyTourIds = new Set(snapshots.map(s => s.tour_id));
       const historyTourNumbers = snapshots.map(s => s.tour_number);
+      
+      console.log('[ViewTeam] History snapshots:', snapshots);
+      console.log('[ViewTeam] History tour IDs:', Array.from(historyTourIds));
+      console.log('[ViewTeam] History tour numbers:', historyTourNumbers);
 
       // Load tours
       const toursResponse = await toursApi.getPreviousCurrentNextTour(squad.league_id);
+      console.log('[ViewTeam] Tours response:', toursResponse.data);
       if (toursResponse.success && toursResponse.data) {
         const tours: TourInfo[] = [];
         
@@ -174,6 +179,7 @@ const ViewTeam = () => {
           tours.push(toursResponse.data.next_tour);
         }
         
+        console.log('[ViewTeam] Final tours list:', tours);
         setAllTours(tours);
 
         // Set initial selected tour to the most recent available
