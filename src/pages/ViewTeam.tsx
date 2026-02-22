@@ -163,9 +163,9 @@ const ViewTeam = () => {
         
         tours.push(...historicalTours);
         
-        // Add current tour as soon as it starts (exists in API)
-        // This allows viewing the current tour even before deadline passes
-        if (toursResponse.data.current_tour) {
+        // Add current tour ONLY if it has a history snapshot (is finalized)
+        // This prevents viewing unfinished tours in history navigation
+        if (toursResponse.data.current_tour && historyTourIds.has(toursResponse.data.current_tour.id)) {
           tours.push(toursResponse.data.current_tour);
         }
         
