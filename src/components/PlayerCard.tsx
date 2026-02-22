@@ -790,12 +790,16 @@ const PlayerCard = ({
                       </>
                     );
                   } else {
-                    // No data: check if tour is finalized
+                    // No data: check if tour is finalized or if we're viewing a specific old tour
                     // Use tourData if available, otherwise check if it's in recentForm and finalized
                     const isTourFinalized = tourData?.is_finalized || 
                       (tourNumber && recentForm.find(f => f.tour === tourNumber)?.is_finalized);
                     
-                    if (isTourFinalized) {
+                    // If tourNumber is specified but tourData is undefined, it means the tour is old
+                    // and not in the API response - player didn't play
+                    const isOldTourWithoutData = tourNumber && !tourData && !player.match_stats;
+                    
+                    if (isTourFinalized || isOldTourWithoutData) {
                       // Tour finalized but no data - player didn't play
                       return (
                         <div className="flex items-center justify-center py-4">
