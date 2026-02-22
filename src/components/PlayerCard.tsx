@@ -175,6 +175,7 @@ interface SwapablePlayer {
   id: number;
   name: string;
   name_rus?: string;
+  photo?: string;
   team: string;
   team_rus?: string;
   team_logo?: string;
@@ -295,6 +296,12 @@ const PlayerCard = ({
   // Get data from API or fallback to player props
   const playerPhoto_url = fullInfo?.base_info?.photo || playerDefault;
   const teamLogo_url = fullInfo?.base_info?.team_logo || clubLogos[player.team] || clubLogo;
+  
+  // Debug: log photo URL
+  if (fullInfo?.base_info && process.env.NODE_ENV === 'development') {
+    console.log('[PlayerCard] Photo URL for', player.name_rus || player.name, ':', playerPhoto_url);
+    console.log('[PlayerCard] Team logo URL:', teamLogo_url);
+  }
   const teamName = fullInfo?.base_info?.team_name_rus || fullInfo?.base_info?.team_name || player.team_rus || player.team;
   const positionDisplay = fullInfo?.base_info?.position 
     ? positionNames[fullInfo.base_info.position] || fullInfo.base_info.position
@@ -890,15 +897,16 @@ const PlayerCard = ({
                               : "bg-secondary/20 opacity-50 blur-[0.5px]"
                         } ${isValid && swapPlayer.hasRedCard ? "border border-destructive/50" : ""}`}
                       >
-                        {/* Player column: logo, name, position, badges */}
+                        {/* Player column: photo or team logo, name, position, badges */}
                         <div className="flex items-center gap-2 min-w-0">
-                          {swapPlayerLogo && (
-                            <img 
-                              src={swapPlayerLogo} 
-                              alt={swapPlayer.team_rus || swapPlayer.team} 
-                              className="w-5 h-5 object-contain flex-shrink-0" 
-                            />
-                          )}
+                          <img 
+                            src={swapPlayer.photo || swapPlayerLogo || playerDefault} 
+                            alt={swapPlayer.name_rus || swapPlayer.name} 
+                            className="w-8 h-8 rounded-full object-cover flex-shrink-0" 
+                            onError={(e) => { 
+                              e.currentTarget.src = swapPlayerLogo || playerDefault; 
+                            }}
+                          />
                           <span className={`text-sm font-medium truncate ${isValid ? "text-foreground" : "text-muted-foreground"}`}>
                             {swapPlayer.name_rus || swapPlayer.name}
                           </span>

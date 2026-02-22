@@ -75,6 +75,7 @@ interface PlayerDataExt extends PlayerData {
   hasRedCard?: boolean;
   isInjured?: boolean;
   hasLeftLeague?: boolean;
+  photo?: string;
   team_logo?: string;
   team_rus?: string;
   name_rus?: string;
