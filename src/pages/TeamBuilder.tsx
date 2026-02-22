@@ -78,8 +78,8 @@ const TeamBuilder = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
   const [selectedPoints, setSelectedPoints] = useState("Фильтр по очкам");
-  const [priceFrom, setPriceFrom] = useState(4);
-  const [priceTo, setPriceTo] = useState(11);
+  const [priceFrom, setPriceFrom] = useState(4.0);
+  const [priceTo, setPriceTo] = useState(15.0);
   const [captain, setCaptain] = useState<number | null>(() => {
     return safeGetItem<number | null>("fantasyTeamCaptain", null);
   });
@@ -338,8 +338,8 @@ const TeamBuilder = () => {
     setActiveFilter("Все");
     setSelectedTeam("Все команды");
     setSelectedPoints("Фильтр по очкам");
-    setPriceFrom(4);
-    setPriceTo(11);
+    setPriceFrom(4.0);
+    setPriceTo(15.0);
     setCurrentPage(1);
     // Reset sorting to default (price descending)
     setSortField("price");
@@ -352,24 +352,24 @@ const TeamBuilder = () => {
     activeFilter !== "Все" ||
     selectedTeam !== "Все команды" ||
     selectedPoints !== "Фильтр по очкам" ||
-    priceFrom !== 4 ||
-    priceTo !== 11;
+    priceFrom !== 4.0 ||
+    priceTo !== 15.0;
 
   // Price control handlers
   const handlePriceFromIncrease = () => {
-    setPriceFrom((prev) => Math.min(prev + 1, priceTo));
+    setPriceFrom((prev) => Math.min(prev + 0.5, priceTo));
     setCurrentPage(1);
   };
   const handlePriceFromDecrease = () => {
-    setPriceFrom((prev) => Math.max(prev - 1, 4));
+    setPriceFrom((prev) => Math.max(prev - 0.5, 4.0));
     setCurrentPage(1);
   };
   const handlePriceToIncrease = () => {
-    setPriceTo((prev) => Math.min(prev + 1, 11));
+    setPriceTo((prev) => Math.min(prev + 0.5, 15.0));
     setCurrentPage(1);
   };
   const handlePriceToDecrease = () => {
-    setPriceTo((prev) => Math.max(prev - 1, priceFrom));
+    setPriceTo((prev) => Math.max(prev - 0.5, priceFrom));
     setCurrentPage(1);
   };
 
