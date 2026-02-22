@@ -2,6 +2,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/u
 import { pluralizePoints } from "@/lib/pluralize";
 import { Button } from "@/components/ui/button";
 import { getClubLogo } from "@/lib/clubLogos";
+import { formatPrice } from "@/lib/utils";
 import swapArrowsPurple from "@/assets/swap-arrows-purple.png";
 import clubLogo from "@/assets/club-logo.png";
 
@@ -73,7 +74,7 @@ const TransferPlayerRow = ({
   // Prefer team_logo from backend, fallback to getClubLogo by team name
   const teamLogo = player.team_logo || (player.team ? getClubLogo(player.team) : undefined) || clubLogo;
   const surname = getSurname(player.name);
-  const price = typeof player.price === 'number' ? `$${player.price.toFixed(1)}` : '—';
+  const price = typeof player.price === 'number' ? `$${formatPrice(player.price).toFixed(1)}` : '—';
   
   const borderColor = type === "out" ? "border-destructive" : "border-success";
 
