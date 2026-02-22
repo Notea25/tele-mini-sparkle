@@ -247,6 +247,8 @@ const PlayerCard = ({
         .then((response) => {
           if (response.success && response.data) {
             console.log(`[PlayerCard] Full info for ${player.name}:`, response.data);
+            console.log(`[PlayerCard] Photo URL from API:`, response.data.base_info?.photo);
+            console.log(`[PlayerCard] Team logo URL from API:`, response.data.base_info?.team_logo);
             console.log(`[PlayerCard] Last 3 tours:`, response.data.last_3_tours);
             if (response.data.last_3_tours?.[0]) {
               console.log(`[PlayerCard] First tour matches:`, response.data.last_3_tours[0].matches);
@@ -897,16 +899,15 @@ const PlayerCard = ({
                               : "bg-secondary/20 opacity-50 blur-[0.5px]"
                         } ${isValid && swapPlayer.hasRedCard ? "border border-destructive/50" : ""}`}
                       >
-                        {/* Player column: photo or team logo, name, position, badges */}
+                        {/* Player column: team logo, name, position, badges */}
                         <div className="flex items-center gap-2 min-w-0">
-                          <img 
-                            src={swapPlayer.photo || swapPlayerLogo || playerDefault} 
-                            alt={swapPlayer.name_rus || swapPlayer.name} 
-                            className="w-8 h-8 rounded-full object-cover flex-shrink-0" 
-                            onError={(e) => { 
-                              e.currentTarget.src = swapPlayerLogo || playerDefault; 
-                            }}
-                          />
+                          {swapPlayerLogo && (
+                            <img 
+                              src={swapPlayerLogo} 
+                              alt={swapPlayer.team_rus || swapPlayer.team} 
+                              className="w-5 h-5 object-contain flex-shrink-0" 
+                            />
+                          )}
                           <span className={`text-sm font-medium truncate ${isValid ? "text-foreground" : "text-muted-foreground"}`}>
                             {swapPlayer.name_rus || swapPlayer.name}
                           </span>
