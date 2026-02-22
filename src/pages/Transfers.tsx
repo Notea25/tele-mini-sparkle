@@ -780,7 +780,28 @@ const Transfers = () => {
   // Get budget from backend (squadTourData.budget is scaled by 10)
   // Format it for display by dividing by 10
   const backendBudget = squadTourData?.budget ?? 1_000; // Default 1_000 (displays as 100)
-  const budget = formatBudget(backendBudget);
+  
+  // Calculate dynamic budget based on transfers
+  // Budget = initial budget + money from sold players - money for bought players
+  const calculateCurrentBudget = useMemo(() => {
+    const initialPlayerIds = new Set(initialPlayersRef.current.map((p) => p.id));
+    const currentPlayerIds = new Set(players.map((p) => p.id));
+    
+    // Players we sold (were in initial, not in current)
+    const soldPlayers = initialPlayersRef.current.filter((p) => !currentPlayerIds.has(p.id));
+    const moneyFromSales = soldPlayers.reduce((sum, p) => sum + p.price, 0);
+    
+    // Players we bought (are in current, weren't in initial)
+    const boughtPlayers = players.filter((p) => !initialPlayerIds.has(p.id));
+    const moneySpent = boughtPlayers.reduce((sum, p) => sum + p.price, 0);
+    
+    // Budget adjustment (prices are already scaled by 10 in backend)
+    const budgetAdjustment = moneyFromSales - moneySpent;
+    
+    return formatBudget(backendBudget + budgetAdjustment);
+  }, [backendBudget, players]);
+  
+  const budget = calculateCurrentBudget;
   const MAX_PLAYERS_PER_CLUB = 3;
   const MAX_SQUAD_SIZE = 15;
 
