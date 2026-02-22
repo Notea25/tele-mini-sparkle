@@ -592,6 +592,15 @@ const ViewTeam = () => {
     );
   }
   
+  // Still loading access check - check this BEFORE showing access denied
+  if (canViewSquad === null) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+  
   // Check access - if not allowed to view, show message
   if (canViewSquad === false) {
     return (
@@ -606,15 +615,6 @@ const ViewTeam = () => {
         >
           Назад
         </Button>
-      </div>
-    );
-  }
-  
-  // Still loading access check
-  if (canViewSquad === null) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
