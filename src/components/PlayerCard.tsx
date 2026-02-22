@@ -323,12 +323,16 @@ const PlayerCard = ({
   // Form data from API (last 3 tours)
   const recentForm = fullInfo?.last_3_tours?.map(tour => {
     const match = tour.matches[0];
+    // If tour is finalized but player has no match data, they didn't play
+    const didNotPlay = tour.is_finalized && (!match || (match.minutes_played === 0 && match.player_points === null));
     return {
       tour: tour.tour_number,
       opponent: match ? getTeamAbbreviation(match.opponent_team_name) : "???",
       home: match?.is_home ?? false,
       points: match?.player_points !== null && match?.player_points !== undefined ? match.player_points : null,
       logo: match?.opponent_team_logo || clubLogo,
+      didNotPlay: didNotPlay,
+      is_finalized: tour.is_finalized,
     };
   }) || [];
 
@@ -561,9 +565,15 @@ const PlayerCard = ({
                           {recentForm[idx].opponent} ({recentForm[idx].home ? "Д" : "Г"})
                         </span>
                       </div>
-                      <span className={`text-sm font-bold text-right ${(recentForm[idx].points ?? 0) < 0 ? "text-red-500" : recentForm[idx].points === null ? "text-muted-foreground" : "text-foreground"}`}>
-                        {recentForm[idx].points !== null ? recentForm[idx].points : "-"}
-                      </span>
+                      {recentForm[idx].didNotPlay ? (
+                        <span className="text-xs font-medium text-red-500 text-right">
+                          Не играл
+                        </span>
+                      ) : (
+                        <span className={`text-sm font-bold text-right ${(recentForm[idx].points ?? 0) < 0 ? "text-red-500" : recentForm[idx].points === null ? "text-muted-foreground" : "text-foreground"}`}>
+                          {recentForm[idx].points !== null ? recentForm[idx].points : "-"}
+                        </span>
+                      )}
                     </div>
                   ) : (
                     <div className="bg-secondary/30 rounded-lg px-3 py-1.5 flex items-center justify-center">
