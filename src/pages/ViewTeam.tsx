@@ -86,11 +86,15 @@ const ViewTeam = () => {
   
   // Check access: can view other's squad only if season has started (has current or previous tour)
   const canViewSquad = useMemo(() => {
-    // Loading states
+    // Loading states - wait for user, squad, and tours to load
     if (isLoadingUser || isLoading || !squad) return null;
     
     // Own squad - always can view
     if (currentUserId && squad.user_id === currentUserId) return true;
+    
+    // Other's squad - wait for allTours to be populated before checking
+    // If allTours is empty and we're still loading history, don't show access denied yet
+    if (isLoadingHistory || allTours.length === 0) return null;
     
     // Other's squad - check if season has started
     // Season is considered started if there's a current tour or previous tour
@@ -98,7 +102,7 @@ const ViewTeam = () => {
     const hasPreviousTour = allTours.some(t => t.type === 'previous');
     
     return hasCurrentTour || hasPreviousTour;
-  }, [isLoadingUser, isLoading, squad, currentUserId, allTours]);
+  }, [isLoadingUser, isLoading, squad, currentUserId, allTours, isLoadingHistory]);
 
   // Debug: check what useSquadById returns
   useEffect(() => {
@@ -837,7 +841,7 @@ const ViewTeam = () => {
                         className="w-5 h-5 object-contain flex-shrink-0"
                       />
                     )}
-                    <span className="text-foreground font-medium truncate flex-1">{player.name}</span>
+                    <span className="text-foreground font-medium truncate">{player.name}</span>
                     <span className="text-muted-foreground/50 text-[10px]">({player.position})</span>
                     {isCaptain && (
                       <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">
