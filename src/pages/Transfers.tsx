@@ -261,8 +261,8 @@ const Transfers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("Все команды");
   const [activeFilter, setActiveFilter] = useState("Все");
-  const [priceFrom, setPriceFrom] = useState(4.0);
-  const [priceTo, setPriceTo] = useState(15.0);
+  const [priceFrom, setPriceFrom] = useState(4);
+  const [priceTo, setPriceTo] = useState(11);
   const [sortField, setSortField] = useState<"name" | "points" | "price" | null>("price");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>("desc");
   const [pendingPositionFilter, setPendingPositionFilter] = useState<string | null>(null);
@@ -989,8 +989,8 @@ const Transfers = () => {
     setSearchQuery("");
     setActiveFilter("Все");
     setSelectedTeam("Все команды");
-    setPriceFrom(4.0);
-    setPriceTo(15.0);
+    setPriceFrom(4);
+    setPriceTo(11);
     setCurrentPage(1);
     setSortField("price");
     setSortDirection("desc");
@@ -999,22 +999,22 @@ const Transfers = () => {
   };
 
   const hasActiveFilters =
-    searchQuery !== "" || activeFilter !== "Все" || selectedTeam !== "Все команды" || priceFrom !== 4.0 || priceTo !== 15.0;
+    searchQuery !== "" || activeFilter !== "Все" || selectedTeam !== "Все команды" || priceFrom !== 4 || priceTo !== 11;
 
   const handlePriceFromIncrease = () => {
-    setPriceFrom((prev) => Math.min(prev + 0.5, priceTo));
+    setPriceFrom((prev) => Math.min(prev + 1, priceTo));
     setCurrentPage(1);
   };
   const handlePriceFromDecrease = () => {
-    setPriceFrom((prev) => Math.max(prev - 0.5, 4.0));
+    setPriceFrom((prev) => Math.max(prev - 1, 4));
     setCurrentPage(1);
   };
   const handlePriceToIncrease = () => {
-    setPriceTo((prev) => Math.min(prev + 0.5, 15.0));
+    setPriceTo((prev) => Math.min(prev + 1, 11));
     setCurrentPage(1);
   };
   const handlePriceToDecrease = () => {
-    setPriceTo((prev) => Math.max(prev - 0.5, priceFrom));
+    setPriceTo((prev) => Math.max(prev - 1, priceFrom));
     setCurrentPage(1);
   };
 
