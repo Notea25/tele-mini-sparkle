@@ -138,19 +138,30 @@ const ViewTeam = () => {
       setHistorySnapshots(snapshots);
       setIsLoadingHistory(false);
 
-      // Get tour IDs where user has history
+      // Get tour IDs and numbers where user has history
       const historyTourIds = new Set(snapshots.map(s => s.tour_id));
+      const historyTourNumbers = snapshots.map(s => s.tour_number);
 
       // Load tours
       const toursResponse = await toursApi.getPreviousCurrentNextTour(squad.league_id);
       if (toursResponse.success && toursResponse.data) {
-        const now = new Date();
         const tours: TourInfo[] = [];
         
-        // Add previous tour only if user has history for it
-        if (toursResponse.data.previous_tour && historyTourIds.has(toursResponse.data.previous_tour.id)) {
-          tours.push(toursResponse.data.previous_tour);
-        }
+        // Build list of all historical tours from snapshots
+        // Sort by tour number to get them in chronological order
+        const historicalTours = snapshots
+          .map(s => ({
+            id: s.tour_id,
+            number: s.tour_number,
+            league_id: squad.league_id,
+            start_date: '', // Not needed for display
+            end_date: '',
+            deadline: '',
+            type: 'previous' as const,
+          }))
+          .sort((a, b) => a.number - b.number);
+        
+        tours.push(...historicalTours);
         
         // Add current tour as soon as it starts (exists in API)
         // This allows viewing the current tour even before deadline passes
