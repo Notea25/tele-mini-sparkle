@@ -48,6 +48,7 @@ import { useTeams } from "@/hooks/useTeams";
 import { usePlayers, TransformedPlayer } from "@/hooks/usePlayers";
 import { usePlayerStatuses } from "@/hooks/usePlayerStatuses";
 import { squadsApi, customLeaguesApi } from "@/lib/api";
+import { formatPrice, formatBudget } from "@/lib/utils";
 import { getNextOpponentData } from "@/lib/scheduleUtils";
 
 const ITEMS_PER_PAGE = 8;
@@ -267,9 +268,10 @@ const TeamBuilder = () => {
     // "Фильтр по очкам" means show all, so matchesPoints stays true
     if (!matchesPoints) return false;
 
-    // Price filter
-    if (player.price < priceFrom) return false;
-    if (player.price > priceTo) return false;
+    // Price filter (format price from backend for comparison)
+    const displayPrice = formatPrice(player.price);
+    if (displayPrice < priceFrom) return false;
+    if (displayPrice > priceTo) return false;
 
     if (activeFilter === "Все") return true;
     if (activeFilter === "Вратари") return player.position === "ВР";
@@ -295,7 +297,9 @@ const TeamBuilder = () => {
       return effectiveSortDirection === "desc" ? b.points - a.points : a.points - b.points;
     }
     if (effectiveSortField === "price") {
-      return effectiveSortDirection === "desc" ? b.price - a.price : a.price - b.price;
+      const aPrice = formatPrice(a.price);
+      const bPrice = formatPrice(b.price);
+      return effectiveSortDirection === "desc" ? bPrice - aPrice : aPrice - bPrice;
     }
     return 0;
   });
@@ -387,9 +391,10 @@ const TeamBuilder = () => {
     }, 100);
   };
 
-  const BUDGET = 100;
+  const BUDGET = 100; // Display budget (backend stores as 1000)
   const MAX_PLAYERS_PER_CLUB = 3;
-  const currentTeamCost = Math.round(selectedPlayersData.reduce((sum, p) => sum + p.price, 0) * 10) / 10;
+  // Calculate team cost from formatted prices
+  const currentTeamCost = Math.round(selectedPlayersData.reduce((sum, p) => sum + formatPrice(p.price), 0) * 10) / 10;
   const currentBalance = Math.round((BUDGET - currentTeamCost) * 10) / 10;
 
   const getPlayersCountByClub = (playerSelections: { id: number; slotIndex: number }[], clubName: string) => {
@@ -447,10 +452,9 @@ const TeamBuilder = () => {
         toast.error(`Все слоты для позиции "${player.position}" заняты`);
         return;
       }
-      // Check budget before adding (round to 1 decimal for comparison)
-      const roundedPrice = Math.round(player.price * 10) / 10;
-      const roundedBalance = Math.round(currentBalance * 10) / 10;
-      if (roundedPrice > roundedBalance) {
+      // Check budget before adding (format price from backend)
+      const displayPrice = formatPrice(player.price);
+      if (displayPrice > currentBalance) {
         toast.error("Недостаточно бюджета для добавления этого игрока");
         return;
       }
@@ -488,7 +492,7 @@ const TeamBuilder = () => {
 
     // Start with currently selected players
     let newSelectedPlayers = [...selectedPlayers];
-    let totalCost = selectedPlayersData.reduce((sum, p) => sum + p.price, 0);
+    let totalCost = selectedPlayersData.reduce((sum, p) => sum + formatPrice(p.price), 0);
 
     // Count existing club selections
     const clubCounts: Record<string, number> = {};
@@ -534,7 +538,7 @@ const TeamBuilder = () => {
     ): TransformedPlayer[] => {
       const available = players
         .filter((p) => p.position === position && !excludeIds.has(p.id))
-        .sort((a, b) => a.price - b.price);
+        .sort((a, b) => formatPrice(a.price) - formatPrice(b.price));
 
       const result: TransformedPlayer[] = [];
       const tempClubCounts = { ...currentClubCounts };
@@ -558,7 +562,7 @@ const TeamBuilder = () => {
       if (needed <= 0) return;
       const cheapest = getCheapestPlayersForPosition(position, needed, tempClubCounts, selectedIdsSet);
       cheapest.forEach((p) => {
-        minCostToFillAll += p.price;
+        minCostToFillAll += formatPrice(p.price);
         tempClubCounts[p.team] = (tempClubCounts[p.team] || 0) + 1;
       });
     });
@@ -597,7 +601,7 @@ const TeamBuilder = () => {
         const needed = slotsNeeded[pos];
         const cheapest = getCheapestPlayersForPosition(pos, needed, tempCounts, tempExclude);
         cheapest.forEach((p) => {
-          cost += p.price;
+          cost += formatPrice(p.price);
           tempCounts[p.team] = (tempCounts[p.team] || 0) + 1;
           tempExclude.add(p.id);
         });
@@ -624,7 +628,7 @@ const TeamBuilder = () => {
         if (currentClubCount >= MAX_PLAYERS_PER_CLUB) continue;
 
         // Calculate if we can afford this player AND still fill remaining positions
-        const potentialCost = totalCost + player.price;
+        const potentialCost = totalCost + formatPrice(player.price);
         const remainingBudget = BUDGET - potentialCost;
 
         // Simulate adding this player
@@ -645,7 +649,7 @@ const TeamBuilder = () => {
             testExcludeIds,
           );
           cheapestRemaining.forEach((p) => {
-            minCostRemaining += p.price;
+            minCostRemaining += formatPrice(p.price);
             testClubCounts[p.team] = (testClubCounts[p.team] || 0) + 1;
             testExcludeIds.add(p.id);
           });
@@ -664,7 +668,7 @@ const TeamBuilder = () => {
           newSelectedPlayers.push({ id: player.id, slotIndex });
           usedSlotsByPosition[position].push(slotIndex);
           selectedIdsSet.add(player.id);
-          totalCost += player.price;
+          totalCost += formatPrice(player.price);
           clubCounts[player.team] = currentClubCount + 1;
           added++;
         }
@@ -681,7 +685,7 @@ const TeamBuilder = () => {
 
           const currentClubCount = clubCounts[player.team] || 0;
           if (currentClubCount >= MAX_PLAYERS_PER_CLUB) continue;
-          if (totalCost + player.price > BUDGET) continue;
+          if (totalCost + formatPrice(player.price) > BUDGET) continue;
 
           let slotIndex = 0;
           while (usedSlotsByPosition[position].includes(slotIndex)) {
@@ -1282,7 +1286,7 @@ const TeamBuilder = () => {
 
               {/* Price - fixed width, centered */}
               <div className="w-14 flex-shrink-0 flex items-center justify-center">
-                <span className="text-foreground text-sm">{player.price.toFixed(1)}</span>
+                <span className="text-foreground text-sm">{formatPrice(player.price).toFixed(1)}</span>
               </div>
 
               {/* Add/Remove button */}
@@ -1499,7 +1503,7 @@ const TeamBuilder = () => {
                     const mainSquadPlayers = mainPlayerIds
                       .map(id => players.find(p => p.id === id))
                       .filter((p): p is typeof players[0] => p !== undefined)
-                      .sort((a, b) => (b.price || 0) - (a.price || 0));
+                      .sort((a, b) => formatPrice(b.price || 0) - formatPrice(a.price || 0));
                     
                     if (!finalCaptain && mainSquadPlayers.length > 0) {
                       finalCaptain = mainSquadPlayers[0].id;

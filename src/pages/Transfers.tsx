@@ -53,6 +53,7 @@ import boostGolden from "@/assets/boost-golden.png";
 import boostBench from "@/assets/boost-bench.png";
 import boostCaptain3x from "@/assets/boost-captain3x.png";
 import boostDouble from "@/assets/boost-double.png";
+import { formatPrice, formatBudget } from "@/lib/utils";
 
 // Club icons mapping - use clubLogos as primary, fall back to defaults
 const clubIcons: Record<string, string> = {
@@ -776,9 +777,10 @@ const Transfers = () => {
     setPendingNavigation(null);
   };
 
-  // Calculate budget info
-  const totalPrice = Math.round(players.reduce((sum, p) => sum + (p.price || 0), 0) * 10) / 10;
-  const budget = Math.round((100 - totalPrice) * 10) / 10;
+  // Get budget from backend (squadTourData.budget is scaled by 10)
+  // Format it for display by dividing by 10
+  const backendBudget = squadTourData?.budget ?? 1_000; // Default 1_000 (displays as 100)
+  const budget = formatBudget(backendBudget);
   const MAX_PLAYERS_PER_CLUB = 3;
   const MAX_SQUAD_SIZE = 15;
 
@@ -822,10 +824,9 @@ const Transfers = () => {
       return;
     }
 
-    // Round to 1 decimal for comparison (prices are only to tenths)
-    const roundedPrice = Math.round(player.price * 10) / 10;
-    const roundedBudget = Math.round(budget * 10) / 10;
-    if (roundedPrice > roundedBudget) {
+    // Format player price from backend (÷10) and compare with budget
+    const displayPrice = formatPrice(player.price);
+    if (displayPrice > budget) {
       toast.error("Недостаточно бюджета");
       return;
     }
@@ -929,9 +930,10 @@ const Transfers = () => {
     const matchesTeam = selectedTeam === "Все команды" || player.team === selectedTeam;
     if (!matchesTeam) return false;
 
-    // Price filter
-    if (player.price < priceFrom) return false;
-    if (player.price > priceTo) return false;
+    // Price filter (format price from backend for comparison)
+    const displayPrice = formatPrice(player.price);
+    if (displayPrice < priceFrom) return false;
+    if (displayPrice > priceTo) return false;
 
     if (activeFilter === "Все") return true;
     if (activeFilter === "Вратари") return player.position === "ВР";
@@ -957,7 +959,9 @@ const Transfers = () => {
       return effectiveSortDirection === "desc" ? b.points - a.points : a.points - b.points;
     }
     if (effectiveSortField === "price") {
-      return effectiveSortDirection === "desc" ? b.price - a.price : a.price - b.price;
+      const aPrice = formatPrice(a.price);
+      const bPrice = formatPrice(b.price);
+      return effectiveSortDirection === "desc" ? bPrice - aPrice : aPrice - bPrice;
     }
     return 0;
   });
@@ -1159,7 +1163,7 @@ const Transfers = () => {
                 >
                   {player.total_points ?? player.points ?? 0}
                 </span>
-                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{player.price}</span>
+                <span className="w-10 flex-shrink-0 text-foreground text-sm text-center">{formatPrice(player.price).toFixed(1)}</span>
 
                 <button
                   onClick={() => handleSellPlayer(player.id)}
@@ -1536,9 +1540,9 @@ const Transfers = () => {
 
           {/* Players List */}
           <div className={`px-4 mt-3 space-y-2 ${totalPages <= 1 ? "pb-[100px]" : "pb-6"}`}>
-            {paginatedPlayers.map((player) => {
+          {paginatedPlayers.map((player) => {
               const canBuy =
-                player.price <= budget + 0.001 && getPlayersCountByClub(player.team) < MAX_PLAYERS_PER_CLUB;
+                formatPrice(player.price) <= budget + 0.001 && getPlayersCountByClub(player.team) < MAX_PLAYERS_PER_CLUB;
               const playerExt = player as TransformedPlayer;
               return (
                 <div key={player.id} className="bg-card rounded-xl px-4 py-2 flex items-center">
@@ -1584,7 +1588,7 @@ const Transfers = () => {
 
                   {/* Price */}
                   <div className="w-14 flex-shrink-0 flex items-center justify-center">
-                    <span className="text-foreground text-sm">{player.price.toFixed(1)}</span>
+                    <span className="text-foreground text-sm">{formatPrice(player.price).toFixed(1)}</span>
                   </div>
 
                   {/* Add button */}

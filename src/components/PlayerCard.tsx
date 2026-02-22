@@ -10,7 +10,8 @@ import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import playerPhoto from "@/assets/player-photo.png";
+import { usePlayers } from "@/hooks/usePlayers";
+import { formatPrice } from "@/lib/utils";
 import playerDefault from "@/assets/player-default.png";
 import clubLogo from "@/assets/club-logo.png";
 import { clubLogos, getClubLogo } from "@/lib/clubLogos";
@@ -499,7 +500,7 @@ const PlayerCard = ({
           <div className="grid grid-cols-4 gap-2 mt-3 bg-secondary/50 rounded-xl px-3 pt-3 pb-5 items-center">
             <StatCell
               label="Цена"
-              value={typeof player.price === "number" ? player.price.toFixed(1) : player.price}
+              value={typeof player.price === "number" ? formatPrice(player.price).toFixed(1) : player.price}
               rank={extInfo ? `${extInfo.market_value_rank} из ${totalPlayers}` : "-"}
               tooltip="Стоимость игрока, а также его место в общем списке по этому критерию."
             />
