@@ -790,9 +790,19 @@ const PlayerCard = ({
                       </>
                     );
                   } else {
-                    // No data: show placeholder
+                    // No data: check if tour is finalized
+                    if (tourData?.is_finalized) {
+                      // Tour finalized but no data - player didn't play
+                      return (
+                        <div className="flex items-center justify-center py-4">
+                          <span className="text-red-500 text-sm font-semibold text-center">
+                            Игрок не вышел на поле
+                          </span>
+                        </div>
+                      );
+                    }
+                    // Tour not finalized - show placeholder
                     return (
-                      /* Placeholder when no points data - similar to Form/Calendar */
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-muted-foreground text-sm">—</span>
