@@ -1402,23 +1402,36 @@ const FormationField = ({
           )}
 
           {/* Price area - 5px from top */}
-          {showPrice && (
-            <div
-              className="absolute top-0 left-0 right-0 flex items-center justify-center z-30"
-              style={{
-                height: `${cardSize.height * 0.19}px`,
-                minHeight: "16px",
-                paddingTop: "5px",
-              }}
-            >
-              <span
-                className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
-                style={{ fontSize: `${cardSize.width * 0.12}px` }}
+          {showPrice && (() => {
+            const rawPrice = player.price || 0;
+            const formattedPrice = formatPrice(rawPrice);
+            // Debug log for first render only
+            if (Math.random() < 0.01) {
+              console.log('[FormationField] Price formatting:', {
+                playerName: player.name_rus || player.name,
+                rawPrice,
+                formattedPrice,
+                display: formattedPrice.toFixed(1)
+              });
+            }
+            return (
+              <div
+                className="absolute top-0 left-0 right-0 flex items-center justify-center z-30"
+                style={{
+                  height: `${cardSize.height * 0.19}px`,
+                  minHeight: "16px",
+                  paddingTop: "5px",
+                }}
               >
-                ${formatPrice(player.price || 0).toFixed(1)}
-              </span>
-            </div>
-          )}
+                <span
+                  className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
+                  style={{ fontSize: `${cardSize.width * 0.12}px` }}
+                >
+                  ${formattedPrice.toFixed(1)}
+                </span>
+              </div>
+            );
+          })()}
 
           {/* Captain/Vice-Captain badge - 4px from top and left */}
           {showCaptainBadges && isCaptainPlayer && !isOnBench && (

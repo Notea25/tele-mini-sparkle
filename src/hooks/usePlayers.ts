@@ -60,6 +60,14 @@ export function usePlayers(leagueId: string | null) {
             isInjured: player.is_injured,
             hasLeftLeague: player.has_left_league,
           }));
+          // Debug: log first player's price
+          if (transformedPlayers.length > 0) {
+            console.log('[usePlayers] Sample player price from API:', {
+              name: transformedPlayers[0].name_rus,
+              market_value: response.data[0].market_value,
+              price: transformedPlayers[0].price
+            });
+          }
           setPlayers(transformedPlayers);
         }
       } catch (e) {
