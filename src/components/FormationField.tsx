@@ -922,6 +922,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { getJerseyForTeam } from "@/hooks/getJerseyForTeam.tsx";
 import { getFormationSlots, getPlayerPosition, detectFormation } from "@/lib/formationUtils";
 import { getTeamAbbreviation } from "@/lib/teamAbbreviations";
+import { formatPrice } from "@/lib/utils";
 import {
   DndContext,
   closestCenter,
@@ -1414,7 +1415,7 @@ const FormationField = ({
                 className="text-white font-medium drop-shadow-md whitespace-nowrap leading-tight"
                 style={{ fontSize: `${cardSize.width * 0.12}px` }}
               >
-                ${(player.price || 0).toFixed(1)}
+                ${formatPrice(player.price || 0).toFixed(1)}
               </span>
             </div>
           )}
